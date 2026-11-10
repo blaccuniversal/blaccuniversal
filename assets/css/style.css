@@ -358,9 +358,11 @@ body.menu-open{overflow:hidden}
 
 /* SDG focus blocks (monochrome, echoing the BLACC mark) */
 .sdgs{display:flex;gap:6px;margin-top:10px}
-.sdg{position:relative;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#000;border:0;border-radius:3px;padding:0;font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.02em}
+.sdg{position:relative;text-decoration:none;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#000;border:0;border-radius:3px;padding:0;font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.02em}
 .sdg::after{content:attr(data-name);position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%) translateY(4px);white-space:nowrap;padding:6px 10px;background:#1a1a1a;border:1px solid #333;border-radius:2px;color:#fff;font-size:12px;font-weight:400;letter-spacing:0;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:3}
 .sdg:hover::after,.sdg:focus-visible::after,.sdg:focus::after{opacity:1;transform:translateX(-50%) translateY(0)}
 .sdg:first-child::after{left:0;transform:translateY(4px)}
 .sdg:first-child:hover::after,.sdg:first-child:focus::after{transform:none}
 @media (max-width:600px){.sdg{width:30px;height:30px;font-size:11px}}
+
+.sdg:hover{background:#e6e6e6;color:#000}
