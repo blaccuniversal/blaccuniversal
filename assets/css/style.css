@@ -286,3 +286,29 @@ body.menu-open{overflow:hidden}
 @media (max-width:900px){
   .teaser__founder{font-size:min(15px,calc((100vw - 48px) / 33));line-height:1.6}
 }
+
+/* ---------- Phone: tighter spacing pass ---------- */
+@media (max-width:600px){
+  .section{padding-top:40px;padding-bottom:40px}
+  .teaser__founder{font-size:calc((100vw - 40px) / 39)}
+  .teaser .text-link{min-height:36px}
+
+  .contact{gap:12px}
+  .contact > div:last-child .icon-btn{width:44px !important;height:44px !important}
+  .contact > div:last-child .icon-btn svg{width:32px;height:32px}
+  .contact__where{margin-top:4px !important}
+
+  .footer{padding-top:14px;padding-bottom:14px}
+  .footer__inner{flex-wrap:nowrap;gap:8px;font-size:11px}
+  .footer__icons{gap:0;margin-right:-12px}
+  .footer__icons .icon-btn{width:40px;height:40px}
+  .footer__icons svg{width:18px;height:18px}
+
+  .founder-img + div{padding-top:28px !important;padding-bottom:40px !important}
+  .split__side .eyebrow{margin-bottom:4px !important}
+  .opening{padding-top:88px;padding-bottom:32px}
+  #divisions .wrap{gap:20px !important}
+
+  .music{gap:20px}
+  .listen{padding-top:4px}
+}
