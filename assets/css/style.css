@@ -548,3 +548,7 @@ body.build-open{overflow:hidden}
   .slide__media{position:relative;width:100%;height:0;padding-top:100%;overflow:hidden}
   .slide__media img{position:absolute;top:0;left:0;width:100% !important;height:100% !important;max-width:none;object-fit:cover}
 }
+
+/* "Bemshima Music — Featured" label a touch larger */
+.feature__head .eyebrow,.player__inner > .eyebrow{font-size:15px;letter-spacing:.16em;color:#b5b5b5}
+@media (max-width:600px){.feature__head .eyebrow,.player__inner > .eyebrow{font-size:13px;letter-spacing:.14em}}
