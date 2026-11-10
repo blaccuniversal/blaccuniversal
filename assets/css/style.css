@@ -630,3 +630,10 @@ body.build-open{overflow:hidden}
 .spin__frame:first-child.is-on{opacity:1}
 .spin__stage::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px #1a1a1a}
 @media (max-width:600px){.spin__view{left:0;right:0}}
+
+/* Shop: single front view on the spotlit stage (initial design) */
+.spin--static .spin__stage{cursor:default;touch-action:auto;aspect-ratio:4/5;background:radial-gradient(ellipse 60% 55% at 50% 45%,#2a2a2a 0%,#141414 55%,#070707 100%)}
+@supports not (aspect-ratio:4/5){.spin--static .spin__stage{height:0;padding-top:125%}}
+.spin__single{position:absolute;left:12%;right:12%;top:8%;bottom:12%;width:76%;height:80%;object-fit:contain;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
+.spin--static .spin__shadow{width:56%}
+@media (max-width:600px){.spin__single{left:8%;right:8%;width:84%}}
