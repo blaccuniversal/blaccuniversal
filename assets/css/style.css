@@ -776,3 +776,6 @@ body.build-open{overflow:hidden}
 .tile-l--wide .soon{margin-top:0;margin-left:auto}
 .scrap{grid-auto-rows:minmax(170px,auto)}
 @media (max-width:600px){.tile-l--photo{min-height:170px}.tile-l--wide .soon{margin-left:0}}
+
+.ed-intro__copy + .ed-intro__copy{margin-top:16px}
+.ed-intro__aside{font-size:clamp(18px,1.8vw,22px);color:#fff;font-style:italic}
