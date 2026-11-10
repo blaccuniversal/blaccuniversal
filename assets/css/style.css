@@ -366,3 +366,46 @@ body.menu-open{overflow:hidden}
 @media (max-width:600px){.sdg{width:30px;height:30px;font-size:11px}}
 
 .sdg:hover{background:#e6e6e6;color:#000}
+
+/* ---------- Build with us form ---------- */
+.build{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.97);display:flex;flex-direction:column;overflow-y:auto;animation:menuIn .35s ease both}
+.build[hidden]{display:none}
+.build__bar{display:flex;align-items:center;justify-content:space-between;padding-top:32px;padding-bottom:24px}
+.build__body{flex:1 1 auto;padding-bottom:56px}
+.build__inner{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.build__title{margin:0 0 18px;font-size:clamp(32px,4vw,52px);font-weight:300;letter-spacing:-.025em;line-height:1.05}
+.build__form{display:flex;flex-direction:column;gap:18px;margin:0}
+.field{display:flex;flex-direction:column;gap:8px;min-width:0;border:0;padding:0;margin:0}
+.field label,.field legend{font-size:13px;font-weight:500;letter-spacing:.04em;color:#cfcfcf;padding:0}
+.field .opt{font-weight:400;color:#7a7a7a}
+.field input,.field textarea{width:100%;background:#0b0b0b;border:1px solid #2a2a2a;border-radius:2px;color:#fff;font-family:inherit;font-size:16px;padding:13px 14px;transition:border-color .2s}
+.field textarea{resize:vertical;min-height:132px;line-height:1.5}
+.field input::placeholder{color:#6f6f6f}
+.field input:focus,.field textarea:focus{outline:none;border-color:#9a9a9a}
+.field-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.chips__row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:inline-flex;align-items:center;min-height:42px;padding:0 18px;border:1px solid #3a3a3a;border-radius:2px;font-size:15px;color:#e6e6e6;transition:background .2s,color .2s,border-color .2s}
+.chip input:checked + span{background:#fff;color:#000;border-color:#fff}
+.chip input:focus-visible + span{outline:2px solid #9a9a9a;outline-offset:2px}
+.build__send{align-self:flex-start;min-width:140px;justify-content:center;margin-top:4px}
+.build__error{margin:0;font-size:14px;color:#e8a0a0}
+.build__done{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding-top:12px}
+.build__done h3{margin:6px 0 0;font-size:clamp(26px,3vw,38px);font-weight:300;letter-spacing:-.02em}
+.build__done p{margin:0 0 14px;font-size:17px;color:#b5b5b5}
+.build__tick{display:inline-flex;width:44px;height:44px;align-items:center;justify-content:center;border:1px solid #3a3a3a;border-radius:2px}
+.contact__actions{display:flex;align-items:center;gap:14px}
+.build-link{background:none;border:0;padding:0 4px;font-family:inherit;cursor:pointer}
+body.build-open{overflow:hidden}
+@media (max-width:600px){
+  .build__bar{padding-top:20px;padding-bottom:12px}
+  .build__title{font-size:28px;margin-bottom:8px}
+  .build__form{gap:14px}
+  .field-row{grid-template-columns:minmax(0,1fr);gap:14px}
+  .field input,.field textarea{padding:11px 12px}
+  .chip span{min-height:40px;padding:0 14px;font-size:14px}
+  .build__send{align-self:stretch}
+  .contact__actions .btn{min-height:44px}
+  .loading__links{flex-wrap:wrap;justify-content:center}
+}

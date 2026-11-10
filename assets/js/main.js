@@ -97,4 +97,56 @@
         .catch(function () { postViaFrame(form); });
     });
   });
+
+  /* ---------- Build with us form ---------- */
+  var build = document.getElementById('build');
+  var lastFocus = null;
+  function openBuild(e) {
+    if (!build) return;
+    if (e) e.preventDefault();
+    lastFocus = document.activeElement;
+    if (menu && !menu.hidden) { menu.hidden = true; document.body.classList.remove('menu-open'); }
+    build.hidden = false;
+    document.body.classList.add('build-open');
+    var first = build.querySelector('#b-name');
+    if (first) setTimeout(function () { first.focus(); }, 50);
+  }
+  function closeBuild() {
+    if (!build) return;
+    build.hidden = true;
+    document.body.classList.remove('build-open');
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  document.querySelectorAll('[data-build-open]').forEach(function (el) { el.addEventListener('click', openBuild); });
+  document.querySelectorAll('[data-build-close]').forEach(function (el) { el.addEventListener('click', closeBuild); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && build && !build.hidden) closeBuild(); });
+  if (location.hash === '#build') openBuild();
+
+  var bForm = build && build.querySelector('form[data-build]');
+  if (bForm) {
+    bForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var err = build.querySelector('.build__error');
+      var ok = bForm.querySelector('#b-name').value.trim() && bForm.querySelector('#b-email').checkValidity() && bForm.querySelector('#b-email').value.trim() && bForm.querySelector('#b-message').value.trim();
+      if (!ok) { err.hidden = false; return; }
+      err.hidden = true;
+      var data = {};
+      new FormData(bForm).forEach(function (v, k) { if (k !== 'about') data[k] = v; });
+      var about = [].map.call(bForm.querySelectorAll('input[name="about"]:checked'), function (i) { return i.value; });
+      data.about = about.length ? about.join(', ') : 'Not specified';
+      var name = data.name.split(' ')[0];
+      build.querySelector('[data-build-name]').textContent = name;
+      bForm.hidden = true;
+      build.querySelector('.build__done').hidden = false;
+      if (bForm.querySelector('input[name="botcheck"]').checked) return;
+      fetch(bForm.action, {
+        method: 'POST', keepalive: true,
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (!j || !j.success) postViaFrame(bForm); })
+        .catch(function () { postViaFrame(bForm); });
+    });
+  }
 })();
