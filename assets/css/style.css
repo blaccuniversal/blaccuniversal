@@ -819,3 +819,48 @@ body.build-open{overflow:hidden}
   .press__item img{height:200px}
   .press__item:last-child{grid-column:1 / -1}
 }
+
+/* ---------- Bemshima: personal archive / scrapbook ---------- */
+.sb-head{padding-top:clamp(104px,11vw,140px);padding-bottom:clamp(20px,3vw,32px)}
+.sb-head__inner{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 32px}
+.sb-head__name{margin:8px 0 0;font-size:clamp(44px,7vw,104px);font-weight:300;letter-spacing:-.04em;line-height:.92}
+.sb-head__role{margin:0;font-size:15px;font-weight:300;color:#b5b5b5}
+.sb-head__role a{color:#fff}
+.sb-main{padding-bottom:clamp(56px,7vw,96px)}
+.sb-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-flow:dense;gap:12px}
+.sb{margin:0;background:#0b0b0b;border:1px solid #1c1c1c;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0;min-height:200px}
+.sb--w2{grid-column:span 2}
+.sb--tall{grid-row:span 2}
+.sb__big{margin:0;font-size:clamp(22px,2.2vw,30px);font-weight:300;letter-spacing:-.015em;line-height:1.25}
+.sb__text{margin:0;font-size:15px;font-weight:300;line-height:1.65;color:#b5b5b5}
+.sb__aside{margin:0;font-size:clamp(20px,2vw,26px);font-style:italic;font-weight:300}
+.sb__h{margin:0;font-size:22px;font-weight:300;letter-spacing:-.01em}
+.sb--note{justify-content:space-between;align-items:flex-start}
+.sb--photo{padding:0;overflow:hidden;position:relative}
+.sb--photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.sb--song{padding:12px}
+.release--tile .release__cover{margin-bottom:6px}
+.release--tile .release__title{font-size:16px}
+.release--tile .release__credit{font-size:12px}
+.release--tile .release__ext{font-size:12px}
+.sb--fav .soon,.sb--sdg .sdgs{margin-top:auto}
+.sb--listen,.sb--follow{justify-content:space-between}
+.sb--listen .listen__icons,.sb--follow .follow__icons{margin-left:-12px}
+.sb--work{justify-content:space-between}
+@media (max-width:1024px){.sb-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:700px){
+  .sb-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .sb{padding:14px;min-height:150px;gap:10px}
+  .sb--words,.sb--work{grid-column:1 / -1}
+  .sb--song{padding:8px}
+  .sb__big{font-size:20px}
+  .sb__text{font-size:13px}
+  .sb__aside{font-size:18px}
+  .sb__h{font-size:18px}
+  .sb-head{padding-top:84px}
+  .sb-head__name{font-size:48px}
+  .sb-head__role{font-size:13px}
+  .sb--listen .icon-btn,.sb--follow .icon-btn{width:40px}
+  .sb--sdg .sdgs{flex-wrap:wrap}
+}
+@media (min-width:1025px){.sb--work{grid-column:span 3}}
