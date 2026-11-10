@@ -117,9 +117,19 @@
     document.body.classList.remove('build-open');
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
-  var panels = { build: document.getElementById('build'), hello: document.getElementById('hello') };
+  var panels = { build: document.getElementById('build'), hello: document.getElementById('hello'), order: document.getElementById('order') };
   document.querySelectorAll('[data-build-open]').forEach(function (el) { el.addEventListener('click', function (e) { openPanel(panels.build, e); }); });
   document.querySelectorAll('[data-hello-open]').forEach(function (el) { el.addEventListener('click', function (e) { openPanel(panels.hello, e); }); });
+  document.querySelectorAll('[data-order-open]').forEach(function (el) { el.addEventListener('click', function (e) {
+    var p = panels.order; if (!p) return;
+    var f = p.querySelector('form'); var st = window.__blaccOrder || { size: 'M', qty: 1, total: '₦30,000', usd: '' };
+    f.querySelector('input[name="size"]').value = st.size;
+    f.querySelector('input[name="quantity"]').value = st.qty;
+    f.querySelector('input[name="total"]').value = st.total;
+    p.querySelector('[data-order-summary]').textContent = 'Alhamdulillah Tee · Size ' + st.size + ' · Qty ' + st.qty + ' · ' + st.total;
+    f.hidden = false; p.querySelector('.build__done').hidden = true;
+    openPanel(p, e);
+  }); });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     Object.keys(panels).forEach(function (k) { if (panels[k] && !panels[k].hidden) closePanel(panels[k]); });
@@ -137,7 +147,7 @@
       e.preventDefault();
       var err = panel.querySelector('.build__error');
       var nm = form.querySelector('input[name="name"]'), em = form.querySelector('input[name="email"]'), msg = form.querySelector('textarea[name="message"]');
-      var ok = nm.value.trim() && em.value.trim() && em.checkValidity() && msg.value.trim();
+      var ok = nm.value.trim() && em.value.trim() && form.checkValidity() && (!msg || msg.value.trim());
       if (!ok) { err.hidden = false; return; }
       err.hidden = true;
       var data = {};
@@ -147,7 +157,9 @@
         var about = [].map.call(form.querySelectorAll('input[name="about"]:checked'), function (i) { return i.value; });
         data.about = about.length ? about.join(', ') : 'Not specified';
       }
-      if (data.topic && data.topic.trim()) { data.topic = data.topic.trim(); data.subject = data.subject + ': ' + data.topic; } else { data.topic = 'Not specified'; }
+      if (form.hasAttribute('data-order')) {
+        data.subject = 'New order — ' + data.product + ' · ' + data.size + ' × ' + data.quantity + ' · ' + data.total;
+      } else if (data.topic && data.topic.trim()) { data.topic = data.topic.trim(); data.subject = data.subject + ': ' + data.topic; } else { data.topic = 'Not specified'; }
       panel.querySelector('[data-build-name]').textContent = data.name.trim().split(' ')[0];
       form.hidden = true;
       panel.querySelector('.build__done').hidden = false;
@@ -294,4 +306,64 @@
     pNext.addEventListener('click', function () { load(idx + 1); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pm.hidden) closePlayer(); });
   }
+
+  /* ---------- Shop: size, quantity, price ---------- */
+  var prod = document.querySelector('.product');
+  if (prod) {
+    var RATE = 1350; // approx NGN per USD, for the "≈ $" hint only
+    var qtyIn = prod.querySelector('[data-qty-input]');
+    function fmt(n) { return '₦' + n.toLocaleString('en-NG'); }
+    function refresh() {
+      var sel = prod.querySelector('input[name="size"]:checked');
+      var price = parseInt(sel.getAttribute('data-price'), 10);
+      var q = Math.max(1, Math.min(10, parseInt(qtyIn.value, 10) || 1)); qtyIn.value = q;
+      prod.querySelector('[data-price-ngn]').textContent = fmt(price);
+      prod.querySelector('[data-price-usd]').textContent = '≈ $' + Math.round(price / RATE);
+      prod.querySelector('[data-total]').textContent = fmt(price * q);
+      window.__blaccOrder = { size: sel.value, qty: q, total: fmt(price * q) };
+    }
+    prod.querySelectorAll('input[name="size"]').forEach(function (r) { r.addEventListener('change', refresh); });
+    prod.querySelectorAll('[data-qty]').forEach(function (b) { b.addEventListener('click', function () { qtyIn.value = (parseInt(qtyIn.value, 10) || 1) + parseInt(b.getAttribute('data-qty'), 10); refresh(); }); });
+    qtyIn.addEventListener('input', refresh);
+    refresh();
+  }
+
+  /* ---------- Shop: drag-to-spin shirt ---------- */
+  document.querySelectorAll('[data-spin]').forEach(function (spin) {
+    var stage = spin.querySelector('[data-spin-stage]'), card = spin.querySelector('[data-spin-card]');
+    var btns = spin.querySelectorAll('[data-face]');
+    var angle = -18, vel = 0, dragging = false, lastX = 0, lastT = 0, idleAt = 0, target = null;
+    function render() {
+      card.style.transform = 'rotateY(' + angle + 'deg)';
+      var a = ((angle % 360) + 360) % 360, back = a > 90 && a < 270;
+      btns.forEach(function (b) { b.setAttribute('aria-pressed', (b.getAttribute('data-face') === '180') === back ? 'true' : 'false'); });
+      var edge = Math.abs(Math.cos(angle * Math.PI / 180));
+      spin.style.setProperty('--edge', edge.toFixed(3));
+    }
+    stage.addEventListener('pointerdown', function (e) {
+      dragging = true; target = null; vel = 0; lastX = e.clientX; lastT = performance.now();
+      stage.setPointerCapture(e.pointerId); spin.classList.add('is-dragging');
+    });
+    stage.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var now = performance.now(), dx = e.clientX - lastX;
+      angle += dx * 0.6; vel = dx * 0.6 / Math.max(16, now - lastT) * 16;
+      lastX = e.clientX; lastT = now; render();
+    });
+    function end() { if (!dragging) return; dragging = false; idleAt = performance.now(); spin.classList.remove('is-dragging'); }
+    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
+    btns.forEach(function (b) { b.addEventListener('click', function () {
+      var f = parseInt(b.getAttribute('data-face'), 10);
+      var base = Math.round((angle - f) / 360) * 360; target = base + f; idleAt = performance.now();
+    }); });
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    (function loop(now) {
+      requestAnimationFrame(loop);
+      if (dragging) return;
+      if (target !== null) { angle += (target - angle) * 0.12; if (Math.abs(target - angle) < 0.2) { angle = target; target = null; } render(); return; }
+      if (Math.abs(vel) > 0.05) { angle += vel; vel *= 0.94; render(); return; }
+      if (!reduce && now - idleAt > 2500) { angle += 0.25; render(); }
+    })(performance.now());
+    render();
+  });
 })();
