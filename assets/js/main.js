@@ -328,41 +328,68 @@
     refresh();
   }
 
-  /* ---------- Shop: drag-to-spin shirt ---------- */
+  /* ---------- Shop: 360° drag-to-rotate shirt (front / side / back views) ---------- */
   document.querySelectorAll('[data-spin]').forEach(function (spin) {
-    var stage = spin.querySelector('[data-spin-stage]'), card = spin.querySelector('[data-spin-card]');
+    var stage = spin.querySelector('[data-spin-stage]'), view = spin.querySelector('[data-spin-view]');
+    var frames = [].slice.call(spin.querySelectorAll('.spin__frame')).sort(function (x, y) { return x.dataset.angle - y.dataset.angle; });
     var btns = spin.querySelectorAll('[data-face]');
-    var angle = -18, vel = 0, dragging = false, lastX = 0, lastT = 0, idleAt = 0, target = null;
+    var step = 360 / frames.length;
+    var angle = 0, vel = 0, dragging = false, lastX = 0, lastT = 0, idleAt = performance.now(), target = null;
+    function ease(t) { return t * t * (3 - 2 * t); }
     function render() {
-      card.style.transform = 'rotateY(' + angle + 'deg)';
-      var a = ((angle % 360) + 360) % 360, back = a > 90 && a < 270;
-      btns.forEach(function (b) { b.setAttribute('aria-pressed', (b.getAttribute('data-face') === '180') === back ? 'true' : 'false'); });
-      var edge = Math.abs(Math.cos(angle * Math.PI / 180));
-      spin.style.setProperty('--edge', edge.toFixed(3));
+      var a = ((angle % 360) + 360) % 360;
+      var k = Math.floor(a / step), t = (a - k * step) / step, n = (k + 1) % frames.length;
+      var e = ease(t);
+      // current view stays solid underneath; the next view fades in on top (no see-through midpoint)
+      frames.forEach(function (f, i) {
+        if (i === k) { f.style.opacity = '1'; f.style.zIndex = '1'; }
+        else if (i === n) { f.style.opacity = e.toFixed(3); f.style.zIndex = '2'; }
+        else { f.style.opacity = '0'; f.style.zIndex = '0'; }
+      });
+      // a light squeeze + drift mid-turn sells the rotation between views
+      var mid = Math.sin(t * Math.PI);
+      view.style.transform = 'scaleX(' + (1 - 0.08 * mid).toFixed(3) + ') translateX(' + (Math.sin((a / 360) * Math.PI * 2) * 1.2).toFixed(2) + '%)';
+      spin.style.setProperty('--edge', (1 - 0.35 * mid).toFixed(3));
+      var nearest = Math.round(a / step) % frames.length, face = frames[nearest].dataset.angle;
+      btns.forEach(function (b) {
+        var bf = b.getAttribute('data-face');
+        b.setAttribute('aria-pressed', (bf === face || (bf === '270' && face === '90')) ? 'true' : 'false');
+      });
     }
     stage.addEventListener('pointerdown', function (e) {
       dragging = true; target = null; vel = 0; lastX = e.clientX; lastT = performance.now();
-      stage.setPointerCapture(e.pointerId); spin.classList.add('is-dragging');
+      try { stage.setPointerCapture(e.pointerId); } catch (x) {}
+      spin.classList.add('is-dragging');
     });
     stage.addEventListener('pointermove', function (e) {
       if (!dragging) return;
       var now = performance.now(), dx = e.clientX - lastX;
-      angle += dx * 0.6; vel = dx * 0.6 / Math.max(16, now - lastT) * 16;
+      var perPx = 360 / Math.max(260, stage.clientWidth * 1.4);
+      angle += dx * perPx; vel = dx * perPx / Math.max(16, now - lastT) * 16;
       lastX = e.clientX; lastT = now; render();
     });
-    function end() { if (!dragging) return; dragging = false; idleAt = performance.now(); spin.classList.remove('is-dragging'); }
-    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
+    function end() {
+      if (!dragging) return; dragging = false; spin.classList.remove('is-dragging'); idleAt = performance.now();
+    }
+    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end); stage.addEventListener('lostpointercapture', end);
     btns.forEach(function (b) { b.addEventListener('click', function () {
       var f = parseInt(b.getAttribute('data-face'), 10);
-      var base = Math.round((angle - f) / 360) * 360; target = base + f; idleAt = performance.now();
+      target = Math.round((angle - f) / 360) * 360 + f; vel = 0; idleAt = performance.now();
     }); });
+    stage.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { target = Math.round(angle / step) * step + step; e.preventDefault(); }
+      if (e.key === 'ArrowLeft') { target = Math.round(angle / step) * step - step; e.preventDefault(); }
+      idleAt = performance.now();
+    });
+    stage.setAttribute('tabindex', '0'); stage.setAttribute('role', 'img');
+    stage.setAttribute('aria-label', 'Alhamdulillah Tee, 360° view. Drag, or use the arrow keys, to rotate.');
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     (function loop(now) {
       requestAnimationFrame(loop);
       if (dragging) return;
-      if (target !== null) { angle += (target - angle) * 0.12; if (Math.abs(target - angle) < 0.2) { angle = target; target = null; } render(); return; }
-      if (Math.abs(vel) > 0.05) { angle += vel; vel *= 0.94; render(); return; }
-      if (!reduce && now - idleAt > 2500) { angle += 0.25; render(); }
+      if (target !== null) { angle += (target - angle) * 0.1; if (Math.abs(target - angle) < 0.15) { angle = target; target = null; } render(); return; }
+      if (Math.abs(vel) > 0.03) { angle += vel; vel *= 0.95; render(); if (Math.abs(vel) <= 0.03) idleAt = now; return; }
+      if (!reduce && now - idleAt > 2500) { angle += 0.35; render(); }
     })(performance.now());
     render();
   });
