@@ -275,3 +275,8 @@ body.menu-open{overflow:hidden}
   .loading h1{font-size:24px}
   .loading p.lead{font-size:14px;line-height:1.6}
 }
+
+/* About statement: always three lines, like desktop */
+@media (max-width:900px){
+  .teaser__statement{white-space:nowrap;font-size:min(22px,calc((100vw - 48px) / 30));line-height:1.5;letter-spacing:-.01em}
+}
