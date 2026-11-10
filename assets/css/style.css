@@ -225,3 +225,53 @@ body.menu-open{overflow:hidden}
   .loading h1{font-size:26px}
   .loading p.lead{font-size:15px}
 }
+
+/* ---------- Phone: shorter scroll ---------- */
+@media (max-width:600px){
+  .section{padding-top:48px;padding-bottom:48px}
+  .hero{height:82vh;height:82svh;min-height:520px}
+
+  .teaser{gap:16px}
+  .teaser__rule{display:none}
+  .teaser__statement{font-size:17px}
+  .teaser__founder{font-size:14px;line-height:1.6}
+  .text-link{min-height:40px}
+
+  .music{gap:24px}
+  .music__media img{height:240px}
+  .music__body{gap:18px}
+  .music__title{font-size:28px}
+  .listen{gap:8px;padding-top:8px}
+  .listen .eyebrow{margin-top:8px}
+
+  .contact__head{gap:14px}
+
+  .opening{padding-top:96px;padding-bottom:40px}
+  .opening h1{font-size:28px}
+  .opening__inner{gap:14px}
+  .split{gap:20px}
+  .split__side{gap:10px}
+  .body-copy{font-size:14px;line-height:1.6}
+  .letter-row{padding:6px 0;gap:14px}
+  .letter-box{width:32px;height:32px;font-size:18px;border-radius:2px}
+  .letter-word{font-size:19px}
+  .founder-img{height:180px}
+  .founder-name{font-size:26px}
+  .founder-lead{font-size:16px;line-height:1.55}
+  .founder-copy{font-size:14px;line-height:1.65}
+  .h-section{font-size:26px}
+  #divisions .wrap{gap:24px !important}
+  #divisions .wrap > div:first-child p{font-size:14px !important}
+  .tile{flex:1 1 calc(50% - 1px);min-height:118px;padding:16px;gap:12px}
+  .tile__num{font-size:11px}
+  .tile__name{font-size:16px}
+  .tile__line{font-size:12px;margin-top:6px}
+  .tile--cta span{font-size:16px}
+  .tile--cta svg:first-child{width:26px}
+  .tile--cta span svg{width:18px;height:18px}
+
+  .loading{padding-top:92px;padding-bottom:40px}
+  .loading__inner{gap:20px}
+  .loading h1{font-size:24px}
+  .loading p.lead{font-size:14px;line-height:1.6}
+}
