@@ -341,14 +341,16 @@
       var cur = curSel(), total = PRICE * q;
       prod.querySelector('[data-price-main]').textContent = money(PRICE, cur);
       prod.querySelector('[data-price-sub]').textContent = '';
-      prod.querySelector('[data-total]').textContent = money(total, cur);
+      var unitShown = money(PRICE, cur);
+      var totalShown = cur === 'NGN' ? ngn(total) : unitShown.replace(/[\d,]+$/, function (d) { return (parseInt(d.replace(/,/g, ''), 10) * q).toLocaleString('en-US'); });
+      prod.querySelector('[data-total]').textContent = totalShown;
       var rateEl = prod.querySelector('[data-rate]');
       if (cur === 'NGN') rateEl.textContent = 'Prices are in naira. Pick a currency to see today’s rate.';
       else {
         var perUnit = rates && rates[cur] ? 1 / rates[cur] : FALLBACK[cur];
         rateEl.textContent = '1 ' + cur + ' = ' + ngn(perUnit).replace('₦', '₦') + (live && ratesAt ? ' · live rate, updated ' + ratesAt : ' · approximate rate') + '. You pay in naira (' + ngn(total) + ').';
       }
-      window.__blaccOrder = { size: sel.value, qty: q, total: ngn(total), view: cur, viewTotal: money(total, cur) };
+      window.__blaccOrder = { size: sel.value, qty: q, total: ngn(total), view: cur, viewTotal: totalShown };
     }
     prod.querySelectorAll('input[name="size"]').forEach(function (r) { r.addEventListener('change', refresh); });
     function onCur() { refresh(); try { localStorage.setItem('blacc_cur', curSel()); } catch (e) {} }
