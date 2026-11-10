@@ -518,3 +518,27 @@ body.build-open{overflow:hidden}
   .player__stage.is-audio{height:252px}
   .player__title{font-size:24px}
 }
+
+/* ---------- Featured songs: phone & tablet polish ---------- */
+.slide__media img{aspect-ratio:auto}
+@media (max-width:900px){
+  .feature__track{gap:12px;scroll-padding-left:0;scroll-snap-type:x mandatory}
+  .slide{flex:0 0 86%;scroll-snap-align:start}
+  .slide__media img{height:auto;aspect-ratio:1/1;object-fit:cover}
+}
+@media (max-width:600px){
+  .feature__head{display:grid;grid-template-columns:minmax(0,1fr) auto;row-gap:12px;align-items:center}
+  .feature__head .eyebrow{grid-column:1 / -1}
+  .feature__controls{display:contents}
+  .feature__controls .btn--small{grid-column:1;justify-self:start;margin:0}
+  .feature__count{grid-column:2;justify-self:end;margin:0}
+  .feature__arrow{display:none}
+  .slide{flex-basis:84%}
+  .slide__info{gap:4px}
+  .slide .music__title{font-size:26px}
+  .slide .music__credit{font-size:14px;margin-top:4px}
+  .slide__cta{gap:8px;margin-top:12px}
+  .slide__cta .btn{min-height:42px;padding:0 14px;font-size:13px;gap:8px}
+  .feature__dots{margin-top:2px}
+}
+@media (max-width:900px){.slide{align-content:start}}

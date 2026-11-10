@@ -171,9 +171,11 @@
     var prev = feat.querySelector('[data-prev]'), next = feat.querySelector('[data-next]');
     var count = feat.querySelector('[data-count]');
     var current = 0;
-    function go(i) { i = Math.max(0, Math.min(slides.length - 1, i)); track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); }
+    function go(i) { i = Math.max(0, Math.min(slides.length - 1, i)); track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft - (slides[0].offsetLeft - track.offsetLeft), behavior: 'smooth' }); }
     function update() {
-      var i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      var i = 0, best = Infinity, base = slides[0].offsetLeft;
+      slides.forEach(function (s, k) { var d = Math.abs((s.offsetLeft - base) - track.scrollLeft); if (d < best) { best = d; i = k; } });
+      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 4) i = slides.length - 1;
       if (i === current && count.textContent) {}
       current = i;
       count.textContent = (i + 1 < 10 ? '0' : '') + (i + 1);
