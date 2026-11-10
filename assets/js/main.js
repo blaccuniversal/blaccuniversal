@@ -98,55 +98,67 @@
     });
   });
 
-  /* ---------- Build with us form ---------- */
-  var build = document.getElementById('build');
+  /* ---------- Form panels: "Build with us" and "Say hello" ---------- */
   var lastFocus = null;
-  function openBuild(e) {
-    if (!build) return;
+  function openPanel(panel, e) {
+    if (!panel) return;
     if (e) e.preventDefault();
     lastFocus = document.activeElement;
     if (menu && !menu.hidden) { menu.hidden = true; document.body.classList.remove('menu-open'); }
-    build.hidden = false;
+    document.querySelectorAll('.build').forEach(function (p) { p.hidden = true; });
+    panel.hidden = false;
     document.body.classList.add('build-open');
-    var first = build.querySelector('#b-name');
+    var first = panel.querySelector('input[name="name"]');
     if (first) setTimeout(function () { first.focus(); }, 50);
   }
-  function closeBuild() {
-    if (!build) return;
-    build.hidden = true;
+  function closePanel(panel) {
+    if (!panel) return;
+    panel.hidden = true;
     document.body.classList.remove('build-open');
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
-  document.querySelectorAll('[data-build-open]').forEach(function (el) { el.addEventListener('click', openBuild); });
-  document.querySelectorAll('[data-build-close]').forEach(function (el) { el.addEventListener('click', closeBuild); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && build && !build.hidden) closeBuild(); });
-  if (location.hash === '#build') openBuild();
+  var panels = { build: document.getElementById('build'), hello: document.getElementById('hello') };
+  document.querySelectorAll('[data-build-open]').forEach(function (el) { el.addEventListener('click', function (e) { openPanel(panels.build, e); }); });
+  document.querySelectorAll('[data-hello-open]').forEach(function (el) { el.addEventListener('click', function (e) { openPanel(panels.hello, e); }); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    Object.keys(panels).forEach(function (k) { if (panels[k] && !panels[k].hidden) closePanel(panels[k]); });
+  });
+  if (location.hash === '#build') openPanel(panels.build);
+  if (location.hash === '#hello') openPanel(panels.hello);
 
-  var bForm = build && build.querySelector('form[data-build]');
-  if (bForm) {
-    bForm.addEventListener('submit', function (e) {
+  Object.keys(panels).forEach(function (k) {
+    var panel = panels[k];
+    if (!panel) return;
+    panel.querySelectorAll('[data-build-close]').forEach(function (el) { el.addEventListener('click', function () { closePanel(panel); }); });
+    var form = panel.querySelector('form[data-build]');
+    if (!form) return;
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var err = build.querySelector('.build__error');
-      var ok = bForm.querySelector('#b-name').value.trim() && bForm.querySelector('#b-email').checkValidity() && bForm.querySelector('#b-email').value.trim() && bForm.querySelector('#b-message').value.trim();
+      var err = panel.querySelector('.build__error');
+      var nm = form.querySelector('input[name="name"]'), em = form.querySelector('input[name="email"]'), msg = form.querySelector('textarea[name="message"]');
+      var ok = nm.value.trim() && em.value.trim() && em.checkValidity() && msg.value.trim();
       if (!ok) { err.hidden = false; return; }
       err.hidden = true;
       var data = {};
-      new FormData(bForm).forEach(function (v, k) { if (k !== 'about') data[k] = v; });
-      var about = [].map.call(bForm.querySelectorAll('input[name="about"]:checked'), function (i) { return i.value; });
-      data.about = about.length ? about.join(', ') : 'Not specified';
-      var name = data.name.split(' ')[0];
-      build.querySelector('[data-build-name]').textContent = name;
-      bForm.hidden = true;
-      build.querySelector('.build__done').hidden = false;
-      if (bForm.querySelector('input[name="botcheck"]').checked) return;
-      fetch(bForm.action, {
+      new FormData(form).forEach(function (v, key) { if (key !== 'about') data[key] = v; });
+      var chips = form.querySelectorAll('input[name="about"]');
+      if (chips.length) {
+        var about = [].map.call(form.querySelectorAll('input[name="about"]:checked'), function (i) { return i.value; });
+        data.about = about.length ? about.join(', ') : 'Not specified';
+      }
+      panel.querySelector('[data-build-name]').textContent = data.name.trim().split(' ')[0];
+      form.hidden = true;
+      panel.querySelector('.build__done').hidden = false;
+      if (form.querySelector('input[name="botcheck"]').checked) return;
+      fetch(form.action, {
         method: 'POST', keepalive: true,
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(data)
       })
         .then(function (r) { return r.json(); })
-        .then(function (j) { if (!j || !j.success) postViaFrame(bForm); })
-        .catch(function () { postViaFrame(bForm); });
+        .then(function (j) { if (!j || !j.success) postViaFrame(form); })
+        .catch(function () { postViaFrame(form); });
     });
-  }
+  });
 })();
