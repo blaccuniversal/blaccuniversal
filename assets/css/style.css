@@ -619,3 +619,14 @@ body.build-open{overflow:hidden}
 .spin__frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;pointer-events:none;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55));will-change:opacity}
 .spin__frame:first-child{opacity:1}
 @media (max-width:600px){.spin__view{left:4%;right:4%}}
+
+/* Spin v3: real 8-angle turntable photos, hard frame steps (no fades) */
+.spin__stage{background:#161515;aspect-ratio:380/508}
+@supports not (aspect-ratio:1/1){.spin__stage{height:0;padding-top:133.7%}}
+.spin__view{left:0;right:0;top:0;bottom:0;transform:none !important}
+.spin__frame{inset:0;width:100%;height:100%;object-fit:cover;filter:none;opacity:0;transition:none}
+.spin__frame.is-on{opacity:1}
+.spin__frame:first-child{opacity:0}
+.spin__frame:first-child.is-on{opacity:1}
+.spin__stage::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 0 1px #1a1a1a}
+@media (max-width:600px){.spin__view{left:0;right:0}}
