@@ -57,16 +57,40 @@
   </section>
 
   <section class="section gutter" id="music">
-    <div class="wrap music">
-      <div class="music__media"><img src="/assets/img/mask.jpg" alt="Masked figure looking through a shard of broken glass" width="1270" height="1582" loading="lazy"></div>
-      <div class="music__body">
-        <p class="eyebrow">Bemshima Music — Featured</p>
-        <div>
-          <h2 class="music__title">Talk Nice, Pt. II</h2>
-          <p class="music__credit">Bemshima · Capella Grey</p>
+    <div class="wrap">
+      <div class="feature" aria-roledescription="carousel" aria-label="Featured songs">
+        <div class="feature__head">
+          <p class="eyebrow">Bemshima Music — Featured</p>
+          <div class="feature__controls">
+            <button class="btn btn--small" type="button" data-player-open="0" data-play-all><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>Play all</button>
+            <span class="feature__count"><span data-count>01</span> / 02</span>
+            <button type="button" class="icon-btn feature__arrow" data-prev aria-label="Previous song"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+            <button type="button" class="icon-btn feature__arrow" data-next aria-label="Next song"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
         </div>
-        <div><a class="btn" href="https://youtu.be/k1JdKm82lg8" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>Watch the video</a></div>
-        <iframe class="player" title="Bemshima on Spotify" src="https://open.spotify.com/embed/artist/1eI1MeHIkwuWTUC9daVZFS?utm_source=generator&amp;theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div class="feature__track" tabindex="0">
+          <article class="slide" data-kind="youtube" data-id="k1JdKm82lg8" data-title="Talk Nice, Pt. II" data-credit="Bemshima · Capella Grey" data-host="YouTube" data-url="https://youtu.be/k1JdKm82lg8" role="group" aria-roledescription="slide" aria-label="1 of 2: Talk Nice, Pt. II">
+            <div class="slide__media"><img src="/assets/img/mask.jpg" alt="Masked figure looking through a shard of broken glass" width="1270" height="1582" loading="lazy" style="object-position:50% 40%"></div>
+            <div class="slide__info">
+              <h2 class="music__title">Talk Nice, Pt. II</h2>
+              <p class="music__credit">Bemshima · Capella Grey</p>
+              <div class="slide__cta"><button class="btn" type="button" data-player-open="0"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>Play here</button><a class="btn btn--ghost" href="https://youtu.be/k1JdKm82lg8" target="_blank" rel="noopener">Watch on YouTube<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
+            </div>
+          </article>
+          <article class="slide" data-kind="audiomack" data-id="bemshima/rita" data-title="Rita" data-credit="Bemshima · Phatboii" data-host="Audiomack" data-url="https://audiomack.com/bemshima/song/rita" role="group" aria-roledescription="slide" aria-label="2 of 2: Rita">
+            <div class="slide__media"><img src="https://i.audiomack.com/bemshima/0f75f86691.webp?width=1000&amp;height=1000" alt="Cover art for Rita by Bemshima featuring Phatboii" width="1000" height="1000" loading="lazy" style="object-position:50% 50%"></div>
+            <div class="slide__info">
+              <h2 class="music__title">Rita</h2>
+              <p class="music__credit">Bemshima · Phatboii</p>
+              <div class="slide__cta"><button class="btn" type="button" data-player-open="1"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>Play here</button><a class="btn btn--ghost" href="https://audiomack.com/bemshima/song/rita" target="_blank" rel="noopener">Listen on Audiomack<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></div>
+            </div>
+          </article>
+        </div>
+        <div class="feature__dots"><button type="button" class="dot-btn" aria-label="Show song 1"></button><button type="button" class="dot-btn" aria-label="Show song 2"></button></div>
+      </div>
+      <div class="music__more">
+        <div class="music__player"><iframe class="player" title="Bemshima on Spotify" src="https://open.spotify.com/embed/artist/1eI1MeHIkwuWTUC9daVZFS?utm_source=generator&amp;theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+        <div class="music__links">
         <div class="listen">
           <p class="eyebrow">Listen</p>
           <div class="listen__icons">
@@ -78,6 +102,7 @@
         <div class="follow">
           <p class="eyebrow">Follow Bemshima</p>
           <div class="follow__icons"><a class="icon-btn" href="https://www.instagram.com/iambemshima" target="_blank" rel="noopener" aria-label="Bemshima on Instagram, @iambemshima" title="@iambemshima"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25"/><circle cx="12" cy="12" r="4.25"/><circle cx="17.4" cy="6.6" r=".6" fill="currentColor" stroke="none"/></svg></a><a class="icon-btn" href="https://x.com/iambemshima" target="_blank" rel="noopener" aria-label="Bemshima on X, @iambemshima" title="@iambemshima"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a class="icon-btn" href="https://www.tiktok.com/@bemshima" target="_blank" rel="noopener" aria-label="Bemshima on TikTok, @bemshima" title="@bemshima"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a><a class="icon-btn" href="https://www.youtube.com/c/bemshima" target="_blank" rel="noopener" aria-label="Bemshima on YouTube" title="YouTube"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a></div>
+        </div>
         </div>
       </div>
     </div>
@@ -164,6 +189,33 @@
           <p>We’ll be in touch.</p>
           <button class="btn" type="button" data-build-close>Close</button>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="build player-modal" id="player" role="dialog" aria-modal="true" aria-labelledby="player-title" hidden>
+    <div class="build__bar gutter">
+      <span class="brand"><svg viewBox="0 0 563 418" width="34" height="25" aria-hidden="true"><g fill="#ffffff"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg><span>BLACC Universal<sup>™</sup></span></span>
+      <button class="icon-btn menu-btn" type="button" data-player-close aria-label="Close player"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    </div>
+    <div class="build__body gutter">
+      <div class="player__inner">
+        <p class="eyebrow">Bemshima Music — Featured</p>
+        <div class="player__stage" data-stage></div>
+        <div class="player__now">
+          <div>
+            <h2 class="player__title" id="player-title" data-now-title></h2>
+            <p class="music__credit" data-now-credit></p>
+          </div>
+          <div class="player__ctrls">
+            <button class="icon-btn" type="button" data-player-prev aria-label="Previous song"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
+            <button class="icon-btn" type="button" data-player-next aria-label="Next song"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
+          </div>
+        </div>
+        <div class="player__meta">
+          <a class="btn btn--ghost btn--small" data-now-host href="#" target="_blank" rel="noopener"></a>
+          <label class="player__auto"><input type="checkbox" data-autonext checked> Play next automatically</label>
+        </div>
+        <ol class="player__list" data-list></ol>
       </div>
     </div>
   </div>

@@ -162,4 +162,114 @@
         .catch(function () { postViaFrame(form); });
     });
   });
+
+  /* ---------- Featured songs carousel (swipe, arrows, dots, keyboard) ---------- */
+  document.querySelectorAll('.feature').forEach(function (feat) {
+    var track = feat.querySelector('.feature__track');
+    var slides = feat.querySelectorAll('.slide');
+    var dots = feat.querySelectorAll('.dot-btn');
+    var prev = feat.querySelector('[data-prev]'), next = feat.querySelector('[data-next]');
+    var count = feat.querySelector('[data-count]');
+    var current = 0;
+    function go(i) { i = Math.max(0, Math.min(slides.length - 1, i)); track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' }); }
+    function update() {
+      var i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      if (i === current && count.textContent) {}
+      current = i;
+      count.textContent = (i + 1 < 10 ? '0' : '') + (i + 1);
+      dots.forEach(function (d, k) { d.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+      prev.disabled = i === 0; next.disabled = i === slides.length - 1;
+    }
+    prev.addEventListener('click', function () { go(current - 1); });
+    next.addEventListener('click', function () { go(current + 1); });
+    dots.forEach(function (d, k) { d.addEventListener('click', function () { go(k); }); });
+    var t; track.addEventListener('scroll', function () { clearTimeout(t); t = setTimeout(update, 60); }, { passive: true });
+    track.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') { e.preventDefault(); go(current + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(current - 1); } });
+    window.addEventListener('resize', function () { go(current); });
+    update();
+  });
+
+  /* ---------- Pop-open player: play featured songs here, or open them where they're hosted ---------- */
+  var pm = document.getElementById('player');
+  if (pm) {
+    var tracks = [].map.call(document.querySelectorAll('.feature .slide[data-kind]'), function (el) {
+      return { kind: el.dataset.kind, id: el.dataset.id, title: el.dataset.title, credit: el.dataset.credit, host: el.dataset.host, url: el.dataset.url };
+    });
+    var stage = pm.querySelector('[data-stage]'), list = pm.querySelector('[data-list]');
+    var auto = pm.querySelector('[data-autonext]');
+    var pPrev = pm.querySelector('[data-player-prev]'), pNext = pm.querySelector('[data-player-next]');
+    var idx = 0, ytPlayer = null, ytReady = null;
+    tracks.forEach(function (t, i) {
+      var li = document.createElement('li');
+      li.innerHTML = '<button type="button"><span class="n">' + (i < 9 ? '0' : '') + (i + 1) + '</span><span class="t"></span><span class="h"></span></button>';
+      li.querySelector('.t').textContent = t.title + ' — ' + t.credit;
+      li.querySelector('.h').textContent = t.host;
+      li.querySelector('button').addEventListener('click', function () { load(i); });
+      list.appendChild(li);
+    });
+    function loadYT() {
+      if (ytReady) return ytReady;
+      ytReady = new Promise(function (res) {
+        if (window.YT && window.YT.Player) return res();
+        var prevCb = window.onYouTubeIframeAPIReady;
+        window.onYouTubeIframeAPIReady = function () { if (prevCb) prevCb(); res(); };
+        var sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(sc);
+      });
+      return ytReady;
+    }
+    function clearStage() {
+      if (ytPlayer && ytPlayer.destroy) { try { ytPlayer.destroy(); } catch (e) {} }
+      ytPlayer = null; stage.innerHTML = ''; stage.classList.remove('is-audio');
+    }
+    function load(i) {
+      idx = (i + tracks.length) % tracks.length;
+      var t = tracks[idx];
+      clearStage();
+      pm.querySelector('[data-now-title]').textContent = t.title;
+      pm.querySelector('[data-now-credit]').textContent = t.credit;
+      var host = pm.querySelector('[data-now-host]');
+      host.href = t.url; host.textContent = (t.kind === 'youtube' ? 'Watch on ' : 'Listen on ') + t.host + ' ↗';
+      [].forEach.call(list.querySelectorAll('button'), function (b, k) { b.setAttribute('aria-current', k === idx ? 'true' : 'false'); });
+      pPrev.disabled = tracks.length < 2; pNext.disabled = tracks.length < 2;
+      if (t.kind === 'youtube') {
+        var holder = document.createElement('div'); stage.appendChild(holder);
+        var fallback = function () {
+          stage.innerHTML = '<iframe title="' + t.title + '" src="https://www.youtube-nocookie.com/embed/' + t.id + '?autoplay=1&playsinline=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+        };
+        var timer = setTimeout(fallback, 4000);
+        loadYT().then(function () {
+          clearTimeout(timer);
+          if (tracks[idx] !== t || !holder.isConnected) return;
+          ytPlayer = new YT.Player(holder, {
+            videoId: t.id, host: 'https://www.youtube-nocookie.com',
+            playerVars: { autoplay: 1, playsinline: 1, rel: 0 },
+            events: { onStateChange: function (e) { if (e.data === 0 && auto.checked && tracks.length > 1) load(idx + 1); } }
+          });
+        });
+      } else if (t.kind === 'audiomack') {
+        var parts = t.id.split('/');
+        stage.classList.add('is-audio');
+        stage.innerHTML = '<iframe title="' + t.title + ' on Audiomack" src="https://audiomack.com/embed/song/' + parts[0] + '/' + parts[1] + '?background=1&autoplay=1" allow="autoplay" scrolling="no"></iframe>';
+      }
+    }
+    var lastF = null;
+    function openPlayer(i, e) {
+      if (e) e.preventDefault();
+      lastF = document.activeElement;
+      if (menu && !menu.hidden) { menu.hidden = true; document.body.classList.remove('menu-open'); }
+      pm.hidden = false; document.body.classList.add('build-open');
+      load(i || 0);
+    }
+    function closePlayer() {
+      clearStage(); pm.hidden = true; document.body.classList.remove('build-open');
+      if (lastF && lastF.focus) lastF.focus();
+    }
+    document.querySelectorAll('[data-player-open]').forEach(function (b) {
+      b.addEventListener('click', function (e) { openPlayer(parseInt(b.getAttribute('data-player-open'), 10) || 0, e); });
+    });
+    pm.querySelector('[data-player-close]').addEventListener('click', closePlayer);
+    pPrev.addEventListener('click', function () { load(idx - 1); });
+    pNext.addEventListener('click', function () { load(idx + 1); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pm.hidden) closePlayer(); });
+  }
 })();
