@@ -74,21 +74,27 @@
       var data = {};
       new FormData(form).forEach(function (v, k) { data[k] = v; });
       if (data._honey) return;
-      var btn = form.querySelector('button'); if (btn) btn.disabled = true;
-      function fallback() { form.submit(); } // plain form post: always works, returns here with ?joined=1
+      var btn = form.querySelector('button');
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+      var done = false;
+      function fallback() { if (done) return; done = true; form.submit(); } // plain form post: always works, returns here with ?joined=1
+      var ctrl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); fallback(); }, 8000);
       fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
         method: 'POST',
+        signal: ctrl ? ctrl.signal : undefined,
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(data)
       })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
         .then(function (res) {
+          if (done) return;
+          clearTimeout(timer);
           var msg = String(res.j.message || '').toLowerCase();
-          if (res.ok && String(res.j.success) !== 'false') return showDone(wrap);
-          if (msg.indexOf('activat') > -1) return showDone(wrap);
+          if ((res.ok && String(res.j.success) !== 'false') || msg.indexOf('activat') > -1) { done = true; return showDone(wrap); }
           fallback();
         })
-        .catch(fallback);
+        .catch(function () { clearTimeout(timer); fallback(); });
     });
   });
 })();
