@@ -330,8 +330,8 @@
     function money(n, cur) {
       if (cur === 'NGN') return ngn(n);
       var perNgn = rates && rates[cur] ? rates[cur] : 1 / FALLBACK[cur];
-      var v = n * perNgn;
-      return SYM[cur] + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var v = Math.ceil(n * perNgn - 1e-9);   // always round up to the next whole number
+      return SYM[cur] + v.toLocaleString('en-US');
     }
     function curSel() { var c = prod.querySelector('input[name="currency"]:checked'); return c ? c.value : 'NGN'; }
     function refresh() { try { refreshInner(); } catch (err) { if (window.console) console.warn('price update', err); } }
@@ -340,7 +340,7 @@
       var q = Math.max(1, Math.min(10, parseInt(qtyIn.value, 10) || 1)); qtyIn.value = q;
       var cur = curSel(), total = PRICE * q;
       prod.querySelector('[data-price-main]').textContent = money(PRICE, cur);
-      prod.querySelector('[data-price-sub]').textContent = cur === 'NGN' ? '' : '(' + ngn(PRICE) + ')';
+      prod.querySelector('[data-price-sub]').textContent = '';
       prod.querySelector('[data-total]').textContent = money(total, cur);
       var rateEl = prod.querySelector('[data-rate]');
       if (cur === 'NGN') rateEl.textContent = 'Prices are in naira. Pick a currency to see today’s rate.';
