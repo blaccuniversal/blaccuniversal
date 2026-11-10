@@ -334,8 +334,9 @@
       return SYM[cur] + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
     function curSel() { var c = prod.querySelector('input[name="currency"]:checked'); return c ? c.value : 'NGN'; }
-    function refresh() {
-      var sel = prod.querySelector('input[name="size"]:checked');
+    function refresh() { try { refreshInner(); } catch (err) { if (window.console) console.warn('price update', err); } }
+    function refreshInner() {
+      var sel = prod.querySelector('input[name="size"]:checked') || prod.querySelector('input[name="size"]');
       var q = Math.max(1, Math.min(10, parseInt(qtyIn.value, 10) || 1)); qtyIn.value = q;
       var cur = curSel(), total = PRICE * q;
       prod.querySelector('[data-price-main]').textContent = money(PRICE, cur);
@@ -350,7 +351,15 @@
       window.__blaccOrder = { size: sel.value, qty: q, total: ngn(total), view: cur, viewTotal: money(total, cur) };
     }
     prod.querySelectorAll('input[name="size"]').forEach(function (r) { r.addEventListener('change', refresh); });
-    prod.querySelectorAll('input[name="currency"]').forEach(function (r) { r.addEventListener('change', function () { refresh(); try { localStorage.setItem('blacc_cur', curSel()); } catch (e) {} }); });
+    function onCur() { refresh(); try { localStorage.setItem('blacc_cur', curSel()); } catch (e) {} }
+    prod.querySelectorAll('input[name="currency"]').forEach(function (r) { r.addEventListener('change', onCur); r.addEventListener('input', onCur); });
+    // Belt and braces for mobile browsers: tapping the chip itself always selects and updates
+    prod.querySelectorAll('.cur').forEach(function (lab) {
+      lab.addEventListener('click', function () { var inp = lab.querySelector('input'); if (inp && !inp.checked) inp.checked = true; setTimeout(onCur, 0); });
+    });
+    prod.querySelectorAll('.size').forEach(function (lab) {
+      lab.addEventListener('click', function () { var inp = lab.querySelector('input'); if (inp && !inp.checked) inp.checked = true; setTimeout(refresh, 0); });
+    });
     prod.querySelectorAll('[data-qty]').forEach(function (b) { b.addEventListener('click', function () { qtyIn.value = (parseInt(qtyIn.value, 10) || 1) + parseInt(b.getAttribute('data-qty'), 10); refresh(); }); });
     qtyIn.addEventListener('input', refresh);
     try { var saved = localStorage.getItem('blacc_cur'); var r = saved && prod.querySelector('input[name="currency"][value="' + saved + '"]'); if (r) r.checked = true; } catch (e) {}
