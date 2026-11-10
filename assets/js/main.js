@@ -189,6 +189,26 @@
     track.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') { e.preventDefault(); go(current + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(current - 1); } });
     window.addEventListener('resize', function () { go(current); });
     update();
+
+    /* Auto-advance every 5 seconds while nobody is interacting */
+    var last = Date.now(), inView = true, focused = false;
+    function poke() { last = Date.now(); }
+    ['pointermove', 'pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (ev) {
+      feat.addEventListener(ev, poke, { passive: true });
+    });
+    track.addEventListener('scroll', poke, { passive: true });
+    feat.addEventListener('focusin', function () { focused = true; });
+    feat.addEventListener('focusout', function () { focused = false; poke(); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { inView = es[0].isIntersecting; if (inView) poke(); }, { threshold: 0.4 }).observe(feat);
+    }
+    setInterval(function () {
+      var playerOpen = document.getElementById('player') && !document.getElementById('player').hidden;
+      if (document.hidden || !inView || focused || playerOpen || slides.length < 2) return;
+      if (Date.now() - last < 5000) return;
+      go(current + 1 > slides.length - 1 ? 0 : current + 1);
+      setTimeout(poke, 0);
+    }, 500);
   });
 
   /* ---------- Pop-open player: play featured songs here, or open them where they're hosted ---------- */
