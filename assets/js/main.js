@@ -57,44 +57,39 @@
     }
   }
 
-  /* ---------- "Notify me" (FormSubmit, emails sign-ups to the inbox) ---------- */
+  /* ---------- "Notify me" (FormSubmit, emails sign-ups to the inbox) ----------
+     The visitor sees the confirmation instantly; the email is sent in the background. */
   function showDone(wrap) {
     wrap.querySelector('.notify__hint').hidden = true;
     wrap.querySelector('form').hidden = true;
     wrap.querySelector('.notify__done').hidden = false;
   }
-  var back = location.origin + location.pathname + '?joined=1';
+  function sendQuietly(form) {
+    // Post the form into a hidden frame: no page change, works even when the quick API is slow.
+    var name = 'notify-sink';
+    var sink = document.querySelector('iframe[name="' + name + '"]');
+    if (!sink) {
+      sink = document.createElement('iframe');
+      sink.name = name; sink.title = 'Sign-up'; sink.tabIndex = -1;
+      sink.setAttribute('aria-hidden', 'true');
+      sink.style.cssText = 'position:absolute;width:0;height:0;border:0;visibility:hidden';
+      document.body.appendChild(sink);
+    }
+    form.target = name;
+    form.submit();
+  }
   document.querySelectorAll('form[data-notify]').forEach(function (form) {
     var wrap = form.closest('.notify');
     var next = form.querySelector('input[name="_next"]');
-    if (next) next.value = back;
+    if (next) next.value = location.origin + location.pathname + '?joined=1';
     if (/[?&]joined=1/.test(location.search)) showDone(wrap);
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var data = {};
-      new FormData(form).forEach(function (v, k) { data[k] = v; });
-      if (data._honey) return;
-      var btn = form.querySelector('button');
-      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
-      var done = false;
-      function fallback() { if (done) return; done = true; form.submit(); } // plain form post: always works, returns here with ?joined=1
-      var ctrl = window.AbortController ? new AbortController() : null;
-      var timer = setTimeout(function () { if (ctrl) ctrl.abort(); fallback(); }, 8000);
-      fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
-        method: 'POST',
-        signal: ctrl ? ctrl.signal : undefined,
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(data)
-      })
-        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
-        .then(function (res) {
-          if (done) return;
-          clearTimeout(timer);
-          var msg = String(res.j.message || '').toLowerCase();
-          if ((res.ok && String(res.j.success) !== 'false') || msg.indexOf('activat') > -1) { done = true; return showDone(wrap); }
-          fallback();
-        })
-        .catch(function () { clearTimeout(timer); fallback(); });
+      if (!form.checkValidity()) { form.reportValidity(); return; }
+      var honey = form.querySelector('input[name="_honey"]');
+      showDone(wrap);
+      if (honey && honey.value) return;
+      sendQuietly(form);
     });
   });
 })();
