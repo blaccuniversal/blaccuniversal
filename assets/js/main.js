@@ -335,21 +335,23 @@
     var btns = spin.querySelectorAll('[data-face]');
     var step = 360 / frames.length;
     var angle = 0, vel = 0, dragging = false, lastX = 0, lastT = 0, idleAt = performance.now(), target = null;
-    function ease(t) { return t * t * (3 - 2 * t); }
     function render() {
       var a = ((angle % 360) + 360) % 360;
       var k = Math.floor(a / step), t = (a - k * step) / step, n = (k + 1) % frames.length;
-      var e = ease(t);
-      // current view stays solid underneath; the next view fades in on top (no see-through midpoint)
+      // Turn like a real object: each view narrows as it turns away, the next widens in.
+      // Views swap only around the narrowest point, with a short blend so it never looks see-through.
+      var w = Math.abs(Math.cos(t * Math.PI));            // 1 → 0 → 1 across the step
+      var sx = 0.5 + 0.5 * w;                             // never thinner than half width
+      var blend = Math.min(1, Math.max(0, (t - 0.38) / 0.24));
+      blend = blend * blend * (3 - 2 * blend);
       frames.forEach(function (f, i) {
         if (i === k) { f.style.opacity = '1'; f.style.zIndex = '1'; }
-        else if (i === n) { f.style.opacity = e.toFixed(3); f.style.zIndex = '2'; }
+        else if (i === n) { f.style.opacity = blend.toFixed(3); f.style.zIndex = '2'; }
         else { f.style.opacity = '0'; f.style.zIndex = '0'; }
       });
-      // a light squeeze + drift mid-turn sells the rotation between views
-      var mid = Math.sin(t * Math.PI);
-      view.style.transform = 'scaleX(' + (1 - 0.08 * mid).toFixed(3) + ') translateX(' + (Math.sin((a / 360) * Math.PI * 2) * 1.2).toFixed(2) + '%)';
-      spin.style.setProperty('--edge', (1 - 0.35 * mid).toFixed(3));
+      var lean = Math.sin(t * Math.PI) * (t < 0.5 ? -1 : 1);
+      view.style.transform = 'perspective(1400px) rotateY(' + (lean * 10).toFixed(2) + 'deg) scaleX(' + sx.toFixed(3) + ')';
+      spin.style.setProperty('--edge', (0.55 + 0.45 * w).toFixed(3));
       var nearest = Math.round(a / step) % frames.length, face = frames[nearest].dataset.angle;
       btns.forEach(function (b) {
         var bf = b.getAttribute('data-face');
@@ -384,12 +386,17 @@
     stage.setAttribute('tabindex', '0'); stage.setAttribute('role', 'img');
     stage.setAttribute('aria-label', 'Alhamdulillah Tee, 360° view. Drag, or use the arrow keys, to rotate.');
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var SPEED = 18;            // degrees per second: one full turn every 20 seconds
+    var held = false, prevNow = performance.now();
+    idleAt = -Infinity;        // start turning straight away
     (function loop(now) {
       requestAnimationFrame(loop);
+      var dt = Math.min(0.05, (now - prevNow) / 1000); prevNow = now;
       if (dragging) return;
-      if (target !== null) { angle += (target - angle) * 0.1; if (Math.abs(target - angle) < 0.15) { angle = target; target = null; } render(); return; }
+      if (target !== null) { angle += (target - angle) * 0.1; if (Math.abs(target - angle) < 0.15) { angle = target; target = null; held = true; idleAt = now; } render(); return; }
       if (Math.abs(vel) > 0.03) { angle += vel; vel *= 0.95; render(); if (Math.abs(vel) <= 0.03) idleAt = now; return; }
-      if (!reduce && now - idleAt > 2500) { angle += 0.35; render(); }
+      var wait = held ? 4000 : 1500;  // pause a little longer after Front/Side/Back is chosen
+      if (!reduce && now - idleAt > wait) { held = false; angle += SPEED * dt; render(); }
     })(performance.now());
     render();
   });
