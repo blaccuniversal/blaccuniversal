@@ -74,7 +74,14 @@
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(data)
       })
-        .then(function (r) { return r.json().then(function (j) { if (!r.ok || String(j.success) === 'false') throw new Error('bad'); }); })
+        .then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (j) {
+            var msg = String(j.message || '').toLowerCase();
+            // First-ever submission: FormSubmit replies that the form needs activation (email sent to the owner) — the sign-up still counts.
+            if (msg.indexOf('activat') > -1) return;
+            if (!r.ok || String(j.success) === 'false') throw new Error(msg || 'bad');
+          });
+        })
         .then(function () {
           wrap.querySelector('.notify__hint').hidden = true;
           form.hidden = true;
