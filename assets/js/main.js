@@ -58,36 +58,37 @@
   }
 
   /* ---------- "Notify me" (FormSubmit, emails sign-ups to the inbox) ---------- */
+  function showDone(wrap) {
+    wrap.querySelector('.notify__hint').hidden = true;
+    wrap.querySelector('form').hidden = true;
+    wrap.querySelector('.notify__done').hidden = false;
+  }
+  var back = location.origin + location.pathname + '?joined=1';
   document.querySelectorAll('form[data-notify]').forEach(function (form) {
+    var wrap = form.closest('.notify');
+    var next = form.querySelector('input[name="_next"]');
+    if (next) next.value = back;
+    if (/[?&]joined=1/.test(location.search)) showDone(wrap);
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var wrap = form.closest('.notify');
-      var err = wrap.querySelector('.notify__error');
-      if (err) err.hidden = true;
       var data = {};
       new FormData(form).forEach(function (v, k) { data[k] = v; });
       if (data._honey) return;
-      data._captcha = 'false';
-      data._template = 'table';
+      var btn = form.querySelector('button'); if (btn) btn.disabled = true;
+      function fallback() { form.submit(); } // plain form post: always works, returns here with ?joined=1
       fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(data)
       })
-        .then(function (r) {
-          return r.json().catch(function () { return {}; }).then(function (j) {
-            var msg = String(j.message || '').toLowerCase();
-            // First-ever submission: FormSubmit replies that the form needs activation (email sent to the owner) — the sign-up still counts.
-            if (msg.indexOf('activat') > -1) return;
-            if (!r.ok || String(j.success) === 'false') throw new Error(msg || 'bad');
-          });
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          var msg = String(res.j.message || '').toLowerCase();
+          if (res.ok && String(res.j.success) !== 'false') return showDone(wrap);
+          if (msg.indexOf('activat') > -1) return showDone(wrap);
+          fallback();
         })
-        .then(function () {
-          wrap.querySelector('.notify__hint').hidden = true;
-          form.hidden = true;
-          wrap.querySelector('.notify__done').hidden = false;
-        })
-        .catch(function () { if (err) err.hidden = false; });
+        .catch(fallback);
     });
   });
 })();
