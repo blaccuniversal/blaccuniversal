@@ -409,3 +409,40 @@ body.build-open{overflow:hidden}
   .contact__actions .btn{min-height:44px}
   .loading__links{flex-wrap:wrap;justify-content:center}
 }
+
+/* ---------- Spacing balance pass (all sizes, tuned for phones & tablets) ---------- */
+.contact__where{margin-top:18px !important}
+.split__side .follow{margin-top:18px}
+.split__side .follow .eyebrow{margin-top:0 !important}
+.follow{gap:10px}
+.music__body .follow,.listen{gap:10px}
+@media (min-width:601px) and (max-width:1024px){
+  .section{padding-top:64px;padding-bottom:64px}
+  .teaser{gap:22px}
+  .teaser__rule{height:28px}
+  .music{gap:32px}
+  .music__body{gap:22px}
+  .opening{padding-top:130px;padding-bottom:56px}
+  .split{gap:36px}
+  .founder-img + div{padding-top:44px !important;padding-bottom:60px !important}
+  .pillar{padding:28px 26px 30px}
+  .pillar__name{margin-top:14px}
+  .contact{gap:22px}
+  .loading__inner{gap:28px}
+}
+@media (max-width:600px){
+  .teaser{gap:20px}
+  .teaser__statement{line-height:1.6}
+  .contact__where{margin-top:14px !important}
+  .contact{gap:16px}
+  .split__side .follow{margin-top:14px}
+  .follow__icons{margin-top:2px}
+  .music__body{gap:20px}
+  .listen,.music__body .follow{padding-top:6px}
+  .split{gap:24px}
+  .founder-img + div{padding-top:32px !important;padding-bottom:44px !important}
+  .founder-lead{margin-top:2px}
+  .loading__links{gap:6px;padding-top:6px}
+  .notify{gap:12px}
+  .build__inner{gap:12px}
+}
