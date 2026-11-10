@@ -49,12 +49,13 @@
         <div class="product__info">
           <p class="product__badge">Limited Edition</p>
           <h2 class="product__name">Alhamdulillah Tee</h2>
-          <p class="product__price"><span data-price-ngn>₦30,000</span> <span class="product__usd" data-price-usd>≈ $22</span></p>
+          <p class="product__price"><span data-price-ngn>₦30,000</span> <span class="product__usd">in Nigeria</span></p>
+          <p class="product__intl">Outside Nigeria: <strong>₦32,000</strong> ≈ $24 · £18 · €21</p>
           <p class="product__desc">Gratitude, every day, all season. Silver “alhamdulillah” script across the chest of a black 100% cotton tee.</p>
           <fieldset class="field chips product__sizes">
             <legend>Size</legend>
-            <div class="chips__row"><label class="chip size"><input type="radio" name="size" value="M" data-price="30000" checked><span>M</span></label><label class="chip size"><input type="radio" name="size" value="L" data-price="30000"><span>L</span></label><label class="chip size"><input type="radio" name="size" value="XL" data-price="30000"><span>XL</span></label><label class="chip size"><input type="radio" name="size" value="2XL" data-price="31000"><span>2XL</span></label><label class="chip size"><input type="radio" name="size" value="3XL" data-price="31000"><span>3XL</span></label><label class="chip size"><input type="radio" name="size" value="4XL" data-price="31000"><span>4XL</span></label></div>
-            <p class="product__note">M–XL ₦30,000 · 2XL–4XL ₦31,000</p>
+            <div class="chips__row"><label class="chip size"><input type="radio" name="size" value="M" data-price="30000" checked><span>M</span></label><label class="chip size"><input type="radio" name="size" value="L" data-price="30000"><span>L</span></label><label class="chip size"><input type="radio" name="size" value="XL" data-price="30000"><span>XL</span></label><label class="chip size"><input type="radio" name="size" value="2XL" data-price="30000"><span>2XL</span></label><label class="chip size"><input type="radio" name="size" value="3XL" data-price="30000"><span>3XL</span></label><label class="chip size"><input type="radio" name="size" value="4XL" data-price="30000"><span>4XL</span></label></div>
+            <p class="product__note">All sizes ₦30,000</p>
           </fieldset>
           <div class="product__buy">
             <div class="qty" role="group" aria-label="Quantity">
@@ -67,7 +68,7 @@
           <ul class="product__facts">
             <li><span>Fabric</span><span>100% cotton</span></li>
             <li><span>Payment</span><span>Bank transfer. We email you the details after you order.</span></li>
-            <li><span>Delivery</span><span>Ships from Ibadan · 3–14 working days, depending on location</span></li>
+            <li><span>Delivery</span><span>Ships from Ibadan · 3–14 working days, depending on location. Delivery outside Nigeria costs more; we’ll confirm the fee with you.</span></li>
           </ul>
           <details class="sizechart">
             <summary>Size guide</summary>
@@ -145,7 +146,7 @@
     <div class="build__body gutter">
       <div class="build__inner">
         <p class="eyebrow">Order · Alhamdulillah Tee</p>
-        <h2 class="build__title" id="order-title">Your details.</h2><p class="order__summary" data-order-summary></p>
+        <h2 class="build__title" id="order-title">Your details.</h2><p class="order__summary" data-order-summary></p><p class="order__intl" data-order-intl hidden>Outside Nigeria the tee is ₦32,000, plus international delivery. We’ll email you the delivery fee and payment details.</p>
         <form class="build__form" data-build data-order action="https://api.web3forms.com/submit" method="POST" novalidate>
           <input type="hidden" name="access_key" value="c45f617c-f3f2-4caa-93cf-5d49e2cece46">
           <input type="hidden" name="subject" value="New order — Alhamdulillah Tee">
@@ -157,6 +158,8 @@
             <div class="field"><label for="o-phone">Phone</label><input id="o-phone" name="phone" type="tel" autocomplete="tel" placeholder="+234…" required></div>
             <div class="field"><label for="o-city">City / State</label><input id="o-city" name="city" type="text" autocomplete="address-level2" required></div>
           </div>
+          <fieldset class="field chips"><legend>Delivering to</legend><div class="chips__row"><label class="chip"><input type="radio" name="region" value="Nigeria" checked><span>Nigeria</span></label><label class="chip"><input type="radio" name="region" value="Outside Nigeria"><span>Outside Nigeria</span></label></div></fieldset>
+          <div class="field" data-country hidden><label for="o-country">Country</label><input id="o-country" name="country" type="text" autocomplete="country-name"></div>
           <div class="field"><label for="o-address">Delivery address</label><textarea id="o-address" name="address" rows="3" autocomplete="street-address" required></textarea></div>
           <div class="field"><label for="o-notes">Notes <span class="opt">(optional)</span></label><textarea id="o-notes" name="notes" rows="2"></textarea></div>
           <input type="hidden" name="product" value="Alhamdulillah Tee"><input type="hidden" name="size" value="M"><input type="hidden" name="quantity" value="1"><input type="hidden" name="total" value="₦30,000">

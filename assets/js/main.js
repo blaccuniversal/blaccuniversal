@@ -125,8 +125,19 @@
     var f = p.querySelector('form'); var st = window.__blaccOrder || { size: 'M', qty: 1, total: '₦30,000', usd: '' };
     f.querySelector('input[name="size"]').value = st.size;
     f.querySelector('input[name="quantity"]').value = st.qty;
-    f.querySelector('input[name="total"]').value = st.total;
-    p.querySelector('[data-order-summary]').textContent = 'Alhamdulillah Tee · Size ' + st.size + ' · Qty ' + st.qty + ' · ' + st.total;
+    var intl = f.querySelector('input[name="region"]:checked').value !== 'Nigeria';
+    var unit = intl ? 32000 : 30000, tot = '₦' + (unit * st.qty).toLocaleString('en-NG') + (intl ? ' + international delivery' : '');
+    f.querySelector('input[name="total"]').value = tot; st.total = tot;
+    function sum() {
+      var intl = f.querySelector('input[name="region"]:checked').value !== 'Nigeria';
+      var unit = intl ? 32000 : 30000, tot = '₦' + (unit * st.qty).toLocaleString('en-NG') + (intl ? ' + international delivery' : '');
+      f.querySelector('input[name="total"]').value = tot;
+      p.querySelector('[data-order-summary]').textContent = 'Alhamdulillah Tee · Size ' + st.size + ' · Qty ' + st.qty + ' · ' + tot;
+      p.querySelector('[data-order-intl]').hidden = !intl;
+      var c = f.querySelector('[data-country]'); c.hidden = !intl; c.querySelector('input').required = intl;
+    }
+    if (!f.__regionBound) { f.__regionBound = true; f.querySelectorAll('input[name="region"]').forEach(function (r) { r.addEventListener('change', sum); }); }
+    sum();
     f.hidden = false; p.querySelector('.build__done').hidden = true;
     openPanel(p, e);
   }); });
@@ -310,7 +321,6 @@
   /* ---------- Shop: size, quantity, price ---------- */
   var prod = document.querySelector('.product');
   if (prod) {
-    var RATE = 1350; // approx NGN per USD, for the "≈ $" hint only
     var qtyIn = prod.querySelector('[data-qty-input]');
     function fmt(n) { return '₦' + n.toLocaleString('en-NG'); }
     function refresh() {
@@ -318,7 +328,6 @@
       var price = parseInt(sel.getAttribute('data-price'), 10);
       var q = Math.max(1, Math.min(10, parseInt(qtyIn.value, 10) || 1)); qtyIn.value = q;
       prod.querySelector('[data-price-ngn]').textContent = fmt(price);
-      prod.querySelector('[data-price-usd]').textContent = '≈ $' + Math.round(price / RATE);
       prod.querySelector('[data-total]').textContent = fmt(price * q);
       window.__blaccOrder = { size: sel.value, qty: q, total: fmt(price * q) };
     }

@@ -637,3 +637,7 @@ body.build-open{overflow:hidden}
 .spin__single{position:absolute;left:12%;right:12%;top:8%;bottom:12%;width:76%;height:80%;object-fit:contain;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))}
 .spin--static .spin__shadow{width:56%}
 @media (max-width:600px){.spin__single{left:8%;right:8%;width:84%}}
+
+.product__intl{margin:-6px 0 0;font-size:14px;color:#a8a8a8}
+.product__intl strong{color:#e6e6e6;font-weight:500}
+.order__intl{margin:-4px 0 8px;font-size:13px;line-height:1.55;color:#b5b5b5}
