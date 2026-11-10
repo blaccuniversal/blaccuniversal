@@ -323,3 +323,10 @@ body.menu-open{overflow:hidden}
 /* Hero name links to the founder section */
 .hero__name-link{color:inherit;text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .35s ease}
 .hero__name-link:hover,.hero__name-link:focus-visible{color:#fff;background-size:100% 1px}
+
+/* Bemshima's personal socials */
+.follow{display:flex;flex-direction:column;gap:8px}
+.follow__icons{display:flex;align-items:center;gap:4px;margin-left:-12px}
+.music__body .follow{padding-top:12px;border-top:1px solid #262626}
+.music__body .follow .eyebrow{margin-top:12px}
+@media (max-width:600px){.follow__icons{gap:0}.music__body .follow{padding-top:4px}.music__body .follow .eyebrow{margin-top:8px}}
