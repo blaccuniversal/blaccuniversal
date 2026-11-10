@@ -641,3 +641,10 @@ body.build-open{overflow:hidden}
 .product__intl{margin:-6px 0 0;font-size:14px;color:#a8a8a8}
 .product__intl strong{color:#e6e6e6;font-weight:500}
 .order__intl{margin:-4px 0 8px;font-size:13px;line-height:1.55;color:#b5b5b5}
+
+/* Currency toggle */
+.product__cur .chips__row{gap:6px}
+.cur span{min-height:34px;padding:0 12px;font-size:13px}
+.product__rate{margin:-6px 0 0;font-size:12px;line-height:1.5;color:#8c8c8c}
+.product__usd{font-size:15px;color:#8c8c8c;margin-left:8px}
+@media (max-width:600px){.cur span{min-height:32px;padding:0 10px;font-size:12px}}

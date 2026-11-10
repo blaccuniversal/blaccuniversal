@@ -125,13 +125,12 @@
     var f = p.querySelector('form'); var st = window.__blaccOrder || { size: 'M', qty: 1, total: '₦30,000', usd: '' };
     f.querySelector('input[name="size"]').value = st.size;
     f.querySelector('input[name="quantity"]').value = st.qty;
-    var intl = f.querySelector('input[name="region"]:checked').value !== 'Nigeria';
-    var unit = intl ? 32000 : 30000, tot = '₦' + (unit * st.qty).toLocaleString('en-NG') + (intl ? ' + international delivery' : '');
-    f.querySelector('input[name="total"]').value = tot; st.total = tot;
+
     function sum() {
       var intl = f.querySelector('input[name="region"]:checked').value !== 'Nigeria';
-      var unit = intl ? 32000 : 30000, tot = '₦' + (unit * st.qty).toLocaleString('en-NG') + (intl ? ' + international delivery' : '');
+      var tot = st.total + (st.view && st.view !== 'NGN' ? ' (≈ ' + st.viewTotal + ')' : '') + (intl ? ' + international delivery' : '');
       f.querySelector('input[name="total"]').value = tot;
+      f.querySelector('input[name="currency_view"]').value = st.view || 'NGN';
       p.querySelector('[data-order-summary]').textContent = 'Alhamdulillah Tee · Size ' + st.size + ' · Qty ' + st.qty + ' · ' + tot;
       p.querySelector('[data-order-intl]').hidden = !intl;
       var c = f.querySelector('[data-country]'); c.hidden = !intl; c.querySelector('input').required = intl;
@@ -318,22 +317,57 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pm.hidden) closePlayer(); });
   }
 
-  /* ---------- Shop: size, quantity, price ---------- */
+  /* ---------- Shop: size, quantity, price + live currency view ---------- */
   var prod = document.querySelector('.product');
   if (prod) {
+    var PRICE = 30000;
+    // Fallback rates (NGN per unit, CBN 2 Nov 2026) used only if the live rate can’t load
+    var FALLBACK = { USD: 1347.94, GBP: 1809.34, EUR: 1512.26, CAD: 965, GHS: 89 };
+    var SYM = { NGN: '₦', USD: '$', GBP: '£', EUR: '€', CAD: 'CA$', GHS: 'GH₵' };
+    var rates = null, ratesAt = null, live = false;
     var qtyIn = prod.querySelector('[data-qty-input]');
-    function fmt(n) { return '₦' + n.toLocaleString('en-NG'); }
+    function ngn(n) { return '₦' + Math.round(n).toLocaleString('en-NG'); }
+    function money(n, cur) {
+      if (cur === 'NGN') return ngn(n);
+      var perNgn = rates && rates[cur] ? rates[cur] : 1 / FALLBACK[cur];
+      var v = n * perNgn;
+      return SYM[cur] + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function curSel() { var c = prod.querySelector('input[name="currency"]:checked'); return c ? c.value : 'NGN'; }
     function refresh() {
       var sel = prod.querySelector('input[name="size"]:checked');
-      var price = parseInt(sel.getAttribute('data-price'), 10);
       var q = Math.max(1, Math.min(10, parseInt(qtyIn.value, 10) || 1)); qtyIn.value = q;
-      prod.querySelector('[data-price-ngn]').textContent = fmt(price);
-      prod.querySelector('[data-total]').textContent = fmt(price * q);
-      window.__blaccOrder = { size: sel.value, qty: q, total: fmt(price * q) };
+      var cur = curSel(), total = PRICE * q;
+      prod.querySelector('[data-price-main]').textContent = money(PRICE, cur);
+      prod.querySelector('[data-price-sub]').textContent = cur === 'NGN' ? '' : '(' + ngn(PRICE) + ')';
+      prod.querySelector('[data-total]').textContent = money(total, cur);
+      var rateEl = prod.querySelector('[data-rate]');
+      if (cur === 'NGN') rateEl.textContent = 'Prices are in naira. Pick a currency to see today’s rate.';
+      else {
+        var perUnit = rates && rates[cur] ? 1 / rates[cur] : FALLBACK[cur];
+        rateEl.textContent = '1 ' + cur + ' = ' + ngn(perUnit).replace('₦', '₦') + (live && ratesAt ? ' · live rate, updated ' + ratesAt : ' · approximate rate') + '. You pay in naira (' + ngn(total) + ').';
+      }
+      window.__blaccOrder = { size: sel.value, qty: q, total: ngn(total), view: cur, viewTotal: money(total, cur) };
     }
     prod.querySelectorAll('input[name="size"]').forEach(function (r) { r.addEventListener('change', refresh); });
+    prod.querySelectorAll('input[name="currency"]').forEach(function (r) { r.addEventListener('change', function () { refresh(); try { localStorage.setItem('blacc_cur', curSel()); } catch (e) {} }); });
     prod.querySelectorAll('[data-qty]').forEach(function (b) { b.addEventListener('click', function () { qtyIn.value = (parseInt(qtyIn.value, 10) || 1) + parseInt(b.getAttribute('data-qty'), 10); refresh(); }); });
     qtyIn.addEventListener('input', refresh);
+    try { var saved = localStorage.getItem('blacc_cur'); var r = saved && prod.querySelector('input[name="currency"][value="' + saved + '"]'); if (r) r.checked = true; } catch (e) {}
+    function useRates(data) {
+      rates = data.rates; live = true;
+      var d = new Date(data.time_last_update_unix * 1000);
+      ratesAt = d.toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+      refresh();
+    }
+    try {
+      var cached = JSON.parse(localStorage.getItem('blacc_rates') || 'null');
+      if (cached && Date.now() - cached.fetched < 30 * 60 * 1000) useRates(cached.data);
+    } catch (e) {}
+    fetch('https://open.er-api.com/v6/latest/NGN')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d && d.result === 'success' && d.rates) { useRates(d); try { localStorage.setItem('blacc_rates', JSON.stringify({ fetched: Date.now(), data: d })); } catch (e) {} } })
+      .catch(function () {});
     refresh();
   }
 
