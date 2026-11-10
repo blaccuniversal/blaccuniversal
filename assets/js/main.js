@@ -236,7 +236,7 @@
   /* ---------- Pop-open player: play featured songs here, or open them where they're hosted ---------- */
   var pm = document.getElementById('player');
   if (pm) {
-    var tracks = [].map.call(document.querySelectorAll('.feature .slide[data-kind]'), function (el) {
+    var tracks = [].map.call(document.querySelectorAll('.feature .slide[data-kind], .release[data-kind]'), function (el) {
       return { kind: el.dataset.kind, id: el.dataset.id, title: el.dataset.title, credit: el.dataset.credit, host: el.dataset.host, url: el.dataset.url };
     });
     var stage = pm.querySelector('[data-stage]'), list = pm.querySelector('[data-list]');
@@ -431,4 +431,26 @@
     })(performance.now());
     show();
   });
+
+  /* ---------- Profile tabs ---------- */
+  var tabs = document.querySelectorAll('.ptab');
+  if (tabs.length) {
+    function selectTab(t, focus) {
+      tabs.forEach(function (x) {
+        var on = x === t; x.setAttribute('aria-selected', on ? 'true' : 'false'); x.tabIndex = on ? 0 : -1;
+        var p = document.getElementById(x.getAttribute('aria-controls')); if (p) p.hidden = !on;
+      });
+      if (focus) t.focus();
+      try { history.replaceState(null, '', '#' + t.id.replace('t-', '')); } catch (e) {}
+    }
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { selectTab(t); });
+      t.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') { e.preventDefault(); selectTab(tabs[(i + 1) % tabs.length], true); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); selectTab(tabs[(i - 1 + tabs.length) % tabs.length], true); }
+      });
+    });
+    var h = location.hash.replace('#', ''); var start = document.getElementById('t-' + h);
+    if (start) selectTab(start); else selectTab(tabs[0]);
+  }
 })();

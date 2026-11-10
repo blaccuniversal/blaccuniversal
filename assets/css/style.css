@@ -648,3 +648,72 @@ body.build-open{overflow:hidden}
 .product__rate{margin:-6px 0 0;font-size:12px;line-height:1.5;color:#8c8c8c}
 .product__usd{font-size:15px;color:#8c8c8c;margin-left:8px}
 @media (max-width:600px){.cur span{min-height:32px;padding:0 10px;font-size:12px}}
+
+/* ---------- Bemshima profile page ---------- */
+.profile{padding-top:clamp(110px,12vw,150px);padding-bottom:clamp(28px,3vw,40px)}
+.profile__inner{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:clamp(20px,3vw,40px);align-items:center}
+.profile__avatar{width:clamp(96px,12vw,150px);height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:50%;border:1px solid #2a2a2a}
+.profile__name{margin:0;font-size:clamp(30px,4vw,52px);font-weight:300;letter-spacing:-.025em;line-height:1.05}
+.profile__handle{margin:4px 0 0;font-size:15px;color:#8c8c8c}
+.profile__bio{margin:12px 0 0;font-size:16px;font-weight:300;line-height:1.6;color:#cfcfcf;max-width:520px}
+.profile__bio a{color:#fff}
+.profile__follow .follow__icons{margin-top:8px}
+.profile__stats{list-style:none;margin:0;padding:0;display:flex;gap:clamp(18px,3vw,36px)}
+.profile__stats li{display:flex;flex-direction:column;align-items:center;gap:2px}
+.profile__stats strong{font-size:clamp(22px,2.4vw,30px);font-weight:400}
+.profile__stats span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8c8c8c;text-align:center}
+.ptabs{position:sticky;top:0;z-index:4;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a}
+.ptabs__row{display:flex;gap:4px}
+.ptab{flex:0 0 auto;min-height:52px;padding:0 18px;background:none;border:0;border-bottom:2px solid transparent;color:#8c8c8c;font-family:inherit;font-size:14px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer}
+.ptab[aria-selected="true"]{color:#fff;border-bottom-color:#fff}
+.ppanels{padding-top:clamp(28px,4vw,48px);padding-bottom:clamp(56px,7vw,96px)}
+.ppanel__head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.ppanel__title{margin:0;font-size:clamp(26px,3vw,40px);font-weight:300;letter-spacing:-.02em}
+.releases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,24px)}
+.release{display:flex;flex-direction:column;gap:6px;min-width:0}
+.release__cover{position:relative;display:block;width:100%;padding:0;border:0;background:#0b0b0b;cursor:pointer;overflow:hidden;margin-bottom:8px}
+.release__cover img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;transition:transform .4s ease,filter .4s ease}
+.release__cover:hover img,.release__cover:focus-visible img{transform:scale(1.03);filter:brightness(.7)}
+.release__play{position:absolute;right:12px;bottom:12px;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#000;border-radius:2px}
+.release__title{margin:0;font-size:18px;font-weight:400;letter-spacing:-.01em}
+.release__credit{margin:0;font-size:14px;color:#8c8c8c}
+.release__ext{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-size:13px;color:#cfcfcf;text-decoration:none}
+.ppanel__listen{margin-top:32px;padding-top:20px;border-top:1px solid #1a1a1a}
+.fav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#1f1f1f;border:1px solid #1f1f1f}
+.fav__block{background:#050505;padding:24px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.fav__title{margin:0;font-size:20px;font-weight:400;letter-spacing:-.01em}
+.soon{display:flex;align-items:center;gap:12px;color:#8c8c8c;font-size:14px}
+.soon p{margin:0}
+.soon__mark{width:10px;height:10px;background:#fff;border-radius:1px;animation:dots 1.6s infinite}
+.pabout{max-width:720px;display:flex;flex-direction:column;gap:20px}
+.pabout__lead{margin:0;font-size:clamp(20px,2vw,26px);font-weight:300;line-height:1.5;color:#e6e6e6}
+.pabout__copy{margin:0;font-size:16px;font-weight:300;line-height:1.75;color:#b5b5b5}
+.pabout__sdg{display:flex;flex-direction:column;gap:6px}
+.pabout .text-link{gap:10px}
+@media (max-width:900px){
+  .profile__inner{grid-template-columns:auto minmax(0,1fr)}
+  .profile__stats{grid-column:1 / -1;justify-content:flex-start;padding-top:8px;border-top:1px solid #1a1a1a}
+  .fav{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:600px){
+  .profile{padding-top:88px}
+  .profile__inner{gap:16px;align-items:start}
+  .profile__avatar{width:78px}
+  .profile__name{font-size:26px}
+  .profile__handle{font-size:13px}
+  .profile__bio{font-size:14px;margin-top:8px}
+  .profile__stats{justify-content:space-between}
+  .profile__stats strong{font-size:20px}
+  .profile__stats span{font-size:10px}
+  .ptab{flex:1 1 0;padding:0 6px;font-size:12px;letter-spacing:.1em;min-height:48px}
+  .releases{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .release__title{font-size:15px}
+  .release__credit{font-size:12px}
+  .release__ext{font-size:12px}
+  .release__play{width:36px;height:36px;right:8px;bottom:8px}
+  .fav__block{padding:18px}
+}
+/* square covers everywhere (incl. older Safari) */
+.release__cover{height:0;padding-top:100%}
+.release__cover img{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto}
+.release__play{z-index:1}
