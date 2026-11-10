@@ -11,4 +11,4 @@ Plain HTML, CSS and JavaScript, hosted on GitHub Pages. No build step.
 - `404.html` — Page not found
 - `assets/` — styles, script, images
 
-"Notify me" sign-ups on Projects and Shop are emailed to the inbox via FormSubmit.
+"Notify me" sign-ups on Projects and Shop are emailed to the inbox via Web3Forms.

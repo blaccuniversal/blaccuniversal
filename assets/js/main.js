@@ -57,15 +57,15 @@
     }
   }
 
-  /* ---------- "Notify me" (FormSubmit, emails sign-ups to the inbox) ----------
-     The visitor sees the confirmation instantly; the email is sent in the background. */
+  /* ---------- "Notify me" (Web3Forms, emails sign-ups to the inbox) ----------
+     The visitor sees the confirmation instantly; the sign-up is sent in the background. */
   function showDone(wrap) {
     wrap.querySelector('.notify__hint').hidden = true;
     wrap.querySelector('form').hidden = true;
     wrap.querySelector('.notify__done').hidden = false;
   }
-  function sendQuietly(form) {
-    // Post the form into a hidden frame: no page change, works even when the quick API is slow.
+  function postViaFrame(form) {
+    // Backup route: post the form into a hidden frame, so the page never changes.
     var name = 'notify-sink';
     var sink = document.querySelector('iframe[name="' + name + '"]');
     if (!sink) {
@@ -80,16 +80,23 @@
   }
   document.querySelectorAll('form[data-notify]').forEach(function (form) {
     var wrap = form.closest('.notify');
-    var next = form.querySelector('input[name="_next"]');
-    if (next) next.value = location.origin + location.pathname + '?joined=1';
-    if (/[?&]joined=1/.test(location.search)) showDone(wrap);
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       if (!form.checkValidity()) { form.reportValidity(); return; }
-      var honey = form.querySelector('input[name="_honey"]');
+      var bot = form.querySelector('input[name="botcheck"]');
       showDone(wrap);
-      if (honey && honey.value) return;
-      sendQuietly(form);
+      if (bot && bot.checked) return;
+      var data = {};
+      new FormData(form).forEach(function (v, k) { data[k] = v; });
+      fetch(form.action, {
+        method: 'POST',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (!j || !j.success) postViaFrame(form); })
+        .catch(function () { postViaFrame(form); });
     });
   });
 })();
