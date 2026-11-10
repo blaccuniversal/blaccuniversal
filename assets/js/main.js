@@ -147,6 +147,7 @@
         var about = [].map.call(form.querySelectorAll('input[name="about"]:checked'), function (i) { return i.value; });
         data.about = about.length ? about.join(', ') : 'Not specified';
       }
+      if (data.topic && data.topic.trim()) { data.topic = data.topic.trim(); data.subject = data.subject + ': ' + data.topic; } else { data.topic = 'Not specified'; }
       panel.querySelector('[data-build-name]').textContent = data.name.trim().split(' ')[0];
       form.hidden = true;
       panel.querySelector('.build__done').hidden = false;
