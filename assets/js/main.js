@@ -453,4 +453,62 @@
     var h = location.hash.replace('#', ''); var start = document.getElementById('t-' + h);
     if (start) selectTab(start); else selectTab(tabs[0]);
   }
+
+  /* ---------- Poster: dot-matrix name + now-playing bar ---------- */
+  document.querySelectorAll('canvas[data-dots]').forEach(function (cv) {
+    var word = cv.getAttribute('data-dots'), ctx = cv.getContext('2d'), dots = [], W = 0, H = 0, dpr = 1, t0 = performance.now();
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function build() {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = cv.clientWidth; H = cv.clientHeight; if (!W || !H) return;
+      cv.width = W * dpr; cv.height = H * dpr;
+      var off = document.createElement('canvas'), o = off.getContext('2d');
+      var pitch = W < 700 ? Math.max(4, Math.round(W / 105)) : Math.max(6, Math.round(W / 150));
+      off.width = Math.ceil(W / pitch); off.height = Math.ceil(H / pitch);
+      var family = '"Arial Black", "Helvetica Neue", Arial, sans-serif';
+      var fs = off.height * 0.98;
+      o.font = '800 ' + fs + 'px ' + family;
+      var w = o.measureText(word).width;
+      if (w > off.width * 0.95) { fs = fs * (off.width * 0.95) / w; o.font = '800 ' + fs + 'px ' + family; }
+      o.fillStyle = '#fff'; o.textAlign = 'center'; o.textBaseline = 'middle';
+      o.fillText(word, off.width / 2, off.height / 2);
+      var data = o.getImageData(0, 0, off.width, off.height).data; dots = [];
+      for (var y = 0; y < off.height; y++) for (var x = 0; x < off.width; x++) {
+        if (data[(y * off.width + x) * 4 + 3] > 110) dots.push([x * pitch + pitch / 2, y * pitch + pitch / 2, Math.random() * 6.28]);
+      }
+      cv.__pitch = pitch;
+    }
+    function draw(now) {
+      if (!W) return;
+      var r = cv.__pitch * 0.36, t = (now - t0) / 1000;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      ctx.shadowColor = 'rgba(255,240,225,.55)'; ctx.shadowBlur = r * 2.2;
+      for (var i = 0; i < dots.length; i++) {
+        var d = dots[i], a = still ? 0.92 : 0.72 + 0.28 * Math.sin(t * 1.4 + d[2] + d[0] * 0.01);
+        ctx.fillStyle = 'rgba(255,248,240,' + a.toFixed(3) + ')';
+        ctx.beginPath(); ctx.arc(d[0], d[1], r, 0, 6.2832); ctx.fill();
+      }
+    }
+    build();
+    window.addEventListener('resize', function () { build(); draw(performance.now()); });
+    if (still) draw(performance.now());
+    else (function loop(now) { requestAnimationFrame(loop); draw(now); })(performance.now());
+  });
+
+  var np = document.querySelector('.np');
+  if (np) {
+    var npList = [].map.call(document.querySelectorAll('.release[data-kind]'), function (el) { return { title: el.dataset.title, credit: el.dataset.credit }; });
+    var npCur = 0, npFill = np.querySelector('[data-np-fill]');
+    function showNp() {
+      var t = npList[npCur]; np.querySelector('[data-np-title]').textContent = t.title;
+      np.querySelector('[data-np-artist]').textContent = t.credit.replace(' · ', ' ft. ').replace(/^Bemshima ft\. /, 'Bemshima ft. ');
+      npFill.style.width = ((npCur + 1) / npList.length * 100) + '%';
+    }
+    np.querySelector('[data-np-prev]').addEventListener('click', function () { npCur = (npCur - 1 + npList.length) % npList.length; showNp(); });
+    np.querySelector('[data-np-next]').addEventListener('click', function () { npCur = (npCur + 1) % npList.length; showNp(); });
+    np.querySelector('[data-np-play]').addEventListener('click', function () {
+      var btn = document.querySelector('[data-player-open="' + npCur + '"]'); if (btn) btn.click();
+    });
+    showNp();
+  }
 })();

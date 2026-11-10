@@ -864,3 +864,42 @@ body.build-open{overflow:hidden}
   .sb--sdg .sdgs{flex-wrap:wrap}
 }
 @media (min-width:1025px){.sb--work{grid-column:span 3}}
+
+/* ---------- Bemshima: album-cover poster with ember glow ---------- */
+.poster{position:relative;height:100vh;height:100svh;min-height:640px;max-height:1100px;overflow:hidden;background:#0a0908;isolation:isolate}
+.poster__glow{position:absolute;inset:-10%;z-index:0;background:
+  radial-gradient(ellipse 42% 46% at 50% 42%,rgba(214,92,38,.95) 0%,rgba(178,66,26,.72) 28%,rgba(92,32,14,.45) 52%,rgba(14,10,8,0) 76%),
+  radial-gradient(ellipse 90% 70% at 50% 100%,rgba(20,14,10,.0) 0%,rgba(8,7,6,.85) 70%),
+  #0d0b0a;animation:glowBreath 9s ease-in-out infinite alternate}
+@keyframes glowBreath{from{transform:scale(1);opacity:.92}to{transform:scale(1.04);opacity:1}}
+.poster__grain{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.22;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.poster__me{position:absolute;left:50%;bottom:0;z-index:1;height:84%;width:auto;max-width:none;transform:translateX(-50%);filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
+.poster__dots{position:absolute;left:0;right:0;bottom:2.5%;z-index:2;width:100%;height:24%;pointer-events:none}
+.np{position:absolute;top:clamp(84px,11vh,120px);left:50%;transform:translateX(-50%);z-index:4;width:min(380px,82vw);text-align:center;color:#fff}
+.np__title{margin:0;font-size:16px;font-weight:600;letter-spacing:.01em;text-shadow:0 1px 8px rgba(0,0,0,.35)}
+.np__artist{margin:2px 0 10px;font-size:15px;color:rgba(255,255,255,.62)}
+.np__bar{height:4px;border-radius:4px;background:rgba(255,255,255,.22);overflow:hidden}
+.np__bar span{display:block;height:100%;width:0;background:rgba(255,255,255,.9);border-radius:4px;transition:width .25s linear}
+.np__ctrls{display:flex;align-items:center;justify-content:center;gap:26px;margin-top:14px}
+.np__ctrls button{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;background:none;border:0;color:#fff;cursor:pointer;filter:drop-shadow(0 1px 6px rgba(0,0,0,.35))}
+.np__play{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.14) !important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.pin__inner{max-width:820px}
+.tl{list-style:none;margin:0;padding:0;border-top:1px solid #1f1f1f}
+.tl__row{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid #1f1f1f}
+.tl__play{flex-shrink:0;width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#000;border:0;border-radius:50%;cursor:pointer}
+.tl__n{font-size:12px;font-weight:500;letter-spacing:.14em;color:#6f6f6f;width:22px}
+.tl__t{flex:1 1 auto;display:flex;flex-direction:column;gap:2px;font-size:18px;min-width:0}
+.tl__t span{font-size:13px;color:#8c8c8c}
+.tl__ext{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#cfcfcf;text-decoration:none;white-space:nowrap}
+@media (max-width:600px){
+  .poster{min-height:560px;height:92svh}
+  .poster__me{height:72%}
+  .poster__dots{height:16%;bottom:3%}
+  .np{top:80px}
+  .np__title{font-size:15px}
+  .np__artist{font-size:13px}
+  .np__ctrls{gap:20px}
+  .tl__t{font-size:15px}
+  .tl__ext{font-size:12px}
+}
+@media (prefers-reduced-motion:reduce){.poster__glow{animation:none}}
