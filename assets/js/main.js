@@ -26,10 +26,8 @@
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && menu && !menu.hidden) closeMenu(); });
 
-  /* ---------- Intro: play once per visitor ---------- */
-  if (document.querySelector('.intro')) {
-    setTimeout(function () { try { localStorage.setItem('blacc_intro', '1'); } catch (e) {} }, 3200);
-  }
+  /* ---------- Intro: plays on every visit (clear any old "seen" flag) ---------- */
+  try { localStorage.removeItem('blacc_intro'); } catch (e) {}
 
   /* ---------- Hero spotlight ---------- */
   var hero = document.getElementById('hero');
