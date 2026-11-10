@@ -157,3 +157,71 @@ body.menu-open{overflow:hidden}
   .intro{display:none}
   html{scroll-behavior:auto}
 }
+
+/* ---------- Phone sizing ---------- */
+@media (max-width:600px){
+  .topbar,.menu__bar{padding-top:20px;padding-bottom:20px}
+  .brand{gap:10px}
+  .brand svg{width:24px;height:auto}
+  .brand span{font-size:16px}
+  .brand sup{font-size:8px}
+  .menu-btn svg{width:24px;height:24px}
+  .eyebrow{font-size:11px;letter-spacing:.16em}
+
+  .hero__name{font-size:26px}
+  .hero__role{font-size:13px}
+  .hero__bottom{padding-bottom:28px;gap:16px}
+  .hero__mark{width:48px !important}
+
+  .teaser{gap:22px}
+  .teaser__tag{font-size:12px}
+  .teaser__statement{font-size:19px;line-height:1.45}
+  .teaser__founder{font-size:15px}
+  .teaser__rule{height:28px}
+
+  .music__media img{height:340px}
+  .music__body{gap:22px}
+  .music__title{font-size:32px}
+  .music__credit{font-size:16px;margin-top:8px}
+  .btn{min-height:48px;padding:0 20px;font-size:14px}
+  .player{height:152px}
+  .listen__icons svg{transform:scale(.88)}
+
+  .contact{gap:20px}
+  .contact__where{font-size:13px}
+  .footer__inner{font-size:12px}
+
+  .menu__nav{justify-content:flex-start;padding-top:8px}
+  .menu__list{gap:8px}
+  .menu__item{min-height:60px;padding:0 18px;gap:16px}
+  .menu__item svg:first-child{width:20px;height:20px}
+  .menu__label{font-size:18px}
+  .menu__num{font-size:11px}
+  .menu__social{padding-top:20px}
+
+  .opening{padding-top:120px}
+  .opening__inner{gap:20px}
+  .opening h1{font-size:32px}
+  .opening p.lead{font-size:16px}
+  .body-copy{font-size:15px}
+  .letter-row{padding:9px 0;gap:16px}
+  .letter-box{width:40px;height:40px;font-size:22px}
+  .letter-word{font-size:22px}
+  .founder-img{height:220px}
+  .founder-name{font-size:30px}
+  .founder-role{font-size:15px}
+  .founder-lead{font-size:17px}
+  .founder-copy{font-size:15px}
+  .h-section{font-size:30px}
+  .tile{min-height:150px;padding:22px;gap:24px}
+  .tile__name{font-size:20px}
+  .tile__line{font-size:14px}
+  .tile--cta span{font-size:20px}
+  .tile--cta svg:first-child{width:34px;height:auto}
+
+  .loading{padding-top:110px}
+  .loading__inner{gap:26px}
+  .loading__mark{width:68px}
+  .loading h1{font-size:26px}
+  .loading p.lead{font-size:15px}
+}
