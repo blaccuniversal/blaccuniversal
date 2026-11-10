@@ -1,8 +1,0 @@
-[build]
-  publish = "."
-
-# Images change rarely: cache for a day. CSS/JS are versioned with ?v= in the pages.
-[[headers]]
-  for = "/assets/img/*"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"

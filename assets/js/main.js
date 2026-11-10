@@ -57,17 +57,25 @@
     }
   }
 
-  /* ---------- "Notify me" (Netlify Forms) ---------- */
+  /* ---------- "Notify me" (FormSubmit, emails sign-ups to the inbox) ---------- */
   document.querySelectorAll('form[data-notify]').forEach(function (form) {
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var wrap = form.closest('.notify');
       var err = wrap.querySelector('.notify__error');
       if (err) err.hidden = true;
-      var body = new URLSearchParams(new FormData(form)).toString();
-      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
-        .then(function (r) {
-          if (!r.ok) throw new Error('bad');
+      var data = {};
+      new FormData(form).forEach(function (v, k) { data[k] = v; });
+      if (data._honey) return;
+      data._captcha = 'false';
+      data._template = 'table';
+      fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(data)
+      })
+        .then(function (r) { return r.json().then(function (j) { if (!r.ok || String(j.success) === 'false') throw new Error('bad'); }); })
+        .then(function () {
           wrap.querySelector('.notify__hint').hidden = true;
           form.hidden = true;
           wrap.querySelector('.notify__done').hidden = false;
