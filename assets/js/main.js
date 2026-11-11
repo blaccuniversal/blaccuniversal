@@ -628,7 +628,11 @@
     var gc = mus.getAttribute('data-gc'), plays = {}, counted = {};
     var slug = function (i) { return 'play-' + mt[i].src.split('/').pop().replace(/\.mp3$/, ''); };
     var playTxt = function (n) {
-      var t = n >= 10000 ? (Math.floor(n / 100) / 10).toFixed(1).replace(/\.0$/, '') + 'K' : n.toLocaleString('en');
+      var t = n.toLocaleString('en');
+      if (n >= 1000) {
+        var k = n / 1000, d = k < 10 ? 2 : k < 100 ? 1 : 0, f = Math.pow(10, d);
+        t = (Math.floor(k * f) / f).toFixed(d).replace(/\.?0+$/, '') + 'K';
+      }
       return t + (n === 1 ? ' play' : ' plays');
     };
     var base = function (i) { return parseInt(mt[i].base || '0', 10) || 0; };
