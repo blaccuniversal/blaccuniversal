@@ -993,3 +993,6 @@ body:has(.page--light){background:#e9e8e6}
 @media (max-width:900px){
   .mus-card__circle{left:auto;width:min(150vw,700px);margin-bottom:calc(min(150vw,700px) / -2);align-self:end;justify-self:center}
 }
+
+/* Circle removed */
+.mus-card__circle{display:none !important}
