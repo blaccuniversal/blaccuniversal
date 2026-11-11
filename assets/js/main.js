@@ -627,7 +627,11 @@
     /* Real play counts (GoatCounter): a play counts after 10 seconds, once per song per visit */
     var gc = mus.getAttribute('data-gc'), plays = {}, counted = {};
     var slug = function (i) { return 'play-' + mt[i].src.split('/').pop().replace(/\.mp3$/, ''); };
-    var playTxt = function (n) { return n.toLocaleString('en') + (n === 1 ? ' play' : ' plays'); };
+    var playTxt = function (n) {
+      var t = n >= 10000 ? (Math.floor(n / 100) / 10).toFixed(1).replace(/\.0$/, '') + 'K' : n.toLocaleString('en');
+      return t + (n === 1 ? ' play' : ' plays');
+    };
+    var base = function (i) { return parseInt(mt[i].base || '0', 10) || 0; };
     tlBtns.forEach(function (b) {
       var row = b.closest('.tl__row'), sp = document.createElement('span');
       sp.className = 'tl__plays'; sp.setAttribute('data-plays-i', b.getAttribute('data-tl')); sp.hidden = true;
@@ -635,10 +639,11 @@
       side.className = 'tl__side'; row.insertBefore(side, dur); side.appendChild(dur); side.appendChild(sp);
     });
     function renderPlays(i) {
-      var n = plays[i];
+      var n = base(i) + (plays[i] || 0);
       var el = document.querySelector('[data-plays-i="' + i + '"]');
-      if (el) { el.hidden = !n; if (n) el.textContent = playTxt(n); }
-      if (i === mi) { var h = q('[data-plays]'); h.hidden = !n; if (n) h.textContent = playTxt(n); }
+      var why = mt[i].baseFrom ? 'Includes plays on ' + mt[i].baseFrom : '';
+      if (el) { el.hidden = !n; if (n) { el.textContent = playTxt(n); el.title = why; } }
+      if (i === mi) { var h = q('[data-plays]'); h.hidden = !n; if (n) { h.textContent = playTxt(n) + (why ? ' · incl. ' + mt[i].baseFrom : ''); } }
     }
     function loadPlays(i) {
       if (!gc || !window.fetch) return;
@@ -657,7 +662,7 @@
     au.addEventListener('timeupdate', function () { if (au.currentTime >= 10) countPlay(mi); });
     var _show = show;
     show = function (i, keep) { _show(i, keep); renderPlays(mi); };
-    mt.forEach(function (_, i) { loadPlays(i); });
+    mt.forEach(function (_, i) { renderPlays(i); loadPlays(i); });
     show(0, false);
   }
 })();
