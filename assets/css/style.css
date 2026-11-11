@@ -1034,3 +1034,15 @@ body:has(.page--light){background:#e9e8e6}
 .mus-plays{margin:2px 0 0;font-size:12px;letter-spacing:.04em;color:#888;font-variant-numeric:tabular-nums}
 .tl__plays{font-size:12px;color:#888;white-space:nowrap;font-variant-numeric:tabular-nums}
 .tl__side{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+
+/* Hero: the portrait and name are a door to /bemshima/ */
+.hero__door{position:absolute;left:50%;top:0;height:100%;aspect-ratio:1262/1687;max-width:100%;transform:translateX(-50%);z-index:1;cursor:pointer}
+.hero__bottom{z-index:2}
+.hero__name-link{display:inline-flex;align-items:baseline;gap:14px;background:none !important}
+.hero__name-txt{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .35s ease}
+.hero__enter{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#fff;opacity:0;transform:translateX(-8px);transition:opacity .35s ease,transform .35s ease;white-space:nowrap}
+.hero__name-link:hover .hero__name-txt,.hero__name-link:focus-visible .hero__name-txt,.hero:has(.hero__door:hover) .hero__name-txt{background-size:100% 1px}
+.hero__name-link:hover .hero__enter,.hero__name-link:focus-visible .hero__enter,.hero:has(.hero__door:hover) .hero__enter{opacity:1;transform:none}
+.hero:has(.hero__door:hover) .hero__photo{filter:brightness(1.12)}
+.hero__photo{transition:filter .4s ease}
+@media (hover:none){.hero__enter{opacity:.75;transform:none;font-size:11px}}
