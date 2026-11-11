@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=202611110120">
+<link rel="stylesheet" href="/assets/css/style.css?v=202611110140">
 </head>
 <body>
 <div class="page page--light">
@@ -35,23 +35,24 @@
   </nav>
   <main class="mus">
     <section class="mus-hero gutter" id="top" aria-label="Featured song">
-      <div class="wrap mus-card">
-        <img class="mus-card__me" src="/assets/img/bemshima-mask.webp?v=202611110120" alt="Bemshima in a black balaclava, hood up, hands in the pockets of a brown and black work jacket" width="853" height="1214">
+      <div class="wrap mus-card" data-audio>
+        <img class="mus-card__me" src="/assets/img/bemshima-mask.webp?v=202611110140" alt="Bemshima in a black balaclava, hood up, hands in the pockets of a brown and black work jacket" width="853" height="1214">
         <div class="mus-card__text">
           <p class="mus-eyebrow">Bemshima · Music</p>
-          <h1 class="mus-title">Hear Bemshima’s <span data-h-title>“Talk Nice, Pt. II”</span></h1>
+          <h1 class="mus-title">Hear Bemshima’s <span data-h-title>“What Once Was”</span></h1>
           <div class="mus-player">
-            <button type="button" class="mus-cover" data-player-open="0" data-cover-btn aria-label="Play Talk Nice, Pt. II">
+            <button type="button" class="mus-cover" data-cover-btn aria-label="Play What Once Was">
               <img src="/assets/img/mask.jpg" alt="" data-cover width="400" height="400">
-              <span class="mus-cover__play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span>
+              <span class="mus-cover__play"><svg class="ic-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg></span>
             </button>
             <div class="mus-meta">
-              <p class="mus-song" data-song>Talk Nice, Pt. II</p>
-              <div class="mus-line" aria-hidden="true"><span data-line></span><i data-knob></i></div>
-              <p class="mus-small"><span>Featuring</span><span data-feat>Capella Grey</span></p>
+              <p class="mus-song" data-song>What Once Was</p>
+              <div class="mus-line" data-seek role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-line></span><i data-knob></i></div>
+              <p class="mus-time"><span data-cur>0:00</span><span data-dur>1:37</span></p>
+              <p class="mus-small"><span data-feat-label>From</span><span data-feat>Bemshima Music Fridays</span></p>
               <div class="mus-nav">
                 <button type="button" class="icon-btn" data-prev-t aria-label="Previous song"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-                <span class="mus-count"><span data-count-t>01</span> / 03</span>
+                <span class="mus-count"><span data-count-t>01</span> / <span data-count-n>01</span></span>
                 <button type="button" class="icon-btn" data-next-t aria-label="Next song"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
               </div>
             </div>
@@ -62,11 +63,10 @@
             <a href="https://audiomack.com/bemshima" target="_blank" rel="noopener"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.331 11.378s.5418-.089.765.1439c.2234.2332.077.7156-.2195.7237-.2965.01-.5705.063-.765-.1439-.1946-.2066-.1424-.6218.2195-.7237m5.881 3.2925c-.0522.01-.1075-.018-.164-.059-.3884-.5413-.5287-2.3923-.707-2.5025-.185-.1144-.8545 1.0255-2.1862.903-.5569-.051-1.1236-.4121-1.4573-.662.031-.4206.0364-1.4027.8659-1.0833.5038.1939 1.3667.7266 2.1245-.23.8378-1.0579 1.2999-.7506 1.577-.5206.2771.23.0925 1.4259.5058 1.0916.4133-.3343 2.082-2.4103 2.082-2.4103s1.292-1.303 1.4898.067c.1979 1.3698 1.0403 2.8877 1.2635 2.8445.2234-.043 2.8223-5.3253 3.1945-5.666.3722-.3409 1.6252-.2961 1.5657.5781-.0596.8742-.1871 6.308-.1871 6.308s-.147 1.5311.0924.7128c.0992-.3392.206-.6453.3392-1.0024.6414-2.0534 1.734-5.5613 2.2784-7.3688.1252-.4325.233-.8037.3166-1.0891l.0001-.0008a3.5925 3.5925 0 0 1 .0973-.3305c.0455-.1532.0763-.2546.0858-.2813.0243-.068.0925-.1192.1884-.157.0962-.061.1995-.064.3165-.067.3021-.027.6907.012 1.0401.1119.1018 0 .2125.037.3172.1118v.0001s.0063 0 .0151.01c.0023 0 .0048 0 .0073.01.0219.015.0573.045.0983.095.0012 0 .0025 0 .004.01.017.021.0341.045.0515.073.1952.2863.315.814.1948 1.7498-.2996 2.3354-.5316 7.1397-.5316 7.1397s-.0461.2298.4353-.782c.0167-.035.0383-.066.058-.098.026-.017.0552-.042.0913-.085.2974-.3546 1.0968-.5629 1.6512-.5586.2336.028.4293.087.5462.1609.2188.333.0897 1.562.0897 1.562-.4612.043-1.3403.2908-1.6519.3366-.3118.046-.7852 2.0699-1.4433 1.8629-.6581-.2069-2.1246-1.1268-2.1246-1.2533 0-.1102.1152-1.4546.1453-1.8016.0022-.024.004-.046.0058-.068a.152.152 0 0 1 .0014-.014l-.0002.0003c.0213-.2733.0023-.3927-.1239-.1199-.1086.2346-.581 1.7359-1.1078 3.3709-.0556.1429-1.0511 3.1558-1.1818 3.5231-.156.4261-.287.7523-.3776.921-.1378.1867-.3234.3036-.5826.2252-.6465-.1954-1.4654-1.0889-1.473-1.3106-.0155-1.2503.0608-7.973-.2423-7.4127-.311.5744-2.73 4.5608-2.73 4.5608-.0405.01-.0705.01-.1062.01-.1712-.019-.4366-.074-.51-.2384-.004-.01-.0094-.018-.0129-.028-.0035-.01-.0075-.022-.0135-.04-.0329-.1097-.0463-.2289-.0753-.3265-.1082-.3652-.2813-.8886-.463-1.421-.2784-.9079-.5654-1.8366-.6127-1.9391-.0923-.2007-.2268-.116-.3475-.0002-.54.458-1.6868 2.4793-2.7225 2.5898"/></svg><span><strong>Audiomack</strong>Bemshima</span></a>
           </div>
         </div>
-        <button type="button" class="mus-ring" data-player-open="0" data-ring aria-label="Play"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button>
-        <div hidden><span data-track data-i="0" data-title="Talk Nice, Pt. II" data-credit="Bemshima · Capella Grey" data-cover="/assets/img/mask.jpg" data-host="YouTube" data-url="https://youtu.be/k1JdKm82lg8"></span><span data-track data-i="1" data-title="Rita" data-credit="Bemshima · Phatboii" data-cover="https://i.audiomack.com/bemshima/0f75f86691.webp?width=400&amp;height=400" data-host="Audiomack" data-url="https://audiomack.com/bemshima/song/rita"></span><span data-track data-i="2" data-title="Ends of The Earth" data-credit="Bemshima · Bishop T.D. Jakes" data-cover="https://i.audiomack.com/bemshima/4b158e4a17.webp?width=400&amp;height=400" data-host="Audiomack" data-url="https://audiomack.com/bemshima/song/end-of-the-earth"></span></div>
+        <button type="button" class="mus-ring" data-ring aria-label="Play"><svg class="ic-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg></button>
+        <div hidden><span data-track data-src="/assets/audio/what-once-was.mp3" data-title="What Once Was" data-from="Bemshima Music Fridays" data-cover="/assets/img/mask.jpg" data-dur="1:37"></span><span data-track data-src="/assets/audio/stand-strong.mp3" data-title="Stand Strong" data-feat="Davido, Sunday Service Choir" data-from="Bemshima Music Fridays" data-cover="/assets/img/mask.jpg" data-dur="1:41"></span></div>
       </div>
     </section>
-    <div hidden><article class="release" data-kind="youtube" data-id="k1JdKm82lg8" data-title="Talk Nice, Pt. II" data-credit="Bemshima · Capella Grey" data-host="YouTube" data-url="https://youtu.be/k1JdKm82lg8" hidden></article><article class="release" data-kind="audiomack" data-id="bemshima/rita" data-title="Rita" data-credit="Bemshima · Phatboii" data-host="Audiomack" data-url="https://audiomack.com/bemshima/song/rita" hidden></article><article class="release" data-kind="audiomack" data-id="bemshima/end-of-the-earth" data-title="Ends of The Earth" data-credit="Bemshima · Bishop T.D. Jakes" data-host="Audiomack" data-url="https://audiomack.com/bemshima/song/end-of-the-earth" hidden></article></div>
 
     <section class="mus-sec gutter" aria-label="About Bemshima">
       <div class="wrap mus-sec__grid">
@@ -82,8 +82,8 @@
 
     <section class="mus-sec gutter" id="music" aria-labelledby="tl-h">
       <div class="wrap mus-sec__grid">
-        <p class="mus-eyebrow" id="tl-h">Tracklist</p>
-        <ol class="tl"><li class="tl__row"><button type="button" class="tl__play" data-player-open="0" aria-label="Play Talk Nice, Pt. II"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button><span class="tl__n">01</span><span class="tl__t">Talk Nice, Pt. II<span>Bemshima · Capella Grey</span></span><a class="tl__ext" href="https://youtu.be/k1JdKm82lg8" target="_blank" rel="noopener">YouTube <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li><li class="tl__row"><button type="button" class="tl__play" data-player-open="1" aria-label="Play Rita"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button><span class="tl__n">02</span><span class="tl__t">Rita<span>Bemshima · Phatboii</span></span><a class="tl__ext" href="https://audiomack.com/bemshima/song/rita" target="_blank" rel="noopener">Audiomack <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li><li class="tl__row"><button type="button" class="tl__play" data-player-open="2" aria-label="Play Ends of The Earth"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></button><span class="tl__n">03</span><span class="tl__t">Ends of The Earth<span>Bemshima · Bishop T.D. Jakes</span></span><a class="tl__ext" href="https://audiomack.com/bemshima/song/end-of-the-earth" target="_blank" rel="noopener">Audiomack <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg></a></li></ol>
+        <p class="mus-eyebrow" id="tl-h">Free music</p>
+        <ol class="tl"><li class="tl__row"><button type="button" class="tl__play" data-tl="0" aria-label="Play What Once Was"><svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="ic-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg></button><span class="tl__n">01</span><span class="tl__t">What Once Was<span>Bemshima Music Fridays</span></span><span class="tl__dur">1:37</span></li><li class="tl__row"><button type="button" class="tl__play" data-tl="1" aria-label="Play Stand Strong"><svg class="ic-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="ic-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg></button><span class="tl__n">02</span><span class="tl__t">Stand Strong<span>feat. Davido, Sunday Service Choir · Bemshima Music Fridays</span></span><span class="tl__dur">1:41</span></li></ol>
       </div>
     </section>
 
@@ -170,33 +170,6 @@
       </div>
     </div>
   </div>
-  <div class="build player-modal" id="player" role="dialog" aria-modal="true" aria-labelledby="player-title" hidden>
-    <div class="build__bar gutter">
-      <span class="brand"><svg viewBox="0 0 563 418" width="34" height="25" aria-hidden="true"><g fill="#ffffff"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg><span>BLACC Universal<sup>™</sup></span></span>
-      <button class="icon-btn menu-btn" type="button" data-player-close aria-label="Close player"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
-    </div>
-    <div class="build__body gutter">
-      <div class="player__inner">
-        <p class="eyebrow">Bemshima Music — Featured</p>
-        <div class="player__stage" data-stage></div>
-        <div class="player__now">
-          <div>
-            <h2 class="player__title" id="player-title" data-now-title></h2>
-            <p class="music__credit" data-now-credit></p>
-          </div>
-          <div class="player__ctrls">
-            <button class="icon-btn" type="button" data-player-prev aria-label="Previous song"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9.5 12z"/></svg></button>
-            <button class="icon-btn" type="button" data-player-next aria-label="Next song"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l10.5-7z"/></svg></button>
-          </div>
-        </div>
-        <div class="player__meta">
-          <a class="btn btn--ghost btn--small" data-now-host href="#" target="_blank" rel="noopener"></a>
-          <label class="player__auto"><input type="checkbox" data-autonext checked> Play next automatically</label>
-        </div>
-        <ol class="player__list" data-list></ol>
-      </div>
-    </div>
-  </div>
   <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
     <div class="menu__bar gutter">
       <a class="brand" href="/"><svg viewBox="0 0 563 418" width="34" height="25" aria-hidden="true"><g fill="#ffffff"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg><span>BLACC Universal<sup>™</sup></span></a>
@@ -214,6 +187,6 @@
     </nav>
   </div>
 </div>
-<script src="/assets/js/main.js?v=202611110120" defer></script>
+<script src="/assets/js/main.js?v=202611110140" defer></script>
 </body>
 </html>

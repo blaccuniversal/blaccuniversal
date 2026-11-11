@@ -996,3 +996,16 @@ body:has(.page--light){background:#e9e8e6}
 
 /* Circle removed */
 .mus-card__circle{display:none !important}
+
+/* Music page: in-page audio player */
+.mus .ic-pause{display:none}
+.mus-card.is-playing .mus-cover .ic-play,.mus-card.is-playing .mus-ring .ic-play,.tl__play.is-playing .ic-play{display:none}
+.mus-card.is-playing .mus-cover .ic-pause,.mus-card.is-playing .mus-ring .ic-pause,.tl__play.is-playing .ic-pause{display:inline}
+.mus-line[data-seek]{cursor:pointer;touch-action:none;outline:none}
+.mus-line[data-seek]::before{content:"";position:absolute;left:0;right:0;top:-10px;bottom:-10px}
+.mus-line[data-seek]:focus-visible i{box-shadow:0 0 0 4px rgba(201,74,28,.25)}
+.mus-line span,.mus-line i{transition:none}
+.mus-time{margin:-4px 0 0;display:flex;justify-content:space-between;font-size:11px;letter-spacing:.06em;color:#666;font-variant-numeric:tabular-nums}
+.mus-card.is-single .mus-nav .icon-btn{visibility:hidden}
+.tl__dur{font-size:13px;color:#666;font-variant-numeric:tabular-nums}
+.tl__n{flex-shrink:0}

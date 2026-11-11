@@ -512,32 +512,101 @@
     showNp();
   }
 
-  /* ---------- Music page: featured-song switcher ---------- */
-  var mus = document.querySelector('.mus-card');
+  /* ---------- Music page: in-page audio player for free songs ---------- */
+  var mus = document.querySelector('.mus-card[data-audio]');
   if (mus) {
-    var mt = [].slice.call(mus.querySelectorAll('[data-track]')), mi = 0;
-    function musShow() {
-      var d = mt[mi].dataset, n = mt.length;
-      mus.querySelector('[data-h-title]').textContent = '“' + d.title + '”';
-      mus.querySelector('[data-song]').textContent = d.title;
-      mus.querySelector('[data-feat]').textContent = (d.credit.split(' · ')[1] || 'Solo');
-      mus.querySelector('[data-cover]').src = d.cover;
-      mus.querySelector('[data-count-t]').textContent = (mi < 9 ? '0' : '') + (mi + 1);
-      var pct = ((mi + 1) / n * 100) + '%';
-      mus.querySelector('[data-line]').style.width = pct; mus.querySelector('[data-knob]').style.left = pct;
-      mus.querySelector('[data-cover-btn]').setAttribute('data-player-open', mi);
-      mus.querySelector('[data-cover-btn]').setAttribute('aria-label', 'Play ' + d.title);
-      mus.querySelector('[data-ring]').setAttribute('data-player-open', mi);
+    var mt = [].map.call(mus.querySelectorAll('[data-track]'), function (el) { return el.dataset; });
+    var au = new Audio(), mi = 0, seeking = false;
+    au.preload = 'metadata';
+    var q = function (sel) { return mus.querySelector(sel); };
+    var seekEl = q('[data-seek]'), lineEl = q('[data-line]'), knobEl = q('[data-knob]');
+    var tlBtns = [].slice.call(document.querySelectorAll('[data-tl]'));
+    function fmt(t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); }
+    function setPct(p) {
+      p = Math.max(0, Math.min(100, p || 0));
+      lineEl.style.width = p + '%'; knobEl.style.left = p + '%';
+      seekEl.setAttribute('aria-valuenow', Math.round(p));
     }
-    mus.querySelector('[data-prev-t]').addEventListener('click', function () { mi = (mi - 1 + mt.length) % mt.length; musShow(); });
-    mus.querySelector('[data-next-t]').addEventListener('click', function () { mi = (mi + 1) % mt.length; musShow(); });
-    // the player listeners read data-player-open at bind time, so route these two through the current index
-    ['[data-cover-btn]', '[data-ring]'].forEach(function (sel) {
-      mus.querySelector(sel).addEventListener('click', function (e) {
-        e.stopImmediatePropagation();
-        var tl = document.querySelector('.tl__play[data-player-open="' + mi + '"]'); if (tl) tl.click();
-      }, true);
+    function paint() {
+      var on = !au.paused;
+      mus.classList.toggle('is-playing', on);
+      q('[data-cover-btn]').setAttribute('aria-label', (on ? 'Pause ' : 'Play ') + mt[mi].title);
+      q('[data-ring]').setAttribute('aria-label', on ? 'Pause' : 'Play');
+      tlBtns.forEach(function (b) {
+        var k = +b.getAttribute('data-tl'), me = on && k === mi;
+        b.classList.toggle('is-playing', me);
+        b.setAttribute('aria-label', (me ? 'Pause ' : 'Play ') + mt[k].title);
+      });
+    }
+    function show(i, keepPlaying) {
+      mi = (i + mt.length) % mt.length;
+      var d = mt[mi];
+      q('[data-h-title]').textContent = '“' + d.title + '”';
+      q('[data-song]').textContent = d.title;
+      q('[data-feat-label]').textContent = d.feat ? 'Featuring' : 'From';
+      q('[data-feat]').textContent = d.feat || d.from || 'Bemshima';
+      q('[data-cover]').src = d.cover;
+      q('[data-count-t]').textContent = (mi < 9 ? '0' : '') + (mi + 1);
+      q('[data-cur]').textContent = '0:00'; q('[data-dur]').textContent = d.dur || '';
+      setPct(0);
+      au.src = d.src;
+      if ('mediaSession' in navigator) {
+        try { navigator.mediaSession.metadata = new MediaMetadata({ title: d.title, artist: 'Bemshima', album: d.from || '', artwork: [{ src: d.cover, sizes: '400x400' }] }); } catch (e) {}
+      }
+      if (keepPlaying) au.play().catch(function () {});
+      paint();
+    }
+    function toggle() { if (au.paused) au.play().catch(function () {}); else au.pause(); }
+    q('[data-count-n]').textContent = (mt.length < 10 ? '0' : '') + mt.length;
+    if (mt.length < 2) mus.classList.add('is-single');
+    q('[data-prev-t]').addEventListener('click', function () { show(mi - 1, !au.paused); });
+    q('[data-next-t]').addEventListener('click', function () { show(mi + 1, !au.paused); });
+    q('[data-cover-btn]').addEventListener('click', toggle);
+    q('[data-ring]').addEventListener('click', toggle);
+    tlBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var k = +b.getAttribute('data-tl');
+        if (k === mi) toggle(); else show(k, true);
+      });
     });
-    musShow();
+    au.addEventListener('play', paint); au.addEventListener('pause', paint);
+    au.addEventListener('loadedmetadata', function () { q('[data-dur]').textContent = fmt(au.duration); });
+    au.addEventListener('timeupdate', function () {
+      if (seeking || !au.duration) return;
+      q('[data-cur]').textContent = fmt(au.currentTime);
+      setPct(au.currentTime / au.duration * 100);
+    });
+    au.addEventListener('ended', function () {
+      if (mt.length > 1) show(mi + 1, true); else { au.currentTime = 0; setPct(0); q('[data-cur]').textContent = '0:00'; paint(); }
+    });
+    function seekTo(e) {
+      var b = seekEl.getBoundingClientRect(), x = (e.touches ? e.touches[0] : e).clientX;
+      var p = (x - b.left) / b.width * 100; setPct(p);
+      if (au.duration) { au.currentTime = au.duration * Math.max(0, Math.min(1, p / 100)); q('[data-cur]').textContent = fmt(au.currentTime); }
+    }
+    seekEl.addEventListener('pointerdown', function (e) {
+      seeking = true; seekTo(e);
+      try { seekEl.setPointerCapture(e.pointerId); } catch (x) {}
+    });
+    seekEl.addEventListener('pointermove', function (e) { if (seeking) seekTo(e); });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { seekEl.addEventListener(ev, function () { seeking = false; }); });
+    seekEl.addEventListener('keydown', function (e) {
+      if (!au.duration) return;
+      if (e.key === 'ArrowRight') au.currentTime = Math.min(au.duration, au.currentTime + 5);
+      else if (e.key === 'ArrowLeft') au.currentTime = Math.max(0, au.currentTime - 5);
+      else return;
+      e.preventDefault();
+    });
+    if ('mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.setActionHandler('play', function () { au.play(); });
+        navigator.mediaSession.setActionHandler('pause', function () { au.pause(); });
+        if (mt.length > 1) {
+          navigator.mediaSession.setActionHandler('previoustrack', function () { show(mi - 1, true); });
+          navigator.mediaSession.setActionHandler('nexttrack', function () { show(mi + 1, true); });
+        }
+      } catch (e) {}
+    }
+    show(0, false);
   }
 })();
