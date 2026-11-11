@@ -594,9 +594,30 @@
       if (push) { try { history.replaceState(null, '', c === 'merch' ? location.pathname : '#' + c); } catch (e) {} }
     };
     catTabs.forEach(function (t) { t.addEventListener('click', function () { showCat(t.getAttribute('data-cat'), true); }); });
-    var h0 = (location.hash || '').replace('#', ''); showCat(document.querySelector('[data-cat-panel="' + h0 + '"]') ? h0 : 'merch', false);
-    window.addEventListener('hashchange', function () { var h = location.hash.replace('#', ''); if (document.querySelector('[data-cat-panel="' + h + '"]')) showCat(h, false); });
+    var goItem = function (h) {
+      var el = h && document.getElementById(h);
+      if (!el || !el.hasAttribute('data-item')) return false;
+      var panel = el.closest('[data-cat-panel]');
+      showCat(panel ? panel.getAttribute('data-cat-panel') : 'merch', false);
+      setTimeout(function () { el.scrollIntoView({ block: 'start' }); el.classList.add('is-linked'); setTimeout(function () { el.classList.remove('is-linked'); }, 2200); }, 60);
+      return true;
+    };
+    var h0 = (location.hash || '').replace('#', '');
+    if (!goItem(h0)) showCat(document.querySelector('[data-cat-panel="' + h0 + '"]') ? h0 : 'merch', false);
+    window.addEventListener('hashchange', function () { var h = location.hash.replace('#', ''); if (!goItem(h) && document.querySelector('[data-cat-panel="' + h + '"]')) showCat(h, false); });
   }
+
+  /* ---------- Copy / share a product link ---------- */
+  document.querySelectorAll('[data-share]').forEach(function (b) {
+    var lab = b.querySelector('span');
+    b.addEventListener('click', function () {
+      var url = b.getAttribute('data-share'), title = b.getAttribute('data-share-title');
+      var done = function () { lab.textContent = 'Link copied'; setTimeout(function () { lab.textContent = 'Copy link'; }, 1800); };
+      if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) { navigator.share({ title: title, url: url }).catch(function () {}); return; }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { window.prompt('Copy this link:', url); });
+      else window.prompt('Copy this link:', url);
+    });
+  });
 
   /* ---------- Bemshima page: dark by default, toggle to light ---------- */
   var themed = document.querySelector('[data-themed]'), tBtn = document.querySelector('[data-theme-toggle]');

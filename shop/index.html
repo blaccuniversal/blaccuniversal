@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=202611112300">
+<link rel="stylesheet" href="/assets/css/style.css?v=202611112310">
 </head>
 <body>
 <div class="page page--screen">
@@ -47,7 +47,7 @@
         </div>
       </div>
       <div class="shop-cat" id="cat-merch" role="tabpanel" data-cat-panel="merch" data-cat-title="Merch.">
-      <section class="product" aria-label="Alhamdulillah Tee">
+      <section class="product" aria-label="Alhamdulillah Tee" id="alhamdulillah-tee" data-item>
         <div class="spin spin--static">
           <div class="spin__stage">
             <img class="spin__single" src="/assets/img/shop/alhamdulillah-front.webp" alt="Alhamdulillah Tee, front: black tee with ‘alhamdulillah — ERRDAY · ALL SZN’ printed in silver across the chest" width="803" height="1000">
@@ -56,7 +56,7 @@
         </div>
         <div class="product__info">
           <p class="product__badge">Limited Edition</p>
-          <h2 class="product__name">Alhamdulillah Tee</h2>
+          <div class="item-head"><h2 class="product__name">Alhamdulillah Tee</h2><button class="share-btn" type="button" data-share="https://blaccuniversal.com/shop/alhamdulillah-tee/" data-share-title="Alhamdulillah Tee — BLACC Universal"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg><span>Copy link</span></button></div>
           <p class="product__price"><span data-price-main>₦30,000</span> <span class="product__usd" data-price-sub></span></p>
           <fieldset class="field chips product__cur"><legend class="sr-only">Show price in</legend><div class="chips__row"><label class="chip cur"><input type="radio" name="currency" value="NGN" checked><span>₦ NGN</span></label><label class="chip cur"><input type="radio" name="currency" value="USD"><span>$ USD</span></label><label class="chip cur"><input type="radio" name="currency" value="GBP"><span>£ GBP</span></label><label class="chip cur"><input type="radio" name="currency" value="EUR"><span>€ EUR</span></label><label class="chip cur"><input type="radio" name="currency" value="CAD"><span>$ CAD</span></label><label class="chip cur"><input type="radio" name="currency" value="GHS"><span>₵ GHS</span></label></div></fieldset>
           <p class="product__rate" data-rate aria-live="polite">Prices are in naira. Pick a currency to see today’s rate.</p>
@@ -124,11 +124,11 @@
       </div>
       </div>
       <div class="shop-cat" id="cat-beats" role="tabpanel" data-cat-panel="beats" data-cat-title="Instrumentals." hidden>
-                <section class="tape" aria-label="Celestial Rendition, free beat tape" data-tape>
+                <section class="tape" aria-label="Celestial Rendition, free beat tape" data-tape id="celestial-rendition" data-item>
           <img class="tape__cover" src="/assets/img/shop/celestial-rendition.webp" alt="Celestial Rendition cover: keyboards and a Juno-106 synth in black and white" width="693" height="721">
           <div class="tape__info">
             <p class="product__badge">Free beat tape</p>
-            <h2 class="product__name">Celestial Rendition</h2>
+            <div class="item-head"><h2 class="product__name">Celestial Rendition</h2><button class="share-btn" type="button" data-share="https://blaccuniversal.com/shop/celestial-rendition/" data-share-title="Celestial Rendition — free beat tape by Bemshima"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg><span>Copy link</span></button></div>
             <p class="beat__meta">Bemshima · 8 instrumentals · 27 min</p>
             <p class="tape__terms">Free for non-profit use. Credit: <b>Prod. by Bemshima</b>. For releases that make money, buy a lease.</p>
             <a class="btn tape__get" href="/assets/audio/tape/celestial-rendition.zip" download="Bemshima - Celestial Rendition.zip"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>Download the tape · 28 MB</a>
@@ -136,11 +136,11 @@
             <audio preload="none" data-tape-audio></audio>
           </div>
         </section>
-        <article class="beat" data-beat="Take Em To War">
+        <article class="beat" data-beat="Take Em To War" id="take-em-to-war" data-item>
           <div class="beat__cover" aria-hidden="true"><span class="beat__bpm">85</span><span class="beat__bpm-l">BPM</span><span class="beat__mark">BLACC</span></div>
           <div class="beat__info">
             <p class="product__badge">Beat</p>
-            <h2 class="product__name">Take Em To War</h2>
+            <div class="item-head"><h2 class="product__name">Take Em To War</h2><button class="share-btn" type="button" data-share="https://blaccuniversal.com/shop/take-em-to-war/" data-share-title="Take Em To War — beat by Bemshima"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg><span>Copy link</span></button></div>
             <p class="beat__meta">Hip-Hop · 85 BPM</p>
             <div class="beat__player" data-beat-player>
               <button class="beat__play" type="button" data-beat-play aria-label="Play preview of Take Em To War"><svg class="ic-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="ic-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg></button>
@@ -331,6 +331,6 @@
     </nav>
   </div>
 </div>
-<script src="/assets/js/main.js?v=202611112300" defer></script>
+<script src="/assets/js/main.js?v=202611112310" defer></script>
 </body>
 </html>
