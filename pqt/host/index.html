@@ -14,11 +14,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611120210">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611120320">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
-  <div class="hc-bar"><span class="hc-bar__title">PQT</span><span class="eyebrow">Host</span><div class="hc-status" data-status><i></i><span>No screen</span></div><button class="pbtn pbtn--sm pbtn--ghost" data-change type="button">Code</button><button class="pbtn pbtn--sm" data-undo type="button" aria-label="Undo last action">Undo</button></div>
+  <div class="hc-bar"><span class="hc-bar__title">PQT</span><div class="hc-status" data-status><i></i><span>No screen</span></div><button class="pbtn pbtn--sm" data-undo type="button" aria-label="Undo last action">Undo</button><button class="pbtn pbtn--sm pbtn--white" data-menu-open type="button" aria-haspopup="dialog">Menu</button></div>
+  <div class="hc-now card" data-now><span class="hc-now__dot"></span><span class="hc-now__txt"><b data-now-view>Lobby</b><span data-now-round>No round yet</span></span><button class="pbtn pbtn--sm" data-pause type="button">Pause screen</button></div>
 
   <section class="card hc-sec" data-connect-sec>
     <h2>Connect to a screen</h2>
@@ -28,8 +29,8 @@
 
   <section class="card hc-sec">
     <h2>On the screen now</h2>
-    <div class="hc-views"><button class="pbtn" data-view="lobby" type="button">Lobby</button><button class="pbtn" data-view="scores" type="button">Scores</button><button class="pbtn" data-view="ranking" type="button">Ranking</button><button class="pbtn" data-view="words" type="button">Words</button></div>
-    <div class="hc-views" style="margin-top:6px;grid-template-columns:1fr"><button class="pbtn" data-view="answers" type="button">Top Answers board</button></div>
+    <div class="hc-views"><button class="pbtn" data-view="lobby" type="button">Lobby</button><button class="pbtn" data-view="scores" type="button">Scores</button><button class="pbtn" data-view="ranking" type="button">Ranking</button><button class="pbtn" data-view="winner" type="button">Winner</button></div>
+    <div class="hc-views" style="margin-top:6px;grid-template-columns:1fr 1fr"><button class="pbtn" data-view="words" type="button">Don’t Say It</button><button class="pbtn" data-view="answers" type="button">Top Answers</button></div>
   </section>
 
   <section class="card hc-sec">
@@ -56,10 +57,39 @@
     <div class="hc-row" style="margin-top:12px"><button class="pbtn pbtn--white" data-savecards type="button">Save cards</button><button class="pbtn pbtn--ghost pbtn--sm" data-samples type="button">Restore samples</button></div>
     <p class="hc-note">Cards and scores are saved on this device.</p>
   </section>
+
+  <div class="hc-sheet" data-menu hidden role="dialog" aria-modal="true" aria-label="Game menu">
+    <div class="hc-sheet__bg" data-menu-close></div>
+    <div class="hc-sheet__panel card">
+      <div class="hc-sheet__head"><span class="eyebrow">Game menu</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Close</button></div>
+      <p class="hc-sheet__sub">Game</p>
+      <button class="hc-mi" data-m="newgame" type="button"><b>New game</b><span>Scores back to 0, round 1 next. Teams and cards stay.</span></button>
+      <button class="hc-mi" data-m="restart" type="button"><b>Restart this round</b><span>Undo this round’s points and start it again.</span></button>
+      <button class="hc-mi" data-m="next" type="button"><b>Start next round</b><span>Pick the game for the next round.</span></button>
+      <button class="hc-mi" data-m="end" type="button"><b>End game · show winner</b><span>Podium and confetti on the screen.</span></button>
+      <p class="hc-sheet__sub">Screen</p>
+      <button class="hc-mi" data-m="pause" type="button"><b data-m-pause>Pause screen</b><span>Shows “Be right back” until you resume.</span></button>
+      <button class="hc-mi" data-m="screen" type="button"><b>Change screen</b><span>Connect to a different screen code.</span></button>
+      <button class="hc-mi" data-m="open" type="button"><b>Open screen on this device</b><span>For hosting and showing from one laptop.</span></button>
+      <p class="hc-sheet__sub">Setup</p>
+      <button class="hc-mi" data-m="teams" type="button"><b>Teams &amp; scores</b><span>Names, colours, manual points.</span></button>
+      <button class="hc-mi" data-m="cards" type="button"><b>Cards &amp; questions</b><span>Your words and survey boards.</span></button>
+      <button class="hc-mi hc-mi--quiet" data-m="lock" type="button"><b>Lock this device</b><span>Asks for the pass again next time.</span></button>
+    </div>
+  </div>
+  <div class="hc-sheet" data-pick hidden role="dialog" aria-modal="true" aria-label="Next round">
+    <div class="hc-sheet__bg" data-pick-close></div>
+    <div class="hc-sheet__panel card">
+      <div class="hc-sheet__head"><span class="eyebrow" data-pick-title>Round 1</span><button class="pbtn pbtn--sm pbtn--ghost" data-pick-close type="button">Close</button></div>
+      <button class="hc-mi" data-round="words" type="button"><b>Don’t Say It</b><span>Teams take turns describing words against the clock.</span></button>
+      <button class="hc-mi" data-round="answers" type="button"><b>Top Answers</b><span>Find the survey answers. Three strikes and it’s a steal.</span></button>
+    </div>
+  </div>
+  <div class="hc-toast" data-toast hidden></div>
 </div>
-<script src="/assets/pqt/pqt-gate.js?v=202611120210"></script>
-<script src="/assets/pqt/peerjs.min.js?v=202611120210"></script>
-<script src="/assets/pqt/pqt-data.js?v=202611120210"></script>
-<script src="/assets/pqt/pqt.js?v=202611120210"></script>
+<script src="/assets/pqt/pqt-gate.js?v=202611120320"></script>
+<script src="/assets/pqt/peerjs.min.js?v=202611120320"></script>
+<script src="/assets/pqt/pqt-data.js?v=202611120320"></script>
+<script src="/assets/pqt/pqt.js?v=202611120320"></script>
 </body>
 </html>
