@@ -1,0 +1,13 @@
+<div class="notify">
+        <p class="notify__hint">More drops are coming. Get notified first.</p>
+        <form name="notify" method="POST" data-notify action="https://api.web3forms.com/submit">
+          <input type="hidden" name="access_key" value="c45f617c-f3f2-4caa-93cf-5d49e2cece46"><input type="hidden" name="subject" value="New sign-up on blaccuniversal.com"><input type="hidden" name="from_name" value="BLACC Universal website">
+          <input type="hidden" name="page" value="shop">
+          <p class="sr-only"><label>Leave this empty <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label></p>
+          <label class="sr-only" for="notify-email">Email address</label>
+          <input id="notify-email" type="email" name="email" required placeholder="Your email" autocomplete="email">
+          <button class="btn" type="submit">Notify me</button>
+        </form>
+        <p class="notify__done" role="status" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>You’re on the list. We’ll be in touch.</p>
+        <p class="notify__error" role="alert" hidden>That didn’t go through. Please try again.</p>
+      </div>

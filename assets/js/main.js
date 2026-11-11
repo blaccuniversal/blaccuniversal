@@ -607,6 +607,12 @@
     window.addEventListener('hashchange', function () { var h = location.hash.replace('#', ''); if (!goItem(h) && document.querySelector('[data-cat-panel="' + h + '"]')) showCat(h, false); });
   }
 
+  /* ---------- Shop: old #links go to the new pages ---------- */
+  var shopHome = document.querySelector('[data-shop-redirects]');
+  if (shopHome && location.hash) {
+    try { var to = JSON.parse(shopHome.getAttribute('data-shop-redirects'))[location.hash.slice(1)]; if (to) location.replace(to); } catch (e) {}
+  }
+
   /* ---------- Copy / share a product link ---------- */
   document.querySelectorAll('[data-share]').forEach(function (b) {
     var lab = b.querySelector('span');
