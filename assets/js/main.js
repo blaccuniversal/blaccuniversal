@@ -140,6 +140,29 @@
     f.hidden = false; p.querySelector('.build__done').hidden = true;
     openPanel(p, e);
   }); });
+  /* Free beat tape: one player for the tracklist */
+  document.querySelectorAll('[data-tape]').forEach(function (tp) {
+    var au = tp.querySelector('[data-tape-audio]'), rows = [].slice.call(tp.querySelectorAll('.tape__row')), cur = -1;
+    function paint() {
+      rows.forEach(function (r, i) {
+        var on = i === cur;
+        r.classList.toggle('is-cur', on);
+        r.classList.toggle('is-playing', on && !au.paused);
+        var t = r.getAttribute('data-tape-title');
+        r.querySelector('.tape__play').setAttribute('aria-label', (on && !au.paused ? 'Pause ' : 'Play ') + t);
+      });
+    }
+    function play(i) {
+      if (i === cur) { if (au.paused) au.play().catch(function () {}); else au.pause(); return; }
+      document.querySelectorAll('audio').forEach(function (o) { if (o !== au) o.pause(); });
+      cur = i; au.src = rows[i].getAttribute('data-tape-src'); au.play().catch(function () {}); paint();
+    }
+    rows.forEach(function (r, i) { r.querySelector('.tape__play').addEventListener('click', function () { play(i); }); });
+    au.addEventListener('play', paint); au.addEventListener('pause', paint);
+    au.addEventListener('timeupdate', function () { if (cur < 0 || !au.duration) return; rows[cur].querySelector('.tape__line b').style.width = (au.currentTime / au.duration * 100) + '%'; });
+    au.addEventListener('ended', function () { rows[cur].querySelector('.tape__line b').style.width = '0'; if (cur < rows.length - 1) play(cur + 1); else { cur = -1; paint(); } });
+  });
+
   /* Beats: licence picker, preview player, order panel */
   document.querySelectorAll('.beat[data-beat]').forEach(function (bt) {
     var name = bt.getAttribute('data-beat');
