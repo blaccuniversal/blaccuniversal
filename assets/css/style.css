@@ -1300,3 +1300,9 @@ body:has(.page--light){background:#e9e8e6}
 .shop-card--merch .shop-card__img img{transform:translateY(2.6%) scale(.8)}
 .shop-card--merch:hover .shop-card__img img{transform:translateY(2.6%) scale(.83)}
 .spin--static .spin__single{top:12.6%;bottom:7.4%}
+/* framed art: show the print inside a simple frame */
+.spin--art .spin__stage{background:radial-gradient(ellipse 70% 60% at 50% 45%,#262626 0%,#121212 60%,#070707 100%)}
+.spin--art .art__img{top:9%;bottom:9%;left:14%;right:14%;width:72%;height:82%;object-fit:contain;filter:drop-shadow(0 22px 34px rgba(0,0,0,.7))}
+.spin--art .spin__shadow{display:none}
+.product__frames{margin-top:6px}
+.shop-card--frames .shop-card__img img{transform:scale(.8);filter:drop-shadow(0 12px 18px rgba(0,0,0,.6))}

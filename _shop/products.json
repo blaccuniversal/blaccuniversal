@@ -14,9 +14,9 @@
       "name": "Frames",
       "title": "Frames.",
       "icon": "icon-frames",
-      "desc": "Framed art from BLACC Universal. Coming soon.",
-      "soon": "Coming soon.",
-      "notify": "Framed pieces are on the way. Get notified when they drop."
+      "desc": "Framed art by Bemshima. Limited editions, shipped from Ibadan.",
+      "soon": "",
+      "notify": "More pieces are on the way. Get notified when they drop."
     },
     {
       "slug": "instrumentals",
@@ -41,6 +41,18 @@
       "desc": "Limited-edition black tee with silver “alhamdulillah” script. ₦30,000, sizes M–4XL. Ships from Ibadan.",
       "img": "/assets/img/shop/og-alhamdulillah-tee.jpg",
       "old": "alhamdulillah-tee"
+    },
+    {
+      "section": "frames",
+      "slug": "el-precio-del-diablo",
+      "partial": "frame-el-precio",
+      "name": "El Precio del Diablo",
+      "card_img": "/assets/img/shop/el-precio-del-diablo.webp",
+      "card_meta": "Bemshima · 2026 · Framed print",
+      "card_price": "From ₦200,000",
+      "title": "El Precio del Diablo — framed print by Bemshima",
+      "desc": "Limited-edition framed digital print by Bemshima, 2026. A1 ₦300,000 · A2 ₦200,000. Ships from Ibadan.",
+      "img": "/assets/img/shop/og-el-precio-del-diablo.jpg"
     },
     {
       "section": "instrumentals",

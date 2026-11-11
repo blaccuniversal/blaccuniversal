@@ -122,7 +122,10 @@
   document.querySelectorAll('[data-hello-open]').forEach(function (el) { el.addEventListener('click', function (e) { openPanel(panels.hello, e); }); });
   document.querySelectorAll('[data-order-open]').forEach(function (el) { el.addEventListener('click', function (e) {
     var p = panels.order; if (!p) return;
-    var f = p.querySelector('form'); var st = window.__blaccOrder || { size: 'M', qty: 1, total: '₦30,000', usd: '' };
+    var f = p.querySelector('form'); var st = window.__blaccOrder || { name: 'Alhamdulillah Tee', sizeLabel: 'Size ', size: 'M', frame: '', qty: 1, total: '₦30,000', usd: '' };
+    f.querySelector('input[name="product"]').value = st.name;
+    var fi = f.querySelector('input[name="frame"]'); if (!fi) { fi = document.createElement('input'); fi.type = 'hidden'; fi.name = 'frame'; f.appendChild(fi); } fi.value = st.frame || '';
+    var eb = p.querySelector('.eyebrow'); if (eb) eb.textContent = 'Order · ' + st.name;
     f.querySelector('input[name="size"]').value = st.size;
     f.querySelector('input[name="quantity"]').value = st.qty;
 
@@ -131,7 +134,7 @@
       var tot = st.total + (st.view && st.view !== 'NGN' ? ' (≈ ' + st.viewTotal + ')' : '') + (intl ? ' + international delivery' : '');
       f.querySelector('input[name="total"]').value = tot;
       f.querySelector('input[name="currency_view"]').value = st.view || 'NGN';
-      p.querySelector('[data-order-summary]').textContent = 'Alhamdulillah Tee · Size ' + st.size + ' · Qty ' + st.qty + ' · ' + tot;
+      p.querySelector('[data-order-summary]').textContent = st.name + ' · ' + st.sizeLabel + st.size + (st.frame ? ' · ' + st.frame + ' frame' : '') + ' · Qty ' + st.qty + ' · ' + tot;
       p.querySelector('[data-order-intl]').hidden = !intl;
       var c = f.querySelector('[data-country]'); c.hidden = !intl; c.querySelector('input').required = intl;
     }
@@ -344,7 +347,8 @@
       if (form.hasAttribute('data-beatform')) {
         data.subject = 'New beat order — ' + data.beat + ' · ' + data.licence + ' · ' + data.price;
       } else if (form.hasAttribute('data-order')) {
-        data.subject = 'New order — ' + data.product + ' · ' + data.size + ' × ' + data.quantity + ' · ' + data.total;
+        data.subject = 'New order — ' + data.product + ' · ' + data.size + (data.frame ? ' · ' + data.frame + ' frame' : '') + ' × ' + data.quantity + ' · ' + data.total;
+        if (!data.frame) delete data.frame;
       } else if (data.topic && data.topic.trim()) { data.topic = data.topic.trim(); data.subject = data.subject + ': ' + data.topic; } else { data.topic = 'Not specified'; }
       panel.querySelector('[data-build-name]').textContent = data.name.trim().split(' ')[0];
       form.hidden = true;
@@ -497,6 +501,8 @@
   var prod = document.querySelector('.product');
   if (prod) {
     var PRICE = 30000;
+    var PNAME = prod.getAttribute('data-product-name') || 'Alhamdulillah Tee';
+    var SLABEL = prod.hasAttribute('data-size-label') ? prod.getAttribute('data-size-label') : 'Size ';
     // Fallback rates (NGN per unit, CBN 2 Nov 2026) used only if the live rate can’t load
     var FALLBACK = { USD: 1347.94, GBP: 1809.34, EUR: 1512.26, CAD: 965, GHS: 89 };
     var SYM = { NGN: '₦', USD: '$', GBP: '£', EUR: '€', CAD: 'CA$', GHS: 'GH₵' };
@@ -513,6 +519,8 @@
     function refresh() { try { refreshInner(); } catch (err) { if (window.console) console.warn('price update', err); } }
     function refreshInner() {
       var sel = prod.querySelector('input[name="size"]:checked') || prod.querySelector('input[name="size"]');
+      PRICE = parseInt(sel.getAttribute('data-price'), 10) || PRICE;
+      var fr = prod.querySelector('input[name="frame"]:checked');
       var q = Math.max(1, Math.min(10, parseInt(qtyIn.value, 10) || 1)); qtyIn.value = q;
       var cur = curSel(), total = PRICE * q;
       prod.querySelector('[data-price-main]').textContent = money(PRICE, cur);
@@ -526,9 +534,10 @@
         var perUnit = rates && rates[cur] ? 1 / rates[cur] : FALLBACK[cur];
         rateEl.textContent = '1 ' + cur + ' = ' + ngn(perUnit).replace('₦', '₦') + (live && ratesAt ? ' · live rate, updated ' + ratesAt : ' · approximate rate') + '. You pay in naira (' + ngn(total) + ').';
       }
-      window.__blaccOrder = { size: sel.value, qty: q, total: ngn(total), view: cur, viewTotal: totalShown };
+      window.__blaccOrder = { name: PNAME, sizeLabel: SLABEL, size: sel.value, frame: fr ? fr.value : '', qty: q, total: ngn(total), view: cur, viewTotal: totalShown };
     }
-    prod.querySelectorAll('input[name="size"]').forEach(function (r) { r.addEventListener('change', refresh); });
+    prod.querySelectorAll('input[name="size"], input[name="frame"]').forEach(function (r) { r.addEventListener('change', refresh); });
+    prod.querySelectorAll('.frm').forEach(function (lab) { lab.addEventListener('click', function () { var inp = lab.querySelector('input'); if (inp && !inp.checked) inp.checked = true; setTimeout(refresh, 0); }); });
     function onCur() { refresh(); try { localStorage.setItem('blacc_cur', curSel()); } catch (e) {} }
     prod.querySelectorAll('input[name="currency"]').forEach(function (r) { r.addEventListener('change', onCur); r.addEventListener('input', onCur); });
     // Belt and braces for mobile browsers: tapping the chip itself always selects and updates
