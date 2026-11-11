@@ -117,7 +117,7 @@
     document.body.classList.remove('build-open');
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
-  var panels = { build: document.getElementById('build'), hello: document.getElementById('hello'), order: document.getElementById('order') };
+  var panels = { build: document.getElementById('build'), hello: document.getElementById('hello'), order: document.getElementById('order'), beat: document.getElementById('beat') };
   document.querySelectorAll('[data-build-open]').forEach(function (el) { el.addEventListener('click', function (e) { openPanel(panels.build, e); }); });
   document.querySelectorAll('[data-hello-open]').forEach(function (el) { el.addEventListener('click', function (e) { openPanel(panels.hello, e); }); });
   document.querySelectorAll('[data-order-open]').forEach(function (el) { el.addEventListener('click', function (e) {
@@ -140,6 +140,50 @@
     f.hidden = false; p.querySelector('.build__done').hidden = true;
     openPanel(p, e);
   }); });
+  /* Beats: licence picker, preview player, order panel */
+  document.querySelectorAll('.beat[data-beat]').forEach(function (bt) {
+    var name = bt.getAttribute('data-beat');
+    var pick = function () { return bt.querySelector('.beat__lics input:checked'); };
+    var paint = function () {
+      var c = pick(); var lbl = c.getAttribute('data-lic-label');
+      bt.querySelector('[data-beat-total]').textContent = lbl === 'Offer' ? 'Make an offer' : lbl;
+      bt.querySelector('[data-beat-open]').firstChild.nodeValue = lbl === 'Offer' ? '' : 'Buy licence · ';
+    };
+    bt.querySelectorAll('.beat__lics input').forEach(function (r) { r.addEventListener('change', paint); });
+    bt.querySelectorAll('.beat__lics label').forEach(function (l) { l.addEventListener('click', function () { setTimeout(paint, 0); }); });
+    paint();
+    var au = bt.querySelector('audio'), playB = bt.querySelector('[data-beat-play]'), seek = bt.querySelector('[data-beat-seek]'), line = bt.querySelector('[data-beat-line]');
+    var fmt = function (t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); };
+    playB.addEventListener('click', function () {
+      document.querySelectorAll('.beat audio').forEach(function (o) { if (o !== au) o.pause(); });
+      if (au.paused) au.play().catch(function () {}); else au.pause();
+    });
+    au.addEventListener('play', function () { bt.classList.add('is-playing'); playB.setAttribute('aria-label', 'Pause preview of ' + name); });
+    au.addEventListener('pause', function () { bt.classList.remove('is-playing'); playB.setAttribute('aria-label', 'Play preview of ' + name); });
+    au.addEventListener('loadedmetadata', function () { bt.querySelector('[data-beat-dur]').textContent = fmt(au.duration); });
+    au.addEventListener('timeupdate', function () {
+      if (!au.duration) return;
+      var pc = au.currentTime / au.duration * 100; line.style.width = pc + '%'; seek.setAttribute('aria-valuenow', Math.round(pc));
+      bt.querySelector('[data-beat-cur]').textContent = fmt(au.currentTime);
+    });
+    au.addEventListener('ended', function () { au.currentTime = 0; });
+    var seekTo = function (x) { var b = seek.getBoundingClientRect(); var f = Math.max(0, Math.min(1, (x - b.left) / b.width)); if (au.duration) au.currentTime = f * au.duration; else { au.addEventListener('loadedmetadata', function o() { au.removeEventListener('loadedmetadata', o); au.currentTime = f * au.duration; }); au.play().catch(function () {}); } };
+    seek.addEventListener('click', function (e) { seekTo(e.clientX); });
+    seek.addEventListener('keydown', function (e) { if (!au.duration) return; if (e.key === 'ArrowRight') au.currentTime = Math.min(au.duration, au.currentTime + 5); else if (e.key === 'ArrowLeft') au.currentTime = Math.max(0, au.currentTime - 5); });
+    bt.querySelector('[data-beat-open]').addEventListener('click', function (e) {
+      var p = panels.beat; if (!p) return;
+      var c = pick(), lic = c.value, lbl = c.getAttribute('data-lic-label'), f = p.querySelector('form');
+      f.querySelector('input[name="beat"]').value = name;
+      f.querySelector('input[name="licence"]').value = lic;
+      f.querySelector('input[name="price"]').value = lbl === 'Offer' ? 'Offer (see notes)' : lbl + ' USD';
+      p.querySelector('[data-beat-summary]').textContent = name + ' · ' + lic + (lbl === 'Offer' ? ' · Tell us your offer below' : ' · ' + lbl);
+      var nl = p.querySelector('[data-beat-notes-label]'), ta = f.querySelector('textarea[name="notes"]');
+      if (lbl === 'Offer') { nl.innerHTML = 'Your offer and plans for the beat'; ta.required = true; } else { nl.innerHTML = 'Notes <span class="opt">(optional)</span>'; ta.required = false; }
+      au.pause();
+      f.hidden = false; p.querySelector('.build__done').hidden = true; p.querySelector('.build__error').hidden = true;
+      openPanel(p, e);
+    });
+  });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     Object.keys(panels).forEach(function (k) { if (panels[k] && !panels[k].hidden) closePanel(panels[k]); });
@@ -167,7 +211,9 @@
         var about = [].map.call(form.querySelectorAll('input[name="about"]:checked'), function (i) { return i.value; });
         data.about = about.length ? about.join(', ') : 'Not specified';
       }
-      if (form.hasAttribute('data-order')) {
+      if (form.hasAttribute('data-beatform')) {
+        data.subject = 'New beat order — ' + data.beat + ' · ' + data.licence + ' · ' + data.price;
+      } else if (form.hasAttribute('data-order')) {
         data.subject = 'New order — ' + data.product + ' · ' + data.size + ' × ' + data.quantity + ' · ' + data.total;
       } else if (data.topic && data.topic.trim()) { data.topic = data.topic.trim(); data.subject = data.subject + ': ' + data.topic; } else { data.topic = 'Not specified'; }
       panel.querySelector('[data-build-name]').textContent = data.name.trim().split(' ')[0];
