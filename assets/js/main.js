@@ -631,7 +631,7 @@
       var t = n.toLocaleString('en');
       if (n >= 1000) {
         var k = n / 1000, d = k < 10 ? 2 : k < 100 ? 1 : 0, f = Math.pow(10, d);
-        t = (Math.floor(k * f + 1e-6) / f).toFixed(d).replace(/\.?0+$/, '') + 'K';
+        t = (Math.floor(k * f + 1e-6) / f).toFixed(d); if (d) t = t.replace(/0+$/, '').replace(/\.$/, ''); t += 'K';
       }
       return t + (n === 1 ? ' play' : ' plays');
     };
