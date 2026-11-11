@@ -248,6 +248,8 @@
   };
   var H = store('pqt_host') || JSON.parse(JSON.stringify(DEF));
   Object.keys(DEF).forEach(function (k) { if (H[k] == null) H[k] = JSON.parse(JSON.stringify(DEF[k])); });
+  // Hosts still on the first 40 sample words get the bigger sample list automatically
+  if (window.PQT_SAMPLE_WORDS && H.wordsTxt === window.PQT_SAMPLE_WORDS.split('\n').slice(0, 40).join('\n')) H.wordsTxt = window.PQT_SAMPLE_WORDS;
   var WORDS = parseWords(H.wordsTxt), BOARDS = parseBoards(H.boardsTxt);
   if (!H.words.deck.length || H.words.deck.length !== WORDS.length) { H.words.deck = shuffle(WORDS.map(function (_, i) { return i; })); H.words.pos = 0; }
   if (H.timer.running && H.timer.endsAt) { H.timer.remaining = Math.max(0, H.timer.endsAt - Date.now()); if (!H.timer.remaining) H.timer.running = false; }

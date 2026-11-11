@@ -723,6 +723,48 @@
     window.addEventListener('hashchange', function () { var h = location.hash.replace('#', ''); if (!goItem(h) && document.querySelector('[data-cat-panel="' + h + '"]')) showCat(h, false); });
   }
 
+
+  /* ---------- Homepage music: Body & Soul starts on the first tap/click/key ---------- */
+  var bgmBtn = document.querySelector('[data-bgm]');
+  if (bgmBtn) (function () {
+    var KEY = 'blacc_bgm', VOL = 0.55;
+    var off = false; try { off = localStorage.getItem(KEY) === 'off'; } catch (e) {}
+    var au = new Audio(bgmBtn.getAttribute('data-src')); au.loop = true; au.preload = 'auto'; au.volume = 0;
+    var started = false, fadeT = null, pausedByOther = false;
+    function fade(to, ms, done) {
+      clearInterval(fadeT); var from = au.volume, t0 = Date.now();
+      fadeT = setInterval(function () { var k = Math.min(1, (Date.now() - t0) / ms); au.volume = Math.max(0, Math.min(1, from + (to - from) * k)); if (k >= 1) { clearInterval(fadeT); if (done) done(); } }, 40);
+    }
+    function paint() {
+      var on = !off && !au.paused;
+      bgmBtn.classList.toggle('is-on', on); bgmBtn.classList.toggle('is-off', off);
+      bgmBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      bgmBtn.setAttribute('aria-label', off ? 'Play music: Body & Soul by Bemshima' : 'Turn music off');
+    }
+    function start() { if (off) return; var pr = au.play(); if (pr && pr.then) pr.then(function () { started = true; fade(VOL, 2000); paint(); }).catch(function () {}); else { started = true; fade(VOL, 2000); } paint(); }
+    function stop(save) { fade(0, 500, function () { au.pause(); paint(); }); if (save) { off = true; try { localStorage.setItem(KEY, 'off'); } catch (e) {} } paint(); }
+    function firstGesture(e) {
+      if (e && e.target && e.target.closest && e.target.closest('[data-bgm],[data-player-open],.player-modal')) return;
+      if (!started && !off) start();
+      ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { document.removeEventListener(ev, firstGesture, true); });
+    }
+    ['pointerdown', 'keydown', 'touchend'].forEach(function (ev) { document.addEventListener(ev, firstGesture, true); });
+    bgmBtn.addEventListener('click', function () {
+      if (!off && !au.paused) { stop(true); return; }
+      off = false; try { localStorage.removeItem(KEY); } catch (e) {}
+      start();
+    });
+    // Step aside when something else plays: other audio/video, or the song player pop-up
+    document.addEventListener('play', function (e) { if (e.target !== au && !au.paused) { pausedByOther = true; fade(0, 300, function () { au.pause(); paint(); }); } }, true);
+    var pm = document.getElementById('player');
+    if (pm && 'MutationObserver' in window) new MutationObserver(function () {
+      if (!pm.hidden && !au.paused) { pausedByOther = true; fade(0, 300, function () { au.pause(); paint(); }); }
+      else if (pm.hidden && pausedByOther && !off) { pausedByOther = false; start(); }
+    }).observe(pm, { attributes: true, attributeFilter: ['hidden'] });
+    document.addEventListener('visibilitychange', function () { if (document.hidden && !au.paused) { au.pause(); bgmBtn.dataset.resume = '1'; } else if (!document.hidden && bgmBtn.dataset.resume && !off) { delete bgmBtn.dataset.resume; au.play().catch(function () {}); } paint(); });
+    paint();
+  })();
+
   /* ---------- Shop: old #links go to the new pages ---------- */
   var shopHome = document.querySelector('[data-shop-redirects]');
   if (shopHome && location.hash) {
