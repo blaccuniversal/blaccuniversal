@@ -543,8 +543,8 @@
       var d = mt[mi];
       q('[data-h-title]').textContent = '“' + d.title + '”';
       q('[data-song]').textContent = d.title;
-      q('[data-feat-label]').textContent = d.feat ? 'Featuring' : 'From';
-      q('[data-feat]').textContent = d.feat || d.from || 'Bemshima';
+      q('[data-feat-label]').textContent = d.with ? 'With' : d.feat ? 'Featuring' : 'From';
+      q('[data-feat]').textContent = d.with || d.feat || d.from || 'Bemshima';
       q('[data-cover]').src = d.cover;
       q('[data-count-t]').textContent = (mi < 9 ? '0' : '') + (mi + 1);
       q('[data-cur]').textContent = '0:00'; q('[data-dur]').textContent = d.dur || '';
