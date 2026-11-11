@@ -174,6 +174,91 @@
     },
     {
       "section": "instrumentals",
+      "slug": "midas",
+      "name": "MIDAS",
+      "card_img": "/assets/img/shop/midas.webp",
+      "card_meta": "Free beat tape · 10 instrumentals",
+      "card_price": "Free",
+      "title": "MIDAS — free beat tape by Bemshima",
+      "desc": "MIDAS: Made In Desperate Attempts at Success. 10 free instrumentals by Bemshima. Free for non-profit use. Credit: Prod. by Bemshima.",
+      "img": "/assets/img/shop/og-midas.jpg",
+      "cover": "/assets/img/shop/midas.webp",
+      "player_from": "MIDAS · Free",
+      "cta": "Download free",
+      "tracks": [
+        {
+          "title": "C.O.P.",
+          "bpm": 77,
+          "dur": "4:07",
+          "src": "/assets/audio/tape/midas/01-c-o-p.mp3"
+        },
+        {
+          "title": "Ensemble",
+          "bpm": 70,
+          "dur": "4:51",
+          "src": "/assets/audio/tape/midas/02-ensemble.mp3"
+        },
+        {
+          "title": "Niua Money",
+          "bpm": 104,
+          "dur": "3:10",
+          "src": "/assets/audio/tape/midas/03-niua-money.mp3"
+        },
+        {
+          "title": "Groove Get In",
+          "bpm": 117,
+          "dur": "3:58",
+          "src": "/assets/audio/tape/midas/04-groove-get-in.mp3"
+        },
+        {
+          "title": "Kalkulate",
+          "bpm": 110,
+          "dur": "3:05",
+          "src": "/assets/audio/tape/midas/05-kalkulate.mp3"
+        },
+        {
+          "title": "Niu Money",
+          "bpm": 104,
+          "dur": "2:58",
+          "src": "/assets/audio/tape/midas/06-niu-money.mp3"
+        },
+        {
+          "title": "Long Time",
+          "bpm": 105,
+          "dur": "1:24",
+          "src": "/assets/audio/tape/midas/07-long-time.mp3"
+        },
+        {
+          "title": "Eko Vibes",
+          "bpm": 96,
+          "dur": "2:12",
+          "src": "/assets/audio/tape/midas/08-eko-vibes.mp3"
+        },
+        {
+          "title": "Destined",
+          "bpm": 68,
+          "dur": "5:34",
+          "src": "/assets/audio/tape/midas/09-destined.mp3"
+        },
+        {
+          "title": "Ye",
+          "bpm": 101,
+          "dur": "2:14",
+          "src": "/assets/audio/tape/midas/10-ye.mp3"
+        }
+      ],
+      "tape": {
+        "alt": "MIDAS cover: gold MIDAS lettering over a studio mixing desk",
+        "w": 700,
+        "h": 700,
+        "meta": "Made In Desperate Attempts at Success · Bemshima · 10 instrumentals · 34 min",
+        "zip": "/assets/audio/tape/midas.zip",
+        "zipname": "Bemshima - MIDAS.zip",
+        "zipsize": "51 MB"
+      }
+    },
+    {
+      "section": "instrumentals",
       "slug": "take-em-to-war",
       "partial": "beat",
       "name": "Take Em To War",
