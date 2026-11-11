@@ -1009,3 +1009,21 @@ body:has(.page--light){background:#e9e8e6}
 .mus-card.is-single .mus-nav .icon-btn{visibility:hidden}
 .tl__dur{font-size:13px;color:#666;font-variant-numeric:tabular-nums}
 .tl__n{flex-shrink:0}
+
+/* Music card: cleaner, lighter header */
+.mus-head{display:flex;flex-direction:column;gap:10px}
+.mus-head .mus-eyebrow{font-weight:500;letter-spacing:.18em;color:#777}
+.mus-card .mus-title{font-size:clamp(36px,4.4vw,64px);font-weight:300;letter-spacing:-.035em;line-height:1}
+.mus-by{margin:0;font-size:15px;color:#555}
+.mus-by [data-feat-label]{color:#999}
+.mus-card .mus-meta{gap:10px}
+.mus-card .mus-cover{width:clamp(104px,9vw,128px);height:clamp(104px,9vw,128px);box-shadow:0 18px 26px -16px rgba(0,0,0,.45)}
+.mus-card .mus-player{max-width:440px}
+.mus-links{align-items:center;gap:10px 24px}
+.mus-links__label{margin:0;flex-basis:100%;font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:#777}
+.mus-links a{gap:8px}
+.mus-links a svg{width:18px;height:18px}
+.mus-links strong{font-size:14px;font-weight:500}
+@media (max-width:900px){.mus-card .mus-title{font-size:clamp(32px,9vw,44px)}}
+@media (min-width:901px){.mus-card__text{min-height:inherit;justify-content:center;box-sizing:border-box}}
+@media (max-width:900px){.mus-links{gap:10px 18px}}

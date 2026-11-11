@@ -541,10 +541,12 @@
     function show(i, keepPlaying) {
       mi = (i + mt.length) % mt.length;
       var d = mt[mi];
-      q('[data-h-title]').textContent = '“' + d.title + '”';
-      q('[data-song]').textContent = d.title;
-      q('[data-feat-label]').textContent = d.with ? 'With' : d.feat ? 'Featuring' : 'From';
-      q('[data-feat]').textContent = d.with || d.feat || d.from || 'Bemshima';
+      q('[data-h-title]').textContent = d.title;
+      q('[data-from]').textContent = d.from || 'Bemshima';
+      var who = d.with || d.feat;
+      q('[data-feat-wrap]').hidden = !who;
+      q('[data-feat-label]').textContent = d.with ? 'with' : 'feat.';
+      q('[data-feat]').textContent = who || '';
       q('[data-cover]').src = d.cover;
       q('[data-count-t]').textContent = (mi < 9 ? '0' : '') + (mi + 1);
       q('[data-cur]').textContent = '0:00'; q('[data-dur]').textContent = d.dur || '';
