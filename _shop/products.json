@@ -106,7 +106,71 @@
       ],
       "cover": "/assets/img/shop/celestial-rendition.webp",
       "player_from": "Celestial Rendition · Free",
-      "cta": "Download free"
+      "cta": "Download free",
+      "tape": {
+        "alt": "Celestial Rendition cover: keyboards and a Juno-106 synth in black and white",
+        "w": 693,
+        "h": 721,
+        "meta": "Bemshima · 8 instrumentals · 27 min",
+        "zip": "/assets/audio/tape/celestial-rendition.zip",
+        "zipname": "Bemshima - Celestial Rendition.zip",
+        "zipsize": "28 MB"
+      }
+    },
+    {
+      "section": "instrumentals",
+      "slug": "the-unsung-piper",
+      "name": "the.unsung.piper",
+      "card_img": "/assets/img/shop/the-unsung-piper.webp",
+      "card_meta": "Free beat tape · 5 instrumentals",
+      "card_price": "Free",
+      "title": "the.unsung.piper — free beat tape by Bemshima",
+      "desc": "5 free instrumentals by Bemshima. Free for non-profit use. Credit: Prod. by Bemshima.",
+      "img": "/assets/img/shop/og-the-unsung-piper.jpg",
+      "cover": "/assets/img/shop/the-unsung-piper.webp",
+      "player_from": "the.unsung.piper · Free",
+      "cta": "Download free",
+      "tracks": [
+        {
+          "title": "Ensemble",
+          "bpm": 70,
+          "dur": "1:00",
+          "src": "/assets/audio/tape/the-unsung-piper/01-ensemble.mp3"
+        },
+        {
+          "title": "The Dealer’s Theme",
+          "bpm": 98,
+          "dur": "3:00",
+          "src": "/assets/audio/tape/the-unsung-piper/02-the-dealers-theme.mp3"
+        },
+        {
+          "title": "Puss",
+          "bpm": 100,
+          "dur": "3:25",
+          "src": "/assets/audio/tape/the-unsung-piper/03-puss.mp3"
+        },
+        {
+          "title": "Ms. Badu’s Hairdo",
+          "bpm": 100,
+          "dur": "4:21",
+          "src": "/assets/audio/tape/the-unsung-piper/04-ms-badus-hairdo.mp3"
+        },
+        {
+          "title": "Locked Out",
+          "bpm": 73,
+          "dur": "4:25",
+          "src": "/assets/audio/tape/the-unsung-piper/05-locked-out.mp3"
+        }
+      ],
+      "tape": {
+        "alt": "the.unsung.piper cover: copper title on a dark grunge texture",
+        "w": 800,
+        "h": 800,
+        "meta": "Bemshima · 5 instrumentals · 16 min",
+        "zip": "/assets/audio/tape/the-unsung-piper.zip",
+        "zipname": "Bemshima - the.unsung.piper.zip",
+        "zipsize": "18 MB"
+      }
     },
     {
       "section": "instrumentals",

@@ -37,6 +37,28 @@ IC = {
   'right': '<svg ' + SV + '><path d="M9 5l7 7-7 7"/></svg>',
 }
 
+DL = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10.5l5 5 5-5M5 19.5h14"/></svg>'
+LINK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3.2-3.2a4.5 4.5 0 0 0-6.4-6.4l-1.1 1.1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3.2 3.2a4.5 4.5 0 0 0 6.4 6.4l1.1-1.1"/></svg>'
+SPLAY = '<svg class="ic-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="ic-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg>'
+
+def tape_html(it):
+    t = it['tape']
+    rows = ''
+    for i, tr in enumerate(it['tracks']):
+        fname = '%02d Bemshima - %s.mp3' % (i + 1, tr['title'].replace("'", '').replace('’', ''))
+        rows += ('<li class="tape__row" data-bp-row="' + str(i) + '"><button class="tape__play" type="button" data-bp-play="' + str(i) + '" aria-label="Play ' + esc(tr['title']) + '">' + SPLAY + '</button>'
+                 '<span class="tape__n">%02d</span>' % (i + 1) + '<span class="tape__t">' + esc(tr['title']) + '<i class="tape__line" aria-hidden="true"><b></b></i></span>'
+                 '<span class="tape__bpm">' + str(round(float(tr['bpm']))) + ' BPM</span><span class="tape__d">' + tr['dur'] + '</span>'
+                 '<a class="tape__dl" href="' + tr['src'] + '" download="' + esc(fname) + '" aria-label="Download ' + esc(tr['title']) + '" title="Download">' + DL + '</a></li>')
+    return ('<section class="tape" aria-label="' + esc(it['name']) + ', free beat tape" id="' + it['slug'] + '" data-item>\n'
+            '          <img class="tape__cover" src="' + it['cover'] + '" alt="' + esc(t['alt']) + '" width="' + str(t['w']) + '" height="' + str(t['h']) + '">\n'
+            '          <div class="tape__info">\n            <p class="product__badge">Free beat tape</p>\n'
+            '            <div class="item-head"><h2 class="product__name">' + esc(it['name']) + '</h2><button class="share-btn" type="button" data-share="{{share}}" data-share-title="' + esc(it['title']) + '">' + LINK + '<span>Copy link</span></button></div>\n'
+            '            <p class="beat__meta">' + esc(t['meta']) + '</p>\n'
+            '            <p class="tape__terms">Free for non-profit use. Credit: <b>Prod. by Bemshima</b>. For releases that make money, buy a lease.</p>\n'
+            '            <a class="btn tape__get" href="' + t['zip'] + '" download="' + esc(t['zipname']) + '">' + DL + 'Download the tape · ' + t['zipsize'] + '</a>\n'
+            '            {{player}}\n            <ol class="tape__list">' + rows + '</ol>\n          </div>\n        </section>')
+
 def queue(items):
     q = []
     for it in items:
@@ -135,7 +157,7 @@ for s in SECTIONS:
 for it in ITEMS:
     s = SEC[it['section']]
     url = '/shop/' + s['slug'] + '/' + it['slug'] + '/'
-    part = P(it['partial']).replace('{{share}}', SITE + url).replace('{{player}}', bplayer(queue([it]), compact=True))
+    part = (tape_html(it) if it.get('tape') else P(it['partial'])).replace('{{share}}', SITE + url).replace('{{player}}', bplayer(queue([it]), compact=True))
     part = re.sub(r'<h2 class="product__name">(.*?)</h2>', r'<h1 class="product__name">\1</h1>', part, count=1)
     body = ('  <main class="shop shop--item gutter" id="top">\n    <div class="wrap">\n'
             '      <p class="eyebrow crumbs"><a class="crumb" href="/shop/">Shop</a><span aria-hidden="true">/</span><a class="crumb" href="/shop/' + s['slug'] + '/">' + s['name'] + '</a></p>\n'
