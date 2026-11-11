@@ -511,4 +511,33 @@
     });
     showNp();
   }
+
+  /* ---------- Music page: featured-song switcher ---------- */
+  var mus = document.querySelector('.mus-card');
+  if (mus) {
+    var mt = [].slice.call(mus.querySelectorAll('[data-track]')), mi = 0;
+    function musShow() {
+      var d = mt[mi].dataset, n = mt.length;
+      mus.querySelector('[data-h-title]').textContent = '“' + d.title + '”';
+      mus.querySelector('[data-song]').textContent = d.title;
+      mus.querySelector('[data-feat]').textContent = (d.credit.split(' · ')[1] || 'Solo');
+      mus.querySelector('[data-cover]').src = d.cover;
+      mus.querySelector('[data-count-t]').textContent = (mi < 9 ? '0' : '') + (mi + 1);
+      var pct = ((mi + 1) / n * 100) + '%';
+      mus.querySelector('[data-line]').style.width = pct; mus.querySelector('[data-knob]').style.left = pct;
+      mus.querySelector('[data-cover-btn]').setAttribute('data-player-open', mi);
+      mus.querySelector('[data-cover-btn]').setAttribute('aria-label', 'Play ' + d.title);
+      mus.querySelector('[data-ring]').setAttribute('data-player-open', mi);
+    }
+    mus.querySelector('[data-prev-t]').addEventListener('click', function () { mi = (mi - 1 + mt.length) % mt.length; musShow(); });
+    mus.querySelector('[data-next-t]').addEventListener('click', function () { mi = (mi + 1) % mt.length; musShow(); });
+    // the player listeners read data-player-open at bind time, so route these two through the current index
+    ['[data-cover-btn]', '[data-ring]'].forEach(function (sel) {
+      mus.querySelector(sel).addEventListener('click', function (e) {
+        e.stopImmediatePropagation();
+        var tl = document.querySelector('.tl__play[data-player-open="' + mi + '"]'); if (tl) tl.click();
+      }, true);
+    });
+    musShow();
+  }
 })();

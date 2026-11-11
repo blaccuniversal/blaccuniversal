@@ -905,3 +905,85 @@ body.build-open{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.poster__glow{animation:none}}
 .poster__me{height:78%}
 @media (max-width:600px){.poster__me{height:68%}}
+
+/* ---------- Bemshima: music page (light card, ember circle) ---------- */
+.page--light{background:#e9e8e6;color:#111}
+body:has(.page--light){background:#e9e8e6}
+.page--light .topbar{position:absolute}
+.page--light .topbar .brand,.page--light .topbar .menu-btn{color:#111}
+.page--light .topbar .brand svg g{fill:#111}
+.page--light .topbar .brand span{color:#111}
+.mus a{color:#111}
+.mus{--ember:#c94a1c}
+.mus-hero{padding-top:clamp(92px,10vw,120px);padding-bottom:clamp(28px,4vw,48px)}
+.mus-card{position:relative;overflow:hidden;background:#efeeec;border:1px solid #1a1a1a;border-radius:14px;min-height:clamp(560px,48vw,680px);box-shadow:0 30px 60px -40px rgba(0,0,0,.35)}
+.mus-card__circle{position:absolute;right:-6%;top:50%;width:min(62%,720px);aspect-ratio:1/1;transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 40% 40%,#e0602c 0%,var(--ember) 55%,#9e3511 100%)}
+.mus-card__me{position:absolute;right:4%;bottom:0;height:96%;width:auto;max-width:none;filter:drop-shadow(-24px 30px 40px rgba(0,0,0,.35))}
+.mus-card__text{position:relative;z-index:2;width:min(52%,560px);padding:clamp(40px,5vw,72px) 0 clamp(36px,4vw,56px) clamp(28px,5vw,80px);display:flex;flex-direction:column;gap:clamp(24px,3vw,40px)}
+.mus-eyebrow{margin:0;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#111}
+.mus-title{margin:0;font-size:clamp(34px,4.2vw,58px);font-weight:500;letter-spacing:-.025em;line-height:1.05;color:#111}
+.mus-player{display:flex;align-items:center;gap:clamp(18px,2.4vw,32px)}
+.mus-cover{position:relative;flex-shrink:0;width:clamp(120px,12vw,168px);height:clamp(120px,12vw,168px);padding:0;border:0;background:#111;cursor:pointer;box-shadow:0 22px 30px -14px rgba(160,40,10,.55)}
+.mus-cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.mus-cover__play{position:absolute;right:8px;bottom:8px;width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#111;border-radius:50%}
+.mus-meta{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:12px}
+.mus-song{margin:0;font-size:20px;font-weight:500;color:#111}
+.mus-line{position:relative;height:2px;background:#bdbab6}
+.mus-line span{position:absolute;left:0;top:0;bottom:0;background:var(--ember);transition:width .35s ease}
+.mus-line i{position:absolute;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border:2px solid var(--ember);border-radius:50%;background:#efeeec;transition:left .35s ease}
+.mus-small{margin:0;display:flex;flex-direction:column;font-size:12px;color:#111}
+.mus-small span:first-child{font-weight:600}
+.mus-small span:last-child{color:#555}
+.mus-nav{display:flex;align-items:center;gap:2px;margin-left:-12px}
+.mus-nav .icon-btn{color:#111;background:none;border:0;cursor:pointer}
+.mus-count{font-size:12px;font-weight:600;letter-spacing:.14em;color:#555}
+.mus-links{display:flex;flex-wrap:wrap;gap:12px 32px}
+.mus-links a{display:inline-flex;align-items:center;gap:10px;color:#111;text-decoration:none}
+.mus-links a span{display:flex;flex-direction:column;font-size:12px;color:#555;line-height:1.3}
+.mus-links strong{font-size:17px;font-weight:600;color:#111}
+.mus-ring{position:absolute;z-index:3;right:clamp(20px,3vw,40px);bottom:clamp(20px,3vw,40px);width:56px;height:56px;display:inline-flex;align-items:center;justify-content:center;border:1.5px solid #fff;border-radius:50%;background:rgba(0,0,0,.18);color:#fff;cursor:pointer;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.mus-sec{padding-top:clamp(40px,5vw,72px);padding-bottom:clamp(40px,5vw,72px);border-top:1px solid #d3d1ce}
+.mus-sec__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,3fr);gap:clamp(16px,4vw,64px)}
+.mus-lead{margin:0;font-size:clamp(24px,2.6vw,36px);font-weight:500;letter-spacing:-.02em;line-height:1.2;color:#111}
+.mus-copy{margin:16px 0 0;font-size:16px;line-height:1.7;color:#444;max-width:640px}
+.mus-aside{font-style:italic;color:#111;font-size:18px}
+.page--light .tl{border-top-color:#d3d1ce}
+.page--light .tl__row{border-bottom-color:#d3d1ce}
+.page--light .tl__play{background:var(--ember,#c94a1c);color:#fff}
+.page--light .tl__t{color:#111}
+.page--light .tl__t span,.page--light .tl__n{color:#666}
+.page--light .tl__ext{color:#333}
+.mus-work{display:flex;flex-direction:column;gap:22px}
+.mus-btn{background:#111;color:#fff}
+.mus-btn:hover{background:#333;color:#fff}
+.mus-btn--ghost{display:inline-flex;align-items:center;min-height:52px;padding:0 26px;background:transparent;border:1px solid #111;border-radius:2px;color:#111;font-family:inherit;font-size:15px;font-weight:500;cursor:pointer}
+.mus-follow .icon-btn{color:#111}
+.mus-follow .follow__icons{margin-left:-12px}
+@media (max-width:900px){
+  .mus-card{min-height:0;display:flex;flex-direction:column}
+  .mus-card__text{width:auto;padding:28px 22px 24px;order:2}
+  .mus-card__circle{position:relative;order:1;right:auto;top:auto;transform:none;width:120%;margin:-20% -10% 0;border-radius:0 0 50% 50%;height:auto;aspect-ratio:auto;min-height:340px}
+  .mus-card__me{position:absolute;right:50%;top:0;bottom:auto;height:min(400px,95vw);transform:translateX(50%)}
+  .mus-ring{top:min(330px,82vw);bottom:auto}
+  .mus-sec__grid{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:600px){
+  .mus-hero{padding-top:80px}
+  .mus-card{border-radius:10px}
+  .mus-title{font-size:30px}
+  .mus-cover{width:104px;height:104px}
+  .mus-song{font-size:17px}
+  .mus-links{gap:12px 22px}
+  .mus-links strong{font-size:15px}
+  .mus-copy{font-size:15px}
+}
+
+.page--light .menu .brand svg g{fill:#fff}
+@media (max-width:900px){
+  .mus-card{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:clamp(340px,92vw,440px) auto}
+  .mus-card__circle{grid-area:1/1;position:relative;align-self:end;justify-self:center;right:auto;top:auto;transform:none;margin:0;width:min(88vw,420px);height:auto;aspect-ratio:1/1;border-radius:50%;min-height:0;margin-bottom:-14%}
+  .mus-card__me{grid-area:1/1;position:relative;right:auto;top:auto;bottom:auto;transform:none;justify-self:center;align-self:end;height:100%;z-index:1}
+  .mus-card__text{grid-area:2/1;order:0;width:auto;padding:24px 20px 24px;background:#efeeec;z-index:2}
+  .mus-ring{grid-area:1/1;position:relative;right:auto;top:auto;bottom:auto;align-self:end;justify-self:end;margin:0 16px 16px 0}
+}
+.mus-ring{background:rgba(17,17,17,.55)}
