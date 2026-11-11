@@ -1,30 +1,137 @@
 {
   "sections": [
-    {"slug": "merch", "name": "Merch", "title": "Merch.", "icon": "icon-merch",
-     "desc": "Merch from BLACC Universal. Limited drops, shipped from Ibadan, Nigeria.",
-     "soon": "", "notify": "More drops are coming. Get notified first."},
-    {"slug": "frames", "name": "Frames", "title": "Frames.", "icon": "icon-frames",
-     "desc": "Framed art from BLACC Universal. Coming soon.",
-     "soon": "Coming soon.", "notify": "Framed pieces are on the way. Get notified when they drop."},
-    {"slug": "instrumentals", "name": "Instrumentals", "title": "Instrumentals.", "icon": "icon-instrumentals",
-     "desc": "Beats and instrumentals by Bemshima: free beat tapes and leases.",
-     "soon": "", "notify": "More beats are on the way. Get notified when they drop."}
+    {
+      "slug": "merch",
+      "name": "Merch",
+      "title": "Merch.",
+      "icon": "icon-merch",
+      "desc": "Merch from BLACC Universal. Limited drops, shipped from Ibadan, Nigeria.",
+      "soon": "",
+      "notify": "More drops are coming. Get notified first."
+    },
+    {
+      "slug": "frames",
+      "name": "Frames",
+      "title": "Frames.",
+      "icon": "icon-frames",
+      "desc": "Framed art from BLACC Universal. Coming soon.",
+      "soon": "Coming soon.",
+      "notify": "Framed pieces are on the way. Get notified when they drop."
+    },
+    {
+      "slug": "instrumentals",
+      "name": "Instrumentals",
+      "title": "Instrumentals.",
+      "icon": "icon-instrumentals",
+      "desc": "Beats and instrumentals by Bemshima: free beat tapes and leases.",
+      "soon": "",
+      "notify": "More beats are on the way. Get notified when they drop."
+    }
   ],
   "items": [
-    {"section": "merch", "slug": "alhamdulillah-tee", "partial": "tee", "name": "Alhamdulillah Tee",
-     "card_img": "/assets/img/shop/alhamdulillah-front.webp", "card_meta": "Limited edition tee", "card_price": "₦30,000",
-     "title": "Alhamdulillah Tee — BLACC Universal",
-     "desc": "Limited-edition black tee with silver “alhamdulillah” script. ₦30,000, sizes M–4XL. Ships from Ibadan.",
-     "img": "/assets/img/shop/og-alhamdulillah-tee.jpg", "old": "alhamdulillah-tee"},
-    {"section": "instrumentals", "slug": "celestial-rendition", "partial": "tape", "name": "Celestial Rendition",
-     "card_img": "/assets/img/shop/celestial-rendition.webp", "card_meta": "Free beat tape · 8 instrumentals", "card_price": "Free",
-     "title": "Celestial Rendition — free beat tape by Bemshima",
-     "desc": "8 free instrumentals by Bemshima. Free for non-profit use. Credit: Prod. by Bemshima.",
-     "img": "/assets/img/shop/og-celestial-rendition.jpg", "old": "celestial-rendition"},
-    {"section": "instrumentals", "slug": "take-em-to-war", "partial": "beat", "name": "Take Em To War",
-     "card_img": "/assets/img/shop/take-em-to-war-card.webp", "card_meta": "Hip-Hop · 85 BPM", "card_price": "From $25",
-     "title": "Take Em To War — beat by Bemshima",
-     "desc": "Hip-hop beat, 85 BPM. Leases from $25: MP3, WAV, WAV + stems, or exclusive.",
-     "img": "/assets/img/shop/og-take-em-to-war.jpg", "old": "take-em-to-war"}
+    {
+      "section": "merch",
+      "slug": "alhamdulillah-tee",
+      "partial": "tee",
+      "name": "Alhamdulillah Tee",
+      "card_img": "/assets/img/shop/alhamdulillah-front.webp",
+      "card_meta": "Limited edition tee",
+      "card_price": "₦30,000",
+      "title": "Alhamdulillah Tee — BLACC Universal",
+      "desc": "Limited-edition black tee with silver “alhamdulillah” script. ₦30,000, sizes M–4XL. Ships from Ibadan.",
+      "img": "/assets/img/shop/og-alhamdulillah-tee.jpg",
+      "old": "alhamdulillah-tee"
+    },
+    {
+      "section": "instrumentals",
+      "slug": "celestial-rendition",
+      "partial": "tape",
+      "name": "Celestial Rendition",
+      "card_img": "/assets/img/shop/celestial-rendition.webp",
+      "card_meta": "Free beat tape · 8 instrumentals",
+      "card_price": "Free",
+      "title": "Celestial Rendition — free beat tape by Bemshima",
+      "desc": "8 free instrumentals by Bemshima. Free for non-profit use. Credit: Prod. by Bemshima.",
+      "img": "/assets/img/shop/og-celestial-rendition.jpg",
+      "old": "celestial-rendition",
+      "tracks": [
+        {
+          "title": "Sonorous Rendition",
+          "bpm": 95,
+          "dur": "0:22",
+          "src": "/assets/audio/tape/celestial-rendition/01-sonorous-rendition.mp3"
+        },
+        {
+          "title": "This Is Madness",
+          "bpm": 85,
+          "dur": "5:25",
+          "src": "/assets/audio/tape/celestial-rendition/02-this-is-madness.mp3"
+        },
+        {
+          "title": "Coke Boys",
+          "bpm": 90,
+          "dur": "3:57",
+          "src": "/assets/audio/tape/celestial-rendition/03-coke-boys.mp3"
+        },
+        {
+          "title": "Konfidential",
+          "bpm": 110,
+          "dur": "2:42",
+          "src": "/assets/audio/tape/celestial-rendition/04-konfidential.mp3"
+        },
+        {
+          "title": "Dreamin’",
+          "bpm": 88,
+          "dur": "3:30",
+          "src": "/assets/audio/tape/celestial-rendition/05-dreamin.mp3"
+        },
+        {
+          "title": "Gentleman",
+          "bpm": 97,
+          "dur": "3:28",
+          "src": "/assets/audio/tape/celestial-rendition/06-gentleman.mp3"
+        },
+        {
+          "title": "Foes Will Fall",
+          "bpm": 85,
+          "dur": "3:16",
+          "src": "/assets/audio/tape/celestial-rendition/07-foes-will-fall.mp3"
+        },
+        {
+          "title": "Dear Jos",
+          "bpm": 140,
+          "dur": "4:02",
+          "src": "/assets/audio/tape/celestial-rendition/08-dear-jos.mp3"
+        }
+      ],
+      "cover": "/assets/img/shop/celestial-rendition.webp",
+      "player_from": "Celestial Rendition · Free",
+      "cta": "Download free"
+    },
+    {
+      "section": "instrumentals",
+      "slug": "take-em-to-war",
+      "partial": "beat",
+      "name": "Take Em To War",
+      "card_img": "/assets/img/shop/take-em-to-war-card.webp",
+      "card_meta": "Hip-Hop · 85 BPM",
+      "card_price": "From $25",
+      "title": "Take Em To War — beat by Bemshima",
+      "desc": "Hip-hop beat, 85 BPM. Leases from $25: MP3, WAV, WAV + stems, or exclusive.",
+      "img": "/assets/img/shop/og-take-em-to-war.jpg",
+      "old": "take-em-to-war",
+      "tracks": [
+        {
+          "title": "Take Em To War",
+          "bpm": 85,
+          "dur": "0:52",
+          "src": "/assets/audio/beats/take-em-to-war-preview.mp3",
+          "genre": "Hip-Hop"
+        }
+      ],
+      "cover": "/assets/img/shop/take-em-to-war-card.webp",
+      "player_from": "Beat · Preview",
+      "cta": "Buy licence · from $25"
+    }
   ]
 }

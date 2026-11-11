@@ -23,6 +23,54 @@ SEC = {s['slug']: s for s in SECTIONS}
 
 def esc(s): return html.escape(s, quote=True)
 
+SV = 'width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"'
+IC = {
+  'prev': '<svg ' + SV + '><path d="M6 5v14"/><path d="M19 5.5v13L9 12z" fill="currentColor" stroke="none"/></svg>',
+  'next': '<svg ' + SV + '><path d="M18 5v14"/><path d="M5 5.5v13L15 12z" fill="currentColor" stroke="none"/></svg>',
+  'back': '<svg ' + SV + '><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3"/><path d="M4.5 4v4.5H9"/><text x="12" y="15.2" font-size="6.5" font-family="system-ui,sans-serif" font-weight="600" text-anchor="middle" fill="currentColor" stroke="none">10</text></svg>',
+  'fwd': '<svg ' + SV + '><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4v4.5H15"/><text x="12" y="15.2" font-size="6.5" font-family="system-ui,sans-serif" font-weight="600" text-anchor="middle" fill="currentColor" stroke="none">10</text></svg>',
+  'play': '<svg class="ic-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg><svg class="ic-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg>',
+  'swipe': '<svg ' + SV + '><rect x="7" y="5" width="10" height="14" rx="1"/><path d="M3.5 7v10M20.5 7v10"/></svg>',
+  'list': '<svg ' + SV + '><rect x="3.5" y="5" width="4" height="4" rx=".5"/><rect x="3.5" y="15" width="4" height="4" rx=".5"/><path d="M10.5 7h10M10.5 17h10"/></svg>',
+  'grid': '<svg ' + SV + '><rect x="4" y="4" width="6.5" height="6.5" rx=".5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx=".5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx=".5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx=".5"/></svg>',
+  'left': '<svg ' + SV + '><path d="M15 5l-7 7 7 7"/></svg>',
+  'right': '<svg ' + SV + '><path d="M9 5l7 7-7 7"/></svg>',
+}
+
+def queue(items):
+    q = []
+    for it in items:
+        url = '/shop/' + it['section'] + '/' + it['slug'] + '/'
+        for t in it.get('tracks', []):
+            meta = ((t['genre'] + ' · ') if t.get('genre') else '') + str(t['bpm']) + ' BPM'
+            q.append({'src': t['src'], 'title': t['title'], 'cover': it.get('cover', it['card_img']), 'meta': meta,
+                      'from': it.get('player_from', it['name']), 'cta': it.get('cta', 'View'), 'href': url, 'dur': t.get('dur', '0:00')})
+    return q
+
+def bplayer(q, compact=False):
+    if not q: return ''
+    f = q[0]
+    btn = lambda a, lab, ic, cls='': '<button class="bp__btn' + cls + '" type="button" ' + a + ' aria-label="' + lab + '" title="' + lab + '">' + IC[ic] + '</button>'
+    ctl = ('<div class="bp__ctl">' + btn('data-bp-prev', 'Previous track', 'prev') + btn('data-bp-back', 'Back 10 seconds', 'back')
+           + btn('data-bp-toggle', 'Play', 'play', ' bp__play') + btn('data-bp-fwd', 'Forward 10 seconds', 'fwd') + btn('data-bp-next', 'Next track', 'next')
+           + ('' if compact else '<span class="bp__count" data-bp-count>01 / ' + ('%02d' % len(q)) + '</span>') + '</div>')
+    seek = ('<div class="bp__seek" data-bp-seek role="slider" tabindex="0" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-bp-line></span><i data-bp-knob></i></div>'
+            '<p class="bp__time"><span data-bp-cur>0:00</span><span data-bp-dur>' + f['dur'] + '</span></p>')
+    if compact:
+        inner = ('<div class="bp__body"><p class="bp__now"><span data-bp-title>' + esc(f['title']) + '</span><span data-bp-meta>' + esc(f['meta']) + '</span></p>' + seek + ctl + '</div>')
+    else:
+        inner = ('<img class="bp__cover" data-bp-cover src="' + f['cover'] + '" alt="">'
+                 '<div class="bp__body"><p class="eyebrow" data-bp-from>' + esc(f['from']) + '</p><h2 class="bp__title" data-bp-title>' + esc(f['title']) + '</h2>'
+                 '<p class="bp__meta" data-bp-meta>' + esc(f['meta']) + '</p>' + seek + ctl
+                 + '<a class="bp__cta" data-bp-cta href="' + f['href'] + '">' + esc(f['cta']) + ' →</a></div>')
+    return ('<section class="bp' + (' bp--compact' if compact else '') + '" data-bp data-queue="' + esc(json.dumps(q, ensure_ascii=False)) + '" aria-label="Player">' + inner + '</section>')
+
+def viewbar(n):
+    b = lambda v, lab: '<button class="shop-view__btn" type="button" data-view="' + v + '" aria-label="' + lab + '" title="' + lab + '">' + IC[v] + '</button>'
+    return ('      <div class="shop-bar"><span class="shop-bar__count">' + str(n) + (' item' if n == 1 else ' items') + '</span>'
+            '<div class="shop-bar__right"><div class="shop-swipe-nav" data-swipe-nav><button type="button" data-swipe="-1" aria-label="Previous">' + IC['left'] + '</button><button type="button" data-swipe="1" aria-label="Next">' + IC['right'] + '</button></div>'
+            '<div class="shop-view" role="group" aria-label="View">' + b('swipe', 'Swipe') + b('list', 'List') + b('grid', 'Grid') + '</div></div></div>\n')
+
 def page(title, desc, path, img, body, ogtype='website'):
     head = P('head')
     for k, v in {'title': esc(title), 'desc': esc(desc), 'url': SITE + path, 'img': SITE + img, 'ogtype': ogtype}.items():
@@ -51,7 +99,7 @@ def nav(current):
 
 def card(it):
     url = '/shop/' + it['section'] + '/' + it['slug'] + '/'
-    return ('          <a class="shop-card" href="' + url + '"><span class="shop-card__img"><img src="' + it['card_img'] + '" alt="" loading="lazy"></span>'
+    return ('          <a class="shop-card shop-card--' + it['section'] + '" href="' + url + '"><span class="shop-card__img"><img src="' + it['card_img'] + '" alt="" loading="lazy"></span>'
             '<span class="shop-card__name">' + esc(it['name']) + '</span><span class="shop-card__meta">' + esc(it['card_meta']) + '</span>'
             '<span class="shop-card__price">' + esc(it['card_price']) + '</span></a>\n')
 
@@ -75,7 +123,9 @@ for s in SECTIONS:
             '        <p class="eyebrow"><a class="crumb" href="/shop/">Shop</a></p>\n        <h1 class="shop__title">' + esc(s['title']) + '</h1>\n'
             + nav(s['slug']) + '      </div>\n')
     if items:
-        body += '      <div class="shop-cards">\n' + ''.join(card(it) for it in items) + '      </div>\n'
+        q = queue(items)
+        if q: body += '      ' + bplayer(q) + '\n'
+        body += viewbar(len(items)) + '      <div class="shop-cards" data-cards data-view-mode="swipe">\n' + ''.join(card(it) for it in items) + '      </div>\n'
     if s.get('soon'):
         body += '      <p class="shop-soon">' + esc(s['soon']) + '</p>\n'
     body += notify(s['slug'], s['notify']).replace('class="shop__more"', 'class="shop__more' + (' shop__more--soon' if not items else '') + '"') + '    </div>\n'
@@ -85,7 +135,7 @@ for s in SECTIONS:
 for it in ITEMS:
     s = SEC[it['section']]
     url = '/shop/' + s['slug'] + '/' + it['slug'] + '/'
-    part = P(it['partial']).replace('{{share}}', SITE + url)
+    part = P(it['partial']).replace('{{share}}', SITE + url).replace('{{player}}', bplayer(queue([it]), compact=True))
     part = re.sub(r'<h2 class="product__name">(.*?)</h2>', r'<h1 class="product__name">\1</h1>', part, count=1)
     body = ('  <main class="shop shop--item gutter" id="top">\n    <div class="wrap">\n'
             '      <p class="eyebrow crumbs"><a class="crumb" href="/shop/">Shop</a><span aria-hidden="true">/</span><a class="crumb" href="/shop/' + s['slug'] + '/">' + s['name'] + '</a></p>\n'

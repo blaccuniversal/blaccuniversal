@@ -140,6 +140,107 @@
     f.hidden = false; p.querySelector('.build__done').hidden = true;
     openPanel(p, e);
   }); });
+  /* ---------- Shop player: queue, prev/next, ±10s, seek ---------- */
+  document.querySelectorAll('[data-bp]').forEach(function (bp) {
+    var q; try { q = JSON.parse(bp.getAttribute('data-queue')); } catch (e) { return; }
+    if (!q || !q.length) return;
+    var au = new Audio(); au.preload = 'none';
+    var i = 0, loaded = -1, dragging = false;
+    var $b = function (s) { return bp.querySelector(s); };
+    var seek = $b('[data-bp-seek]'), line = $b('[data-bp-line]'), knob = $b('[data-bp-knob]');
+    var rows = [].slice.call(document.querySelectorAll('[data-bp-row]'));
+    var fmt = function (t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); };
+    if (q.length < 2) bp.classList.add('is-single');
+    function setPct(p) { p = Math.max(0, Math.min(100, p || 0)); line.style.width = p + '%'; knob.style.left = p + '%'; seek.setAttribute('aria-valuenow', Math.round(p)); var r = rows[i]; if (r) { var b = r.querySelector('.tape__line b'); if (b) b.style.width = p + '%'; } }
+    function paint() {
+      var on = !au.paused;
+      bp.classList.toggle('is-playing', on);
+      $b('[data-bp-toggle]').setAttribute('aria-label', on ? 'Pause' : 'Play');
+      rows.forEach(function (r, k) { r.classList.toggle('is-cur', k === i && loaded === i); r.classList.toggle('is-playing', k === i && on); });
+    }
+    function show(k) {
+      i = (k + q.length) % q.length; var d = q[i];
+      var t = $b('[data-bp-title]'); if (t) t.textContent = d.title;
+      var m = $b('[data-bp-meta]'); if (m) m.textContent = d.meta;
+      var f = $b('[data-bp-from]'); if (f) f.textContent = d.from;
+      var c = $b('[data-bp-cover]'); if (c && c.getAttribute('src') !== d.cover) c.src = d.cover;
+      var a = $b('[data-bp-cta]'); if (a) { a.textContent = d.cta + ' →'; a.href = d.href; }
+      var n = $b('[data-bp-count]'); if (n) n.textContent = ('0' + (i + 1)).slice(-2) + ' / ' + ('0' + q.length).slice(-2);
+      $b('[data-bp-cur]').textContent = '0:00'; $b('[data-bp-dur]').textContent = d.dur || '0:00';
+      rows.forEach(function (r) { var b = r.querySelector('.tape__line b'); if (b) b.style.width = '0'; });
+      setPct(0);
+    }
+    function load(k, go) {
+      show(k); loaded = i; au.src = q[i].src;
+      if ('mediaSession' in navigator) { try { navigator.mediaSession.metadata = new MediaMetadata({ title: q[i].title, artist: 'Bemshima', album: q[i].from, artwork: [{ src: q[i].cover }] }); } catch (e) {} }
+      if (go) play(); else paint();
+    }
+    function play() {
+      document.querySelectorAll('audio').forEach(function (o) { if (o !== au) o.pause(); });
+      if (window.__bpActive && window.__bpActive !== au) window.__bpActive.pause();
+      window.__bpActive = au;
+      if (loaded !== i) { load(i, true); return; }
+      au.play().catch(function () {});
+    }
+    function toggle() { if (au.paused) play(); else au.pause(); }
+    function skip(s) { if (loaded !== i) return; if (au.duration) au.currentTime = Math.max(0, Math.min(au.duration - 0.2, au.currentTime + s)); }
+    $b('[data-bp-toggle]').addEventListener('click', toggle);
+    $b('[data-bp-prev]').addEventListener('click', function () { if (loaded === i && au.currentTime > 3) { au.currentTime = 0; return; } load(i - 1, !au.paused); });
+    $b('[data-bp-next]').addEventListener('click', function () { load(i + 1, !au.paused); });
+    $b('[data-bp-back]').addEventListener('click', function () { skip(-10); });
+    $b('[data-bp-fwd]').addEventListener('click', function () { skip(10); });
+    document.querySelectorAll('[data-bp-play]').forEach(function (b) {
+      b.addEventListener('click', function () { var k = +b.getAttribute('data-bp-play'); if (k === i && loaded === i) toggle(); else load(k, true); });
+    });
+    au.addEventListener('play', paint); au.addEventListener('pause', paint);
+    au.addEventListener('loadedmetadata', function () { $b('[data-bp-dur]').textContent = fmt(au.duration); });
+    au.addEventListener('timeupdate', function () { if (dragging || !au.duration) return; $b('[data-bp-cur]').textContent = fmt(au.currentTime); setPct(au.currentTime / au.duration * 100); });
+    au.addEventListener('ended', function () { if (i < q.length - 1) load(i + 1, true); else { au.currentTime = 0; setPct(0); paint(); } });
+    function seekTo(e) {
+      var r = seek.getBoundingClientRect(), x = (e.touches ? e.touches[0] : e).clientX, p = Math.max(0, Math.min(1, (x - r.left) / r.width));
+      setPct(p * 100);
+      if (loaded !== i) { load(i, true); au.addEventListener('loadedmetadata', function o() { au.removeEventListener('loadedmetadata', o); au.currentTime = p * au.duration; }); return; }
+      if (au.duration) { au.currentTime = p * au.duration; $b('[data-bp-cur]').textContent = fmt(au.currentTime); }
+    }
+    seek.addEventListener('pointerdown', function (e) { dragging = true; seekTo(e); try { seek.setPointerCapture(e.pointerId); } catch (x) {} });
+    seek.addEventListener('pointermove', function (e) { if (dragging) seekTo(e); });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { seek.addEventListener(ev, function () { dragging = false; }); });
+    seek.addEventListener('keydown', function (e) { if (e.key === 'ArrowRight') { skip(5); e.preventDefault(); } else if (e.key === 'ArrowLeft') { skip(-5); e.preventDefault(); } });
+    if ('mediaSession' in navigator) {
+      try {
+        navigator.mediaSession.setActionHandler('previoustrack', function () { load(i - 1, true); });
+        navigator.mediaSession.setActionHandler('nexttrack', function () { load(i + 1, true); });
+        navigator.mediaSession.setActionHandler('seekbackward', function () { skip(-10); });
+        navigator.mediaSession.setActionHandler('seekforward', function () { skip(10); });
+      } catch (e) {}
+    }
+    show(0);
+  });
+
+  /* ---------- Shop listings: swipe / list / grid ---------- */
+  var cardsBox = document.querySelector('[data-cards]');
+  if (cardsBox) {
+    var vbtns = [].slice.call(document.querySelectorAll('[data-view]'));
+    var snav = document.querySelector('[data-swipe-nav]');
+    var setView = function (v) {
+      if (['swipe', 'list', 'grid'].indexOf(v) < 0) v = 'swipe';
+      cardsBox.setAttribute('data-view-mode', v);
+      vbtns.forEach(function (b) { var on = b.getAttribute('data-view') === v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      if (snav) snav.hidden = v !== 'swipe' || cardsBox.scrollWidth <= cardsBox.clientWidth + 4;
+      try { localStorage.setItem('blacc_shop_view', v); } catch (e) {}
+    };
+    vbtns.forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
+    var sv = 'swipe'; try { sv = localStorage.getItem('blacc_shop_view') || 'swipe'; } catch (e) {}
+    setView(sv);
+    window.addEventListener('resize', function () { setView(cardsBox.getAttribute('data-view-mode')); });
+    document.querySelectorAll('[data-swipe]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var c = cardsBox.querySelector('.shop-card'); var step = c ? c.getBoundingClientRect().width + 24 : 300;
+        cardsBox.scrollBy({ left: step * +b.getAttribute('data-swipe'), behavior: 'smooth' });
+      });
+    });
+  }
+
   /* Free beat tape: one player for the tracklist */
   document.querySelectorAll('[data-tape]').forEach(function (tp) {
     var au = tp.querySelector('[data-tape-audio]'), rows = [].slice.call(tp.querySelectorAll('.tape__row')), cur = -1;
@@ -175,7 +276,9 @@
     bt.querySelectorAll('.beat__lics input').forEach(function (r) { r.addEventListener('change', paint); });
     bt.querySelectorAll('.beat__lics label').forEach(function (l) { l.addEventListener('click', function () { setTimeout(paint, 0); }); });
     paint();
-    var au = bt.querySelector('audio'), playB = bt.querySelector('[data-beat-play]'), seek = bt.querySelector('[data-beat-seek]'), line = bt.querySelector('[data-beat-line]');
+    var au = bt.querySelector('audio'), playB = bt.querySelector('[data-beat-play]');
+    if (au && playB) (function () {
+    var seek = bt.querySelector('[data-beat-seek]'), line = bt.querySelector('[data-beat-line]');
     var fmt = function (t) { t = Math.max(0, Math.floor(t || 0)); return Math.floor(t / 60) + ':' + ('0' + t % 60).slice(-2); };
     playB.addEventListener('click', function () {
       document.querySelectorAll('.beat audio').forEach(function (o) { if (o !== au) o.pause(); });
@@ -193,6 +296,7 @@
     var seekTo = function (x) { var b = seek.getBoundingClientRect(); var f = Math.max(0, Math.min(1, (x - b.left) / b.width)); if (au.duration) au.currentTime = f * au.duration; else { au.addEventListener('loadedmetadata', function o() { au.removeEventListener('loadedmetadata', o); au.currentTime = f * au.duration; }); au.play().catch(function () {}); } };
     seek.addEventListener('click', function (e) { seekTo(e.clientX); });
     seek.addEventListener('keydown', function (e) { if (!au.duration) return; if (e.key === 'ArrowRight') au.currentTime = Math.min(au.duration, au.currentTime + 5); else if (e.key === 'ArrowLeft') au.currentTime = Math.max(0, au.currentTime - 5); });
+    })();
     bt.querySelector('[data-beat-open]').addEventListener('click', function (e) {
       var p = panels.beat; if (!p) return;
       var c = pick(), lic = c.value, lbl = c.getAttribute('data-lic-label'), f = p.querySelector('form');
@@ -202,7 +306,7 @@
       p.querySelector('[data-beat-summary]').textContent = name + ' · ' + lic + (lbl === 'Offer' ? ' · Tell us your offer below' : ' · ' + lbl);
       var nl = p.querySelector('[data-beat-notes-label]'), ta = f.querySelector('textarea[name="notes"]');
       if (lbl === 'Offer') { nl.innerHTML = 'Your offer and plans for the beat'; ta.required = true; } else { nl.innerHTML = 'Notes <span class="opt">(optional)</span>'; ta.required = false; }
-      au.pause();
+      if (au) au.pause(); document.querySelectorAll('audio').forEach(function (o) { o.pause(); });
       f.hidden = false; p.querySelector('.build__done').hidden = true; p.querySelector('.build__error').hidden = true;
       openPanel(p, e);
     });
