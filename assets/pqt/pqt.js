@@ -1,7 +1,7 @@
 /* PQT — host console and audience screen.
    The host phone/laptop holds the game; the screen only shows what the host sends.
    Link: PeerJS (WebRTC, works across devices) + BroadcastChannel (same device, two tabs). */
-(function () {
+function pqtMain() {
   'use strict';
   var PREFIX = 'blaccpqt-';
   var ALPHA = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
@@ -479,4 +479,5 @@
   if (qc.length === 4) H.code = qc;
   if (H.code) { $('[data-codein]').value = H.code; connect(H.code); }
   renderAll();
-})();
+}
+if (document.body.hasAttribute('data-locked')) document.addEventListener('pqt:unlock', pqtMain, { once: true }); else pqtMain();

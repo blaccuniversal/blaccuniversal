@@ -14,25 +14,35 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611120150">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611120210">
 </head>
 <body>
-<div class="pq-land">
+<div class="pq-land2">
+  <div class="pq-blur" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <header class="pq-top"><a class="pq-brand" href="/"><svg viewBox="0 0 563 418" aria-hidden="true"><g fill="#ffffff"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg><span>BLACC Universal</span></a><span class="eyebrow">Game night</span></header>
-  <div class="pq-stage" aria-hidden="true">
-    <div class="pq-avatar"><svg viewBox="0 0 563 418" aria-hidden="true"><g fill="#0b0b0b"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg></div>
-    <div class="pq-hero"><p class="pq-hero__name">People, Quests &amp; Triumphs</p><div class="pq-hero__mark">PQT</div></div>
-    <div class="card card--white pq-live"><div class="pq-live__head"><span>Live screen</span><span class="pq-live__pill">On</span></div><div class="pq-live__code">K7QF</div><p class="pq-live__sub">Screen code</p></div>
-    <div class="card pq-rounds"><div class="pq-rounds__head"><span>Rounds</span><span>→</span></div><div class="pq-rounds__glyph">?!</div><div class="pq-rounds__foot">Don’t Say It<br>Top Answers</div></div>
-    <div class="card card--o pq-lb"><div class="pq-lb__head"><span>Leaderboard</span><span>→</span></div><div class="pq-bars"><i style="height:22%"></i><i style="height:38%"></i><i style="height:55%"></i><i style="height:78%"></i><i style="height:100%"></i><i style="height:86%"></i><i style="height:60%"></i><i style="height:40%"></i><i style="height:24%"></i></div><div class="pq-lb__foot"><b>#1</b>Live scores</div></div>
-  </div>
-  <p class="pq-caption">BLACC.PQT</p>
-  <div class="pq-cta"><a class="pbtn pbtn--white pbtn--lg" href="/pqt/host/">Host a game</a><a class="pbtn pbtn--lg pbtn--ghost" href="/pqt/screen/">Open the screen</a></div>
-  <section class="pq-how">
-    <div class="card"><span class="dot">01</span><h3>Open the screen</h3><p>On the laptop connected to the projector or TV, open blaccuniversal.com/pqt/screen. It shows a 4-letter code.</p></div>
-    <div class="card"><span class="dot">02</span><h3>Connect as host</h3><p>On your phone, open blaccuniversal.com/pqt/host and type the code. You see the answers; the room only sees what you reveal.</p></div>
-    <div class="card"><span class="dot">03</span><h3>Run the night</h3><p>Teams, timers, scores and the leaderboard, plus two games: Don’t Say It and Top Answers.</p></div>
-  </section>
+  <main class="pq-board">
+    <div class="pq-board__top">
+      <div class="pq-tile pq-tile--brand">
+        <div class="pq-pill"><span>PQT</span><i></i></div>
+        <p class="pq-tile__txt">Trivia &amp; game nights<br><em>Ibadan</em> · by BLACC Universal</p>
+        <p class="pq-tile__foot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span>BLACC.PQT</span></p>
+      </div>
+      <div class="pq-tile pq-tile--title">
+        <span class="pq-tile__glyph" aria-hidden="true">?</span>
+        <h1 class="pq-tile__h">People,<br>Quests &amp;<br>Triumphs</h1>
+        <p class="pq-tile__row"><span><i></i>Game night</span><span>2026</span></p>
+      </div>
+    </div>
+    <div class="pq-tile pq-table">
+      <div class="pq-row pq-row--head"><span>Round</span><span></span><span>Game</span><span>Play</span></div>
+      <div class="pq-row" style="--i:0"><span class="pq-row__n">#1</span><span class="pq-row__ic">?!</span><span class="pq-row__g"><b>Don’t Say It</b><span>Describe the word. Don’t say the banned ones.</span></span><span class="pq-row__v">60s</span></div><div class="pq-row" style="--i:1"><span class="pq-row__n">#2</span><span class="pq-row__ic">100</span><span class="pq-row__g"><b>Top Answers</b><span>Find what the room said. Three strikes.</span></span><span class="pq-row__v">3 ✕</span></div><div class="pq-row" style="--i:2"><span class="pq-row__n">#3</span><span class="pq-row__ic">00</span><span class="pq-row__g"><b>Scoreboard</b><span>Every team, every point, on the big screen.</span></span><span class="pq-row__v">Live</span></div><div class="pq-row" style="--i:3"><span class="pq-row__n">#4</span><span class="pq-row__ic">#1</span><span class="pq-row__g"><b>Ranking</b><span>Who’s on top after each round.</span></span><span class="pq-row__v">#1</span></div>
+    </div>
+    <div class="pq-actions">
+      <a class="pbtn pbtn--o pbtn--lg" href="/pqt/host/">Host a game <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="pbtn pbtn--ghost pbtn--lg" href="/pqt/screen/">Open the screen</a>
+    </div>
+    <p class="pq-note">You’ll need a pass to host or open the screen. Open the screen on the projector, then connect from your phone with its 4-letter code.</p>
+  </main>
   <footer class="pq-foot">PQT · People, Quests &amp; Triumphs · by BLACC Universal</footer>
 </div>
 </body>
