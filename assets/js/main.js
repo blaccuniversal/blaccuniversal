@@ -226,7 +226,10 @@
       if (['swipe', 'list', 'grid'].indexOf(v) < 0) v = 'swipe';
       cardsBox.setAttribute('data-view-mode', v);
       vbtns.forEach(function (b) { var on = b.getAttribute('data-view') === v; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
-      if (snav) snav.hidden = v !== 'swipe' || cardsBox.scrollWidth <= cardsBox.clientWidth + 4;
+      cardsBox.classList.remove('is-fit');
+      var fit = cardsBox.scrollWidth <= cardsBox.clientWidth + 4;
+      cardsBox.classList.toggle('is-fit', v === 'swipe' && fit);
+      if (snav) snav.hidden = v !== 'swipe' || fit;
       try { localStorage.setItem('blacc_shop_view', v); } catch (e) {}
     };
     vbtns.forEach(function (b) { b.addEventListener('click', function () { setView(b.getAttribute('data-view')); }); });
