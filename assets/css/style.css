@@ -1035,17 +1035,44 @@ body:has(.page--light){background:#e9e8e6}
 .tl__plays{font-size:12px;color:#888;white-space:nowrap;font-variant-numeric:tabular-nums}
 .tl__side{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
 
-/* Hero: the portrait and name are a door to /bemshima/ */
-.hero__door{position:absolute;left:50%;top:0;height:100%;aspect-ratio:1262/1687;max-width:100%;transform:translateX(-50%);z-index:1;cursor:pointer}
-.hero__bottom{z-index:2}
-.hero__name-link{display:inline-flex;align-items:baseline;gap:14px;background:none !important}
-.hero__name-txt{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .35s ease}
-.hero__enter{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#fff;opacity:0;transform:translateX(-8px);transition:opacity .35s ease,transform .35s ease;white-space:nowrap}
-.hero__name-link:hover .hero__name-txt,.hero__name-link:focus-visible .hero__name-txt,.hero:has(.hero__door:hover) .hero__name-txt{background-size:100% 1px}
-.hero__name-link:hover .hero__enter,.hero__name-link:focus-visible .hero__enter,.hero:has(.hero__door:hover) .hero__enter{opacity:1;transform:none}
-.hero:has(.hero__door:hover) .hero__photo{filter:brightness(1.12)}
-.hero__photo{transition:filter .4s ease}
-@media (hover:none){.hero__enter{opacity:.75;transform:none;font-size:11px}}
 .founder__page{margin-top:10px;align-self:flex-start}
 .founder__page svg{transition:transform .3s ease}
 .founder__page:hover svg,.founder__page:focus-visible svg{transform:translateX(4px)}
+
+/* ---------- Bemshima page: dark (default) with a light toggle ---------- */
+.topbar__actions{display:flex;align-items:center;gap:4px}
+.theme-btn{color:#fff}
+.page--light .topbar .theme-btn{color:#111}
+.theme-btn .ic-moon{display:none}
+.page--light .theme-btn .ic-sun{display:none}
+.page--light .theme-btn .ic-moon{display:inline}
+.page--dark{background:#000;color:#fff}
+.page--dark .mus a{color:#fff}
+.page--dark .mus-card{background:radial-gradient(ellipse 60% 75% at 74% 55%,#262626 0%,#121212 55%,#0b0b0b 100%);border-color:#2a2a2a;box-shadow:0 30px 60px -40px rgba(0,0,0,.9)}
+.page--dark .mus-card__me{filter:drop-shadow(0 0 40px rgba(255,255,255,.06)) drop-shadow(-18px 28px 36px rgba(0,0,0,.6))}
+.page--dark .mus-eyebrow,.page--dark .mus-title,.page--dark .mus-lead{color:#fff}
+.page--dark .mus-head .mus-eyebrow,.page--dark .mus-links__label{color:#8c8c8c}
+.page--dark .mus-by{color:#bdbdbd}
+.page--dark .mus-time,.page--dark .mus-plays,.page--dark .mus-count{color:#8c8c8c}
+.page--dark .mus-line{background:#3a3a3a}
+.page--dark .mus-line i{background:#121212}
+.page--dark .mus-nav .icon-btn{color:#fff}
+.page--dark .mus-links a,.page--dark .mus-links strong{color:#fff}
+.page--dark .mus-card .mus-cover{box-shadow:0 18px 26px -16px rgba(0,0,0,.9)}
+.page--dark .mus-ring{background:rgba(255,255,255,.08)}
+.page--dark .mus-sec{border-top-color:#1f1f1f}
+.page--dark .mus-copy{color:#a8a8a8}
+.page--dark .tl{border-top-color:#1f1f1f}
+.page--dark .tl__row{border-bottom-color:#1f1f1f}
+.page--dark .tl__play{background:var(--ember,#c94a1c);color:#fff}
+.page--dark .tl__t{color:#fff}
+.page--dark .tl__t span,.page--dark .tl__n,.page--dark .tl__dur,.page--dark .tl__plays{color:#8c8c8c}
+.page--dark .mus-btn{background:#fff;color:#000}
+.page--dark .mus-btn:hover{background:#dcdcdc;color:#000}
+.page--dark .mus-btn--ghost{border-color:#fff;color:#fff}
+.page--dark .mus-follow .icon-btn{color:#fff}
+@media (max-width:900px){
+  .page--dark .mus-card{background:radial-gradient(ellipse 90% 45% at 50% 28%,#262626 0%,#121212 60%,#0b0b0b 100%)}
+  .page--dark .mus-card__text{background:transparent}
+}
+.page{transition:background-color .3s ease,color .3s ease}

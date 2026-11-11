@@ -512,6 +512,23 @@
     showNp();
   }
 
+  /* ---------- Bemshima page: dark by default, toggle to light ---------- */
+  var themed = document.querySelector('[data-themed]'), tBtn = document.querySelector('[data-theme-toggle]');
+  if (themed && tBtn) {
+    var paintT = function () {
+      var light = themed.classList.contains('page--light');
+      tBtn.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+      tBtn.title = light ? 'Dark mode' : 'Light mode';
+    };
+    tBtn.addEventListener('click', function () {
+      var light = !themed.classList.contains('page--light');
+      themed.classList.toggle('page--light', light); themed.classList.toggle('page--dark', !light);
+      try { localStorage.setItem('bm_theme', light ? 'light' : 'dark'); } catch (e) {}
+      paintT();
+    });
+    paintT();
+  }
+
   /* ---------- Music page: in-page audio player for free songs ---------- */
   var mus = document.querySelector('.mus-card[data-audio]');
   if (mus) {
