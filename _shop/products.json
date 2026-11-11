@@ -262,7 +262,7 @@
       "slug": "take-em-to-war",
       "partial": "beat",
       "name": "Take Em To War",
-      "card_img": "/assets/img/shop/take-em-to-war-card.webp",
+      "card_img": "/assets/img/shop/take-em-to-war.webp",
       "card_meta": "Hip-Hop · 85 BPM",
       "card_price": "From $25",
       "title": "Take Em To War — beat by Bemshima",
@@ -278,7 +278,7 @@
           "genre": "Hip-Hop"
         }
       ],
-      "cover": "/assets/img/shop/take-em-to-war-card.webp",
+      "cover": "/assets/img/shop/take-em-to-war.webp",
       "player_from": "Beat · Preview",
       "cta": "Buy licence · from $25"
     }

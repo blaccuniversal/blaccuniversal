@@ -1266,3 +1266,4 @@ body:has(.page--light){background:#e9e8e6}
 .shop-card__img img{object-fit:cover}
 .shop-card--instrumentals .shop-card__img{aspect-ratio:1}
 .bp__count{white-space:nowrap}
+.beat__cover--img{display:block;width:100%;height:auto;object-fit:cover}
