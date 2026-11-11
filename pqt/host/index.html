@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://0.peerjs.com wss://0.peerjs.com; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>PQT Host</title>
+<meta name="description" content="PQT host console.">
+<meta name="theme-color" content="#0b0b0b">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611112150">
+</head>
+<body data-mode="host">
+<div class="hc" data-host>
+  <div class="hc-bar"><span class="hc-bar__title">PQT</span><span class="eyebrow">Host</span><div class="hc-status" data-status><i></i><span>No screen</span></div><button class="pbtn pbtn--sm pbtn--ghost" data-change type="button">Code</button><button class="pbtn pbtn--sm" data-undo type="button" aria-label="Undo last action">Undo</button></div>
+
+  <section class="card hc-sec" data-connect-sec>
+    <h2>Connect to a screen</h2>
+    <div class="hc-row"><input class="hc-input hc-code hc-grow" data-codein inputmode="text" autocomplete="off" autocapitalize="characters" maxlength="4" placeholder="CODE" aria-label="Screen code" style="flex:1 1 140px"><button class="pbtn pbtn--white pbtn--lg" data-connect type="button">Connect</button></div>
+    <p class="hc-note">Open <b>blaccuniversal.com/pqt/screen</b> on the projector or TV and type the code it shows. Hosting from this same computer? <button class="pbtn pbtn--sm pbtn--ghost" data-opensc type="button">Open screen here</button></p>
+  </section>
+
+  <section class="card hc-sec">
+    <h2>On the screen now</h2>
+    <div class="hc-views"><button class="pbtn" data-view="lobby" type="button">Lobby</button><button class="pbtn" data-view="scores" type="button">Scores</button><button class="pbtn" data-view="ranking" type="button">Ranking</button><button class="pbtn" data-view="words" type="button">Words</button></div>
+    <div class="hc-views" style="margin-top:6px;grid-template-columns:1fr"><button class="pbtn" data-view="answers" type="button">Top Answers board</button></div>
+  </section>
+
+  <section class="card hc-sec">
+    <h2>Timer</h2>
+    <div class="timer"><span class="timer__num" data-tnum>60</span><button class="pbtn pbtn--o pbtn--lg hc-grow" data-tgo type="button">Start</button><button class="pbtn pbtn--lg" data-treset type="button">Reset</button></div>
+    <div class="hc-tpre"><button class="pbtn pbtn--sm" data-tset="30000" type="button">30s</button><button class="pbtn pbtn--sm" data-tset="60000" type="button">60s</button><button class="pbtn pbtn--sm" data-tset="90000" type="button">90s</button><button class="pbtn pbtn--sm" data-tset="120000" type="button">2m</button><button class="pbtn pbtn--sm pbtn--ghost" data-tadd="-10000" type="button">−10</button><button class="pbtn pbtn--sm pbtn--ghost" data-tadd="10000" type="button">+10</button></div>
+  </section>
+
+  <div class="hc-tabs" role="tablist"><button class="hc-tab" data-tab="teams" type="button">Teams</button><button class="hc-tab" data-tab="words" type="button">Don’t Say It</button><button class="hc-tab" data-tab="answers" type="button">Top Answers</button><button class="hc-tab" data-tab="cards" type="button">Cards</button></div>
+
+  <section class="card hc-sec" data-pane="teams">
+    <h2>Teams &amp; scores <span class="hc-row"><button class="pbtn pbtn--sm pbtn--ghost" data-rmteam type="button">− Team</button><button class="pbtn pbtn--sm" data-addteam type="button">+ Team</button></span></h2>
+    <div data-teams></div>
+    <div class="hc-row" style="margin-top:14px"><input class="hc-input hc-grow" data-title aria-label="Event name shown in the lobby" placeholder="Event name"><button class="pbtn pbtn--sm pbtn--bad" data-zero type="button">Reset scores</button></div>
+  </section>
+  <section class="card hc-sec" data-pane="words" hidden><h2>Don’t Say It</h2><div data-wpane></div><p class="hc-note">The clue giver describes the word without saying it or any word on the list. The screen shows the timer and the tally; each word appears there only after it’s been played.</p></section>
+  <section class="card hc-sec" data-pane="answers" hidden><h2>Top Answers</h2><div data-fpane></div></section>
+  <section class="card hc-sec" data-pane="cards" hidden>
+    <h2>Your cards <span class="mute" data-ccount style="letter-spacing:0;text-transform:none"></span></h2>
+    <p class="hc-note" style="margin:0 0 8px">Don’t Say It — one per line: <b>WORD: banned, banned, banned</b></p>
+    <textarea class="hc-input" data-wtxt spellcheck="false"></textarea>
+    <p class="hc-note" style="margin:14px 0 8px">Top Answers — the question on one line, then each answer with its points (<b>Answer, 30</b>). Leave an empty line between questions. The samples are made up: replace them with your own survey results.</p>
+    <textarea class="hc-input" data-btxt spellcheck="false" style="min-height:220px"></textarea>
+    <div class="hc-row" style="margin-top:12px"><button class="pbtn pbtn--white" data-savecards type="button">Save cards</button><button class="pbtn pbtn--ghost pbtn--sm" data-samples type="button">Restore samples</button></div>
+    <p class="hc-note">Cards and scores are saved on this device.</p>
+  </section>
+</div>
+<script src="/assets/pqt/peerjs.min.js?v=202611112150"></script>
+<script src="/assets/pqt/pqt-data.js?v=202611112150"></script>
+<script src="/assets/pqt/pqt.js?v=202611112150"></script>
+</body>
+</html>
