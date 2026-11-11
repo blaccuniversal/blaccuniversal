@@ -512,6 +512,23 @@
     showNp();
   }
 
+  /* ---------- Shop sections (Merch / Art / Beats) ---------- */
+  var catTabs = [].slice.call(document.querySelectorAll('.shop-tab[data-cat]'));
+  if (catTabs.length) {
+    var showCat = function (c, push) {
+      var panel = document.querySelector('[data-cat-panel="' + c + '"]');
+      if (!panel) { c = 'merch'; panel = document.querySelector('[data-cat-panel="merch"]'); }
+      document.querySelectorAll('[data-cat-panel]').forEach(function (p) { p.hidden = p !== panel; });
+      catTabs.forEach(function (t) { var on = t.getAttribute('data-cat') === c; t.classList.toggle('is-on', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); });
+      var title = document.querySelector('[data-shop-title]');
+      if (title) title.innerHTML = panel.getAttribute('data-cat-title');
+      if (push) { try { history.replaceState(null, '', c === 'merch' ? location.pathname : '#' + c); } catch (e) {} }
+    };
+    catTabs.forEach(function (t) { t.addEventListener('click', function () { showCat(t.getAttribute('data-cat'), true); }); });
+    var h0 = (location.hash || '').replace('#', ''); showCat(document.querySelector('[data-cat-panel="' + h0 + '"]') ? h0 : 'merch', false);
+    window.addEventListener('hashchange', function () { var h = location.hash.replace('#', ''); if (document.querySelector('[data-cat-panel="' + h + '"]')) showCat(h, false); });
+  }
+
   /* ---------- Bemshima page: dark by default, toggle to light ---------- */
   var themed = document.querySelector('[data-themed]'), tBtn = document.querySelector('[data-theme-toggle]');
   if (themed && tBtn) {

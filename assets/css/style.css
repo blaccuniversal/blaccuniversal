@@ -1102,3 +1102,14 @@ body:has(.page--light){background:#e9e8e6}
 /* Hero: a little air between name and title */
 .hero__role{margin-top:14px}
 @media (max-width:600px){.hero__role{margin-top:10px}}
+
+/* Shop sections: icon tabs */
+.shop-tabs{display:flex;gap:10px;margin-top:14px}
+.shop-tab{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;padding:0;background:transparent;border:1px solid #2a2a2a;border-radius:2px;color:#8a8a8a;cursor:pointer;transition:color .2s ease,border-color .2s ease,background .2s ease}
+.shop-tab:hover{color:#fff;border-color:#5a5a5a}
+.shop-tab.is-on{color:#000;background:#fff;border-color:#fff}
+.shop-tab:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.shop-soon{margin:0;font-size:clamp(18px,2vw,22px);font-weight:300;color:#a8a8a8}
+.shop__more--soon{margin-top:clamp(20px,3vw,28px);padding-top:0;border-top:0}
+.shop__more--soon .notify{align-items:flex-start;text-align:left}
+.shop__more--soon .notify form{justify-content:flex-start}
