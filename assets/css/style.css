@@ -1046,3 +1046,6 @@ body:has(.page--light){background:#e9e8e6}
 .hero:has(.hero__door:hover) .hero__photo{filter:brightness(1.12)}
 .hero__photo{transition:filter .4s ease}
 @media (hover:none){.hero__enter{opacity:.75;transform:none;font-size:11px}}
+.founder__page{margin-top:10px;align-self:flex-start}
+.founder__page svg{transition:transform .3s ease}
+.founder__page:hover svg,.founder__page:focus-visible svg{transform:translateX(4px)}
