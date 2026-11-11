@@ -1270,13 +1270,8 @@ body:has(.page--light){background:#e9e8e6}
 /* merch shots sit smaller in the frame */
 .shop-card--merch .shop-card__img img,.shop-card--frames .shop-card__img img{transform:scale(.8)}
 .shop-card--merch:hover .shop-card__img img,.shop-card--frames:hover .shop-card__img img{transform:scale(.83)}
-/* few items: centre them */
-.shop-cards[data-view-mode="swipe"].is-fit{justify-content:center}
-.shop-cards[data-view-mode="grid"]{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(20px,2.6vw,32px)}
-.shop-cards[data-view-mode="grid"] .shop-card{flex:0 1 280px;min-width:0}
 @media (max-width:600px){
-  .shop-cards[data-view-mode="grid"]{gap:18px 12px}
-  .shop-cards[data-view-mode="grid"] .shop-card{flex:0 1 calc(50% - 6px)}
+  .shop-cards[data-view-mode="grid"]{grid-template-columns:1fr 1fr;gap:18px 12px}
   .shop-cards[data-view-mode="grid"] .shop-card__name{font-size:15px}
   .shop-cards[data-view-mode="grid"] .shop-card__meta{font-size:12px}
   .shop-cards[data-view-mode="swipe"] .shop-card{flex-basis:72vw}
@@ -1297,3 +1292,11 @@ body:has(.page--light){background:#e9e8e6}
   .bp__seek{margin-top:6px}
   .bp__btn{width:40px;height:40px}.bp__play{width:52px;height:52px}
 }
+
+/* shirt centred in its frame */
+.spin--static .spin__single{top:10%;bottom:10%}
+.shop-card__img img{transform-origin:50% 50%}
+/* the tee photo has a soft shadow under the hem, so nudge it down to centre the shirt itself */
+.shop-card--merch .shop-card__img img{transform:translateY(2.6%) scale(.8)}
+.shop-card--merch:hover .shop-card__img img{transform:translateY(2.6%) scale(.83)}
+.spin--static .spin__single{top:12.6%;bottom:7.4%}
