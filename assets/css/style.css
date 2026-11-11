@@ -1098,3 +1098,7 @@ body:has(.page--light){background:#e9e8e6}
 .footer__privacy:hover{color:#fff;border-bottom-color:#fff}
 .page--light .footer__privacy{color:#555;border-bottom-color:#bbb}
 @media (max-width:600px){.legal p,.legal li{font-size:15px}}
+
+/* Hero: a little air between name and title */
+.hero__role{margin-top:14px}
+@media (max-width:600px){.hero__role{margin-top:10px}}
