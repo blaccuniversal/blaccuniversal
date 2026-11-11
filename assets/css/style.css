@@ -987,3 +987,9 @@ body:has(.page--light){background:#e9e8e6}
   .mus-ring{grid-area:1/1;position:relative;right:auto;top:auto;bottom:auto;align-self:end;justify-self:end;margin:0 16px 16px 0}
 }
 .mus-ring{background:rgba(17,17,17,.55)}
+/* Half-circle accent: bleeds off the card edge */
+.mus-card__circle{right:auto;left:62%;width:min(76%,920px);transform:translateY(-50%)}
+.mus-card__me{right:6%}
+@media (max-width:900px){
+  .mus-card__circle{left:auto;width:min(150vw,700px);margin-bottom:calc(min(150vw,700px) / -2);align-self:end;justify-self:center}
+}
