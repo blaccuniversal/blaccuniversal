@@ -607,6 +607,40 @@
         }
       } catch (e) {}
     }
+    /* Real play counts (GoatCounter): a play counts after 10 seconds, once per song per visit */
+    var gc = mus.getAttribute('data-gc'), plays = {}, counted = {};
+    var slug = function (i) { return 'play-' + mt[i].src.split('/').pop().replace(/\.mp3$/, ''); };
+    var playTxt = function (n) { return n.toLocaleString('en') + (n === 1 ? ' play' : ' plays'); };
+    tlBtns.forEach(function (b) {
+      var row = b.closest('.tl__row'), sp = document.createElement('span');
+      sp.className = 'tl__plays'; sp.setAttribute('data-plays-i', b.getAttribute('data-tl')); sp.hidden = true;
+      var dur = row.querySelector('.tl__dur'), side = document.createElement('span');
+      side.className = 'tl__side'; row.insertBefore(side, dur); side.appendChild(dur); side.appendChild(sp);
+    });
+    function renderPlays(i) {
+      var n = plays[i];
+      var el = document.querySelector('[data-plays-i="' + i + '"]');
+      if (el) { el.hidden = !n; if (n) el.textContent = playTxt(n); }
+      if (i === mi) { var h = q('[data-plays]'); h.hidden = !n; if (n) h.textContent = playTxt(n); }
+    }
+    function loadPlays(i) {
+      if (!gc || !window.fetch) return;
+      fetch(gc + '/counter/' + encodeURIComponent(slug(i)) + '.json')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d && d.count != null) { plays[i] = Math.max(plays[i] || 0, parseInt(String(d.count).replace(/\D/g, ''), 10) || 0); renderPlays(i); } })
+        .catch(function () {});
+    }
+    function countPlay(i) {
+      if (counted[i] || !gc) return;
+      counted[i] = true;
+      var url = gc + '/count?p=' + encodeURIComponent(slug(i)) + '&t=' + encodeURIComponent(mt[i].title) + '&e=true&r=' + encodeURIComponent(location.href) + '&rnd=' + Math.random().toString(36).slice(2);
+      try { if (!(navigator.sendBeacon && navigator.sendBeacon(url))) new Image().src = url; } catch (e) { new Image().src = url; }
+      plays[i] = (plays[i] || 0) + 1; renderPlays(i);
+    }
+    au.addEventListener('timeupdate', function () { if (au.currentTime >= 10) countPlay(mi); });
+    var _show = show;
+    show = function (i, keep) { _show(i, keep); renderPlays(mi); };
+    mt.forEach(function (_, i) { loadPlays(i); });
     show(0, false);
   }
 })();

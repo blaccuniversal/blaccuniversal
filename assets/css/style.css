@@ -1031,3 +1031,6 @@ body:has(.page--light){background:#e9e8e6}
 @media (max-width:900px){
   .mus-card__me{right:auto;left:auto;height:88%;justify-self:center;align-self:end;filter:drop-shadow(0 24px 30px rgba(0,0,0,.3))}
 }
+.mus-plays{margin:2px 0 0;font-size:12px;letter-spacing:.04em;color:#888;font-variant-numeric:tabular-nums}
+.tl__plays{font-size:12px;color:#888;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tl__side{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
