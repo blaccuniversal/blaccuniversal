@@ -903,3 +903,5 @@ body.build-open{overflow:hidden}
   .tl__ext{font-size:12px}
 }
 @media (prefers-reduced-motion:reduce){.poster__glow{animation:none}}
+.poster__me{height:78%}
+@media (max-width:600px){.poster__me{height:68%}}
