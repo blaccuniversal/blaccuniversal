@@ -887,3 +887,31 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-home svg{transition:transform .2s}
 .hc-home:hover svg{transform:translateX(-3px)}
 .sc-home{display:inline-block;text-decoration:none;cursor:pointer}
+/* Quests Feud (team-by-team + reveal) */
+.fm-prog{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.fm-prog span{font-size:12px;padding:6px 10px;border:1px solid #1f1f1f;color:#5a5a5a}
+.fm-prog span.is-on{border-color:#fff;color:#fff}
+.fm-prog span.is-done{color:#9a9a9a;border-color:#2a2a2a;text-decoration:line-through;text-decoration-color:#4a4a4a}
+.fm-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 6px}
+.fm-head span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--o2)}
+.fm-head b{font-family:var(--dot);font-weight:900;font-size:26px}
+.fan.is-cur{border-color:#fff}
+.fan:disabled{opacity:.4;cursor:not-allowed}
+.fan em{font-style:normal;font-size:12px;color:#ff8a8a}
+.fm-rev{display:grid;gap:6px;margin:6px 0 14px}
+.fm-rev div{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr) auto;gap:10px;align-items:center;padding:12px;border:1px solid #1a1a1a;color:#4a4a4a}
+.fm-rev div.is-on{border-color:#2a2a2a;color:#fff}
+.fm-rev b{font-weight:600;font-size:14px}
+.fm-rev span{font-size:14px}
+.fm-rev em{font-style:normal;font-family:var(--dot);font-weight:900;font-size:18px}
+.sc-fm__sub{margin:0;font-size:3vh;font-weight:300;color:#9a9a9a}
+.sc-fm{display:grid;gap:1.4vh;width:min(86vw,130vh);margin-top:4vh}
+.sc-fm__r{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) 14vh;gap:3vh;align-items:center;padding:2.4vh 3vh;border:1px solid #1f1f1f;background:#070707;text-align:left;animation:fadeup .5s ease both}
+.sc-fm__r b{font-size:3.4vh;font-weight:600;color:#fff}
+.sc-fm__r span{font-size:3.8vh;font-weight:300;color:#e6e6e6}
+.sc-fm__r em{font-style:normal;text-align:right;font-family:var(--dot);font-weight:900;font-size:5vh;color:#fff}
+.sc-fm__r.is-miss span{color:#ff5a5a}
+.sc-fm__r.is-miss em{color:#3a3a3a}
+.sc-fm__r.is-top{border-color:var(--o2)}
+.sc-fm__r.is-top b{color:var(--o2)}
+.sc-fm__r.is-top,.sc-fm .sc-fm__r:has(> b:first-child:is(:not(:empty))){}.sc-fm--tot .sc-fm__r{grid-template-columns:8vh minmax(0,1fr) 16vh}

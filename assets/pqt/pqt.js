@@ -207,6 +207,7 @@ function pqtMain() {
       else if (v === 'intro') data = { r: S.round, n: S.rounds, rt: S.roundType, teams: S.teams.map(function (t) { return [t.name, t.color]; }), w: S.words.team };
       else if (v === 'turn' || v === 'turnend') data = { w: S.words, team: S.teams[S.words.team] || null };
       else if (v === 'winner') data = { teams: S.teams };
+      else if (v === 'fm') data = { fm: S.fm };
       else if (v === 'qa') data = { qa: S.qa, teams: S.teams.map(function (t) { return t.name; }) };
       else data = {};
       var sg = v + sig(data);
@@ -271,7 +272,7 @@ function pqtMain() {
         }
         var isW = S.roundType === 'words';
         var rules = isW ? ['One clue giver per team, against the clock.', 'Describe the word. Don’t say it, or any banned word.', 'Every word guessed is a point. A buzz costs one.']
-                        : ['We asked people a question. Find their top answers.', 'Each answer you find adds its points to the board.', 'Three strikes and the other team can steal it all.'];
+                        : ['One team at a time answers the same questions against the clock.', 'An answer another team already gave is taken. Give a different one.', 'Answers stay hidden until the reveal. Each one scores its board points.'];
         return '<div class="sc-intro"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + '</p><h1 class="sc-intro__t">' + (isW ? 'All Except These Ones' : 'Quests Feud') + '</h1>' +
           '<ol class="sc-intro__rules">' + rules.map(function (r, i) { return '<li style="animation-delay:' + (0.35 + i * 0.15) + 's"><b>0' + (i + 1) + '</b>' + esc(r) + '</li>'; }).join('') + '</ol>' +
           '<div class="sc-chips">' + S.teams.map(function (t) { return '<span class="sc-chip"><i style="background:' + t.color + '"></i>' + esc(t.name) + '</span>'; }).join('') + '</div></div>';
@@ -296,6 +297,13 @@ function pqtMain() {
         }).join('');
         var conf = ''; for (var i = 0; i < 70; i++) conf += '<i style="left:' + (Math.random() * 100).toFixed(1) + '%;animation-delay:' + (Math.random() * 3).toFixed(2) + 's;animation-duration:' + (3 + Math.random() * 3).toFixed(2) + 's;background:' + ['#ff6a2b', '#f3f3f3', '#f2b23a', '#e2461c'][i % 4] + '"></i>';
         return '<div class="sc-win"><div class="sc-confetti" aria-hidden="true">' + conf + '</div><p class="sc-intro__r">Champions</p><h1 class="sc-win__t">' + esc(top ? top.name : '') + '</h1><div class="sc-podium">' + pod + '</div></div>';
+      },
+      fm: function () {
+        var f = S.fm; if (!f) return '';
+        if (f.phase === 'ready' || f.phase === 'between') return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud</p><h2 class="sc-qa__h">' + (f.phase === 'ready' ? esc(f.team) + ', you’re up' : esc(f.team) + ' is done') + '</h2><p class="sc-fm__sub">' + (f.phase === 'ready' ? f.n + ' questions · answers stay hidden' : 'Answers revealed at the end') + '</p></div>';
+        if (f.phase === 'answer') return '<div class="sc-qa"><div class="sc-qa__top"><p class="sc-intro__r">Quests Feud · ' + esc(f.team) + ' · ' + (f.qi + 1) + ' of ' + f.n + '</p><span class="sc-qa__timer" data-ringnum></span></div><p class="sc-qa__q sc-qa__q--big">' + esc(f.q) + '</p></div>';
+        if (f.phase === 'reveal') return '<div class="sc-qa"><p class="sc-intro__r">Answer reveal · ' + (f.rq + 1) + ' of ' + f.n + '</p><p class="sc-qa__q" style="margin-top:3vh">' + esc(f.q) + '</p><div class="sc-fm">' + (f.rows || []).map(function (r) { return '<div class="sc-fm__r' + (r.miss ? ' is-miss' : '') + '"><b>' + esc(r.team) + '</b><span>' + (r.miss ? '✕' : esc(r.a)) + '</span><em>' + r.p + '</em></div>'; }).join('') + '</div></div>';
+        return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud · round totals</p><div class="sc-fm sc-fm--tot" style="margin-top:5vh">' + (f.totals || []).map(function (r, i) { return '<div class="sc-fm__r' + (i === 0 ? ' is-top' : '') + '"><b>' + (i + 1) + '</b><span>' + esc(r.team) + '</span><em>' + r.p + '</em></div>'; }).join('') + '</div></div>';
       },
       qa: function () {
         var q = S.qa; if (!q) return '';
@@ -354,7 +362,7 @@ function pqtMain() {
     var lastSec = null;
     function tickClock(force) {
       var left = timerRun ? Math.max(0, timerEnd - Date.now()) : timerLeft;
-      var show = S && timerTotal > 0 && ['words', 'join', 'intro', 'turn', 'turnend', 'winner', 'lobby', 'qa'].indexOf(S.view) < 0 && (timerRun || left < timerTotal);
+      var show = S && timerTotal > 0 && ['words', 'join', 'intro', 'turn', 'turnend', 'winner', 'lobby', 'qa', 'fm'].indexOf(S.view) < 0 && (timerRun || left < timerTotal);
       clock.hidden = !show;
       clock.querySelector('span').textContent = fmtT(left);
       clock.classList.toggle('is-low', timerRun && left <= 10000);
@@ -412,6 +420,7 @@ function pqtMain() {
       timer: { total: t.total, remaining: left, running: t.running },
       words: { team: w.team, correct: w.correct, skipped: w.skipped, buzzed: w.buzzed, stream: w.stream.slice(-14), pts: w.correct - (w.buzzCost ? w.buzzed : 0) },
       qa: qaPub(),
+      fm: fmPub(),
       feud: b ? { key: H.feud.qi + ':' + b.q, q: b.q, n: b.a.length, out: out, strikes: f.strikes, bank: f.awardedTo != null ? 0 : bank, awardedTo: f.awardedTo, awardedPts: f.awardedPts } : null
     };
   }
@@ -507,7 +516,7 @@ function pqtMain() {
   }
   setInterval(function () {
     var t = H.timer;
-    if (t.running && Date.now() >= t.endsAt) { t.running = false; t.remaining = 0; if (H.view === 'words') { H.view = 'turnend'; renderViews(); renderTab(); paintNow(); toast('Time’s up for ' + (team(H.words.team) || {}).name); } push(); fx('end'); }
+    if (t.running && Date.now() >= t.endsAt) { t.running = false; t.remaining = 0; if (H.view === 'fm' && H.fm && H.fm.phase === 'answer') { H.fm.phase = 'between'; renderAll(); toast('Time’s up for ' + ((H.teams[fmTeam()] || {}).name || '')); } else if (H.view === 'words') { H.view = 'turnend'; renderViews(); renderTab(); paintNow(); toast('Time’s up for ' + (team(H.words.team) || {}).name); } push(); fx('end'); }
     paintTimer();
   }, 200);
 
@@ -523,7 +532,7 @@ function pqtMain() {
   function startRound(type) {
     snap(); H.round++; H.roundType = type; H.ledger = []; H.paused = false;
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
-    if (type === 'answers') H.feud = { qi: H.feud.qi || 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
+    if (type === 'answers') { H.feud = { qi: H.feud.qi || 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 }; fmNew(); }
     H.picks = {}; H.words.done = [];
     if (QA_TYPES[type]) H.qa = { wr: {}, type: type, mode: QA_BOARD[type] ? 'board' : 'q', idx: (H.qaPos[type] || 0) % Math.max(1, (QA[type] || []).length), clue: 1, revealed: false, mark: '', phase: 'ask' };
     if (H.round > H.plan.length) H.plan.push(type); else H.plan[H.round - 1] = type;
@@ -556,7 +565,7 @@ function pqtMain() {
     if (!H.roundType) { toast('No round to restart yet'); return; }
     snap(); H.ledger.forEach(function (l) { var t = team(l[0]); if (t) t.score -= l[1]; }); H.ledger = []; if (H.byRound) delete H.byRound[String(H.round)]; H.words.done = [];
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
-    if (H.roundType === 'answers') H.feud = { qi: H.feud.qi, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
+    if (H.roundType === 'answers') { H.feud = { qi: H.feud.qi, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 }; var keepQs = H.fm ? H.fm.qs : null; fmNew(); if (keepQs) H.fm.qs = keepQs; }
     if (QA_TYPES[H.roundType]) { H.qaUsed[H.roundType] = []; H.qa = { type: H.roundType, mode: QA_BOARD[H.roundType] ? 'board' : 'q', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; }
     H.view = 'intro'; push(); renderAll(); splash('Round ' + H.round, 'Restarted'); toast('Round ' + H.round + ' restarted');
   }
@@ -611,6 +620,44 @@ function pqtMain() {
     var hist = store('pqt_history') || [], rec = { id: H.gameId, at: Date.now(), title: H.title || 'PQT', rounds: H.round, games: H.plan.slice(0, H.round).map(function (g) { return GNAME[g]; }), teams: H.teams.map(function (t, i) { var rp = roundPts(i); return { name: t.name, color: t.color, score: t.score, rounds: rp.rounds, pen: rp.pen }; }).sort(function (a, b) { return b.score - a.score; }) };
     hist = hist.filter(function (r) { return r.id !== rec.id; }); hist.unshift(rec); store('pqt_history', hist.slice(0, 40));
   }
+  /* ---- Quests Feud: every team answers the same questions, then a reveal ---- */
+  var FM_N = 5, FM_TIME = [20000, 25000];
+  function fmNew() {
+    var n = Math.min(FM_N, BOARDS.length), start = H.feud.qi || 0, qs = [];
+    for (var k = 0; k < n; k++) qs.push((start + k) % BOARDS.length);
+    H.feud.qi = (start + n) % Math.max(1, BOARDS.length);
+    H.fm = { qs: qs, order: H.teams.map(function (_, i) { return i; }), ti: 0, qi: 0, phase: 'ready', picks: {}, rq: 0, shown: 0, awarded: {} };
+  }
+  function fmTeam() { var f = H.fm; return f.order[f.ti]; }
+  function fmTaken(q) { var f = H.fm, out = {}; f.order.forEach(function (t) { var p = (f.picks[t] || {})[q]; if (p != null && p >= 0) out[p] = t; }); return out; }
+  function fmPick(a) {
+    var f = H.fm, t = fmTeam(); snap();
+    var pk = f.picks[t] = f.picks[t] || {}; pk[f.qi] = a;
+    if (f.qi + 1 < f.qs.length) f.qi++; else { f.phase = 'between'; H.timer.running = false; H.timer.remaining = timerLeft(); }
+    fx(a === -2 ? 'buzz' : 'tick'); push(); renderAll();
+  }
+  function fmStartTeam() { var f = H.fm; snap(); f.phase = 'answer'; f.qi = 0; H.view = 'fm'; H.timer.total = FM_TIME[Math.min(f.ti, 1)]; H.timer.remaining = H.timer.total; H.timer.running = false; push(); timerStart(); renderAll(); }
+  function fmNextTeam() { var f = H.fm; snap(); if (f.ti + 1 < f.order.length) { f.ti++; f.phase = 'ready'; f.qi = 0; H.view = 'fm'; } else { f.phase = 'reveal'; f.rq = 0; f.shown = 0; H.view = 'fm'; splash('Answer reveal', GNAME.answers); } H.timer.running = false; push(); renderAll(); }
+  function fmReveal() {
+    var f = H.fm; snap();
+    var t = f.order[f.shown], a = (f.picks[t] || {})[f.rq], b = BOARDS[f.qs[f.rq]];
+    if (a != null && a >= 0 && b && b.a[a]) { pts(t, b.a[a].p); fx('ok'); } else fx('buzz');
+    f.shown++;
+    if (f.shown >= f.order.length) { /* question fully shown */ }
+    push(); renderAll();
+  }
+  function fmNextQ() { var f = H.fm; snap(); if (f.rq + 1 < f.qs.length) { f.rq++; f.shown = 0; } else f.phase = 'done'; push(); renderAll(); }
+  function fmPub() {
+    var f = H.fm; if (!f || H.roundType !== 'answers') return null;
+    var o = { phase: f.phase, n: f.qs.length, team: H.teams[fmTeam()] ? H.teams[fmTeam()].name : '', ti: f.ti, nt: f.order.length };
+    if (f.phase === 'answer') { var b = BOARDS[f.qs[f.qi]]; o.qi = f.qi; o.q = b ? b.q : ''; }
+    if (f.phase === 'reveal' || f.phase === 'done') {
+      var rb = BOARDS[f.qs[f.rq]]; o.rq = f.rq; o.q = rb ? rb.q : '';
+      o.rows = f.order.slice(0, f.phase === 'done' ? 0 : f.shown).map(function (t) { var a = (f.picks[t] || {})[f.rq], ans = a != null && a >= 0 && rb ? rb.a[a] : null; return { team: H.teams[t] ? H.teams[t].name : '', a: ans ? ans.a : '', p: ans ? ans.p : 0, miss: !ans }; });
+      if (f.phase === 'done') o.totals = f.order.map(function (t) { var s = 0; f.qs.forEach(function (qq, qi) { var a = (f.picks[t] || {})[qi], bb = BOARDS[qq]; if (a != null && a >= 0 && bb && bb.a[a]) s += bb.a[a].p; }); return { team: H.teams[t] ? H.teams[t].name : '', p: s }; }).sort(function (x, y) { return y.p - x.p; });
+    }
+    return o;
+  }
   function endGame() { snap(); saveResult(); H.ended = true; H.timer.running = false; H.timer.remaining = timerLeft(); H.view = 'winner'; push(); renderAll(); fx('win'); toast('Winner on screen'); }
   function togglePause() { H.paused = !H.paused; push(); paintNow(); toast(H.paused ? 'Screen paused' : 'Screen resumed'); }
   function turnReady() { snap(); resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total; H.view = 'turn'; push(); renderAll(); }
@@ -645,7 +692,7 @@ function pqtMain() {
   function feudRevealAll() { snap(); var b = BOARDS[H.feud.qi]; if (!b) return; b.a.forEach(function (_, i) { if (!H.feud.out[i]) H.feud.out[i] = 's'; }); fx('ding'); push(); renderTab(); }
   function feudGo(qi) { snap(); H.feud = { qi: (qi + BOARDS.length) % Math.max(1, BOARDS.length), out: {}, strikes: 0, awardedTo: null, awardedPts: 0 }; H.view = 'answers'; push(); renderAll(); }
   function setView(v) { H.view = v; push(); renderViews(); paintNow(); }
-  var VIEWNAME = { qa: 'Question on screen', lobby: 'Lobby', scores: 'Scores', ranking: 'Ranking', winner: 'Winner', words: 'All Except These Ones · playing', answers: 'Quests Feud board', intro: 'Round intro', turn: 'Up next', turnend: 'Time’s up' };
+  var VIEWNAME = { fm: 'Quests Feud', qa: 'Question on screen', lobby: 'Lobby', scores: 'Scores', ranking: 'Ranking', winner: 'Winner', words: 'All Except These Ones · playing', answers: 'Quests Feud board', intro: 'Round intro', turn: 'Up next', turnend: 'Time’s up' };
   function paintNow() {
     var v = $('[data-now-view]'); if (!v) return;
     v.textContent = (H.paused ? 'Paused · ' : '') + (VIEWNAME[H.view] || H.view);
@@ -683,6 +730,33 @@ function pqtMain() {
     }).join('') + bd + strikes;
   }
   function teamAward(lbl) { return '<div class="hc-row hc-award">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-qok="' + i + '"><i style="width:3px;height:14px;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '<button class="pbtn pbtn--sm pbtn--bad" data-qno>' + (lbl || 'Wrong') + '</button></div>'; }
+  function renderFM() {
+    var f = H.fm, t = fmTeam(), tm = H.teams[t] || { name: '' }, out = '';
+    var prog = '<div class="fm-prog">' + f.order.map(function (x, k) { return '<span class="' + (k < f.ti || f.phase === 'reveal' || f.phase === 'done' ? 'is-done' : k === f.ti ? 'is-on' : '') + '">' + esc((H.teams[x] || {}).name || '') + '</span>'; }).join('') + '</div>';
+    if (H.view === 'intro') return prog + '<div class="hc-flowbox"><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="start" type="button">' + esc(tm.name) + ' answers first · start</button></div><p class="hc-note">Every team answers the same ' + f.qs.length + ' questions, one team at a time. Answers stay hidden until the reveal.</p>';
+    if (f.phase === 'ready') return prog + '<p class="hc-note hc-lead">Send the other teams out of earshot, or have them face away.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="start" type="button">Start ' + esc(tm.name) + ' · ' + fmtT(FM_TIME[Math.min(f.ti, 1)]) + 's</button>';
+    if (f.phase === 'answer') {
+      var b = BOARDS[f.qs[f.qi]], taken = fmTaken(f.qi), mine = (f.picks[t] || {})[f.qi];
+      out += prog + '<div class="fm-head"><span>' + esc(tm.name) + ' · question ' + (f.qi + 1) + ' of ' + f.qs.length + '</span><b data-tflow>' + fmtT(timerLeft()) + '</b></div><p class="fq">' + esc(b ? b.q : '') + '</p>';
+      out += '<p class="hc-note" style="margin:0 0 8px">Tap the answer they gave. Answers another team already has are locked: ask them for another.</p><div class="fans">' + (b ? b.a : []).map(function (a, i) { var by = taken[i]; var lock = by != null && by !== t; return '<button class="fan' + (lock ? ' is-out' : '') + (mine === i ? ' is-cur' : '') + '" data-fmp="' + i + '"' + (lock ? ' disabled' : '') + '><span class="fan__n">' + (i + 1) + '</span><span>' + esc(a.a) + (lock ? '<em> · taken by ' + esc((H.teams[by] || {}).name || '') + '</em>' : '') + '</span><span class="fan__p">' + a.p + '</span></button>'; }).join('') + '</div>';
+      out += '<div class="w-actions" style="grid-template-columns:1fr 1fr;margin-top:10px"><button class="pbtn pbtn--bad pbtn--lg" data-fmp="-1" type="button">Not on the board</button><button class="pbtn pbtn--lg" data-fmp="-2" type="button">Pass</button></div>';
+      if (f.qi > 0) out += '<button class="pbtn pbtn--sm pbtn--ghost" data-fm="back" type="button" style="margin-top:10px">← Previous question</button>';
+      return out;
+    }
+    if (f.phase === 'between') {
+      var tot = 0; f.qs.forEach(function (qq, qi) { var a = (f.picks[t] || {})[qi], bb = BOARDS[qq]; if (a != null && a >= 0 && bb) tot += bb.a[a].p; });
+      var last = f.ti + 1 >= f.order.length;
+      return prog + '<div class="hc-flow hc-flow--end"><span>' + esc(tm.name) + ' is done · answers hidden until the reveal</span></div><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-fm="nextteam" type="button">' + (last ? 'Start the reveal →' : 'Next: ' + esc((H.teams[f.order[f.ti + 1]] || {}).name || '') + ' →') + '</button><button class="pbtn pbtn--sm pbtn--ghost" data-fm="back" type="button" style="margin-top:10px">← Fix an answer</button>';
+    }
+    if (f.phase === 'reveal') {
+      var rb = BOARDS[f.qs[f.rq]];
+      out += prog + '<div class="fm-head"><span>Reveal · question ' + (f.rq + 1) + ' of ' + f.qs.length + '</span></div><p class="fq">' + esc(rb ? rb.q : '') + '</p><div class="fm-rev">' + f.order.map(function (x, k) { var a = (f.picks[x] || {})[f.rq], ans = a != null && a >= 0 && rb ? rb.a[a] : null; return '<div class="' + (k < f.shown ? 'is-on' : '') + '"><b>' + esc((H.teams[x] || {}).name || '') + '</b><span>' + (ans ? esc(ans.a) : a === -2 ? 'Passed' : 'Not on the board') + '</span><em>' + (ans ? ans.p : 0) + '</em></div>'; }).join('') + '</div>';
+      out += f.shown < f.order.length ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="reveal" type="button">Reveal ' + esc((H.teams[f.order[f.shown]] || {}).name || '') + '’s answer</button>' : '<button class="pbtn pbtn--white pbtn--lg pbtn--block" data-fm="nextq" type="button">' + (f.rq + 1 < f.qs.length ? 'Next question →' : 'Show round totals →') + '</button>';
+      return out;
+    }
+    var nx = nextPlanned();
+    return prog + '<p class="hc-note hc-lead">Quests Feud is done. The round totals are on the screen.</p><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-gonext type="button">' + (nx ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>';
+  }
   function renderQuiz() {
     if (H.ended) return '<p class="hc-note hc-lead">This game is over. Set up the next one to keep playing.</p><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-setup-open type="button">Set up the next game</button>';
     var q = H.qa, type = QA_TYPES[H.roundType] ? H.roundType : '';
@@ -740,6 +814,8 @@ function pqtMain() {
         (c ? '<div class="card card--white wcard"><p class="eyebrow" style="color:#666">Only the clue giver sees this</p><div class="wcard__word">' + esc(c.w) + '</div><ul class="wcard__x">' + c.x.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '<p class="mute">Add words in the Cards tab.</p>') +
         '<div class="w-actions"><button class="pbtn pbtn--good pbtn--lg" data-w="ok">✓ Got it</button><button class="pbtn pbtn--lg" data-w="skip">Skip</button><button class="pbtn pbtn--bad pbtn--lg" data-w="buzz">✕ Buzz</button></div>' +
         '<div class="w-stats"><span>' + esc(t ? t.name : '') + '</span><span>✓ ' + w.correct + ' · Skip ' + w.skipped + ' · ✕ ' + w.buzzed + '</span></div>';
+    } else if (tab === 'answers' && H.fm && H.roundType === 'answers') {
+      $('[data-fpane]').innerHTML = renderFM();
     } else if (tab === 'answers') {
       var b = BOARDS[H.feud.qi], f = H.feud, bank = feudBank();
       $('[data-fpane]').innerHTML = !b ? '<p class="mute">Add questions in the Cards tab.</p>' :
@@ -771,7 +847,7 @@ function pqtMain() {
     var b = e.target.closest('button,[data-tab],[data-menu-close],[data-pick-close]'); if (!b) return;
     var d = b.dataset;
     if (d.tab) { H.tab = d.tab; save(); renderTabs(); renderTab(); }
-    else if (d.view === 'game') { var gv = H.roundType === 'words' ? 'words' : H.roundType === 'answers' ? 'answers' : QA_TYPES[H.roundType] ? 'qa' : ''; if (!gv) toast('No round yet. Start one from the Game tab.'); else { setView(gv); H.tab = 'quiz'; save(); renderTabs(); renderTab(); } }
+    else if (d.view === 'game') { var gv = H.roundType === 'words' ? 'words' : H.roundType === 'answers' ? 'fm' : QA_TYPES[H.roundType] ? 'qa' : ''; if (!gv) toast('No round yet. Start one from the Game tab.'); else { setView(gv); H.tab = 'quiz'; save(); renderTabs(); renderTab(); } }
     else if (d.view) setView(d.view);
     else if (d.sc) { var p = d.sc.split(':'); addScore(+p[0], +p[1]); }
     else if (d.w) wordAct(d.w);
@@ -800,6 +876,8 @@ function pqtMain() {
     else if (d.qnext) qaNext(+d.qnext);
     else if (b.hasAttribute('data-qreveal')) qaReveal();
     else if (d.qclue) qaClue(+d.qclue);
+    else if (d.fm) { if (d.fm === 'start') fmStartTeam(); else if (d.fm === 'nextteam') fmNextTeam(); else if (d.fm === 'reveal') fmReveal(); else if (d.fm === 'nextq') fmNextQ(); else if (d.fm === 'back') { snap(); var ff = H.fm; if (ff.phase === 'between') { ff.phase = 'answer'; ff.qi = ff.qs.length - 1; } else if (ff.qi > 0) ff.qi--; push(); renderAll(); } }
+    else if (d.fmp != null) fmPick(+d.fmp);
     else if (d.bd != null) bdAnswer(d.bd === '1');
     else if (d.qok != null) qaMark('ok', +d.qok);
     else if (b.hasAttribute('data-qno')) qaMark('no');
