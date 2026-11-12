@@ -259,19 +259,16 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
   .setup__go{display:flex;justify-content:center}.setup__go .btn{max-width:420px}
 }
 @media (min-width:1400px){
-  :root{--row:clamp(110px,13vh,170px)}
   .wrap{max-width:900px}
   .setup.wrap{max-width:1180px}
   .ptop__mid{font-size:18px}
   .ptop__lvl{font-size:14px;width:auto}
   .row__n{font-size:14px}
-  .ball{--b:calc(var(--row) * .15);width:var(--b);height:var(--b);margin:calc(var(--b) / -2) 0 0 calc(var(--b) / -2)}
   .ptop{padding-top:18px;padding-bottom:18px}
   .beatbar{max-width:560px;gap:10px}.beatbar i{height:6px;border-radius:3px}
 }
 @media (min-width:1800px){
   .scr:not(.scr--play){zoom:1.2;min-height:calc(100svh / 1.2)}
-  :root{--row:clamp(140px,15vh,230px)}
   .ptop__mid{font-size:22px}
   .ptop__lvl{font-size:16px}
   .beatbar{max-width:720px}.beatbar i{height:8px;border-radius:4px}
@@ -281,4 +278,13 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
   .ptop__mid{font-size:28px}
   .ptop__lvl{font-size:20px}
   .row__n{font-size:18px}
+}
+/* landscape laptops, desktops and TVs: bigger, wider blocks */
+@media (min-width:900px) and (min-aspect-ratio:4/3){
+  :root{--row:clamp(96px,18vh,280px)}
+  .row{--s:min(calc(var(--row) * .7),8.5vw);--g:calc(var(--s) * .42)}
+  .row__w{min-width:calc(var(--s) * 3);padding:0 calc(var(--s) * .45);font-size:calc(var(--s) * .44)}
+  .row__w--free{min-width:calc(var(--s) * 3);width:auto}
+  .row__d{border-radius:4px}
+  .ball{--b:min(calc(var(--row) * .18),2.2vw);width:var(--b);height:var(--b);margin:calc(var(--b) / -2) 0 0 calc(var(--b) / -2)}
 }
