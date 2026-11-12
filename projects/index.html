@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=202611121439">
+<link rel="stylesheet" href="/assets/css/style.css?v=202611121442">
 </head>
 <body>
 <div class="page page--screen">
@@ -44,7 +44,12 @@
         <h1>From the house</h1>
         <p class="lead">Products, games, music, film and experiences, built by BLACC Universal.</p>
       </div>
-      <div class="proj-list">
+      <div class="pview" role="group" aria-label="Choose how projects are shown">
+        <button type="button" data-pview="list" aria-pressed="true" aria-label="List"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>List</span></button>
+        <button type="button" data-pview="grid" aria-pressed="false" aria-label="Grid"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/></svg><span>Grid</span></button>
+        <button type="button" data-pview="slide" aria-pressed="false" aria-label="Slide"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="6" y="5" width="12" height="14" rx="1"/><path d="M3 8v8M21 8v8"/></svg><span>Slide</span></button>
+      </div>
+      <div class="proj-list" data-plist>
         <a class="proj" href="/pqt/">
           <span class="proj__art"><img src="/assets/pqt/pqt-logo.png" alt="PQT · People, Quests &amp; Triumphs" width="1400" height="298" loading="lazy"></span>
           <span class="proj__body"><span class="proj__tag">Game night · Ibadan</span><b>PQT · People, Quests &amp; Triumphs</b><span>Trivia and game nights. Host from your phone, play on the big screen.</span></span>
@@ -60,6 +65,11 @@
           <span class="proj__body"><span class="proj__tag">Freestyle trainer · New</span><b>Superstar</b><span>Pick a beat, follow the ball, land your rhymes on the beat. Built-in lofi beats and a rhyme dictionary.</span></span>
           <span class="proj__go" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
         </a>
+      </div>
+      <div class="pslide" data-pslide hidden>
+        <button type="button" class="pslide__btn" data-pslide-prev aria-label="Previous project"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <div class="pslide__dots" data-pslide-dots></div>
+        <button type="button" class="pslide__btn" data-pslide-next aria-label="Next project"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
       <div class="notify">
         <p class="notify__hint">More is being assembled. Get notified when it lands.</p>
@@ -171,6 +181,7 @@
     </nav>
   </div>
 </div>
+<script src="/assets/js/projects-view.js?v=1" defer></script>
 <script src="/assets/js/main.js?v=202611120150" defer></script>
 </body>
 </html>

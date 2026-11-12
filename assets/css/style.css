@@ -1347,3 +1347,27 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 .proj__art img.ss-wm{width:auto;max-width:100%;height:clamp(60px,10vw,88px);margin-left:-2%}
 .ss-art b{font-size:clamp(36px,7vw,58px);font-weight:300;letter-spacing:-.04em;color:#fff;line-height:1}
 .proj--ss .proj__tag{color:#c9c9c9}
+
+/* Projects: list / grid / slide views */
+.pview{display:inline-flex;border:1px solid #2a2a2a;border-radius:2px;overflow:hidden;margin-bottom:-12px}
+.pview button{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;background:transparent;border:0;border-right:1px solid #2a2a2a;color:#9a9a9a;font:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s,color .2s}
+.pview button:last-child{border-right:0}
+.pview button:hover{color:#fff}
+.pview button[aria-pressed="true"]{background:#fff;color:#000}
+.proj-list--grid{width:min(100%,1080px);display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.proj-list--grid .proj{grid-template-rows:auto 1fr}
+.proj-list--grid .proj__art{height:clamp(150px,16vw,190px);padding:20px}
+.proj-list--grid .proj__art img{max-height:100%}
+.proj-list--slide{width:min(100vw,1080px);display:flex;flex-direction:row;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px max(16px,calc((min(100vw,1080px) - min(84vw,620px))/2)) 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;-webkit-mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(to right,transparent,#000 7%,#000 93%,transparent)}
+.proj-list--slide::-webkit-scrollbar{display:none}
+.proj-list--slide .proj{flex:0 0 min(84vw,620px);scroll-snap-align:center;grid-template-rows:auto 1fr}
+.proj-list--slide .proj:hover{transform:none}
+.proj-list--slide .proj__art{height:clamp(150px,20vw,220px)}
+.proj-list--slide .proj__art img{max-height:100%}
+.pslide{display:flex;align-items:center;gap:14px;margin-top:-8px}
+.pslide__btn{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid #2a2a2a;border-radius:2px;color:#fff;cursor:pointer;transition:border-color .2s,background .2s}
+.pslide__btn:hover{border-color:#8c8c8c;background:#141414}
+.pslide__dots{display:flex;gap:8px}
+.pslide__dots button{width:8px;height:8px;padding:0;border:0;border-radius:2px;background:#333;cursor:pointer;transition:background .2s,width .25s}
+.pslide__dots button[aria-current="true"]{background:#fff;width:22px}
+@media (max-width:600px){.pview button span{display:none}.pview button{padding:0 16px}.proj-list--grid{grid-template-columns:1fr}}
