@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611120140">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611120200">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -65,7 +65,9 @@
       <p class="hc-sheet__sub">Game</p>
       <button class="hc-mi" data-m="newgame" type="button"><b>New game</b><span>Scores back to 0, round 1 next. Teams and cards stay.</span></button>
       <button class="hc-mi" data-m="restart" type="button"><b>Restart this round</b><span>Undo this round’s points and start it again.</span></button>
-      <button class="hc-mi" data-m="next" type="button"><b>Start next round</b><span>Pick the game for the next round.</span></button>
+      <button class="hc-mi" data-m="next" type="button"><b data-m-next>Start next round</b><span data-m-next-sub>Follows your game plan.</span></button>
+      <button class="hc-mi" data-m="plan" type="button"><b>Game plan</b><span data-m-plan-sub>How many rounds, and which game in each.</span></button>
+      <button class="hc-mi" data-m="pick" type="button"><b>Play a different game now</b><span>Pick Don’t Say It or Top Answers for the next round.</span></button>
       <button class="hc-mi" data-m="end" type="button"><b>End game · show winner</b><span>Podium and confetti on the screen.</span></button>
       <p class="hc-sheet__sub">Screen</p>
       <button class="hc-mi" data-m="pause" type="button"><b data-m-pause>Pause screen</b><span>Shows “Be right back” until you resume.</span></button>
@@ -85,12 +87,21 @@
       <button class="hc-mi" data-round="answers" type="button"><b>Top Answers</b><span>Find the survey answers. Three strikes and it’s a steal.</span></button>
     </div>
   </div>
+  <div class="hc-sheet" data-plan hidden role="dialog" aria-modal="true" aria-label="Game plan">
+    <div class="hc-sheet__bg" data-menu-close></div>
+    <div class="hc-sheet__panel card">
+      <div class="hc-sheet__head"><span class="eyebrow">Game plan</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Done</button></div>
+      <div class="hc-plan__count"><span>Rounds</span><div class="hc-row"><button class="pbtn" data-plan-n="-1" type="button" aria-label="Fewer rounds">−</button><b data-plan-count>3</b><button class="pbtn" data-plan-n="1" type="button" aria-label="More rounds">+</button></div></div>
+      <ol class="hc-plan" data-plan-list></ol>
+      <p class="hc-note">Tap a round to switch its game. Played rounds are locked. The screen shows “Round 2 of 5” so everyone knows how far along you are.</p>
+    </div>
+  </div>
   <div class="hc-toast" data-toast hidden></div>
 </div>
-<script src="/assets/pqt/pqt-gate.js?v=202611120140"></script>
+<script src="/assets/pqt/pqt-gate.js?v=202611120200"></script>
 <script src="/assets/pqt/mqtt.min.js?v=5104"></script>
-<script src="/assets/pqt/peerjs.min.js?v=202611120140"></script>
-<script src="/assets/pqt/pqt-data.js?v=202611120140"></script>
-<script src="/assets/pqt/pqt.js?v=202611120140"></script>
+<script src="/assets/pqt/peerjs.min.js?v=202611120200"></script>
+<script src="/assets/pqt/pqt-data.js?v=202611120200"></script>
+<script src="/assets/pqt/pqt.js?v=202611120200"></script>
 </body>
 </html>

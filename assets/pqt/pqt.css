@@ -352,3 +352,15 @@ body[data-locked] .hc,body[data-locked] .sc,body[data-locked] .sc-tap{display:no
 .hc>.hc-sheet,.hc>.hc-toast{order:9}
 .hc-flow b{font-family:var(--dot);font-weight:900;font-size:18px}
 .sc-splash,.sc-pause{background:radial-gradient(ellipse 70% 60% at 50% 60%,rgba(226,70,28,.35),transparent 70%),#080808}
+/* game plan */
+.hc-plan__count{display:flex;align-items:center;justify-content:space-between;padding:10px 0 14px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.hc-plan__count>span{font-weight:600}
+.hc-plan__count b{min-width:40px;text-align:center;font-family:var(--dot);font-weight:900;font-size:28px}
+.hc-plan{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.hc-plan__r{width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#161616;font-size:14px}
+.hc-plan__r span{color:var(--mute);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.hc-plan__r b{font-size:15px}
+.hc-plan__r.is-cur{border-color:var(--o2)}
+.hc-plan__r.is-done{opacity:.45}
+.hc-flow .hc-row{gap:6px;flex-wrap:nowrap}
+.sc-lobby__rounds{margin:1.6vh 0 0;font-family:var(--dot);font-weight:900;font-size:3vh;letter-spacing:.2em;text-transform:uppercase;color:var(--o2)}
