@@ -864,3 +864,7 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .lb-fx summary span,.lb-fx summary b,.lb-fx summary em,.lb-fx dt{font-family:var(--sans)}.lb-fx summary i{display:none}.lb-ppl span.eol::after{content:none}
 .lb-season{margin:0 0 16px}.lb-h{margin:0 0 28px;line-height:1.05}.lb .pq-seg{margin:0 0 24px}.lb-sub{margin:0 0 14px}.lb-gw{margin:0 0 6px}
 .hc-lead{margin:0 0 16px!important;font-size:13px;color:#a8a8a8}
+.lb-team{display:grid;grid-template-columns:auto minmax(0,1fr);gap:0 10px;align-items:baseline;margin-top:8px}
+.lb-team .lb-star{display:block;margin:0;font-size:12px;line-height:1.5}
+.lb-ppl span.eol::after{content:"·"}
+.lb-ppl{row-gap:3px}
