@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112031">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112032">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -34,7 +34,7 @@
   <section class="card hc-sec">
     <h2>On the screen now</h2>
     <div class="hc-views"><button class="pbtn" data-view="lobby" type="button">Lobby</button><button class="pbtn" data-view="scores" type="button">Scores</button><button class="pbtn" data-view="ranking" type="button">Ranking</button><button class="pbtn" data-view="winner" type="button">Winner</button></div>
-    <div class="hc-views" style="margin-top:6px;grid-template-columns:1fr 1fr"><button class="pbtn" data-view="words" type="button">Don’t Say It</button><button class="pbtn" data-view="answers" type="button">Top Answers</button></div>
+    <div class="hc-views" style="margin-top:6px;grid-template-columns:1fr 1fr"><button class="pbtn" data-view="words" type="button">All Except These Ones</button><button class="pbtn" data-view="answers" type="button">Quests Feud</button></div>
   </section>
 
   <section class="card hc-sec">
@@ -43,7 +43,7 @@
     <div class="hc-tpre"><button class="pbtn pbtn--sm" data-tset="30000" type="button">30s</button><button class="pbtn pbtn--sm" data-tset="60000" type="button">60s</button><button class="pbtn pbtn--sm" data-tset="90000" type="button">90s</button><button class="pbtn pbtn--sm" data-tset="120000" type="button">2m</button><button class="pbtn pbtn--sm pbtn--ghost" data-tadd="-10000" type="button">−10</button><button class="pbtn pbtn--sm pbtn--ghost" data-tadd="10000" type="button">+10</button></div>
   </section>
 
-  <div class="hc-tabs" role="tablist"><button class="hc-tab" data-tab="teams" type="button">Teams</button><button class="hc-tab" data-tab="words" type="button">Don’t Say It</button><button class="hc-tab" data-tab="answers" type="button">Top Answers</button><button class="hc-tab" data-tab="quiz" type="button">Quiz</button><button class="hc-tab" data-tab="cards" type="button">Cards</button></div>
+  <div class="hc-tabs" role="tablist"><button class="hc-tab" data-tab="teams" type="button">Teams</button><button class="hc-tab" data-tab="quiz" type="button">Quiz</button><button class="hc-tab" data-tab="cards" type="button">Cards</button></div>
 
   <section class="card hc-sec hc-plansec">
     <h2>Rounds tonight</h2>
@@ -56,14 +56,14 @@
     <div data-teams></div>
     <div class="hc-row" style="margin-top:14px"><input class="hc-input hc-grow" data-title aria-label="Event name shown in the lobby" placeholder="Event name"><button class="pbtn pbtn--sm pbtn--bad" data-zero type="button">Reset scores</button></div>
   </section>
-  <section class="card hc-sec" data-pane="words" hidden><h2>Don’t Say It</h2><div data-wpane></div><p class="hc-note">The clue giver describes the word without saying it or any word on the list. The screen shows the timer and the tally; each word appears there only after it’s been played.</p></section>
-  <section class="card hc-sec" data-pane="answers" hidden><h2>Top Answers</h2><div data-fpane></div></section>
+  <section class="card hc-sec" data-pane="words" hidden><h2>All Except These Ones</h2><div data-wpane></div><p class="hc-note">The clue giver describes the word without saying it or any word on the list. The screen shows the timer and the tally; each word appears there only after it’s been played.</p></section>
+  <section class="card hc-sec" data-pane="answers" hidden><h2>Quests Feud</h2><div data-fpane></div></section>
   <section class="card hc-sec" data-pane="quiz" hidden><h2>Quiz rounds</h2><div data-qpane></div></section>
   <section class="card hc-sec" data-pane="cards" hidden>
     <h2>Your cards <span class="mute" data-ccount style="letter-spacing:0;text-transform:none"></span></h2>
-    <p class="hc-note" style="margin:0 0 8px">Don’t Say It — one per line: <b>WORD: banned, banned, banned</b></p>
+    <p class="hc-note" style="margin:0 0 8px">All Except These Ones — one per line: <b>WORD: banned, banned, banned</b></p>
     <textarea class="hc-input" data-wtxt spellcheck="false"></textarea>
-    <p class="hc-note" style="margin:14px 0 8px">Top Answers — the question on one line, then each answer with its points (<b>Answer, 30</b>). Leave an empty line between questions. The samples are made up: replace them with your own survey results.</p>
+    <p class="hc-note" style="margin:14px 0 8px">Quests Feud — the question on one line, then each answer with its points (<b>Answer, 30</b>). Leave an empty line between questions. The samples are made up: replace them with your own survey results.</p>
     <textarea class="hc-input" data-btxt spellcheck="false" style="min-height:220px"></textarea>
     <p class="hc-note" style="margin:14px 0 8px">Hi, My Name Is… — the answer on the first line, then one clue per line. Several clues? They show one at a time and earn fewer points as more are shown. Empty line between people.</p>
     <textarea class="hc-input" data-qtxt="names" spellcheck="false" style="min-height:180px"></textarea>
@@ -88,7 +88,7 @@
       <button class="hc-mi" data-m="restart" type="button"><b>Restart this round</b><span>Undo this round’s points and start it again.</span></button>
       <button class="hc-mi" data-m="next" type="button"><b data-m-next>Start next round</b><span data-m-next-sub>Follows your game plan.</span></button>
       <button class="hc-mi" data-m="plan" type="button"><b>Game plan</b><span data-m-plan-sub>How many rounds, and which game in each.</span></button>
-      <button class="hc-mi" data-m="pick" type="button"><b>Play a different game now</b><span>Pick Don’t Say It or Top Answers for the next round.</span></button>
+      <button class="hc-mi" data-m="pick" type="button"><b>Play a different game now</b><span>Pick any quiz game for the next round.</span></button>
       <button class="hc-mi" data-m="end" type="button"><b>End game · show winner</b><span>Podium and confetti on the screen.</span></button>
       <p class="hc-sheet__sub">Screen</p>
       <button class="hc-mi" data-m="pause" type="button"><b data-m-pause>Pause screen</b><span>Shows “Be right back” until you resume.</span></button>
@@ -104,8 +104,8 @@
     <div class="hc-sheet__bg" data-pick-close></div>
     <div class="hc-sheet__panel card">
       <div class="hc-sheet__head"><span class="eyebrow" data-pick-title>Round 1</span><button class="pbtn pbtn--sm pbtn--ghost" data-pick-close type="button">Close</button></div>
-      <button class="hc-mi" data-round="words" type="button"><b>Don’t Say It</b><span>Teams take turns describing words against the clock.</span></button>
-      <button class="hc-mi" data-round="answers" type="button"><b>Top Answers</b><span>Find the survey answers. Three strikes and it’s a steal.</span></button>
+      <button class="hc-mi" data-round="words" type="button"><b>All Except These Ones</b><span>Teams take turns describing words against the clock.</span></button>
+      <button class="hc-mi" data-round="answers" type="button"><b>Quests Feud</b><span>Find the survey answers. Three strikes and it’s a steal.</span></button>
       <button class="hc-mi" data-round="names" type="button"><b>Hi, My Name Is…</b><span>Guess the famous person from the clues. 10 seconds.</span></button>
       <button class="hc-mi" data-round="spell" type="button"><b>Spelling Bee</b><span>Pick a number, hear the word, one shot to spell it.</span></button>
       <button class="hc-mi" data-round="written" type="button"><b>Written Round</b><span>Ten questions, 10 seconds each. Answers revealed at the end.</span></button>
@@ -124,10 +124,10 @@
   </div>
   <div class="hc-toast" data-toast hidden></div>
 </div>
-<script src="/assets/pqt/pqt-gate.js?v=261112031"></script>
+<script src="/assets/pqt/pqt-gate.js?v=261112032"></script>
 <script src="/assets/pqt/mqtt.min.js?v=5104"></script>
-<script src="/assets/pqt/peerjs.min.js?v=261112031"></script>
-<script src="/assets/pqt/pqt-data.js?v=261112031"></script>
-<script src="/assets/pqt/pqt.js?v=261112031"></script>
+<script src="/assets/pqt/peerjs.min.js?v=261112032"></script>
+<script src="/assets/pqt/pqt-data.js?v=261112032"></script>
+<script src="/assets/pqt/pqt.js?v=261112032"></script>
 </body>
 </html>

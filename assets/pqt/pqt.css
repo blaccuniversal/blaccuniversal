@@ -512,7 +512,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .hc>.hc-sec.hc-plansec:not([data-pane]):not([data-connect-sec]){order:3}
 
 /* ===== QUIZ ROUNDS + CONNECT ===== */
-.hc-tabs{grid-template-columns:1.25fr 1.25fr 1.25fr .8fr .9fr}
+.hc-tabs{grid-template-columns:repeat(3,1fr)}
 .hc-tab{font-size:12px;padding:0 4px;line-height:1.2}
 .hc-steps{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
 .hc-steps li{display:flex;gap:12px;align-items:baseline}
