@@ -209,7 +209,7 @@ function pqtMain() {
           '<ul class="sc-join__steps"><li><b>1.</b> Type the code you see here.</li><li><b>2.</b> Tap Connect. This screen follows the host.</li><li><b>3.</b> Double-click or tap the screen for full screen.</li></ul></div></div>';
       },
       lobby: function () {
-        return '<div class="sc-lobby__mark">PQT</div><p class="sc-lobby__name">' + esc(S.title || 'People, Quests & Triumphs') + '</p>' + (S.rounds ? '<p class="sc-lobby__rounds">' + S.rounds + ' rounds tonight</p>' : '') +
+        return '<div class="sc-lobby__logo"><img class="pq-logo" src="/assets/pqt/pqt-logo.png" alt="PQT · People, Quests &amp; Triumphs · MMXXIV" width="1400" height="298"></div>' + (S.title && S.title !== 'People, Quests & Triumphs' ? '<p class="sc-lobby__name">' + esc(S.title) + '</p>' : '') + (S.rounds ? '<p class="sc-lobby__rounds">' + S.rounds + ' rounds tonight</p>' : '') +
           '<div class="sc-chips">' + S.teams.map(function (t) { return '<span class="sc-chip"><i style="background:' + t.color + '"></i>' + esc(t.name) + '</span>'; }).join('') + '</div>';
       },
       scores: function () {
@@ -294,7 +294,7 @@ function pqtMain() {
     var pauseEl = null;
     function paintPause() {
       var on = S && S.paused;
-      if (on && !pauseEl) { pauseEl = document.createElement('div'); pauseEl.className = 'sc-pause'; pauseEl.innerHTML = '<div><div class="sc-lobby__mark">PQT</div><p class="sc-pause__t">Be right back</p><p class="sc-pause__s">' + esc(S.title || 'People, Quests & Triumphs') + '</p></div>'; document.body.appendChild(pauseEl); }
+      if (on && !pauseEl) { pauseEl = document.createElement('div'); pauseEl.className = 'sc-pause'; pauseEl.innerHTML = '<div><div class="sc-pause__logo"><img class="pq-logo" src="/assets/pqt/pqt-logo.png" alt="PQT · People, Quests &amp; Triumphs · MMXXIV" width="1400" height="298"></div><p class="sc-pause__t">Be right back</p>' + (S.title && S.title !== 'People, Quests & Triumphs' ? '<p class="sc-pause__s">' + esc(S.title) + '</p>' : '') + '</div>'; document.body.appendChild(pauseEl); }
       else if (!on && pauseEl) { pauseEl.remove(); pauseEl = null; }
     }
     function bigX() {

@@ -366,3 +366,14 @@ body[data-locked] .hc,body[data-locked] .sc,body[data-locked] .sc-tap{display:no
 .sc-lobby__rounds{margin:1.6vh 0 0;font-family:var(--dot);font-weight:900;font-size:3vh;letter-spacing:.2em;text-transform:uppercase;color:var(--o2)}
 .pq-board__top{grid-template-columns:1fr}
 .pq-tile--title{min-height:210px}
+/* PQT logo */
+.pq-logo{display:block;width:100%;max-width:520px;height:auto}
+.pq-mark{display:block;height:100%;width:auto}
+.pq-tile__h .pq-logo{max-width:100%}
+.pq-tile__glyph{opacity:.55}
+.pq-tile--title{justify-content:center;gap:22px;min-height:200px;padding:28px 26px 18px}
+.hc-bar__title{height:28px;display:flex}
+.sc-mark{height:5vh;display:flex}
+.sc-lobby__logo .pq-logo{width:min(80vw,150vh);max-width:none;filter:drop-shadow(0 0 40px rgba(255,106,43,.18))}
+.sc-pause__logo .pq-logo{width:min(70vw,110vh);max-width:none;margin:0 auto}
+.pq-gate__mark{width:48px;height:auto}

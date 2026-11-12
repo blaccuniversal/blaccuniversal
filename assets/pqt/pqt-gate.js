@@ -15,7 +15,7 @@
   var g = document.createElement('div');
   g.className = 'pq-gate';
   g.innerHTML = '<form class="card pq-gate__card" novalidate>' +
-    '<div class="pq-pill"><span>PQT</span><i></i></div>' +
+    '<img class="pq-gate__mark" src="/assets/pqt/pqt-mark.png" alt="PQT" width="371" height="400">' +
     '<p class="eyebrow" style="margin-top:22px">Hosts only</p>' +
     '<h1 class="pq-gate__title">Enter your pass.</h1>' +
     '<input class="hc-input pq-gate__in" type="password" autocomplete="current-password" placeholder="Pass" aria-label="Pass" required>' +
