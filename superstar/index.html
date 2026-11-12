@@ -19,13 +19,50 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/superstar/superstar.css?v=15">
+<script>try{if(!localStorage.getItem('ss_unlock'))document.documentElement.classList.add('ss-locked')}catch(e){document.documentElement.classList.add('ss-locked')}</script>
+<link rel="stylesheet" href="/assets/superstar/superstar.css?v=16">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="star" viewBox="0 0 100 100"><path d="M50 3l13.2 33.6 36 2.3-27.8 23 9 35L50 77.6 19.6 96.9l9-35L.8 38.9l36-2.3z"/></symbol>
   <symbol id="blacc" viewBox="0 0 563 418"><g><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></symbol>
 </svg>
+
+<!-- ============ ACCESS GATE ============ -->
+<div class="gate" data-gate hidden>
+  <a class="gate__brand" href="/projects/" aria-label="BLACC Universal projects"><svg><use href="#blacc"/></svg><span>BLACC Universal</span></a>
+  <div class="gate__col">
+    <img class="gate__wm" src="/superstar/wordmark.webp?v=2" alt="Superstar" width="1853" height="360">
+    <div data-gv="key">
+      <p class="eyebrow">Private access</p>
+      <p class="lead">Enter your passkey to start freestyling.</p>
+      <form class="gate__form" data-gkey>
+        <input type="text" placeholder="STAR-XXXX-XXXX" aria-label="Passkey" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40">
+        <button class="btn btn--big btn--full" type="submit">Unlock</button>
+        <p class="gate__msg" data-gkmsg role="status"></p>
+      </form>
+      <p class="gate__alt">No passkey yet? <button type="button" data-gview="req">Request one</button></p>
+    </div>
+    <div data-gv="req" hidden>
+      <p class="eyebrow">Request a passkey</p>
+      <p class="lead">Tell us who you are. We’ll email your passkey once you’re approved.</p>
+      <form class="gate__form" data-greq>
+        <input name="name" type="text" placeholder="Your name" aria-label="Your name" autocomplete="name" maxlength="80" required>
+        <input name="email" type="email" placeholder="Email address" aria-label="Email address" autocomplete="email" maxlength="120" required>
+        <textarea name="note" rows="3" placeholder="Anything you’d like to add (optional)" aria-label="Note" maxlength="500"></textarea>
+        <input name="_honey" type="text" tabindex="-1" autocomplete="off" class="gate__hp" aria-hidden="true">
+        <button class="btn btn--big btn--full" type="submit">Send request</button>
+        <p class="gate__msg" data-grmsg role="status"></p>
+      </form>
+      <p class="gate__alt">Already have one? <button type="button" data-gview="key">Enter passkey</button></p>
+    </div>
+    <div data-gv="sent" hidden>
+      <p class="eyebrow">Request sent</p>
+      <p class="lead">Thanks. Keep an eye on your inbox for your passkey.</p>
+      <button class="btn btn--big btn--full" type="button" data-gview="key">Enter passkey</button>
+    </div>
+  </div>
+</div>
 
 <!-- ============ HOME ============ -->
 <section class="scr" data-scr="home">
@@ -223,6 +260,7 @@
 
 <div class="toast" data-toast hidden></div>
 
+<script src="/assets/superstar/gate.js?v=1"></script>
 <script src="/assets/superstar/beat.js?v=3" defer></script>
 <script src="/assets/superstar/superstar.js?v=9" defer></script>
 </body>
