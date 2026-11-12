@@ -17,6 +17,35 @@ function pqtMain() {
   function fmtT(ms) { var s = Math.max(0, Math.ceil(ms / 1000)); var m = Math.floor(s / 60); return m ? m + ':' + ('0' + s % 60).slice(-2) : String(s); }
   function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 
+  /* ---------- MQTT relay (works across phones, laptops and networks) ---------- */
+  var BROKERS = ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt'];
+  var qbk = new URLSearchParams(location.search).get('broker');
+  if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
+  var TOPIC = 'blaccuniversal/pqt/v1/';
+  function mqLink(o) {
+    var bi = 0, cl = null, dead = false, everOk = false, failT = null;
+    function go() {
+      if (dead || !window.mqtt) return;
+      var url = BROKERS[bi % BROKERS.length]; everOk = false;
+      var opts = { clientId: 'pqt_' + Math.random().toString(16).slice(2, 10), clean: true, connectTimeout: 8000, reconnectPeriod: 2500, keepalive: 20 };
+      if (o.will) opts.will = { topic: o.will.topic, payload: JSON.stringify(o.will.payload), retain: true, qos: 0 };
+      try { cl = window.mqtt.connect(url, opts); } catch (e) { bi++; setTimeout(go, 1000); return; }
+      clearTimeout(failT);
+      failT = setTimeout(function () { if (!everOk) { try { cl.end(true); } catch (e) {} bi++; go(); } }, 10000);
+      cl.on('connect', function () { everOk = true; o.onState && o.onState(true, url); o.onConnect && o.onConnect(cl); });
+      cl.on('close', function () { o.onState && o.onState(false, url); });
+      cl.on('offline', function () { o.onState && o.onState(false, url); });
+      cl.on('message', function (t, p) { var m; try { m = JSON.parse(p.toString()); } catch (e) { return; } o.onMessage && o.onMessage(t, m); });
+      cl.on('error', function () {});
+    }
+    go();
+    return {
+      pub: function (t, obj, retain) { if (cl && cl.connected) try { cl.publish(t, JSON.stringify(obj), { qos: 0, retain: !!retain }); } catch (e) {} },
+      on: function () { return !!(cl && cl.connected); },
+      end: function () { dead = true; clearTimeout(failT); if (cl) try { cl.end(true); } catch (e) {} }
+    };
+  }
+
   /* ---------- content parsing ---------- */
   function parseWords(txt) {
     return String(txt || '').split(/\n+/).map(function (l) {
@@ -80,16 +109,27 @@ function pqtMain() {
     });
 
     /* link */
-    var bc = null, peer = null, idTries = 0, sinks = [];
+    var bc = null, peer = null, idTries = 0, sinks = [], mq = null, mqOn = false, lastSeq = 0, seenFx = [];
     function reply(m) {
       if (bc) try { bc.postMessage(m); } catch (e) {}
       sinks.forEach(function (c) { try { if (c.open) c.send(m); } catch (e) {} });
     }
     function onMsg(m) {
       if (!m || typeof m !== 'object') return;
-      if (m.t === 'state') { apply(m.s); reply({ t: 'ack' }); }
-      else if (m.t === 'fx') { if (m.fx === 'splash') { showSplash(m.text, m.sub); FX.ding(); return; } if (FX[m.fx]) FX[m.fx](); if (m.fx === 'buzz' && m.bigX) bigX(); }
+      if (m.t === 'state') { if (m.seq && m.seq < lastSeq) return; if (m.seq) lastSeq = m.seq; apply(m.s); reply({ t: 'ack' }); }
+      else if (m.t === 'fx') {
+        if (m.id) { if (seenFx.indexOf(m.id) > -1) return; seenFx.push(m.id); if (seenFx.length > 60) seenFx.shift(); } if (m.fx === 'splash') { showSplash(m.text, m.sub); FX.ding(); return; } if (FX[m.fx]) FX[m.fx](); if (m.fx === 'buzz' && m.bigX) bigX(); }
       else if (m.t === 'ping') reply({ t: 'ack' });
+    }
+    function startMQ() {
+      if (mq) mq.end();
+      var base = TOPIC + code + '/';
+      mq = mqLink({
+        will: { topic: base + 'screen', payload: { on: false } },
+        onConnect: function (cl) { cl.subscribe([base + 'state', base + 'fx']); cl.publish(base + 'screen', JSON.stringify({ on: true, at: Date.now() }), { retain: true }); },
+        onMessage: function (t, m) { onMsg(m); },
+        onState: function (on) { mqOn = on; setNet(); }
+      });
     }
     function startBC() {
       if (!('BroadcastChannel' in window)) return;
@@ -113,13 +153,14 @@ function pqtMain() {
       peer.on('error', function (err) {
         if (err && err.type === 'unavailable-id') {
           idTries++;
-          if (idTries > 3) { code = newCode(); sstore('pqt_screen_code', code); codeTxt(); startBC(); idTries = 0; }
+          if (idTries > 3) { code = newCode(); sstore('pqt_screen_code', code); codeTxt(); startBC(); startMQ(); lastSig = {}; render(); idTries = 0; }
           setTimeout(startPeer, 2500);
         } else if (err && /network|server-error|socket/.test(err.type)) { setNet('retry'); setTimeout(startPeer, 4000); }
       });
     }
-    function setNet(s) { var el = $('[data-net]'); if (el) el.textContent = s === 'ready' ? 'Online' : s === 'retry' ? 'Reconnecting…' : 'Same-device only'; }
-    startBC(); startPeer();
+    var peerOn = false;
+    function setNet(s) { if (s === 'ready') peerOn = true; else if (s) peerOn = false; var el = $('[data-net]'); if (el) el.textContent = (mqOn || peerOn) ? 'Online' : 'Connecting…'; }
+    startBC(); startMQ(); startPeer();
     if (!window.Peer) setNet('local');
 
     /* render */
@@ -317,9 +358,22 @@ function pqtMain() {
       feud: b ? { key: H.feud.qi + ':' + b.q, q: b.q, n: b.a.length, out: out, strikes: f.strikes, bank: f.awardedTo != null ? 0 : bank, awardedTo: f.awardedTo, awardedPts: f.awardedPts } : null
     };
   }
+  var hmq = null, mqScreen = false, seqN = 0;
   function send(m) {
+    if (m.t === 'state') m.seq = Date.now() * 100 + (seqN = (seqN + 1) % 100);
+    if (m.t === 'fx') m.id = Math.random().toString(36).slice(2, 10);
     if (hbc) try { hbc.postMessage(m); } catch (e) {}
     if (conn && conn.open) try { conn.send(m); } catch (e) {}
+    if (hmq && H.code && (m.t === 'state' || m.t === 'fx')) hmq.pub(TOPIC + H.code + '/' + (m.t === 'state' ? 'state' : 'fx'), m, m.t === 'state');
+  }
+  function startHostMQ(code) {
+    if (hmq) hmq.end(); mqScreen = false;
+    var base = TOPIC + code + '/';
+    hmq = mqLink({
+      onConnect: function (cl) { cl.subscribe(base + 'screen'); push(); },
+      onMessage: function (t, m) { if (t === base + 'screen') { var was = mqScreen; mqScreen = !!(m && m.on); if (mqScreen && !was) push(); paintLink(); } },
+      onState: function () { paintLink(); }
+    });
   }
   function push() { save(); send({ t: 'state', s: pub() }); if (typeof renderTeams === 'function' && root) renderTeams(); }
   function fx(name, extra) { var m = { t: 'fx', fx: name }; if (extra) for (var k in extra) m[k] = extra[k]; send(m); }
@@ -334,7 +388,7 @@ function pqtMain() {
     H.code = code; save();
     if (hbc) hbc.close();
     if ('BroadcastChannel' in window) { hbc = new BroadcastChannel(PREFIX + code); hbc.onmessage = function (e) { onHostMsg(e.data, 'bc'); }; hbc.postMessage({ t: 'ping' }); }
-    linkState = 'wait'; paintLink();
+    linkState = 'wait'; startHostMQ(code); paintLink();
     clearTimeout(retryT);
     if (window.Peer) {
       if (!hpeer || hpeer.destroyed) {
@@ -358,7 +412,7 @@ function pqtMain() {
     conn.on('data', function (m) { onHostMsg(m, 'peer'); });
     conn.on('close', function () { linkState = 'wait'; paintLink(); clearTimeout(retryT); retryT = setTimeout(dial, 2000); });
   }
-  function linked() { return (conn && conn.open) || Date.now() - bcSeen < 7000; }
+  function linked() { return (conn && conn.open) || Date.now() - bcSeen < 7000 || (hmq && hmq.on() && mqScreen); }
   function paintLink() {
     var el = $('[data-status]'); if (!el) return;
     var on = linked();
