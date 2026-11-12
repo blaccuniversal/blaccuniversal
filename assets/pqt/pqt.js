@@ -310,7 +310,7 @@ function pqtMain() {
           var msg = f.msg === 'taken' ? '<div class="sc-fm__msg is-warn">Already given by ' + esc(f.takenBy) + ' · no points</div>' : f.msg === 'miss' ? '<div class="sc-fm__msg is-miss">Not on the board</div>' : f.msg === 'pass' ? '<div class="sc-fm__msg is-miss">Pass</div>' : '';
           return '<div class="sc-qa"><div class="sc-qa__top"><p class="sc-intro__r">Quests Feud · ' + esc(f.team) + ' · ' + (f.qi + 1) + ' of ' + f.n + '</p><span class="sc-qa__timer" data-ringnum></span></div><p class="sc-qa__q" style="margin-top:2vh">' + esc(f.q) + '</p>' + tiles(f.na, show) + msg + '</div>';
         }
-        if (f.phase === 'recap') return '<div class="sc-qa"><p class="sc-intro__r">' + esc(f.team) + '’s answers</p><div class="sc-fmr">' + f.items.map(function (it, i) { return '<div class="sc-fmr__r' + (it ? ' is-on' + (it.miss ? ' is-miss' : '') : '') + '"><span class="sc-fmr__q">' + esc(it ? it.q : f.qs[i]) + '</span><b>' + (it ? (it.taken ? 'Already taken' : it.miss ? '✕' : esc(it.a)) : '') + '</b><em>' + (it ? it.p : '') + '</em></div>'; }).join('') + '</div><p class="sc-fmr__tot">Total <b>' + f.total + '</b></p></div>';
+        if (f.phase === 'recap') return '<div class="sc-qa"><p class="sc-intro__r">' + esc(f.team) + '’s answers</p><div class="sc-fmr">' + f.items.map(function (it, i) { return '<div class="sc-fmr__r' + (it ? ' is-on' + (it.miss ? ' is-miss' : '') : '') + '"><span class="sc-fmr__q">' + esc(it ? it.q : f.qs[i]) + '</span><b>' + (it ? (it.taken ? esc(it.tbA) + '<small>' + esc(it.tbBy) + ' said it first · no points</small>' : it.out ? 'Out of time' : it.pass ? 'Passed' : it.miss ? 'Not on the board' : esc(it.a)) : '') + '</b><em>' + (it ? it.p : '') + '</em></div>'; }).join('') + '</div><p class="sc-fmr__tot">Total <b>' + f.total + '</b></p></div>';
         if (f.phase === 'final') return '<div class="sc-qa"><p class="sc-intro__r">All the answers · ' + (f.rq + 1) + ' of ' + f.n + '</p><p class="sc-qa__q" style="margin-top:2vh">' + esc(f.q) + '</p>' + tiles(f.all.length, f.all, ' sc-fmb--all') + '</div>';
         return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud · round totals</p><div class="sc-fm sc-fm--tot" style="margin-top:5vh">' + (f.totals || []).map(function (r, i) { return '<div class="sc-fm__r' + (i === 0 ? ' is-top' : '') + '"><b>' + (i + 1) + '</b><span>' + esc(r.team) + '</span><em>' + r.p + '</em></div>'; }).join('') + '</div></div>';
       },
@@ -365,7 +365,7 @@ function pqtMain() {
       else if (!on && pauseEl) { pauseEl.remove(); pauseEl = null; }
     }
     function bigX() {
-      var d = document.createElement('div'); d.className = 'sc-bigx'; d.innerHTML = '<span>X</span>';
+      var d = document.createElement('div'); d.className = 'sc-bigx'; d.innerHTML = '<span class="sc-bigx__box"><i></i><i></i></span>';
       document.body.appendChild(d); setTimeout(function () { d.remove(); }, 950);
     }
     var lastSec = null;
@@ -648,7 +648,7 @@ function pqtMain() {
     var by = a >= 0 ? fmTakenBy(f.qi, a, t) : null;
     var pk = f.picks[t] = f.picks[t] || {}, old = pk[f.qi], b = fmB(f.qi);
     if (old != null && old >= 0 && b && b.a[old]) pts(t, -b.a[old].p);
-    if (by != null) { pk[f.qi] = -3; f.last = { qi: f.qi, msg: 'taken', by: by }; fx('buzz', { bigX: true }); toast('Already given by ' + ((H.teams[by] || {}).name || '') + ' · no points'); clearTimeout(fmAutoT); fmNextQ(); return; }
+    if (by != null) { pk[f.qi] = -3; f.tb = f.tb || {}; f.tb[t + ':' + f.qi] = { by: by, a: a }; f.last = { qi: f.qi, msg: 'taken', by: by }; fx('buzz', { bigX: true }); toast('Already given by ' + ((H.teams[by] || {}).name || '') + ' · no points'); clearTimeout(fmAutoT); fmNextQ(); return; }
     pk[f.qi] = a;
     if (a >= 0 && b && b.a[a]) { pts(t, b.a[a].p); f.last = { qi: f.qi, msg: 'hit', a: a }; fx('ok'); }
     else { f.last = { qi: f.qi, msg: a === -2 ? 'pass' : 'miss' }; fx('buzz', a === -2 ? null : { bigX: true }); clearTimeout(fmAutoT); fmNextQ(); return; }
@@ -668,7 +668,7 @@ function pqtMain() {
     }
     if (f.phase === 'recap') {
       o.qs = f.qs.map(function (qq) { var b = BOARDS[qq]; return b ? b.q : ''; });
-      o.items = f.qs.map(function (qq, qi) { if (qi >= f.rc) return null; var b = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && b ? b.a[a] : null; return { q: b ? b.q : '', a: ans ? ans.a : '', p: ans ? ans.p : 0, miss: !ans, taken: a === -3 }; });
+      o.items = f.qs.map(function (qq, qi) { if (qi >= f.rc) return null; var b = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && b ? b.a[a] : null; var tb = a === -3 && f.tb ? f.tb[t + ':' + qi] : null; return { q: b ? b.q : '', a: ans ? ans.a : '', p: ans ? ans.p : 0, miss: !ans, taken: a === -3, tbBy: tb && H.teams[tb.by] ? H.teams[tb.by].name : '', tbA: tb && b && b.a[tb.a] ? b.a[tb.a].a : '', out: a == null, pass: a === -2 }; });
       o.total = o.items.reduce(function (s, x) { return s + (x ? x.p : 0); }, 0);
     }
     if (f.phase === 'final') {
@@ -764,7 +764,7 @@ function pqtMain() {
       return out;
     }
     if (f.phase === 'recap') {
-      out += prog + '<div class="fm-head"><span>' + esc(tm.name) + '’s answers · recap</span></div><div class="fm-rev">' + f.qs.map(function (qq, qi) { var bb = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && bb ? bb.a[a] : null; return '<div class="' + (qi < f.rc ? 'is-on' : '') + '"><b>' + esc(bb ? bb.q : '') + '</b><span>' + (ans ? esc(ans.a) : a === -2 ? 'Passed' : a === -3 ? 'Already taken' : 'Not on the board') + '</span><em>' + (ans ? ans.p : 0) + '</em></div>'; }).join('') + '</div>';
+      out += prog + '<div class="fm-head"><span>' + esc(tm.name) + '’s answers · recap</span></div><div class="fm-rev">' + f.qs.map(function (qq, qi) { var bb = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && bb ? bb.a[a] : null; return '<div class="' + (qi < f.rc ? 'is-on' : '') + '"><b>' + esc(bb ? bb.q : '') + '</b><span>' + (ans ? esc(ans.a) : a === -2 ? 'Passed' : a === -3 ? (function () { var tb = f.tb && f.tb[t + ':' + qi], tbb = tb && bb ? bb.a[tb.a] : null; return (tbb ? esc(tbb.a) + ' · ' : '') + esc(tb && H.teams[tb.by] ? H.teams[tb.by].name : 'another team') + ' said it first'; })() : a == null ? 'Out of time' : 'Not on the board') + '</span><em>' + (ans ? ans.p : 0) + '</em></div>'; }).join('') + '</div>';
       var lastT = f.ti + 1 >= f.order.length;
       out += f.rc < f.qs.length ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="recap" type="button">Reveal answer ' + (f.rc + 1) + '</button>' : '<button class="pbtn pbtn--white pbtn--lg pbtn--block" data-fm="afterrecap" type="button">' + (lastT ? 'Show all the answers →' : 'Next: ' + esc((H.teams[f.order[f.ti + 1]] || {}).name || '') + ' →') + '</button>';
       return out;
