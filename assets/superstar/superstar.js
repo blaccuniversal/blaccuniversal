@@ -276,7 +276,7 @@
       var cr = session.rows[bar];
       if (cr && cr.el && beat < 3) { var sqs = cr.el.querySelectorAll('.row__d'); if (sqs[beat]) sqs[beat].classList.add('is-on'); }
       if (beat === 3 && session.rows[bar] && session.rows[bar].el && !session.rows[bar].count) {
-        var el = session.rows[bar].el; el.classList.add('is-hit'); setTimeout(function () { el.classList.remove('is-hit'); }, 260);
+        var el = session.rows[bar].el; el.classList.add('is-hit'); if (S.reveal) { var hw = el.querySelector('.row__w--hide'); if (hw) hw.classList.add('is-shown'); } setTimeout(function () { el.classList.remove('is-hit'); }, 260);
       }
     }
     // ball

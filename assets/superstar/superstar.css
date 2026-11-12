@@ -159,6 +159,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .row__w--hide{color:transparent!important;background:transparent!important;box-shadow:inset 0 0 0 2px rgba(255,210,63,.4)}
 .row.is-now .row__w--hide{box-shadow:inset 0 0 0 2px var(--acc)}
 .row.is-hit .row__w--hide{background:var(--acc)!important}
+.row.is-hit .row__w--hide.is-shown{color:#000!important;box-shadow:none}
 .row__w--hide.is-shown{color:var(--acc)!important;font-weight:700;background:#1a1a1a!important;box-shadow:inset 0 0 0 1px rgba(255,210,63,.5)}
 .row__w--free{min-width:0;width:var(--s);padding:0}
 .row.is-now .row__w--free{background:#1a1a1a}
