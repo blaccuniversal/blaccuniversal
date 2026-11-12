@@ -43,7 +43,7 @@
   function moveHtml(t) {
     if (t.prev == null) return '<span class="lb-mv lb-mv--new">NEW</span>';
     var d = t.prev - t.rank;
-    if (!d) return '<span class="lb-mv lb-mv--eq" aria-label="No change">–</span>';
+    if (!d) return '<span class="lb-mv lb-mv--eq" aria-label="Same position">–</span>';
     return d > 0 ? '<span class="lb-mv lb-mv--up" aria-label="Up ' + d + '">↑ ' + d + '</span>' : '<span class="lb-mv lb-mv--dn" aria-label="Down ' + -d + '">↓ ' + -d + '</span>';
   }
 
@@ -66,9 +66,9 @@
       } else {
         var w = weeks.filter(function (x) { return x.week === wk; })[0];
         var res = w.results.slice().sort(function (a, b) { return b.points - a.points; }), dt = longDate(w.date);
-        body.innerHTML = (weeks.length > 1 ? '<div class="lb-wks">' + weeks.map(function (x) { return '<button type="button" data-lbwk="' + x.week + '"' + (x.week === wk ? ' class="is-on"' : '') + '>GW ' + roman(x.week) + '</button>'; }).join('') + '</div>' : '') +
-          '<div class="lb-gw"><h2>Gameweek ' + roman(w.week) + '</h2><div class="lb-gw__row"><b>Final results</b><span>' + dt.day + '<br>' + dt.date + '</span></div></div>' +
-          '<ol class="lb-list">' + res.map(function (r, i) { return '<li class="lb-row' + (i === 0 ? ' is-top' : '') + '"><span class="lb-n">' + (i + 1) + '</span><span class="lb-t">' + esc(r.team) + (i === 0 && r.players && r.players.length ? '<small><i>★</i>' + r.players.map(esc).join(' · ') + '</small>' : '') + '</span><b class="lb-p">' + r.points + '</b></li>'; }).join('') + '</ol>';
+        body.innerHTML = (weeks.length > 1 ? '<div class="lb-wks">' + weeks.map(function (x) { return '<button type="button" data-lbwk="' + x.week + '"' + (x.week === wk ? ' class="is-on"' : '') + '>Week ' + x.week + '</button>'; }).join('') + '</div>' : '') +
+          '<div class="lb-gw"><h2>Gameweek ' + w.week + '</h2><div class="lb-gw__row"><b>Final results</b><span>' + dt.day + ', ' + dt.date + '</span></div></div>' +
+          '<ol class="lb-list">' + res.map(function (r, i) { return '<li class="lb-row lb-row--gw' + (i === 0 ? ' is-top' : '') + '"><span class="lb-n">' + (i + 1) + '</span><span class="lb-t">' + esc(r.team) + (i === 0 && r.players && r.players.length ? '<small><i>★</i>' + r.players.map(esc).join(' · ') + '</small>' : '') + '</span><b class="lb-p">' + r.points + '</b></li>'; }).join('') + '</ol>';
       }
     }
     root.addEventListener('click', function (e) {

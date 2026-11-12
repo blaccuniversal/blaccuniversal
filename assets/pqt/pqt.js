@@ -237,7 +237,7 @@ function pqtMain() {
       },
       scores: function () {
         return '<div class="sc-scores">' + S.teams.map(function (t) {
-          return '<div class="card sc-score" style="--c:' + t.color + '"><div class="sc-score__name">' + esc(t.name) + '</div><div class="sc-score__pts">' + t.score + '</div></div>';
+          return '<div class="card sc-score" style="--c:' + t.color + '"><div class="sc-score__name">' + esc(t.name) + '</div><div class="sc-score__pts">' + t.score + '</div>' + (t.rounds && t.rounds.length ? '<div class="sc-score__bd">' + t.rounds.map(function (v, r) { return '<span><em>R' + (r + 1) + '</em>' + v + '</span>'; }).join('') + (t.pen ? '<span class="is-pen"><em>Pen</em>' + t.pen + '</span>' : '') + '</div>' : '') + (t.strikes ? '<div class="sc-score__x">' + new Array(t.strikes + 1).join('✕') + '</div>' : '') + '</div>';
         }).join('') + '</div>';
       },
       ranking: function () {
@@ -408,7 +408,7 @@ function pqtMain() {
     if (b) Object.keys(f.out).forEach(function (i) { var a = b.a[i]; if (a) { out[i] = { a: a.a, p: a.p }; if (f.out[i] === 'p') bank += a.p; } });
     return {
       view: H.view, title: H.title, round: H.round, rounds: H.plan.length, roundType: H.roundType, paused: H.paused,
-      teams: H.teams.map(function (x) { return { name: x.name, color: x.color, score: x.score }; }),
+      teams: H.teams.map(function (x, i) { var rp = roundPts(i); return { name: x.name, color: x.color, score: x.score, rounds: rp.rounds, pen: rp.pen, strikes: x.strikes || 0 }; }),
       timer: { total: t.total, remaining: left, running: t.running },
       words: { team: w.team, correct: w.correct, skipped: w.skipped, buzzed: w.buzzed, stream: w.stream.slice(-14), pts: w.correct - (w.buzzCost ? w.buzzed : 0) },
       qa: qaPub(),
@@ -513,7 +513,8 @@ function pqtMain() {
 
   /* actions */
   function team(i) { return H.teams[i]; }
-  function pts(i, d) { var t = team(i); if (!t || !d) return; t.score += d; H.ledger.push([i, d]); }
+  function pts(i, d, kind) { var t = team(i); if (!t || !d) return; t.score += d; H.ledger.push([i, d]); var r = kind === 'pen' ? 'pen' : String(H.round || 0); H.byRound = H.byRound || {}; var br = H.byRound[r] = H.byRound[r] || {}; br[i] = (br[i] || 0) + d; }
+  function roundPts(i) { var br = H.byRound || {}, out = []; for (var r = 1; r <= Math.max(H.round, 0); r++) out.push((br[r] || {})[i] || 0); return { rounds: out, extra: (br['0'] || {})[i] || 0, pen: (br.pen || {})[i] || 0 }; }
   function addScore(i, d) { snap(); pts(i, d); push(); renderTeams(); if (H.tab === 'quiz') renderTab(); }
   var toastT = null;
   function toast(msg) { var el = $('[data-toast]'); if (!el) return; el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { el.hidden = true; }, 2200); }
@@ -553,7 +554,7 @@ function pqtMain() {
   }
   function restartRound() {
     if (!H.roundType) { toast('No round to restart yet'); return; }
-    snap(); H.ledger.forEach(function (l) { var t = team(l[0]); if (t) t.score -= l[1]; }); H.ledger = [];
+    snap(); H.ledger.forEach(function (l) { var t = team(l[0]); if (t) t.score -= l[1]; }); H.ledger = []; if (H.byRound) delete H.byRound[String(H.round)];
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
     if (H.roundType === 'answers') H.feud = { qi: H.feud.qi, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
     if (QA_TYPES[H.roundType]) { H.qaUsed[H.roundType] = []; H.qa = { type: H.roundType, mode: QA_BOARD[H.roundType] ? 'board' : 'q', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; }
@@ -561,7 +562,7 @@ function pqtMain() {
   }
   function newGame() {
     H.gameId = Date.now().toString(36); H.ended = false;
-    snap(); H.teams.forEach(function (t) { t.score = 0; }); H.round = 0; H.roundType = ''; H.ledger = []; H.paused = false;
+    snap(); H.teams.forEach(function (t) { t.score = 0; t.strikes = 0; }); H.byRound = {}; H.round = 0; H.roundType = ''; H.ledger = []; H.paused = false;
     resetTally(); H.words.team = 0; H.timer.running = false; H.timer.remaining = H.timer.total;
     H.feud = { qi: 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
     H.qa = { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; H.qaUsed = {}; H.qaPos = {}; H.bq = null; H.picks = {};
@@ -574,7 +575,7 @@ function pqtMain() {
   function turnTeam() { var n = H.teams.length; if (H.qa.turn == null || H.qa.turn >= n) H.qa.turn = 0; return H.qa.turn; }
   function bdAnswer(ok) {
     var q = H.qa, b = q.bd; if (!b || b.res != null) return; snap();
-    if (ok) { pts(b.cur, 1); b.res = b.cur; q.revealed = true; q.mark = 'ok'; fx('ok'); toast('+1 to ' + tn(b.cur) + (b.cur !== b.owner ? ' (bonus)' : '')); H.timer.running = false; H.timer.remaining = timerLeft(); push(); renderAll(); return; }
+    if (ok) { var pv = b.cur === b.owner ? 2 : 1; pts(b.cur, pv); b.res = b.cur; b.pv = pv; q.revealed = true; q.mark = 'ok'; fx('ok'); toast('+' + pv + ' to ' + tn(b.cur) + (b.cur !== b.owner ? ' (bonus)' : '')); H.timer.running = false; H.timer.remaining = timerLeft(); push(); renderAll(); return; }
     var queue = bq(), nx = -1;
     for (var k = 0; k < queue.length; k++) if (b.tried.indexOf(queue[k]) < 0) { nx = queue[k]; break; }
     fx('buzz');
@@ -607,7 +608,7 @@ function pqtMain() {
   function qaBoard() { snap(); var bb = H.qa.bd; if (bb && !bb.adv) { bb.adv = true; H.qa.turn = (bb.owner + 1) % H.teams.length; } H.qa.mode = 'board'; H.timer.running = false; H.view = 'qa'; push(); renderAll(); }
   function saveResult() {
     if (!H.gameId) H.gameId = Date.now().toString(36);
-    var hist = store('pqt_history') || [], rec = { id: H.gameId, at: Date.now(), title: H.title || 'Game night', rounds: H.round, games: H.plan.slice(0, H.round).map(function (g) { return GNAME[g]; }), teams: H.teams.map(function (t) { return { name: t.name, color: t.color, score: t.score }; }).sort(function (a, b) { return b.score - a.score; }) };
+    var hist = store('pqt_history') || [], rec = { id: H.gameId, at: Date.now(), title: H.title || 'Game night', rounds: H.round, games: H.plan.slice(0, H.round).map(function (g) { return GNAME[g]; }), teams: H.teams.map(function (t, i) { var rp = roundPts(i); return { name: t.name, color: t.color, score: t.score, rounds: rp.rounds, pen: rp.pen }; }).sort(function (a, b) { return b.score - a.score; }) };
     hist = hist.filter(function (r) { return r.id !== rec.id; }); hist.unshift(rec); store('pqt_history', hist.slice(0, 40));
   }
   function endGame() { snap(); saveResult(); H.ended = true; H.timer.running = false; H.timer.remaining = timerLeft(); H.view = 'winner'; push(); renderAll(); fx('win'); toast('Winner on screen'); }
@@ -666,10 +667,18 @@ function pqtMain() {
     if (box.contains(document.activeElement) && document.activeElement.classList.contains('team__name')) { // keep typing focus
       $$('.team__score', box).forEach(function (s, i) { if (H.teams[i]) s.textContent = H.teams[i].score; }); return;
     }
+    var bd = '';
+    if (H.round > 0) {
+      var hasPen = H.teams.some(function (_, i) { return roundPts(i).pen; });
+      bd = '<div class="hc-bd"><p class="hc-sub">Points by round</p><div class="hc-bd__w"><table><thead><tr><th></th>' + Array.apply(null, Array(H.round)).map(function (_, r) { return '<th title="' + esc(GNAME[H.plan[r]] || '') + '">R' + (r + 1) + '</th>'; }).join('') + (hasPen ? '<th>Pen</th>' : '') + '<th>Total</th></tr></thead><tbody>' +
+        H.teams.map(function (t, i) { var rp = roundPts(i); return '<tr><td><i style="background:' + t.color + '"></i>' + esc(t.name) + '</td>' + rp.rounds.map(function (v) { return '<td>' + v + '</td>'; }).join('') + (hasPen ? '<td class="is-pen">' + (rp.pen || '') + '</td>' : '') + '<td><b>' + t.score + '</b></td></tr>'; }).join('') + '</tbody></table></div></div>';
+    }
+    var strikes = '<div class="hc-strk"><p class="hc-sub">Strikes <span>3 strikes = −' + (H.penalty || 3) + '<button class="pbtn pbtn--sm pbtn--ghost" data-pen="-1" type="button" aria-label="Smaller penalty">−</button><button class="pbtn pbtn--sm pbtn--ghost" data-pen="1" type="button" aria-label="Bigger penalty">+</button></span></p>' +
+      H.teams.map(function (t, i) { var s = t.strikes || 0; return '<div class="hc-strk__r"><i style="background:' + t.color + '"></i><span>' + esc(t.name) + '</span><b class="hc-strk__x">' + [0, 1, 2].map(function (k) { return '<em class="' + (k < s ? 'is-on' : '') + '">✕</em>'; }).join('') + '</b><button class="pbtn pbtn--sm pbtn--ghost" data-unstrike="' + i + '" type="button"' + (s ? '' : ' disabled') + ' aria-label="Remove a strike">Undo</button><button class="pbtn pbtn--sm pbtn--bad" data-strike="' + i + '" type="button">Strike</button></div>'; }).join('') + '</div>';
     box.innerHTML = H.teams.map(function (t, i) {
       return '<div class="team"><span class="team__sw" style="background:' + t.color + '"></span><input class="team__name" data-tname="' + i + '" value="' + esc(t.name) + '" aria-label="Team name">' +
         '<div class="team__ctl"><button class="pbtn" data-sc="' + i + ':-1" aria-label="Minus 1">−</button><span class="team__score">' + t.score + '</span><button class="pbtn" data-sc="' + i + ':1" aria-label="Plus 1">+</button><button class="pbtn pbtn--ghost" data-sc="' + i + ':5">+5</button></div></div>';
-    }).join('');
+    }).join('') + bd + strikes;
   }
   function teamAward(lbl) { return '<div class="hc-row hc-award">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-qok="' + i + '"><i style="width:3px;height:14px;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '<button class="pbtn pbtn--sm pbtn--bad" data-qno>' + (lbl || 'Wrong') + '</button></div>'; }
   function renderQuiz() {
@@ -705,7 +714,7 @@ function pqtMain() {
         if (QA_BOARD[type] && q.bd) {
           var bd = q.bd;
           out += bd.res == null ? '<div class="hc-turn' + (bd.cur !== bd.owner ? ' is-bonus' : '') + '"><span>' + (bd.cur !== bd.owner ? 'Bonus · ' + esc(tn(bd.owner)) + ' missed' : 'Their question') + '</span><b><i style="background:' + (H.teams[bd.cur] || {}).color + '"></i>' + esc(tn(bd.cur)) + '</b></div><div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--good pbtn--lg" data-bd="1" type="button">✓ Correct</button><button class="pbtn pbtn--bad pbtn--lg" data-bd="0" type="button">✕ ' + (type === 'spell' ? 'Misspelt' : 'Wrong') + '</button></div>'
-            : '<div class="hc-turn is-done"><span>' + (bd.res < 0 ? 'Nobody got it' : (bd.res !== bd.owner ? 'Bonus point' : 'Point')) + '</span><b>' + (bd.res < 0 ? 'No points' : '+1 · ' + esc(tn(bd.res))) + '</b></div>';
+            : '<div class="hc-turn is-done"><span>' + (bd.res < 0 ? 'Nobody got it' : (bd.res !== bd.owner ? 'Bonus point' : 'Point')) + '</span><b>' + (bd.res < 0 ? 'No points' : '+' + (bd.pv || 1) + ' · ' + esc(tn(bd.res))) + '</b></div>';
           out += '<div class="w-actions" style="grid-template-columns:1fr;margin-top:12px"><button class="pbtn pbtn--lg pbtn--white" data-qboard>Back to the board · ' + esc(tn(bd.adv ? H.qa.turn : (bd.owner + 1) % H.teams.length)) + ' picks next</button></div>';
         } else out += '<p class="hc-sub">Correct? Tap the team</p>' + teamAward(type === 'spell' ? 'Misspelt' : 'Wrong');
         if (!QA_BOARD[type]) out += '<div class="w-actions" style="grid-template-columns:1fr 1fr;margin-top:12px">' + '<button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (last ? finLbl : 'Next →') + '</button>' + '</div>';
@@ -791,6 +800,9 @@ function pqtMain() {
     else if (d.bd != null) bdAnswer(d.bd === '1');
     else if (d.qok != null) qaMark('ok', +d.qok);
     else if (b.hasAttribute('data-qno')) qaMark('no');
+    else if (d.strike != null) { var si = +d.strike, stm = H.teams[si]; if (stm) { snap(); stm.strikes = (stm.strikes || 0) + 1; if (stm.strikes >= 3) { stm.strikes = 0; pts(si, -(H.penalty || 3), 'pen'); fx('buzz', { bigX: true }); toast('Third strike · −' + (H.penalty || 3) + ' to ' + stm.name); } else { fx('buzz'); toast('Strike ' + stm.strikes + ' of 3 · ' + stm.name); } push(); renderTeams(); } }
+    else if (d.unstrike != null) { var ui = +d.unstrike, utm = H.teams[ui]; if (utm && utm.strikes) { snap(); utm.strikes--; push(); renderTeams(); } }
+    else if (d.pen) { H.penalty = Math.max(1, Math.min(20, (H.penalty || 3) + +d.pen)); save(); renderTeams(); }
     else if (d.wd) { var pw = d.wd.split(':'), wd = H.qa.wd = H.qa.wd || {}; wd[pw[0]] = (wd[pw[0]] || 0) + +pw[1]; save(); renderTab(); }
     else if (b.hasAttribute('data-wd-go')) { var wd2 = H.qa.wd || {}, msg = []; snap(); H.teams.forEach(function (t, i) { var v = wd2[i] || 0; if (v) { pts(i, v); msg.push(t.name + ' ' + (v > 0 ? '+' : '') + v); } }); H.qa.wd = {}; push(); renderTab(); fx('ok'); toast(msg.join(' · ')); }
     else if (b.hasAttribute('data-qtime')) { H.timer.running ? timerPause() : timerStart(); renderTab(); }
@@ -875,7 +887,7 @@ function pqtMain() {
     $('[data-end-go]').classList.toggle('pbtn--o', !g);
     var rows = H.teams.map(function (t) { return t; }).slice().sort(function (a, b) { return b.score - a.score; });
     $('[data-end-sub]').textContent = (H.title || 'Game night') + ' · ' + H.round + ' of ' + H.plan.length + ' rounds played';
-    $('[data-end-list]').innerHTML = rows.map(function (t, i) { return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '</b><em>' + t.score + '</em></li>'; }).join('');
+    $('[data-end-list]').innerHTML = rows.map(function (t, i) { var rp = roundPts(H.teams.indexOf(t)); return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '<small>' + rp.rounds.map(function (v, r) { return 'R' + (r + 1) + ' ' + v; }).join(' · ') + (rp.pen ? ' · Penalty ' + rp.pen : '') + '</small></b><em>' + t.score + '</em></li>'; }).join('');
     $('[data-endsheet]').hidden = false;
   }
   function confirmTwice(b) {
