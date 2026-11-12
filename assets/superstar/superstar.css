@@ -49,7 +49,8 @@ svg{flex-shrink:0}
 .home__mark{width:auto;height:clamp(96px,16vh,150px);margin:0 0 4px;animation:sway 6s ease-in-out infinite;transform-origin:50% 90%}
 @keyframes sway{50%{transform:rotate(-5deg)}}
 @media (prefers-reduced-motion:reduce){.home__mark{animation:none}}
-.logo{margin:0;font-size:clamp(48px,11vw,96px);font-weight:300;letter-spacing:-.04em;line-height:.95}
+.logo{margin:0;line-height:0}
+.home__wm{width:min(100%,clamp(280px,48vw,520px));height:auto;display:block;margin-left:-1.5%}
 .home__hero .btn{margin-top:10px}
 .daily{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:20px;border:1px solid var(--bd2);border-radius:2px;background:var(--bg2);text-align:left;transition:border-color .2s}
 .daily:hover{border-color:#5a5a5a}
