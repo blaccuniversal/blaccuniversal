@@ -1030,3 +1030,20 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-fmr__r b small{display:block;margin-top:.6vh;font-size:1.8vh;font-weight:500;letter-spacing:.06em;color:#d4a64a}
 .sc-fmr__r.is-miss b small{color:#d4a64a}
 .sc-bigx .sc-bigx__box{background:rgba(0,0,0,.35);border:1.2vh solid #e5372a;box-shadow:0 0 6vh rgba(229,55,42,.35);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}.sc-bigx__box i{background:#e5372a}
+/* screen: corner clock centred, words view + podium on portrait */
+.sc-top{position:relative}
+.sc-clock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+@media (orientation:portrait){
+  .sc-words{grid-template-columns:1fr;justify-items:center;gap:5vw;width:92vw;text-align:center}
+  .sc-ring{width:min(56vw,46vh);height:min(56vw,46vh)}
+  .sc-words__title{font-size:min(8vw,64px)!important}
+  .sc-tally{width:100%}
+  .sc-stream{justify-content:center}
+  .sc-podium{grid-template-columns:repeat(3,minmax(0,1fr));width:92vw;gap:3vw}
+  .sc-pod__name{font-size:min(4.4vw,32px)}
+  .sc-win__t{font-size:min(14vw,110px)}
+  .sc-pod--1 .sc-pod__block{height:24vh}.sc-pod--2 .sc-pod__block{height:17vh}.sc-pod--3 .sc-pod__block{height:12vh}
+}
+/* host: words settings hidden while a turn is running */
+.hc-wset[hidden]{display:none}
+@media (orientation:portrait){.sc-words > div{display:flex;flex-direction:column;align-items:center}.sc-words__team{justify-content:center}}
