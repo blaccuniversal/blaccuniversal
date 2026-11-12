@@ -956,3 +956,50 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .fm-msg{margin:0 0 10px;padding:10px 12px;font-size:13px;line-height:1.45}
 .fm-msg.is-warn{border:1px solid #d4a64a;color:#d4a64a}
 .sc-fmb__t:has(small) b{transform:translateY(-1.1vh)}.sc-fmb__t small{left:11vh;bottom:1.2vh}
+/* PQT polish pass */
+.hc-cset{border-top:1px solid #161616}
+.hc-cset:last-of-type{border-bottom:1px solid #161616}
+.hc-cset summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:52px;cursor:pointer}
+.hc-cset summary::-webkit-details-marker{display:none}
+.hc-cset summary b{font-size:15px;font-weight:600}
+.hc-cset summary span{font-size:12px;color:#7a7a7a}
+.hc-cset summary::after{content:"+";font-size:18px;color:#7a7a7a;margin-left:6px}
+.hc-cset[open] summary::after{content:"−"}
+.hc-cset .hc-note{margin:0 0 10px}
+.hc-cset textarea{min-height:220px;margin-bottom:16px}
+.hc-sub{margin:20px 0 10px;font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#7a7a7a}
+.hc-strk .hc-sub,.hc-bd .hc-sub{margin-top:0}
+.team__name{padding-left:0}
+.team{padding:8px 0}
+.hc-sec{padding:18px 16px}
+@media (min-width:600px){.hc-sec{padding:22px 24px}}
+.hc-now{padding:12px 14px}
+.hc-gsum{margin:6px 0 16px}
+.hc-steps{margin-top:14px}
+.hc-views .pbtn{min-height:44px}
+.hc-toast{top:calc(env(safe-area-inset-top,0px) + 72px);bottom:auto;max-width:calc(100vw - 32px);text-align:center;pointer-events:none;font-size:13px}
+/* screen on portrait displays (phones, tablets upright) */
+@media (orientation:portrait){
+  .sc-join{grid-template-columns:1fr;gap:5vw;width:min(92vw,680px)}
+  .sc-join__card{min-height:auto;padding:7vw 6vw}
+  .sc-join__code{font-size:min(19vw,140px)}
+  .sc-join__lead,.sc-join__url{font-size:min(4.6vw,30px)}
+  .sc-join__steps{font-size:min(3.6vw,22px);margin-top:3vw}
+  .sc-tap button{font-size:min(4.4vw,26px);min-height:auto;padding:4vw 6vw;max-width:88vw;line-height:1.3}
+  .sc-qa,.sc-fmb,.sc-fmr,.sc-fm,.sc-numboard{width:92vw}
+  .sc-qa__q{font-size:min(5.8vw,44px)}
+  .sc-qa__q--big{font-size:min(7vw,56px)}
+  .sc-intro__t{font-size:min(11vw,96px)}
+  .sc-intro__rules li{font-size:min(4.2vw,30px)}
+  .sc-qa__h{font-size:min(7vw,56px)}
+  .sc-numboard{grid-template-columns:repeat(4,1fr)}
+  .sc-numboard span{font-size:min(9vw,64px)}
+  .sc-fmb{grid-template-columns:1fr}
+  .sc-fmb__t b,.sc-fmr__r b{font-size:min(4.6vw,32px)}
+  .sc-fmb__t em,.sc-fmr__r em{font-size:min(5.6vw,40px)}
+  .sc-fmr__r{grid-template-columns:1fr auto;padding:2vw 4vw}
+  .sc-fmr__q{grid-column:1/-1;font-size:min(3.2vw,20px)}
+  .sc-lobby__logo .pq-logo{width:84vw}
+  .sc-lb__team{font-size:min(5vw,40px)}
+  .sc-scores{grid-template-columns:1fr!important}
+}

@@ -55,23 +55,17 @@
   <section class="card hc-sec" data-pane="answers" hidden><h2>Quests Feud</h2><div data-fpane></div></section>
   <section class="card hc-sec" data-pane="quiz" hidden><h2>Games</h2><div data-qpane></div></section>
   <section class="card hc-sec" data-pane="cards" hidden>
-    <h2>Your cards <span class="mute" data-ccount style="letter-spacing:0;text-transform:none"></span></h2>
-    <p class="hc-note" style="margin:0 0 8px">All Except These Ones — one per line: <b>WORD: banned, banned, banned</b></p>
-    <textarea class="hc-input" data-wtxt spellcheck="false"></textarea>
-    <p class="hc-note" style="margin:14px 0 8px">Quests Feud — the question on one line, then each answer with its points (<b>Answer, 30</b>). Leave an empty line between questions. The samples are made up: replace them with your own survey results.</p>
-    <textarea class="hc-input" data-btxt spellcheck="false" style="min-height:220px"></textarea>
-    <p class="hc-note" style="margin:14px 0 8px">Hi, My Name Is… — the answer on the first line, then one clue per line. Several clues? They show one at a time and earn fewer points as more are shown. Empty line between people.</p>
-    <textarea class="hc-input" data-qtxt="names" spellcheck="false" style="min-height:180px"></textarea>
-    <p class="hc-note" style="margin:14px 0 8px">Spelling Bee — one per line: <b>WORD | meaning | example sentence</b></p>
-    <textarea class="hc-input" data-qtxt="spell" spellcheck="false" style="min-height:160px"></textarea>
-    <p class="hc-note" style="margin:14px 0 8px">Written Round — the question, then the answer on the next line. Empty line between questions. For options, write them in the question as <b>[A] … [B] …</b>; for true or false, end the question with <b>True or false?</b> They show on their own lines.</p>
-    <textarea class="hc-input" data-qtxt="written" spellcheck="false" style="min-height:180px"></textarea>
-    <p class="hc-note" style="margin:14px 0 8px">Rapid Fire — the question, then the answer. Add <b>image: /path.png</b> on a third line to show a picture. Empty line between questions.</p>
-    <textarea class="hc-input" data-qtxt="rapid" spellcheck="false" style="min-height:180px"></textarea>
-    <p class="hc-note" style="margin:14px 0 8px">Discussion — one topic per line.</p>
-    <textarea class="hc-input" data-qtxt="talk" spellcheck="false" style="min-height:100px"></textarea>
-    <div class="hc-row" style="margin-top:12px"><button class="pbtn pbtn--white" data-savecards type="button">Save cards</button><button class="pbtn pbtn--ghost pbtn--sm" data-samples type="button">Restore samples</button></div>
-    <p class="hc-note">Cards and scores are saved on this device.</p>
+    <h2>Cards &amp; questions</h2>
+    <p class="hc-note hc-lead">Tap a game to edit its cards. Everything is saved on this device.</p>
+    <details class="hc-cset"><summary><b>All Except These Ones</b><span data-cc="words"></span></summary><p class="hc-note">One per line: <b>WORD: banned, banned, banned</b></p><textarea class="hc-input" data-wtxt spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>Quests Feud</b><span data-cc="boards"></span></summary><p class="hc-note">The question on one line, then each answer with its points (<b>Answer, 30</b>). Leave an empty line between questions. The samples are made up: replace them with your own survey results.</p><textarea class="hc-input" data-btxt spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>Hi, My Name Is…</b><span data-cc="names"></span></summary><p class="hc-note">The answer on the first line, then one clue per line. Several clues? They show one at a time and earn fewer points as more are shown. Empty line between people.</p><textarea class="hc-input" data-qtxt="names" spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>Spelling Bee</b><span data-cc="spell"></span></summary><p class="hc-note">One per line: <b>WORD | meaning | example sentence</b></p><textarea class="hc-input" data-qtxt="spell" spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>Written Round</b><span data-cc="written"></span></summary><p class="hc-note">The question, then the answer on the next line. Empty line between questions. For options, write them in the question as <b>[A] … [B] …</b>; for true or false, end the question with <b>True or false?</b> They show on their own lines.</p><textarea class="hc-input" data-qtxt="written" spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>Rapid Fire</b><span data-cc="rapid"></span></summary><p class="hc-note">The question, then the answer. Add <b>image: /path.png</b> on a third line to show a picture. Empty line between questions.</p><textarea class="hc-input" data-qtxt="rapid" spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>Discussion</b><span data-cc="talk"></span></summary><p class="hc-note">One topic per line.</p><textarea class="hc-input" data-qtxt="talk" spellcheck="false"></textarea></details>
+    <div class="hc-row" style="margin-top:16px"><button class="pbtn pbtn--white" data-savecards type="button">Save cards</button><button class="pbtn pbtn--ghost pbtn--sm" data-samples type="button">Restore samples</button></div>
+    <span data-ccount hidden></span>
   </section>
 
   <div class="hc-sheet" data-menu hidden role="dialog" aria-modal="true" aria-label="Game menu">

@@ -802,7 +802,7 @@ function pqtMain() {
         out += '<div class="hc-row" style="margin:10px 0"><button class="pbtn" data-qreveal>' + (q.revealed ? 'Hide answer' : 'Reveal answer') + '</button>' + (QA_TIME[type] ? '<button class="pbtn" data-qtime>' + (H.timer.running ? 'Pause timer' : 'Start ' + fmtT(QA_TIME[type]) + 's timer') + '</button>' : '') + '</div>';
         if (QA_BOARD[type] && q.bd) {
           var bd = q.bd;
-          out += bd.res == null ? '<div class="hc-turn' + (bd.cur !== bd.owner ? ' is-bonus' : '') + '"><span>' + (bd.cur !== bd.owner ? 'Bonus · ' + esc(tn(bd.owner)) + ' missed' : 'Their question') + '</span><b><i style="background:' + (H.teams[bd.cur] || {}).color + '"></i>' + esc(tn(bd.cur)) + '</b></div><div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--good pbtn--lg" data-bd="1" type="button">✓ Correct</button><button class="pbtn pbtn--bad pbtn--lg" data-bd="0" type="button">✕ ' + (type === 'spell' ? 'Misspelt' : 'Wrong') + '</button></div>'
+          out += bd.res == null ? '<div class="hc-turn' + (bd.cur !== bd.owner ? ' is-bonus' : '') + '"><span>' + (bd.cur !== bd.owner ? 'Bonus · ' + esc(tn(bd.owner)) + ' missed' : 'Answering') + '</span><b><i style="background:' + (H.teams[bd.cur] || {}).color + '"></i>' + esc(tn(bd.cur)) + '</b></div><div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--good pbtn--lg" data-bd="1" type="button">✓ Correct</button><button class="pbtn pbtn--bad pbtn--lg" data-bd="0" type="button">✕ ' + (type === 'spell' ? 'Misspelt' : 'Wrong') + '</button></div>'
             : '<div class="hc-turn is-done"><span>' + (bd.res < 0 ? 'Nobody got it' : (bd.res !== bd.owner ? 'Bonus point' : 'Point')) + '</span><b>' + (bd.res < 0 ? 'No points' : '+' + (bd.pv || 1) + ' · ' + esc(tn(bd.res))) + '</b></div>';
           out += '<div class="w-actions" style="grid-template-columns:1fr;margin-top:12px"><button class="pbtn pbtn--lg pbtn--white" data-qboard>Back to the board · ' + esc(tn(bd.adv ? H.qa.turn : (bd.owner + 1) % H.teams.length)) + ' picks next</button></div>';
         } else out += '<p class="hc-sub">Correct? Tap the team</p>' + teamAward(type === 'spell' ? 'Misspelt' : 'Wrong');
@@ -845,13 +845,13 @@ function pqtMain() {
         (f.awardedTo != null ? '' : '<div class="hc-row">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-faw="' + i + '"' + (bank ? '' : ' disabled') + '><i style="width:8px;height:8px;border-radius:50%;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '</div>') +
         '<p class="hc-note">Tap an answer to reveal it on the screen (tap again to hide). Points count towards the bank until you award them. “Reveal rest” shows the remaining answers without adding points.</p>';
     } else if (tab === 'quiz') {
-      $('[data-qpane]').innerHTML = renderQuiz();
+      $('[data-qpane]').innerHTML = renderQuiz(); var qh = $('[data-pane="quiz"] h2'); if (qh) qh.textContent = QA_TYPES[H.roundType] && !H.ended ? GNAME[H.roundType] : 'Games';
     } else if (tab === 'cards') {
       var wa = $('[data-wtxt]'), ba = $('[data-btxt]');
       if (document.activeElement !== wa) wa.value = H.wordsTxt;
       if (document.activeElement !== ba) ba.value = H.boardsTxt;
       ['names', 'spell', 'written', 'rapid', 'talk'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el && document.activeElement !== el) el.value = H[k + 'Txt'] || ''; });
-      $('[data-ccount]').textContent = WORDS.length + ' words · ' + BOARDS.length + ' boards · ' + QA.names.length + ' people · ' + QA.spell.length + ' spellings · ' + QA.written.length + ' written · ' + QA.rapid.length + ' rapid';
+      var CC = { words: WORDS.length + ' words', boards: BOARDS.length + ' questions', names: QA.names.length + ' people', spell: QA.spell.length + ' words', written: QA.written.length + ' questions', rapid: QA.rapid.length + ' questions', talk: QA.talk.length + ' topics' }; $$('[data-cc]').forEach(function (el) { el.textContent = CC[el.getAttribute('data-cc')] || ''; });
     }
   }
 
