@@ -684,7 +684,7 @@ function pqtMain() {
   function renderQuiz() {
     if (H.ended) return '<p class="hc-note" style="margin-top:0">This game is over. Set up the next one to keep playing.</p><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-setup-open type="button">Set up the next game</button>';
     var q = H.qa, type = QA_TYPES[H.roundType] ? H.roundType : '';
-    if (!type) return '<p class="hc-note" style="margin-top:0">Start one of these rounds:</p><div class="hc-qstart">' + ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'talk'].map(function (t) { var n = t === 'words' ? WORDS.length : t === 'answers' ? BOARDS.length : (QA[t] || []).length; return '<button class="hc-mi" data-round="' + t + '" type="button"><b>' + GNAME[t] + '</b><span>' + n + ' in your cards</span></button>'; }).join('') + '</div>';
+    if (!type) return '<p class="hc-note hc-lead">Start one of these rounds:</p><div class="hc-qstart">' + ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'talk'].map(function (t) { var n = t === 'words' ? WORDS.length : t === 'answers' ? BOARDS.length : (QA[t] || []).length; return '<button class="hc-mi" data-round="' + t + '" type="button"><b>' + GNAME[t] + '</b><span>' + n + ' in your cards</span></button>'; }).join('') + '</div>';
     var list = QA[type] || [], it = list[q.idx], out = '';
     var last = q.idx + 1 >= list.length, finLbl = nextPlanned() ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner', fin = '<button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + finLbl + '</button>';
     if (!list.length) return '<p class="mute">No ' + GNAME[type] + ' content yet. Add some in the Cards tab.</p>';
