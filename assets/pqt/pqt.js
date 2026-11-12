@@ -642,16 +642,16 @@ function pqtMain() {
   function fmTakenBy(qi, a, except) { var f = H.fm, who = null; f.order.forEach(function (t) { if (t !== except && (f.picks[t] || {})[qi] === a) who = t; }); return who; }
   function fmScore(t) { var f = H.fm, s = 0; f.qs.forEach(function (_, qi) { var a = (f.picks[t] || {})[qi], b = fmB(qi); if (a != null && a >= 0 && b && b.a[a]) s += b.a[a].p; }); return s; }
   var fmAutoT = null;
-  function fmAuto() { clearTimeout(fmAutoT); var f = H.fm, key = f.ti + ':' + f.qi; fmAutoT = setTimeout(function () { var g = H.fm; if (g && g.phase === 'answer' && g.ti + ':' + g.qi === key) fmNextQ(); }, 1500); }
+  function fmAuto() { clearTimeout(fmAutoT); var f = H.fm, key = f.ti + ':' + f.qi; fmAutoT = setTimeout(function () { var g = H.fm; if (g && g.phase === 'answer' && g.ti + ':' + g.qi === key) fmNextQ(); }, 1200); }
   function fmPick(a) {
     var f = H.fm, t = fmTeam(); snap(); fmAuto();
     var by = a >= 0 ? fmTakenBy(f.qi, a, t) : null;
     var pk = f.picks[t] = f.picks[t] || {}, old = pk[f.qi], b = fmB(f.qi);
     if (old != null && old >= 0 && b && b.a[old]) pts(t, -b.a[old].p);
-    if (by != null) { pk[f.qi] = -3; f.last = { qi: f.qi, msg: 'taken', by: by }; fx('buzz', { bigX: true }); push(); renderAll(); return; }
+    if (by != null) { pk[f.qi] = -3; f.last = { qi: f.qi, msg: 'taken', by: by }; fx('buzz', { bigX: true }); toast('Already given by ' + ((H.teams[by] || {}).name || '') + ' · no points'); clearTimeout(fmAutoT); fmNextQ(); return; }
     pk[f.qi] = a;
     if (a >= 0 && b && b.a[a]) { pts(t, b.a[a].p); f.last = { qi: f.qi, msg: 'hit', a: a }; fx('ok'); }
-    else { f.last = { qi: f.qi, msg: a === -2 ? 'pass' : 'miss' }; fx('buzz', a === -2 ? null : { bigX: true }); }
+    else { f.last = { qi: f.qi, msg: a === -2 ? 'pass' : 'miss' }; fx('buzz', a === -2 ? null : { bigX: true }); clearTimeout(fmAutoT); fmNextQ(); return; }
     push(); renderAll();
   }
   function fmNextQ() { var f = H.fm; snap(); f.last = null; if (f.qi + 1 < f.qs.length) f.qi++; else { f.phase = 'recap'; f.rc = 0; H.timer.running = false; H.timer.remaining = timerLeft(); } push(); renderAll(); }
