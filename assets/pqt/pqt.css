@@ -712,3 +712,11 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-wset__b{font-size:13px;color:#a8a8a8;margin-left:auto}
 .hc-wset__b input{accent-color:#fff}
 .hc-editteams{margin-top:14px}
+.hc-wd{display:grid;gap:6px;margin:0 0 12px}
+.hc-wd__r{display:grid;grid-template-columns:3px minmax(0,1fr) 44px 52px 44px;gap:10px;align-items:center;padding:6px 0;border-top:1px solid #141414}
+.hc-wd__r i{height:22px}
+.hc-wd__n{display:flex;flex-direction:column;font-weight:600;font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hc-wd__n em{font-style:normal;font-weight:400;font-size:12px;color:#7a7a7a}
+.hc-wd__r .pbtn{width:44px;min-height:44px;padding:0}
+.hc-wd__v{text-align:center;font-family:var(--dot);font-weight:900;font-size:22px;color:#5a5a5a}
+.hc-wd__v.is-set{color:#fff}
