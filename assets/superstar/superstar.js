@@ -113,7 +113,7 @@
     $('[data-st="best"]').textContent = ST.best;
     var sk = $('[data-streak]'); sk.querySelector('b').textContent = s; sk.classList.toggle('is-live', live && s > 0);
     var d = new Date();
-    $('[data-daily-date]').textContent = d.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
+    $('[data-daily-date]').textContent = d.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
     var dp = presetById(dailyPreset());
     var done = ST.daily === dayKey();
     $('[data-daily-title]').textContent = done ? 'Done for today' : '16 bars on ' + dp.name;
@@ -128,7 +128,7 @@
   function paintSetup() {
     var bx = $('[data-beats]');
     bx.innerHTML = B.PRESETS.map(function (p) {
-      return '<div class="beat' + (p.id === S.preset ? ' is-on' : '') + '" data-preset="' + p.id + '" role="button" tabindex="0" aria-pressed="' + (p.id === S.preset) + '"><b>' + esc(p.name) + '</b><span>' + esc(p.vibe) + ' · ' + bpmFor(p.id) + ' BPM</span>' +
+      return '<div class="beat' + (p.id === S.preset ? ' is-on' : '') + '" data-preset="' + p.id + '" role="button" tabindex="0" aria-pressed="' + (p.id === S.preset) + '"><b>' + esc(p.name) + '</b><span>' + esc(p.vibe) + '</span><small>' + bpmFor(p.id) + ' BPM</small>' +
         '<button class="beat__pv' + (previewing === p.id ? ' is-playing' : '') + '" data-pv="' + p.id + '" aria-label="Preview ' + esc(p.name) + '">' + (previewing === p.id ? stopIc : playIc) + '</button></div>';
     }).join('');
     $('[data-levels]').innerHTML = LEVELS.map(function (l) {
@@ -165,7 +165,7 @@
     v = Math.max(55, Math.min(120, v));
     S.bpm[S.preset] = v; persist();
     $('[data-bpm]').value = v; $('[data-bpm-out]').textContent = v + ' BPM';
-    var cur = $('.beat.is-on span'); if (cur) cur.textContent = presetById(S.preset).vibe + ' · ' + v + ' BPM';
+    var cur = $('.beat.is-on small'); if (cur) cur.textContent = v + ' BPM';
     if (previewing) { var id = previewing; previewing = null; togglePreview(id); }
   }
 

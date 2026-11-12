@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/superstar/superstar.css?v=7">
+<link rel="stylesheet" href="/assets/superstar/superstar.css?v=9">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -86,12 +86,13 @@
           <button class="btn btn--ghost btn--sm" data-tap>Tap</button>
           <button class="btn btn--ghost btn--sm" data-bpm-reset>Reset</button>
         </div>
-      </div>
-      <div class="mix" data-mix>
-        <button class="chip is-on" data-mixk="drums">Drums</button>
-        <button class="chip is-on" data-mixk="keys">Keys</button>
-        <button class="chip is-on" data-mixk="bass">Bass</button>
-        <button class="chip is-on" data-mixk="vinyl">Vinyl</button>
+        <div class="tempo__row tempo__mix" data-mix>
+          <span class="tempo__lbl">Layers</span>
+          <button class="chip is-on" data-mixk="drums">Drums</button>
+          <button class="chip is-on" data-mixk="keys">Keys</button>
+          <button class="chip is-on" data-mixk="bass">Bass</button>
+          <button class="chip is-on" data-mixk="vinyl">Vinyl</button>
+        </div>
       </div>
     </section>
 
@@ -140,7 +141,7 @@
 
 <!-- ============ RESULTS ============ -->
 <section class="scr" data-scr="done" hidden>
-  <header class="top"><span class="top__sp"></span><span class="top__title">Session complete</span><span class="top__sp"></span></header>
+  <header class="top"><span class="top__sp"></span><span class="top__title">Results</span><span class="top__sp"></span></header>
   <main class="done wrap">
     <img class="done__mark" src="/superstar/logo.webp" alt="" width="341" height="640">
     <h1 class="h1" data-d-title>Nice run.</h1>
@@ -223,6 +224,6 @@
 <div class="toast" data-toast hidden></div>
 
 <script src="/assets/superstar/beat.js?v=3" defer></script>
-<script src="/assets/superstar/superstar.js?v=7" defer></script>
+<script src="/assets/superstar/superstar.js?v=8" defer></script>
 </body>
 </html>
