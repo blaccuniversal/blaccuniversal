@@ -500,7 +500,7 @@ function pqtMain() {
   /* actions */
   function team(i) { return H.teams[i]; }
   function pts(i, d) { var t = team(i); if (!t || !d) return; t.score += d; H.ledger.push([i, d]); }
-  function addScore(i, d) { snap(); pts(i, d); push(); renderTeams(); }
+  function addScore(i, d) { snap(); pts(i, d); push(); renderTeams(); if (H.tab === 'quiz') renderTab(); }
   var toastT = null;
   function toast(msg) { var el = $('[data-toast]'); if (!el) return; el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { el.hidden = true; }, 2200); }
   function splash(text, sub) { fx('splash', { text: text, sub: sub || '' }); }
@@ -509,7 +509,7 @@ function pqtMain() {
     snap(); H.round++; H.roundType = type; H.ledger = []; H.paused = false;
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
     if (type === 'answers') H.feud = { qi: H.feud.qi || 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
-    if (QA_TYPES[type]) H.qa = { type: type, mode: QA_BOARD[type] ? 'board' : 'q', idx: (H.qaPos[type] || 0) % Math.max(1, (QA[type] || []).length), clue: 1, revealed: false, mark: '', phase: 'ask' };
+    if (QA_TYPES[type]) H.qa = { wr: {}, type: type, mode: QA_BOARD[type] ? 'board' : 'q', idx: (H.qaPos[type] || 0) % Math.max(1, (QA[type] || []).length), clue: 1, revealed: false, mark: '', phase: 'ask' };
     if (H.round > H.plan.length) H.plan.push(type); else H.plan[H.round - 1] = type;
     H.view = 'intro'; H.tab = QA_TYPES[type] ? 'quiz' : type; push(); renderAll(); toast('Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[type]);
   }
@@ -654,7 +654,7 @@ function pqtMain() {
       }
       if (type === 'talk') out += '<div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Previous</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">Next topic →</button></div>';
       else if (type === 'written' && q.phase === 'ask') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (q.idx + 1 < list.length ? 'Next question →' : 'Start answer reveal →') + '</button></div><p class="hc-note">Each question gets ' + fmtT(QA_TIME.written) + ' seconds. The answer stays hidden until the reveal.</p>';
-      else if (type === 'written') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">Next answer →</button></div><p class="hc-sub" style="margin-top:14px">Add up each team’s sheet and score them</p>' + H.teams.map(function (t, i) { return '<div class="team"><span class="team__sw" style="background:' + t.color + '"></span><span class="team__name" style="display:flex;align-items:center">' + esc(t.name) + '</span><div class="team__ctl"><button class="pbtn" data-sc="' + i + ':-1">−</button><span class="team__score">' + t.score + '</span><button class="pbtn" data-sc="' + i + ':1">+</button></div></div>'; }).join('');
+      else if (type === 'written') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">Next answer →</button></div><p class="hc-sub" style="margin-top:14px">Who got this one right? Tap each team</p><div class="hc-wr">' + H.teams.map(function (t, i) { var on = ((H.qa.wr || {})[q.idx] || []).indexOf(i) > -1; return '<button class="hc-wr__t' + (on ? ' is-on' : '') + '" data-qwr="' + i + '" type="button"><i style="background:' + t.color + '"></i><span>' + esc(t.name) + '</span><b>' + (on ? '✓ +1' : '+1') + '</b><em>' + t.score + '</em></button>'; }).join('') + '</div><p class="hc-note">Tap again to take the point back. Scores update on the screen straight away.</p>';
       else {
         out += '<div class="hc-row" style="margin:10px 0"><button class="pbtn" data-qreveal>' + (q.revealed ? 'Hide answer' : 'Reveal answer') + '</button>' + (QA_TIME[type] ? '<button class="pbtn" data-qtime>' + (H.timer.running ? 'Pause timer' : 'Start ' + fmtT(QA_TIME[type]) + 's timer') + '</button>' : '') + '</div>';
         out += '<p class="hc-sub">Correct? Tap the team</p>' + teamAward(type === 'spell' ? 'Misspelt' : 'Wrong');
@@ -731,6 +731,7 @@ function pqtMain() {
     else if (d.qclue) qaClue(+d.qclue);
     else if (d.qok != null) qaMark('ok', +d.qok);
     else if (b.hasAttribute('data-qno')) qaMark('no');
+    else if (d.qwr != null) { var ti = +d.qwr, wr = H.qa.wr = H.qa.wr || {}, arr = wr[H.qa.idx] = wr[H.qa.idx] || [], k = arr.indexOf(ti); snap(); if (k > -1) { arr.splice(k, 1); pts(ti, -1); } else { arr.push(ti); pts(ti, 1); fx('ok'); } push(); renderTab(); }
     else if (b.hasAttribute('data-qtime')) { H.timer.running ? timerPause() : timerStart(); renderTab(); }
     else if (d.fa != null) feudToggle(+d.fa);
     else if (b.hasAttribute('data-fx')) feudStrike();

@@ -577,3 +577,11 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .sc-qa__ans span.sc-mark-ok,.sc-qa__ans span.sc-mark-no,.sc-qa__word .sc-mark-ok,.sc-qa__word .sc-mark-no{font-size:6vh;letter-spacing:0;font-weight:500;margin:0}
 .sc-qa__ans span.sc-mark-ok,.sc-qa__word .sc-mark-ok{color:#4ade80}
 .sc-qa__ans span.sc-mark-no,.sc-qa__word .sc-mark-no{color:#ff5a5a}
+.hc-wr{display:grid;gap:6px;margin:8px 0 0}
+.hc-wr__t{display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:0 14px;border:1px solid #2a2a2a;background:#050505;color:#fff;border-radius:2px;cursor:pointer;text-align:left;font:inherit}
+.hc-wr__t i{width:3px;height:22px;flex:none}
+.hc-wr__t span{flex:1;font-weight:600;font-size:15px}
+.hc-wr__t b{font-weight:500;font-size:13px;color:#7a7a7a;padding:6px 10px;border:1px solid #2a2a2a}
+.hc-wr__t em{font-style:normal;font-family:var(--dot);font-weight:900;font-size:22px;min-width:2ch;text-align:right}
+.hc-wr__t.is-on{border-color:#2f6b45;background:#06140b}
+.hc-wr__t.is-on b{color:#4ade80;border-color:#2f6b45}
