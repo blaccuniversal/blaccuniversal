@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Block Mayhem · BLACC Universal</title>
+<meta name="description" content="Block Mayhem by BLACC Universal. One ball, thousands of blocks. Split it, multiply it, clear the field.">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="/blockmayhem/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="/blockmayhem/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/blockmayhem/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Block Mayhem">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta property="og:title" content="Block Mayhem · BLACC Universal">
+<meta property="og:description" content="One ball, thousands of blocks. Split it, multiply it, clear the field.">
+<meta property="og:image" content="https://blaccuniversal.com/blockmayhem/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=1">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="blacc" viewBox="0 0 563 418"><g><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></symbol>
+  <symbol id="star" viewBox="0 0 100 100"><path d="M50 3l13.2 33.6 36 2.3-27.8 23 9 35L50 77.6 19.6 96.9l9-35L.8 38.9l36-2.3z"/></symbol>
+  <symbol id="snd" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="snd__w"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="snd__x"/></symbol>
+</svg>
+
+<!-- HOME -->
+<section class="scr" data-scr="home" hidden>
+  <header class="top">
+    <a class="top__brand" href="/projects/" aria-label="BLACC Universal projects"><svg><use href="#blacc"/></svg><span>BLACC Universal</span></a>
+    <div class="top__r">
+      <button class="ic" data-act="mute" aria-label="Sound on"><svg><use href="#snd"/></svg></button>
+      <button class="ic" data-act="help" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <main class="home wrap">
+    <div class="hero">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 120 92"><g fill="#fff"><rect x="0" y="0" width="16" height="16" rx="1"/><rect x="20" y="0" width="16" height="16" rx="1"/><rect x="40" y="0" width="16" height="16" rx="1"/><rect x="60" y="0" width="16" height="16" rx="1"/><rect x="80" y="0" width="16" height="16" rx="1"/><rect x="100" y="0" width="16" height="16" rx="1"/><rect x="0" y="20" width="16" height="16" rx="1"/><rect x="20" y="20" width="16" height="16" rx="1" opacity=".75"/><rect x="60" y="20" width="16" height="16" rx="1" opacity=".75"/><rect x="100" y="20" width="16" height="16" rx="1"/><rect x="0" y="40" width="16" height="16" rx="1" opacity=".5"/><rect x="100" y="40" width="16" height="16" rx="1" opacity=".5"/></g><circle cx="46" cy="52" r="5" fill="#ffd23f"/><circle cx="70" cy="62" r="5" fill="#fff"/><circle cx="56" cy="72" r="5" fill="#fff"/><rect x="34" y="86" width="52" height="6" rx="1.5" fill="#fff"/></svg>
+      </div>
+      <h1 class="wm">Block Mayhem</h1>
+      <p class="lead">One ball. Thousands of blocks. Split it, multiply it, clear the field.</p>
+      <div class="hero__btns">
+        <button class="btn btn--big" data-act="continue" data-continue>Play</button>
+        <button class="btn btn--big btn--ghost" data-act="levels">Levels</button>
+      </div>
+    </div>
+    <dl class="stats">
+      <div><dt>Cleared</dt><dd data-st-cleared>0</dd></div>
+      <div><dt>Rating</dt><dd data-st-rating>0</dd></div>
+      <div><dt>Stars</dt><dd data-st-stars>0</dd></div>
+    </dl>
+    <p class="foot">A BLACC Universal project · <a href="/projects/">More projects</a></p>
+  </main>
+</section>
+
+<!-- LEVELS -->
+<section class="scr" data-scr="levels" hidden>
+  <header class="top">
+    <button class="back" data-act="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Home</span></button>
+    <b class="top__t">Levels</b>
+    <span class="top__sp"></span>
+  </header>
+  <main class="wrap levels">
+    <div class="lvgrid" data-lvgrid></div>
+  </main>
+</section>
+
+<!-- PLAY -->
+<section class="scr play" data-scr="play" hidden>
+  <header class="ptop">
+    <button class="ic" data-act="pause" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="3.6" height="14" rx=".6"/><rect x="13.9" y="5" width="3.6" height="14" rx=".6"/></svg></button>
+    <div class="ptop__mid">
+      <b data-lvname>01</b>
+      <span><span data-cleared>0 / 0</span> · <span data-balls>0 balls</span></span>
+    </div>
+    <div class="ptop__r">
+      <span class="lives" aria-label="Lives"><i data-life></i><i data-life></i><i data-life></i></span>
+      <span class="stars"><svg><use href="#star"/></svg><b data-stars>0</b></span>
+    </div>
+  </header>
+  <div class="prog"><i data-bar></i></div>
+  <div class="stage" data-stage>
+    <canvas data-cv></canvas>
+    <p class="hint" data-hint>Tap to launch</p>
+    <p class="wide" data-wide hidden></p>
+  </div>
+  <nav class="boosts" aria-label="Boosts">
+    <button data-boost="x3"><b>×3</b><span>Every ball</span><small><svg><use href="#star"/></svg>10</small></button>
+    <button data-boost="p3"><b>+3</b><span>New balls</span><small><svg><use href="#star"/></svg>5</small></button>
+    <button data-boost="wide"><b>Wide</b><span>12 seconds</span><small><svg><use href="#star"/></svg>5</small></button>
+  </nav>
+
+  <div class="ov" data-ov="pause" hidden><div class="ov__card">
+    <p class="eyebrow">Paused</p>
+    <button class="btn btn--big btn--full" data-act="resume">Resume</button>
+    <button class="btn btn--big btn--full btn--ghost" data-act="restart">Restart level</button>
+    <button class="btn btn--big btn--full btn--ghost" data-act="levels">All levels</button>
+    <button class="ic ic--row" data-act="mute" aria-label="Sound on"><svg><use href="#snd"/></svg><span>Sound</span></button>
+  </div></div>
+  <div class="ov" data-ov="win" hidden><div class="ov__card">
+    <p class="eyebrow">Cleared</p>
+    <h2 data-win-name></h2>
+    <div class="rate" data-win-rate></div>
+    <p class="ov__earn"><svg><use href="#star"/></svg><span data-win-earned>+0</span> stars</p>
+    <button class="btn btn--big btn--full" data-act="next" data-next>Next level</button>
+    <button class="btn btn--big btn--full btn--ghost" data-act="retry">Play again</button>
+    <button class="btn btn--big btn--full btn--ghost" data-act="levels">All levels</button>
+  </div></div>
+  <div class="ov" data-ov="fail" hidden><div class="ov__card">
+    <p class="eyebrow">Out of balls</p>
+    <h2>Not so fast.</h2>
+    <button class="btn btn--big btn--full" data-act="retry">Try again</button>
+    <button class="btn btn--big btn--full btn--ghost" data-act="levels">All levels</button>
+  </div></div>
+</section>
+
+<!-- HELP -->
+<div class="sheet" data-help hidden><div class="sheet__card">
+  <div class="sheet__head"><b>How to play</b><button class="ic" data-act="help-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <ol class="howto">
+    <li><b>Move the paddle.</b> Drag anywhere on a phone. Mouse or arrow keys on a computer.</li>
+    <li><b>Launch.</b> Tap, click or press Space.</li>
+    <li><b>Multiply.</b> A ball through a gold <em>×3</em> orb becomes three. A <em>+3</em> orb adds three balls. Collect stars.</li>
+    <li><b>Clear every block.</b> Grey steel never breaks. Gold blocks take more than one hit.</li>
+    <li><b>Spend stars on boosts.</b> ×3 every ball, +3 new balls, or a wide paddle. Keys 1, 2, 3.</li>
+    <li><b>Three lives.</b> You lose one when every ball falls. Finish with more lives for a better rating.</li>
+  </ol>
+</div></div>
+
+<script src="/assets/blockmayhem/levels.js?v=1"></script>
+<script src="/assets/blockmayhem/bm.js?v=1"></script>
+</body>
+</html>

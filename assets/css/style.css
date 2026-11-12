@@ -1347,6 +1347,11 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 .proj__art img.ss-wm{width:auto;max-width:100%;height:clamp(50px,8.4vw,72px);margin-left:-2%}
 .ss-art b{font-size:clamp(36px,7vw,58px);font-weight:300;letter-spacing:-.04em;color:#fff;line-height:1}
 .proj--ss .proj__tag{color:#c9c9c9}
+.proj__art--bm{background:radial-gradient(ellipse 55% 85% at 50% 115%,rgba(255,210,63,.10),transparent 70%)}
+.bm-art{display:flex;align-items:center;gap:clamp(14px,2.4vw,22px)}
+.bm-art img{width:auto;height:clamp(46px,7.4vw,64px)}
+.bm-art b{font-size:clamp(28px,4.6vw,42px);font-weight:800;letter-spacing:-.04em;color:#fff;line-height:1;white-space:nowrap}
+.proj--bm .proj__tag{color:#ffd23f}
 
 /* Projects: list / grid / slide views */
 .pview{display:inline-flex;border:1px solid #2a2a2a;border-radius:2px;overflow:hidden;margin-bottom:-12px}
