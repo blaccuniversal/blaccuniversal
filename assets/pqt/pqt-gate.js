@@ -3,6 +3,7 @@
    To add a pass: python3 -c "import hashlib;print(hashlib.sha256(b'blaccpqt:NEWPASS').hexdigest())" and add it below. */
 (function () {
   var PASSES = [
+    '085bc209d0254d58de17876d5a987bbfdfd6ac67d3bd6cbd2b263d94cd6cb8a0',
     '20ece94a4509b7da550df9885228d7cf1a7e42f22449ba173dd7f5d263942c02'
   ];
   var KEY = 'pqt_pass', DAYS = 30;
