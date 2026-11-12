@@ -34,7 +34,7 @@
   var ctx = null, master, bus, lp, comp, recDest = null, noiseBuf, crackleBuf, rainBuf;
   var lfo, lfoGain, tremLfo;
   var timer = null, playing = false, cfg = null, startTime = 0, nextStep = 0, nextTime = 0, stepDur = 0;
-  var beds = [], onStop = null, stopAt = Infinity;
+  var beds = [], onStop = null, stopAt = Infinity, countSteps = 0;
   var mix = { drums: 1, keys: 1, bass: 1, vinyl: 1 };
 
   function ensure() {
@@ -165,8 +165,10 @@
   function hitAt(str, i) { return str && str[i] && str[i] !== '.' ? str[i] : null; }
   function vel(c) { return c === 'X' ? 1 : c === 'o' ? 0.35 : 0.8; }
   function scheduleStep(step, t) {
-    var bar = Math.floor(step / 16), i = step % 16;
+    var i = step % 16;
     if (step >= stopAt) return;
+    if (step < countSteps) { if (i % 4 === 0) click(t, i === 0); return; }
+    var bar = Math.floor((step - countSteps) / 16);
     if (cfg.click) { if (i % 4 === 0) click(t, i === 0); return; }
     var c;
     if ((c = hitAt(cfg.k, i))) kick(t, vel(c));
@@ -225,8 +227,9 @@
     startTime = ctx.currentTime + (opts.delay || 0.15);
     nextStep = 0; nextTime = startTime;
     stopAt = opts.steps ? opts.steps : Infinity;
+    countSteps = (opts.countIn || 0) * 16;
     onStop = opts.onStop || null;
-    startBeds(startTime);
+    startBeds(startTime + countSteps * stepDur);
     timer = setInterval(tick, 25); tick();
     return startTime;
   }

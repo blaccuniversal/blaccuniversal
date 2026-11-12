@@ -194,7 +194,7 @@
       layout();
       var begin = function () {
         var steps = len ? (len + offset) * 16 : 0;
-        B.start({ preset: preset, bpm: bpm, mix: S.mix, delay: 0.35, steps: steps || undefined, onStop: function () { endSession(true); } });
+        B.start({ preset: preset, bpm: bpm, mix: S.mix, delay: 0.35, countIn: offset, steps: steps || undefined, onStop: function () { endSession(true); } });
         session.running = true; session.startedAt = performance.now();
         if (session.rec) startRecorder();
         try { if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (w) { wake = w; }).catch(function () {}); } catch (e) {}
@@ -215,7 +215,7 @@
     else if (!r.w) word = '<span class="row__w row__w--free"></span>';
     else if (r.show) word = '<span class="row__w">' + esc(r.w) + '</span>';
     else word = '<span class="row__w row__w--hide">' + esc(r.w) + '</span>';
-    el.innerHTML = '<span class="row__n">' + n + '</span><i class="row__d"></i><i class="row__d"></i><i class="row__d"></i>' + word;
+    el.innerHTML = '<span class="row__n">' + n + '</span>' + (r.count ? '<i class="row__d">1</i><i class="row__d">2</i><i class="row__d">3</i>' : '<i class="row__d"></i><i class="row__d"></i><i class="row__d"></i>') + word;
     rowsEl.appendChild(el); r.el = el;
   }
   var geo = { nowY: 0, h: 80, cols: [0, 0, 0] };
@@ -268,10 +268,7 @@
       $('[data-p-bar]').textContent = bar < session.offset ? 'Get ready' : 'Bar ' + Math.min(wb, total || wb) + (total ? ' / ' + total : '');
     }
     // count-in overlay
-    if (bar < session.offset) {
-      var c = String(4 - beat);
-      if (countEl.textContent !== c) { countEl.hidden = false; countEl.textContent = c; countEl.classList.remove('is-pop'); void countEl.offsetWidth; countEl.classList.add('is-pop'); }
-    } else if (!countEl.hidden) countEl.hidden = true;
+    if (!countEl.hidden) countEl.hidden = true;
     // beat bar
     if (beat !== session.lastBeat) {
       session.lastBeat = beat;
@@ -412,7 +409,7 @@
     for (var i = 0; i < 4; i++) { c.fillStyle = i <= beat ? (i === 3 ? '#ffd23f' : '#fff') : 'rgba(255,255,255,.25)'; c.fillRect(tx + i * (tw + gap), ty, tw, 5 * unit); }
     c.textAlign = 'center';
     if (bar < session.offset) {
-      c.fillStyle = '#fff'; c.font = '300 ' + (180 * unit) + 'px "Open Sans",sans-serif'; c.fillText(String(4 - beat), W / 2, H * 0.62);
+      c.fillStyle = '#fff'; c.font = '300 ' + (180 * unit) + 'px "Open Sans",sans-serif'; c.fillText(beat < 3 ? String(beat + 1) : 'Go', W / 2, H * 0.62);
     } else if (r) {
       var shown = r.w && r.show;
       if (r.w) {

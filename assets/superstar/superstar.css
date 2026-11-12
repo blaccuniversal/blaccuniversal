@@ -156,6 +156,8 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .row__w--free{min-width:0;width:var(--s);padding:0}
 .row.is-now .row__w--free{background:#1a1a1a}
 .row--count .row__w{font-weight:600}
+.row--count .row__d{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:calc(var(--s) * .46);font-weight:700;color:var(--tx3)}
+.row--count .row__d.is-on{color:#000}
 .nowline{position:absolute;left:0;right:0;top:38%;height:var(--row);transform:translateY(-50%);border-top:1px solid #151515;border-bottom:1px solid #151515;pointer-events:none}
 .ball{position:absolute;left:0;top:0;width:clamp(14px,2.2vw,22px);height:clamp(14px,2.2vw,22px);margin:calc(clamp(14px,2.2vw,22px)/-2) 0 0 calc(clamp(14px,2.2vw,22px)/-2);border-radius:50%;background:var(--acc);box-shadow:0 0 18px rgba(255,210,63,.55);will-change:transform;z-index:3}
 .count{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;font-size:clamp(96px,26vw,260px);font-weight:300;letter-spacing:-.04em;pointer-events:none;text-shadow:0 0 40px rgba(0,0,0,.6)}
