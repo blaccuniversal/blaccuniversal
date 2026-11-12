@@ -231,10 +231,12 @@
   function wordX(r) {
     if (r.wx != null) return r.wx;
     var w = r.el.querySelector('.row__w'), pr = promptEl.getBoundingClientRect(), b = w.getBoundingClientRect();
-    var x = b.width > 4 ? b.left + Math.min(b.width / 2, 60) - pr.left : b.left + 30 - pr.left;
+    var x = b.left + b.width / 2 - pr.left;
     r.wx = x; return x;
   }
-  function wordTopOff(r) { var w = r.el.querySelector('.row__w'); return (w.offsetHeight || 40) * 0.5 + 10; }
+  function wordTopOff(r) { var w = r.el.querySelector('.row__w'); return (w.offsetHeight || 40) * 0.5 + ballR(); }
+  function ballR() { return (ballEl.offsetWidth || 16) / 2 + 1; }
+  function sqOff() { var d = rowsEl.querySelector('.row__d'); return (d ? d.offsetHeight / 2 : 7) + ballR(); }
   function ease(x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
   function frame() {
     raf = requestAnimationFrame(frame);
@@ -281,7 +283,7 @@
       var pts = [geo.cols[0], geo.cols[1], geo.cols[2], wordX(r)];
       var nxt = session.rows[bar + 1];
       var x0 = pts[beat], x1 = beat < 3 ? pts[beat + 1] : (nxt && nxt.el ? geo.cols[0] : pts[3]);
-      var b0 = beat === 3 ? wordTopOff(r) : 14, b1 = beat === 2 ? wordTopOff(r) : 14;
+      var sq = sqOff(), b0 = beat === 3 ? wordTopOff(r) : sq, b1 = beat === 2 ? wordTopOff(r) : sq;
       var x = x0 + (x1 - x0) * f, base = b0 + (b1 - b0) * f;
       var amp = Math.min(geo.h * 0.75, 90);
       var y = geo.nowY - base - amp * 4 * f * (1 - f);
@@ -408,10 +410,15 @@
       c.fillStyle = '#fff'; c.font = '300 ' + (180 * unit) + 'px "Open Sans",sans-serif'; c.fillText(String(4 - beat), W / 2, H * 0.62);
     } else if (r) {
       var shown = r.w && r.show;
-      c.font = '700 ' + (84 * unit) + 'px "Open Sans",sans-serif';
-      c.fillStyle = beat === 3 ? '#ffd23f' : '#fff';
-      c.fillText(r.w ? (shown ? r.w : '_____') : '', W / 2, H - 130 * unit);
-      if (n && n.w) { c.font = '600 ' + (34 * unit) + 'px "Open Sans",sans-serif'; c.fillStyle = 'rgba(255,255,255,.55)'; c.fillText(n.show ? n.w : '_____', W / 2, H - 215 * unit); }
+      if (r.w) {
+        c.font = '700 ' + (76 * unit) + 'px "Open Sans",sans-serif';
+        var txt = shown ? r.w : '', tw2 = Math.max(c.measureText(r.w).width, 220 * unit), bw = tw2 + 64 * unit, bh = 120 * unit, bx = (W - bw) / 2, by = H - 130 * unit - bh * 0.68;
+        c.lineWidth = 3 * unit;
+        if (beat === 3) { c.fillStyle = '#ffd23f'; c.fillRect(bx, by, bw, bh); c.fillStyle = '#000'; }
+        else { c.fillStyle = 'rgba(0,0,0,.55)'; c.fillRect(bx, by, bw, bh); c.strokeStyle = shown ? '#fff' : '#ffd23f'; if (!shown) c.setLineDash([14 * unit, 10 * unit]); c.strokeRect(bx, by, bw, bh); c.setLineDash([]); c.fillStyle = '#fff'; }
+        c.fillText(txt, W / 2, H - 130 * unit);
+      }
+      if (n && n.w) { c.font = '600 ' + (34 * unit) + 'px "Open Sans",sans-serif'; c.fillStyle = 'rgba(255,255,255,.55)'; c.fillText(n.show ? n.w : '', W / 2, H - 235 * unit); }
     }
     c.textAlign = 'left'; c.font = '600 ' + (22 * unit) + 'px "Open Sans",sans-serif'; c.fillStyle = 'rgba(255,255,255,.85)';
     c.fillText('SUPERSTAR', 28 * unit, 50 * unit);
