@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112043">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112044">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -49,7 +49,7 @@
   <section class="card hc-sec" data-pane="teams">
     <h2>Scores</h2>
     <div data-teams></div>
-    <button class="pbtn pbtn--sm hc-editteams" data-setup-edit type="button">Edit teams &amp; name</button>
+    <button class="pbtn pbtn--sm hc-editteams" data-setup-edit type="button">Edit teams</button>
   </section>
   <section class="card hc-sec" data-pane="words" hidden><h2>All Except These Ones</h2><div data-wpane></div></section>
   <section class="card hc-sec" data-pane="answers" hidden><h2>Quests Feud</h2><div data-fpane></div></section>
@@ -115,16 +115,12 @@
     <div class="hc-sheet__panel card hc-setup">
       <div class="hc-sheet__head"><span class="eyebrow">Set up a game</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Close</button></div>
       <div class="hc-su">
-        <p class="hc-su__h"><span>01</span>Name</p>
-        <input class="hc-input" data-su-title maxlength="60" placeholder="Game night" aria-label="Game name">
-      </div>
-      <div class="hc-su">
-        <p class="hc-su__h"><span>02</span>Teams <em data-su-tn></em></p>
+        <p class="hc-su__h"><span>01</span>Teams <em data-su-tn></em></p>
         <div data-su-teams></div>
         <button class="pbtn pbtn--sm hc-su__add" data-su-add type="button">+ Add team</button>
       </div>
       <div class="hc-su">
-        <p class="hc-su__h"><span>03</span>Rounds</p>
+        <p class="hc-su__h"><span>02</span>Rounds</p>
         <div class="hc-plan__count"><span>Number of rounds</span><div class="hc-row"><button class="pbtn" data-su-n="-1" type="button" aria-label="Fewer rounds">−</button><b data-su-count>3</b><button class="pbtn" data-su-n="1" type="button" aria-label="More rounds">+</button></div></div>
         <div data-su-rounds></div>
       </div>
@@ -146,11 +142,11 @@
   </div>
   <div class="hc-toast" data-toast hidden></div>
 </div>
-<script src="/assets/pqt/pqt-gate.js?v=261112043"></script>
+<script src="/assets/pqt/pqt-gate.js?v=261112044"></script>
 <script src="/assets/pqt/mqtt.min.js?v=5104"></script>
-<script src="/assets/pqt/peerjs.min.js?v=261112043"></script>
-<script src="/assets/pqt/pqt-data.js?v=261112043"></script>
-<script src="/assets/pqt/pqt.js?v=261112043"></script>
-<script src="/assets/pqt/pqt-offline.js?v=261112043"></script>
+<script src="/assets/pqt/peerjs.min.js?v=261112044"></script>
+<script src="/assets/pqt/pqt-data.js?v=261112044"></script>
+<script src="/assets/pqt/pqt.js?v=261112044"></script>
+<script src="/assets/pqt/pqt-offline.js?v=261112044"></script>
 </body>
 </html>

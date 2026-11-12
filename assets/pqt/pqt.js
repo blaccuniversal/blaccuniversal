@@ -524,7 +524,7 @@ function pqtMain() {
     snap(); H.round++; H.roundType = type; H.ledger = []; H.paused = false;
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
     if (type === 'answers') H.feud = { qi: H.feud.qi || 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
-    H.picks = {};
+    H.picks = {}; H.words.done = [];
     if (QA_TYPES[type]) H.qa = { wr: {}, type: type, mode: QA_BOARD[type] ? 'board' : 'q', idx: (H.qaPos[type] || 0) % Math.max(1, (QA[type] || []).length), clue: 1, revealed: false, mark: '', phase: 'ask' };
     if (H.round > H.plan.length) H.plan.push(type); else H.plan[H.round - 1] = type;
     H.view = 'intro'; H.tab = 'quiz'; push(); renderAll(); toast('Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[type]);
@@ -543,7 +543,7 @@ function pqtMain() {
   }
   function paintMenu() {
     var ps0 = $('.hc-plansec'); if (ps0) ps0.hidden = H.round > 0 && !H.ended;
-    var gs = $('[data-gsum]'); if (gs) gs.innerHTML = H.ended ? '<b>' + esc(H.title || 'Game night') + '</b><span>Game over · the winner is on the screen.</span>' : '<b>' + esc(H.title || 'Game night') + '</b><span>' + H.teams.length + ' teams · ' + H.plan.length + (H.plan.length === 1 ? ' round' : ' rounds') + ' · ' + H.plan.map(function (g) { return GNAME[g]; }).join(', ') + '</span>';
+    var gs = $('[data-gsum]'); if (gs) gs.innerHTML = H.ended ? '<b>' + esc(H.title || 'PQT') + '</b><span>Game over · the winner is on the screen.</span>' : '<b>' + esc(H.title || 'PQT') + '</b><span>' + H.teams.length + ' teams · ' + H.plan.length + (H.plan.length === 1 ? ' round' : ' rounds') + ' · ' + H.plan.map(function (g) { return GNAME[g]; }).join(', ') + '</span>';
     var gb = $('[data-gstart]'); if (gb) gb.hidden = !!H.ended;
     var so = $('[data-setup-open]'); if (so) { so.textContent = H.ended ? 'Set up the next game' : 'Set up'; so.classList.toggle('pbtn--white', !!H.ended); }
     var gt = $('[data-m-gtitle]'); if (gt) gt.textContent = H.title || 'This game';
@@ -554,7 +554,7 @@ function pqtMain() {
   }
   function restartRound() {
     if (!H.roundType) { toast('No round to restart yet'); return; }
-    snap(); H.ledger.forEach(function (l) { var t = team(l[0]); if (t) t.score -= l[1]; }); H.ledger = []; if (H.byRound) delete H.byRound[String(H.round)];
+    snap(); H.ledger.forEach(function (l) { var t = team(l[0]); if (t) t.score -= l[1]; }); H.ledger = []; if (H.byRound) delete H.byRound[String(H.round)]; H.words.done = [];
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
     if (H.roundType === 'answers') H.feud = { qi: H.feud.qi, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
     if (QA_TYPES[H.roundType]) { H.qaUsed[H.roundType] = []; H.qa = { type: H.roundType, mode: QA_BOARD[H.roundType] ? 'board' : 'q', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; }
@@ -608,14 +608,16 @@ function pqtMain() {
   function qaBoard() { snap(); var bb = H.qa.bd; if (bb && !bb.adv) { bb.adv = true; H.qa.turn = (bb.owner + 1) % H.teams.length; } H.qa.mode = 'board'; H.timer.running = false; H.view = 'qa'; push(); renderAll(); }
   function saveResult() {
     if (!H.gameId) H.gameId = Date.now().toString(36);
-    var hist = store('pqt_history') || [], rec = { id: H.gameId, at: Date.now(), title: H.title || 'Game night', rounds: H.round, games: H.plan.slice(0, H.round).map(function (g) { return GNAME[g]; }), teams: H.teams.map(function (t, i) { var rp = roundPts(i); return { name: t.name, color: t.color, score: t.score, rounds: rp.rounds, pen: rp.pen }; }).sort(function (a, b) { return b.score - a.score; }) };
+    var hist = store('pqt_history') || [], rec = { id: H.gameId, at: Date.now(), title: H.title || 'PQT', rounds: H.round, games: H.plan.slice(0, H.round).map(function (g) { return GNAME[g]; }), teams: H.teams.map(function (t, i) { var rp = roundPts(i); return { name: t.name, color: t.color, score: t.score, rounds: rp.rounds, pen: rp.pen }; }).sort(function (a, b) { return b.score - a.score; }) };
     hist = hist.filter(function (r) { return r.id !== rec.id; }); hist.unshift(rec); store('pqt_history', hist.slice(0, 40));
   }
   function endGame() { snap(); saveResult(); H.ended = true; H.timer.running = false; H.timer.remaining = timerLeft(); H.view = 'winner'; push(); renderAll(); fx('win'); toast('Winner on screen'); }
   function togglePause() { H.paused = !H.paused; push(); paintNow(); toast(H.paused ? 'Screen paused' : 'Screen resumed'); }
   function turnReady() { snap(); resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total; H.view = 'turn'; push(); renderAll(); }
-  function turnStart() { snap(); if (H.view !== 'words') resetTally(); H.view = 'words'; H.timer.running = false; H.timer.remaining = H.timer.total; push(); timerStart(); renderAll(); }
-  function nextTeam() { snap(); H.words.team = (H.words.team + 1) % H.teams.length; resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total; H.view = 'turn'; push(); renderAll(); }
+  function wDone() { var d = H.words.done = H.words.done || []; return d; }
+  function allPlayed() { var d = wDone(); return H.teams.every(function (_, i) { return d.indexOf(i) > -1; }); }
+  function turnStart() { snap(); var dn = wDone(); if (dn.indexOf(H.words.team) < 0) dn.push(H.words.team); if (H.view !== 'words') resetTally(); H.view = 'words'; H.timer.running = false; H.timer.remaining = H.timer.total; push(); timerStart(); renderAll(); }
+  function nextTeam() { if (H.view === 'words') { snap(); H.timer.running = false; H.timer.remaining = 0; H.view = 'turnend'; push(); renderAll(); if (allPlayed()) return; } if (allPlayed()) { renderAll(); return; } snap(); var dn2 = wDone(), n = H.teams.length, nt = H.words.team; for (var s = 1; s <= n; s++) { var c2 = (H.words.team + s) % n; if (dn2.indexOf(c2) < 0) { nt = c2; break; } } H.words.team = nt; resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total; H.view = 'turn'; push(); renderAll(); }
   function curCard() { var w = H.words; return WORDS[w.deck[w.pos % Math.max(1, w.deck.length)]]; }
   function nextCard() { var w = H.words; w.pos++; if (w.pos >= w.deck.length) { w.deck = shuffle(w.deck); w.pos = 0; } }
   function wordAct(kind) {
@@ -648,7 +650,7 @@ function pqtMain() {
     var v = $('[data-now-view]'); if (!v) return;
     v.textContent = (H.paused ? 'Paused · ' : '') + (VIEWNAME[H.view] || H.view);
     if (H.view === 'qa') v.textContent = (H.paused ? 'Paused · ' : '') + (H.qa.mode === 'board' ? 'Number board' : GNAME[H.qa.type] + ' · ' + (H.qa.idx + 1) + ' of ' + ((QA[H.qa.type] || []).length));
-    if (H.ended) { v.textContent = 'Game over'; $('[data-now-round]').textContent = (H.title || 'Game night') + ' · winner on screen'; } else
+    if (H.ended) { v.textContent = 'Game over'; $('[data-now-round]').textContent = (H.title || 'PQT') + ' · winner on screen'; } else
     $('[data-now-round]').textContent = H.round ? 'Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[H.roundType] : H.plan.length + ' rounds planned · not started';
     var pb = $('[data-pause]'); pb.textContent = H.paused ? 'Resume screen' : 'Pause screen'; pb.classList.toggle('is-on', H.paused);
     var mp = $('[data-m-pause]'); if (mp) mp.textContent = H.paused ? 'Resume screen' : 'Pause screen';
@@ -728,9 +730,10 @@ function pqtMain() {
       var c = curCard(), w = H.words, t = team(w.team);
       var nx = nextPlanned(), nextBtn = '<button class="pbtn pbtn--sm" data-gonext>' + (nx ? 'Round ' + (H.round + 1) + ' →' : 'Show winner →') + '</button>';
       var flow = H.roundType !== 'words' ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-round="words">Start round ' + (H.round + 1) + ' · All Except These Ones</button>' :
-        H.view === 'words' ? '<div class="hc-flow"><span>' + esc(t ? t.name : '') + ' · <b data-tflow>' + fmtT(timerLeft()) + '</b></span><button class="pbtn pbtn--sm" data-nextteam>End turn · next team</button></div>' :
+        H.view === 'words' ? '<div class="hc-flow"><span>' + esc(t ? t.name : '') + ' · <b data-tflow>' + fmtT(timerLeft()) + '</b></span><button class="pbtn pbtn--sm" data-nextteam>End turn</button></div>' :
+        H.view === 'turnend' && allPlayed() ? '<div class="hc-flow hc-flow--end"><span>Time’s up · ' + esc(t ? t.name : '') + ' got ' + w.correct + '. Every team has played.</span></div><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-gonext type="button">' + (nx ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>' :
         H.view === 'turn' ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-turnstart>Start ' + esc(t ? t.name : '') + '’s turn · ' + fmtT(H.timer.total) + '</button>' :
-        H.view === 'turnend' ? '<div class="hc-flow hc-flow--end"><span>Time’s up · ' + esc(t ? t.name : '') + ' got ' + w.correct + '</span><span class="hc-row"><button class="pbtn pbtn--o pbtn--sm" data-nextteam>Next team →</button>' + nextBtn + '</span></div>' :
+        H.view === 'turnend' ? '<div class="hc-flow hc-flow--end"><span>Time’s up · ' + esc(t ? t.name : '') + ' got ' + w.correct + '</span><span class="hc-row"><button class="pbtn pbtn--o pbtn--sm" data-nextteam>Next team →</button></span></div>' :
         '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-turnready>Show “' + esc(t ? t.name : '') + ' up next”</button>';
       $('[data-wpane]').innerHTML = '<div class="hc-flowbox">' + flow + '</div>' +
         '<div class="hc-wset"><label><span>Team</span><select class="hc-sel" data-wteam>' + teamOpts(w.team) + '</select></label><div class="hc-wset__t"><span>Turn</span>' + [30000, 60000, 90000, 120000].map(function (ms) { return '<button class="pbtn pbtn--sm' + (H.timer.total === ms ? ' is-on' : '') + '" data-tset="' + ms + '" type="button">' + (ms < 120000 ? ms / 1000 + 's' : '2m') + '</button>'; }).join('') + '</div><label class="hc-wset__b"><input type="checkbox" data-buzzcost' + (w.buzzCost ? ' checked' : '') + '> Buzz costs a point</label></div>' +
@@ -848,7 +851,7 @@ function pqtMain() {
   function openSetup(fresh) {
     SU = { fresh: !!fresh, title: H.title || '', teams: H.teams.map(function (t) { return { name: t.name, color: t.color }; }), plan: H.plan.slice() };
     if (fresh && H.ended) SU.title = '';
-    $('[data-su-title]').value = SU.title;
+    var stEl = $('[data-su-title]'); if (stEl) stEl.value = SU.title;
     var sv = $('[data-su-savewrap]'); sv.hidden = !(fresh && inPlay()); $('[data-su-save]').checked = true;
     $('[data-su-go]').textContent = fresh || H.round === 0 ? 'Start new game' : 'Save setup';
     $('[data-su-note]').textContent = fresh || H.round === 0 ? 'Scores start at 0 and the lobby goes up on the screen. Your cards and questions stay.' : 'Changes apply right away.';
@@ -866,7 +869,7 @@ function pqtMain() {
     var fresh = SU.fresh || H.round === 0;
     if (fresh && SU.fresh && inPlay() && $('[data-su-save]').checked) saveResult();
     snap();
-    H.title = (SU.title || '').trim() || 'Game night';
+    H.title = (SU.title || '').trim();
     var old = H.teams; H.teams = SU.teams.map(function (t, i) { return { name: t.name.trim() || 'Team ' + String.fromCharCode(65 + i), color: t.color, score: fresh ? 0 : (old[i] ? old[i].score : 0) }; });
     H.plan = SU.plan.slice();
     var t0 = $('[data-title]'); if (t0) t0.value = H.title;
@@ -886,7 +889,7 @@ function pqtMain() {
     $('[data-end-go]').textContent = g ? 'End anyway' : 'End game · show winner';
     $('[data-end-go]').classList.toggle('pbtn--o', !g);
     var rows = H.teams.map(function (t) { return t; }).slice().sort(function (a, b) { return b.score - a.score; });
-    $('[data-end-sub]').textContent = (H.title || 'Game night') + ' · ' + H.round + ' of ' + H.plan.length + ' rounds played';
+    $('[data-end-sub]').textContent = (H.title || 'PQT') + ' · ' + H.round + ' of ' + H.plan.length + ' rounds played';
     $('[data-end-list]').innerHTML = rows.map(function (t, i) { var rp = roundPts(H.teams.indexOf(t)); return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '<small>' + rp.rounds.map(function (v, r) { return 'R' + (r + 1) + ' ' + v; }).join(' · ') + (rp.pen ? ' · Penalty ' + rp.pen : '') + '</small></b><em>' + t.score + '</em></li>'; }).join('');
     $('[data-endsheet]').hidden = false;
   }

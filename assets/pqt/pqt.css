@@ -868,3 +868,17 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .lb-team .lb-star{display:block;margin:0;font-size:12px;line-height:1.5}
 .lb-ppl span.eol::after{content:"·"}
 .lb-ppl{row-gap:3px}
+/* no colour markers beside team names */
+.sc-chip i,.sc-lb__team i,.sc-words__team i,.sc-turn__team i,.sc-score::after{display:none}
+.sc-chip{gap:0}
+.sc-lb__team{gap:0}
+.sc-pod__block{border-top-color:#2a2a2a}
+.sc-pod__block{background:#0a0a0a}
+.team__sw,.hc-bd td:first-child i,.hc-strk__r i,.hc-wd__r i,.hc-end li i,.hc-turn b i,.hc-award .pbtn i,.hc-su__sw,.pq-game__w i,.pq-rank i,.pq-lb__t i{display:none!important}
+.hc-strk__r{grid-template-columns:minmax(0,1fr) auto auto auto}
+.hc-wd__r{grid-template-columns:minmax(0,1fr) 44px 52px 44px}
+.hc-su__team{grid-template-columns:minmax(0,1fr) 44px}
+/* smaller lobby logo */
+.sc-lobby__logo .pq-logo{width:min(56vw,96vh);filter:none}
+.team{grid-template-columns:1fr auto}
+.sc-lobby__logo .pq-logo{width:min(44vw,78vh)}.pq-board--home .pq-tile__h .pq-logo{max-width:400px;margin:0 auto}.pq-board--home .pq-tile--title{padding-top:clamp(22px,4vw,34px);padding-bottom:clamp(18px,3vw,26px)}
