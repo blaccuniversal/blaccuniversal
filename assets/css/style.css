@@ -1339,4 +1339,4 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 .proj--soon:hover{transform:none;border-color:#1f1f1f}
 .proj__art--as{background:radial-gradient(ellipse 55% 85% at 50% 115%,rgba(212,166,74,.16),transparent 70%)}
 .proj__art--as img{width:auto;height:clamp(96px,18vw,140px)}
-.proj--soon .proj__tag{color:#d4a64a}
+.proj--soon .proj__tag,.proj--as .proj__tag{color:#d4a64a}
