@@ -585,3 +585,15 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .hc-wr__t em{font-style:normal;font-family:var(--dot);font-weight:900;font-size:22px;min-width:2ch;text-align:right}
 .hc-wr__t.is-on{border-color:#2f6b45;background:#06140b}
 .hc-wr__t.is-on b{color:#4ade80;border-color:#2f6b45}
+/* objective + true/false options */
+.q-opts{list-style:none;margin:12px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.q-opts li{display:flex;gap:10px;align-items:baseline;padding:10px 12px;border:1px solid #222;font-size:14px;line-height:1.35;color:#e6e6e6}
+.q-opts b{color:var(--o2);font-weight:600;flex:none}
+.q-opts--tf li{justify-content:center}
+.sc-qa__qw{flex:1;display:flex;flex-direction:column;align-items:center}
+.sc-qa__body.has-img .sc-qa__qw{align-items:flex-start}
+.sc-qa .q-opts{margin:5vh 0 0;gap:1.6vh 2vh;width:min(100%,120vh)}
+.sc-qa .q-opts li{padding:2vh 3vh;font-size:4vh;font-weight:300;gap:2.4vh;text-align:left;border-color:#2a2a2a}
+.sc-qa .q-opts b{font-family:var(--dot);font-weight:900;font-size:3.6vh}
+.sc-qa .q-opts--tf{width:min(100%,80vh)}
+.sc-qa .q-opts--tf li{justify-content:center;font-weight:500}

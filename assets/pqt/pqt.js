@@ -70,6 +70,19 @@ function pqtMain() {
   function parseSpell(txt) { return String(txt || '').split('\n').map(function (l) { var p = l.split('|').map(function (s) { return s.trim(); }); return p[0] ? { w: p[0].toUpperCase(), d: p[1] || '', e: p[2] || '' } : null; }).filter(Boolean); }
   function parseQA(txt) { return blocks(txt).map(function (b) { var img = ''; b = b.filter(function (l) { var m = l.match(/^image:\s*(\S+)/i); if (m) { img = m[1]; return false; } return true; }); return b.length ? { q: b[0], a: b[1] || '', img: img } : null; }).filter(Boolean); }
   function parseTalk(txt) { return String(txt || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean); }
+  function qSplit(s) {
+    s = String(s || ''); var o = { stem: s, opts: [], tf: false };
+    var m = s.match(/\s*True or false\??\s*$/i); if (m) { o.tf = true; s = s.slice(0, m.index); o.stem = s; }
+    var k = s.search(/\[[A-H]\]/);
+    if (k > -1) { o.stem = s.slice(0, k).trim(); o.opts = s.slice(k).split(/(?=\[[A-H]\])/).map(function (x) { var mm = x.match(/^\[([A-H])\]\s*([\s\S]*)$/); return mm ? [mm[1], mm[2].trim()] : null; }).filter(Boolean); }
+    return o;
+  }
+  function qHtml(s, cls) {
+    var o = qSplit(s), h = '<p class="' + cls + '">' + esc(o.stem) + '</p>';
+    if (o.opts.length) h += '<ul class="q-opts">' + o.opts.map(function (x) { return '<li><b>' + x[0] + '</b><span>' + esc(x[1]) + '</span></li>'; }).join('') + '</ul>';
+    if (o.tf) h += '<ul class="q-opts q-opts--tf"><li><span>True</span></li><li><span>False</span></li></ul>';
+    return h;
+  }
   var QA_TYPES = { names: 1, spell: 1, written: 1, rapid: 1, talk: 1 };
   var QA_TIME = { names: 10000, written: 10000, rapid: 5000, spell: 30000 };
   var QA_BOARD = { spell: 1, rapid: 1 };
@@ -296,7 +309,7 @@ function pqtMain() {
         if (q.type === 'names') return '<div class="sc-qa">' + head + '<div class="sc-qa__clues">' + (q.clues || []).map(function (c) { return '<p>' + esc(c) + '</p>'; }).join('') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Hi, my name is…</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
         if (q.type === 'spell') return '<div class="sc-qa">' + head + '<div class="sc-qa__word' + (q.w ? ' is-on' : '') + '">' + (q.w ? esc(q.w) : '<i>???</i>') + mark + '</div><p class="sc-qa__def">' + esc(q.d || '') + '</p>' + (q.e ? '<p class="sc-qa__ex">' + (/^[“"]/.test(q.e) ? esc(q.e) : '“' + esc(q.e) + '”') + '</p>' : '') + '</div>';
         if (q.type === 'talk') return '<div class="sc-qa sc-qa--talk">' + head + '<p class="sc-qa__q sc-qa__q--big">' + esc(q.q || '') + '</p></div>';
-        return '<div class="sc-qa">' + head + '<div class="sc-qa__body' + (q.img ? ' has-img' : '') + '"><p class="sc-qa__q">' + esc(q.q || '') + '</p>' + (q.img ? '<img class="sc-qa__img" src="' + esc(q.img) + '" alt="">' : '') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
+        return '<div class="sc-qa">' + head + '<div class="sc-qa__body' + (q.img ? ' has-img' : '') + '"><div class="sc-qa__qw">' + qHtml(q.q, 'sc-qa__q') + '</div>' + (q.img ? '<img class="sc-qa__img" src="' + esc(q.img) + '" alt="">' : '') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
       },
       answers: function () {
         var f = S.feud;
@@ -652,7 +665,7 @@ function pqtMain() {
       } else if (type === 'talk') {
         out += '<div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Topic ' + (q.idx + 1) + ' of ' + list.length + '</p><div class="hc-qtopic">' + esc(it) + '</div></div>';
       } else {
-        out += '<div class="hc-qtext"><p class="hc-qlabel">' + (type === 'written' && q.phase === 'reveal' ? 'Answer reveal · ' : '') + 'Question ' + (q.idx + 1) + ' of ' + list.length + '</p><p>' + esc(it.q) + '</p>' + (it.img ? '<img class="hc-qimg" src="' + esc(it.img) + '" alt="">' : '') + '</div><div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Answer</p><div class="wcard__word hc-qans">' + esc(it.a) + '</div></div>';
+        out += '<div class="hc-qtext"><p class="hc-qlabel">' + (type === 'written' && q.phase === 'reveal' ? 'Answer reveal · ' : '') + 'Question ' + (q.idx + 1) + ' of ' + list.length + '</p>' + qHtml(it.q, '') + (it.img ? '<img class="hc-qimg" src="' + esc(it.img) + '" alt="">' : '') + '</div><div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Answer</p><div class="wcard__word hc-qans">' + esc(it.a) + '</div></div>';
       }
       if (type === 'talk') out += '<div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Previous</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">Next topic →</button></div>';
       else if (type === 'written' && q.phase === 'ask') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (q.idx + 1 < list.length ? 'Next question →' : 'Start answer reveal →') + '</button></div><p class="hc-note">Each question gets ' + fmtT(QA_TIME.written) + ' seconds. The answer stays hidden until the reveal.</p>';
