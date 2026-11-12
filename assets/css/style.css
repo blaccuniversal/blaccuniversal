@@ -1323,3 +1323,15 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 @media (max-width:600px){.bgm__label{display:none}.bgm{width:40px;padding:0;justify-content:center}}
 @media (prefers-reduced-motion:reduce){.bgm.is-on .bgm__bars i{animation:none;height:10px}}
 @media (max-width:600px){.bgm{width:36px;height:36px;left:12px;bottom:12px;opacity:.75}}
+/* projects list */
+.proj-list{width:min(100%,620px);display:flex;flex-direction:column;gap:12px}
+.proj{display:grid;grid-template-columns:minmax(0,1fr);gap:0;border:1px solid #1f1f1f;background:#050505;color:#fff;text-decoration:none;text-align:left;position:relative;transition:border-color .25s,transform .25s}
+.proj:hover{border-color:#3a3a3a;transform:translateY(-2px)}
+.proj__art{display:flex;align-items:center;justify-content:center;padding:clamp(26px,5vw,44px) 24px;border-bottom:1px solid #161616;background:radial-gradient(ellipse 60% 90% at 50% 120%,rgba(226,70,28,.16),transparent 70%)}
+.proj__art img{width:min(100%,380px);height:auto;display:block}
+.proj__body{display:flex;flex-direction:column;gap:6px;padding:18px 64px 20px 22px}
+.proj__tag{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#ff6a2b}
+.proj__body b{font-weight:500;font-size:17px;letter-spacing:.01em}
+.proj__body>span:last-child{font-size:14px;font-weight:300;line-height:1.6;color:#a8a8a8}
+.proj__go{position:absolute;right:20px;bottom:22px;color:#fff;transition:transform .25s}
+.proj:hover .proj__go{transform:translateX(4px)}

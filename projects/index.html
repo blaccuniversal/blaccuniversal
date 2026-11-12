@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=202611120150">
+<link rel="stylesheet" href="/assets/css/style.css?v=202611120337">
 </head>
 <body>
 <div class="page page--screen">
@@ -40,12 +40,18 @@
       <svg viewBox="0 0 563 418" class="loading__mark" role="img" aria-label="BLACC Universal mark assembling"><g fill="#ffffff"><rect class="blk" x="0" y="290" width="128" height="128" rx="3" style="animation-delay:0s"/><rect class="blk" x="145" y="290" width="128" height="128" rx="3" style="animation-delay:.12s"/><rect class="blk" x="290" y="290" width="128" height="128" rx="3" style="animation-delay:.24s"/><rect class="blk" x="435" y="290" width="128" height="128" rx="3" style="animation-delay:.36s"/><rect class="blk" x="0" y="145" width="128" height="128" rx="3" style="animation-delay:.52s"/><rect class="blk" x="145" y="145" width="128" height="128" rx="3" style="animation-delay:.64s"/><rect class="blk" x="435" y="145" width="128" height="128" rx="3" style="animation-delay:.76s"/><rect class="blk" x="0" y="0" width="128" height="128" rx="3" style="animation-delay:.94s"/></g></svg>
       <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
         <p class="eyebrow">Projects</p>
-        <h1>The work is loading<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></h1>
-        <p class="lead">Products, games, music, film and experiences from the house. Being assembled, one block at a time.</p>
+        <h1>From the house</h1>
+        <p class="lead">Products, games, music, film and experiences, built by BLACC Universal.</p>
       </div>
-      <div class="bar" role="progressbar" aria-label="Projects coming soon"></div>
+      <div class="proj-list">
+        <a class="proj" href="/pqt/">
+          <span class="proj__art"><img src="/assets/pqt/pqt-logo.png" alt="PQT · People, Quests &amp; Triumphs" width="1400" height="298" loading="lazy"></span>
+          <span class="proj__body"><span class="proj__tag">Game night · Ibadan</span><b>PQT · People, Quests &amp; Triumphs</b><span>Trivia and game nights. Host from your phone, play on the big screen.</span></span>
+          <span class="proj__go" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+      </div>
       <div class="notify">
-        <p class="notify__hint">Get notified when it lands.</p>
+        <p class="notify__hint">More is being assembled. Get notified when it lands.</p>
         <form name="notify" method="POST" data-notify action="https://api.web3forms.com/submit">
           <input type="hidden" name="access_key" value="c45f617c-f3f2-4caa-93cf-5d49e2cece46"><input type="hidden" name="subject" value="New sign-up on blaccuniversal.com"><input type="hidden" name="from_name" value="BLACC Universal website">
           <input type="hidden" name="page" value="projects">
