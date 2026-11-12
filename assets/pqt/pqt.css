@@ -882,3 +882,8 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-lobby__logo .pq-logo{width:min(56vw,96vh);filter:none}
 .team{grid-template-columns:1fr auto}
 .sc-lobby__logo .pq-logo{width:min(44vw,78vh)}.pq-board--home .pq-tile__h .pq-logo{max-width:400px;margin:0 auto}.pq-board--home .pq-tile--title{padding-top:clamp(22px,4vw,34px);padding-bottom:clamp(18px,3vw,26px)}
+.hc-home{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 8px 0 0;color:#cfcfcf;text-decoration:none}
+.hc-home:hover{color:#fff}
+.hc-home svg{transition:transform .2s}
+.hc-home:hover svg{transform:translateX(-3px)}
+.sc-home{display:inline-block;text-decoration:none;cursor:pointer}
