@@ -30,7 +30,8 @@
       </div>
     </div>
     <section class="pq-tile pq-stand" data-stand>
-      <div class="pq-stand__head"><h2>Leaderboard</h2><div class="pq-seg" role="tablist"><button type="button" data-lb="all" class="is-on">All-time</button><button type="button" data-lb="week">This week</button></div></div>
+      <div class="pq-stand__head"><h2>Leaderboard</h2><span class="pq-stand__note">Points from finished games</span></div>
+      <div class="pq-seg" role="tablist" aria-label="Leaderboard period"><button type="button" role="tab" data-lb="all" class="is-on" aria-selected="true">All-time</button><button type="button" role="tab" data-lb="week" aria-selected="false">This week</button></div>
       <div data-stand-list><p class="pq-stand__empty">No games played yet. When a host ends a game, the scores are added here.</p></div>
       <p class="pq-stand__foot" data-stand-n></p>
     </section>
@@ -39,7 +40,7 @@
       <a class="pbtn pbtn--ghost pbtn--lg" href="/pqt/screen/">Open the screen</a>
     </div>
     <p class="pq-note">You’ll need a pass to host or open the screen.</p>
-    <p class="pq-off" data-offline hidden><i></i>Saved on this device · plays without internet</p>
+    <p class="pq-off" data-offline hidden><i></i>Saved for offline play</p>
   </main>
   <footer class="pq-foot">PQT · People, Quests &amp; Triumphs · by BLACC Universal</footer>
 </div>

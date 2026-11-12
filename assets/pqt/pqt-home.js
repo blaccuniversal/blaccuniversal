@@ -23,6 +23,6 @@
     if (foot) foot.textContent = games.length + (games.length === 1 ? ' game' : ' games') + (mode === 'week' ? ' this week' : ' played') + ' · saved on this device';
   }
   var btns = document.querySelectorAll('[data-lb]');
-  Array.prototype.forEach.call(btns, function (b) { b.addEventListener('click', function () { Array.prototype.forEach.call(btns, function (x) { x.classList.toggle('is-on', x === b); }); draw(b.getAttribute('data-lb')); }); });
+  Array.prototype.forEach.call(btns, function (b) { b.addEventListener('click', function () { Array.prototype.forEach.call(btns, function (x) { x.classList.toggle('is-on', x === b); x.setAttribute('aria-selected', x === b ? 'true' : 'false'); }); draw(b.getAttribute('data-lb')); }); });
   draw('all');
 })();
