@@ -597,3 +597,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .sc-qa .q-opts b{font-family:var(--dot);font-weight:900;font-size:3.6vh}
 .sc-qa .q-opts--tf{width:min(100%,80vh)}
 .sc-qa .q-opts--tf li{justify-content:center;font-weight:500}
+.hc-now__txt{gap:3px}
+.hc-now__txt b{line-height:1.25}
+.hc-now__txt span{line-height:1.4}
+.hc>.hc-now{margin-bottom:14px}
+.hc-fin{margin:6px 0 4px}
