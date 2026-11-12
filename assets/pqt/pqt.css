@@ -720,3 +720,18 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-wd__r .pbtn{width:44px;min-height:44px;padding:0}
 .hc-wd__v{text-align:center;font-family:var(--dot);font-weight:900;font-size:22px;color:#5a5a5a}
 .hc-wd__v.is-set{color:#fff}
+/* board turns + bonus */
+.hc-pick{font-weight:600}
+.hc-pickch{margin-left:4px;color:#7a7a7a;font-size:12px;position:relative;text-decoration:underline;cursor:pointer}
+.hc-pickch select{position:absolute;inset:0;opacity:0;cursor:pointer}
+.hc-turn{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:4px 0 10px;padding:14px;border:1px solid #2a2a2a}
+.hc-turn span{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7a7a7a}
+.hc-turn b{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600}
+.hc-turn b i{width:3px;height:18px}
+.hc-turn.is-bonus{border-color:var(--o2)}
+.hc-turn.is-bonus span{color:var(--o2)}
+.hc-turn.is-done{border-color:#1f1f1f;background:#0a0a0a}
+.sc-qa__who{margin:2vh 0 0;font-size:4.2vh;font-weight:600;color:#fff;letter-spacing:.01em}
+.sc-qa__who.is-bonus{color:var(--o2)}
+.sc-qa__top{flex-wrap:wrap}
+.sc-qa__who{width:100%}

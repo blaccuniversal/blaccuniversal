@@ -1,5 +1,5 @@
 /* PQT offline: keeps the game saved on this device so it opens and plays without internet */
-var CACHE = 'pqt-v6';
+var CACHE = 'pqt-v7';
 var CORE = ['/pqt/', '/pqt/host/', '/pqt/screen/',
   '/assets/pqt/pqt.css', '/assets/pqt/pqt.js', '/assets/pqt/pqt-data.js', '/assets/pqt/pqt-gate.js', '/assets/pqt/pqt-leaderboard.js', '/pqt/leaderboard/',
   '/assets/pqt/mqtt.min.js', '/assets/pqt/peerjs.min.js', '/assets/pqt/pqt-logo.png', '/assets/pqt/pqt-mark.png', '/assets/pqt/pqt-icon.png',
