@@ -6,6 +6,7 @@
   var SRC = '/pqt/data/season-1.json';
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function roman(n) { var m = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']], r = ''; m.forEach(function (p) { while (n >= p[0]) { r += p[1]; n -= p[0]; } }); return r; }
+  function pad(s, w) { while (s.length < w) s = '\u2007' + s; return s; }
   function f2(n) { return (Math.round(n * 100) / 100).toFixed(2); }
   function ord(d) { var s = ['th', 'st', 'nd', 'rd'], v = d % 100; return d + (s[(v - 20) % 10] || s[v] || s[0]); }
   function longDate(iso) { var d = new Date(iso + 'T12:00:00'); var M = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'], D = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']; return { day: D[d.getDay()], date: M[d.getMonth()] + ' ' + ord(d.getDate()) + ', ' + d.getFullYear() }; }
@@ -55,6 +56,7 @@
       root.querySelectorAll('[data-lbtab]').forEach(function (b) { var on = b.getAttribute('data-lbtab') === mode; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); });
       var body = $('[data-lb-body]');
       if (mode === 'all') {
+        var w = Math.max.apply(null, C.rows.map(function (t) { return f2(t.total).length; }));
         body.innerHTML = '<p class="lb-sub"><span>After Gameweek ' + C.after + '</span></p>' +
           '<ol class="lb-list">' + C.rows.map(function (t, i) { return '<li class="lb-row' + (i === 0 ? ' is-top' : '') + '"><span class="lb-n">' + t.rank + '</span><span class="lb-t">' + esc(t.name) + '</span>' + moveHtml(t) + '<b class="lb-p">' + f2(t.total) + '</b></li>'; }).join('') + '</ol>' +
           '<details class="lb-fx"><summary><i class="lb-math lb-fxl">fx</i><b class="lb-math"><var>W</var> = (<var>P</var> × <var>B</var>) + (<var>S</var> × 0.25)</b><em>How it works</em></summary><dl>' +

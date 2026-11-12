@@ -241,7 +241,7 @@ function pqtMain() {
       },
       scores: function () {
         return '<div class="sc-scores">' + S.teams.map(function (t) {
-          return '<div class="card sc-score" style="--c:' + t.color + '"><div class="sc-score__name">' + esc(t.name) + '</div><div class="sc-score__pts">' + t.score + '</div>' + (t.rounds && t.rounds.length ? '<div class="sc-score__bd">' + t.rounds.map(function (v, r) { return '<span><em>R' + (r + 1) + '</em>' + v + '</span>'; }).join('') + (t.pen ? '<span class="is-pen"><em>Pen</em>' + t.pen + '</span>' : '') + '</div>' : '') + (t.strikes ? '<div class="sc-score__x">' + new Array(t.strikes + 1).join('✕') + '</div>' : '') + '</div>';
+          return '<div class="card sc-score" style="--c:' + t.color + '"><div class="sc-score__name">' + esc(t.name) + '</div><div class="sc-score__pts">' + t.score + '</div>' + (t.rounds && t.rounds.length ? '<div class="sc-score__bd">' + t.rounds.map(function (v, r) { return '<span><em>R' + (r + 1) + '</em>' + (v == null ? '–' : v) + '</span>'; }).join('') + (t.pen ? '<span class="is-pen"><em>Pen</em>' + t.pen + '</span>' : '') + '</div>' : '') + (t.strikes ? '<div class="sc-score__x">' + new Array(t.strikes + 1).join('✕') + '</div>' : '') + '</div>';
         }).join('') + '</div>';
       },
       ranking: function () {
@@ -275,7 +275,7 @@ function pqtMain() {
         }
         var isW = S.roundType === 'words';
         var rules = isW ? ['One clue giver per team, against the clock.', 'Describe the word. Don’t say it, or any banned word.', 'Every word guessed is a point. A buzz costs one.']
-                        : ['One team at a time answers the same questions against the clock.', 'Right answers show on the board with their points. An answer another team already gave doesn’t count.', 'Each team’s answers are recapped after their turn. At the end, every answer is revealed.'];
+                        : ['One team at a time answers the same questions against the clock.', 'Right answers show on the board with their points. An answer another team already gave scores nothing.', 'Each team’s answers are recapped after their turn. At the end, every answer is revealed.'];
         return '<div class="sc-intro"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + '</p><h1 class="sc-intro__t">' + (isW ? 'All Except These Ones' : 'Quests Feud') + '</h1>' +
           '<ol class="sc-intro__rules">' + rules.map(function (r, i) { return '<li style="animation-delay:' + (0.35 + i * 0.15) + 's"><b>0' + (i + 1) + '</b>' + esc(r) + '</li>'; }).join('') + '</ol>' +
           '<div class="sc-chips">' + S.teams.map(function (t) { return '<span class="sc-chip"><i style="background:' + t.color + '"></i>' + esc(t.name) + '</span>'; }).join('') + '</div></div>';
@@ -307,10 +307,10 @@ function pqtMain() {
         if (f.phase === 'ready') return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud</p><h2 class="sc-qa__h">' + esc(f.team) + ', you’re up</h2><p class="sc-fm__sub">' + f.n + ' questions against the clock</p></div>';
         if (f.phase === 'answer') {
           var show = {}; if (f.hit) show[f.hit.i] = { a: f.hit.a, p: f.hit.p, hl: 1 };
-          var msg = f.msg === 'taken' ? '<div class="sc-fm__msg is-warn">Already given by ' + esc(f.takenBy) + ' · try another</div>' : f.msg === 'miss' ? '<div class="sc-fm__msg is-miss">✕ Not on the board</div>' : f.msg === 'pass' ? '<div class="sc-fm__msg is-miss">Pass</div>' : '';
+          var msg = f.msg === 'taken' ? '<div class="sc-fm__msg is-warn">Already given by ' + esc(f.takenBy) + ' · no points</div>' : f.msg === 'miss' ? '<div class="sc-fm__msg is-miss">Not on the board</div>' : f.msg === 'pass' ? '<div class="sc-fm__msg is-miss">Pass</div>' : '';
           return '<div class="sc-qa"><div class="sc-qa__top"><p class="sc-intro__r">Quests Feud · ' + esc(f.team) + ' · ' + (f.qi + 1) + ' of ' + f.n + '</p><span class="sc-qa__timer" data-ringnum></span></div><p class="sc-qa__q" style="margin-top:2vh">' + esc(f.q) + '</p>' + tiles(f.na, show) + msg + '</div>';
         }
-        if (f.phase === 'recap') return '<div class="sc-qa"><p class="sc-intro__r">' + esc(f.team) + '’s answers</p><div class="sc-fmr">' + f.items.map(function (it, i) { return '<div class="sc-fmr__r' + (it ? ' is-on' + (it.miss ? ' is-miss' : '') : '') + '"><span class="sc-fmr__q">' + esc(it ? it.q : f.qs[i]) + '</span><b>' + (it ? (it.miss ? '✕' : esc(it.a)) : '') + '</b><em>' + (it ? it.p : '') + '</em></div>'; }).join('') + '</div><p class="sc-fmr__tot">Total <b>' + f.total + '</b></p></div>';
+        if (f.phase === 'recap') return '<div class="sc-qa"><p class="sc-intro__r">' + esc(f.team) + '’s answers</p><div class="sc-fmr">' + f.items.map(function (it, i) { return '<div class="sc-fmr__r' + (it ? ' is-on' + (it.miss ? ' is-miss' : '') : '') + '"><span class="sc-fmr__q">' + esc(it ? it.q : f.qs[i]) + '</span><b>' + (it ? (it.taken ? 'Already taken' : it.miss ? '✕' : esc(it.a)) : '') + '</b><em>' + (it ? it.p : '') + '</em></div>'; }).join('') + '</div><p class="sc-fmr__tot">Total <b>' + f.total + '</b></p></div>';
         if (f.phase === 'final') return '<div class="sc-qa"><p class="sc-intro__r">All the answers · ' + (f.rq + 1) + ' of ' + f.n + '</p><p class="sc-qa__q" style="margin-top:2vh">' + esc(f.q) + '</p>' + tiles(f.all.length, f.all, ' sc-fmb--all') + '</div>';
         return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud · round totals</p><div class="sc-fm sc-fm--tot" style="margin-top:5vh">' + (f.totals || []).map(function (r, i) { return '<div class="sc-fm__r' + (i === 0 ? ' is-top' : '') + '"><b>' + (i + 1) + '</b><span>' + esc(r.team) + '</span><em>' + r.p + '</em></div>'; }).join('') + '</div></div>';
       },
@@ -532,7 +532,7 @@ function pqtMain() {
   /* actions */
   function team(i) { return H.teams[i]; }
   function pts(i, d, kind) { var t = team(i); if (!t || !d) return; t.score += d; H.ledger.push([i, d]); var r = kind === 'pen' ? 'pen' : String(H.round || 0); H.byRound = H.byRound || {}; var br = H.byRound[r] = H.byRound[r] || {}; br[i] = (br[i] || 0) + d; }
-  function roundPts(i) { var br = H.byRound || {}, out = []; for (var r = 1; r <= Math.max(H.round, 0); r++) out.push((br[r] || {})[i] || 0); return { rounds: out, extra: (br['0'] || {})[i] || 0, pen: (br.pen || {})[i] || 0 }; }
+  function roundPts(i) { var br = H.byRound || {}, out = [], jn = (H.teams[i] || {}).joined || 0; for (var r = 1; r <= Math.max(H.round, 0); r++) out.push(r < jn ? null : (br[r] || {})[i] || 0); return { rounds: out, extra: (br['0'] || {})[i] || 0, pen: (br.pen || {})[i] || 0 }; }
   function addScore(i, d) { snap(); pts(i, d); push(); renderTeams(); if (H.tab === 'quiz') renderTab(); }
   var toastT = null;
   function toast(msg) { var el = $('[data-toast]'); if (!el) return; el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { el.hidden = true; }, 2200); }
@@ -643,12 +643,13 @@ function pqtMain() {
   function fmScore(t) { var f = H.fm, s = 0; f.qs.forEach(function (_, qi) { var a = (f.picks[t] || {})[qi], b = fmB(qi); if (a != null && a >= 0 && b && b.a[a]) s += b.a[a].p; }); return s; }
   function fmPick(a) {
     var f = H.fm, t = fmTeam(); snap();
-    if (a >= 0) { var by = fmTakenBy(f.qi, a, t); if (by != null) { f.last = { qi: f.qi, msg: 'taken', by: by }; fx('buzz'); push(); renderAll(); return; } }
+    var by = a >= 0 ? fmTakenBy(f.qi, a, t) : null;
     var pk = f.picks[t] = f.picks[t] || {}, old = pk[f.qi], b = fmB(f.qi);
     if (old != null && old >= 0 && b && b.a[old]) pts(t, -b.a[old].p);
+    if (by != null) { pk[f.qi] = -3; f.last = { qi: f.qi, msg: 'taken', by: by }; fx('buzz', { bigX: true }); push(); renderAll(); return; }
     pk[f.qi] = a;
     if (a >= 0 && b && b.a[a]) { pts(t, b.a[a].p); f.last = { qi: f.qi, msg: 'hit', a: a }; fx('ok'); }
-    else { f.last = { qi: f.qi, msg: a === -2 ? 'pass' : 'miss' }; fx('buzz'); }
+    else { f.last = { qi: f.qi, msg: a === -2 ? 'pass' : 'miss' }; fx('buzz', a === -2 ? null : { bigX: true }); }
     push(); renderAll();
   }
   function fmNextQ() { var f = H.fm; snap(); f.last = null; if (f.qi + 1 < f.qs.length) f.qi++; else { f.phase = 'recap'; f.rc = 0; H.timer.running = false; H.timer.remaining = timerLeft(); } push(); renderAll(); }
@@ -665,7 +666,7 @@ function pqtMain() {
     }
     if (f.phase === 'recap') {
       o.qs = f.qs.map(function (qq) { var b = BOARDS[qq]; return b ? b.q : ''; });
-      o.items = f.qs.map(function (qq, qi) { if (qi >= f.rc) return null; var b = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && b ? b.a[a] : null; return { q: b ? b.q : '', a: ans ? ans.a : '', p: ans ? ans.p : 0, miss: !ans }; });
+      o.items = f.qs.map(function (qq, qi) { if (qi >= f.rc) return null; var b = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && b ? b.a[a] : null; return { q: b ? b.q : '', a: ans ? ans.a : '', p: ans ? ans.p : 0, miss: !ans, taken: a === -3 }; });
       o.total = o.items.reduce(function (s, x) { return s + (x ? x.p : 0); }, 0);
     }
     if (f.phase === 'final') {
@@ -737,7 +738,7 @@ function pqtMain() {
     if (H.round > 0) {
       var hasPen = H.teams.some(function (_, i) { return roundPts(i).pen; });
       bd = '<div class="hc-bd"><p class="hc-sub">Points by round</p><div class="hc-bd__w"><table><thead><tr><th></th>' + Array.apply(null, Array(H.round)).map(function (_, r) { return '<th title="' + esc(GNAME[H.plan[r]] || '') + '">R' + (r + 1) + '</th>'; }).join('') + (hasPen ? '<th>Pen</th>' : '') + '<th>Total</th></tr></thead><tbody>' +
-        H.teams.map(function (t, i) { var rp = roundPts(i); return '<tr><td><i style="background:' + t.color + '"></i>' + esc(t.name) + '</td>' + rp.rounds.map(function (v) { return '<td>' + v + '</td>'; }).join('') + (hasPen ? '<td class="is-pen">' + (rp.pen || '') + '</td>' : '') + '<td><b>' + t.score + '</b></td></tr>'; }).join('') + '</tbody></table></div></div>';
+        H.teams.map(function (t, i) { var rp = roundPts(i); return '<tr><td><i style="background:' + t.color + '"></i>' + esc(t.name) + '</td>' + rp.rounds.map(function (v) { return '<td' + (v == null ? ' class="is-na"' : '') + '>' + (v == null ? '–' : v) + '</td>'; }).join('') + (hasPen ? '<td class="is-pen">' + (rp.pen || '') + '</td>' : '') + '<td><b>' + t.score + '</b></td></tr>'; }).join('') + '</tbody></table></div></div>';
     }
     var strikes = '<div class="hc-strk"><p class="hc-sub">Strikes <span>3 strikes = −' + (H.penalty || 3) + '<button class="pbtn pbtn--sm pbtn--ghost" data-pen="-1" type="button" aria-label="Smaller penalty">−</button><button class="pbtn pbtn--sm pbtn--ghost" data-pen="1" type="button" aria-label="Bigger penalty">+</button></span></p>' +
       H.teams.map(function (t, i) { var s = t.strikes || 0; return '<div class="hc-strk__r"><i style="background:' + t.color + '"></i><span>' + esc(t.name) + '</span><b class="hc-strk__x">' + [0, 1, 2].map(function (k) { return '<em class="' + (k < s ? 'is-on' : '') + '">✕</em>'; }).join('') + '</b><button class="pbtn pbtn--sm pbtn--ghost" data-unstrike="' + i + '" type="button"' + (s ? '' : ' disabled') + ' aria-label="Remove a strike">Undo</button><button class="pbtn pbtn--sm pbtn--bad" data-strike="' + i + '" type="button">Strike</button></div>'; }).join('') + '</div>';
@@ -754,14 +755,14 @@ function pqtMain() {
     if (f.phase === 'answer') {
       var b = fmB(f.qi), mine = (f.picks[t] || {})[f.qi], last = f.last && f.last.qi === f.qi ? f.last : null;
       out += prog + '<div class="fm-head"><span>' + esc(tm.name) + ' · question ' + (f.qi + 1) + ' of ' + f.qs.length + '</span><b data-tflow>' + fmtT(timerLeft()) + '</b></div><p class="fq">' + esc(b ? b.q : '') + '</p>';
-      if (last && last.msg === 'taken') out += '<p class="fm-msg is-warn">Already given by ' + esc((H.teams[last.by] || {}).name || '') + '. The screen tells them to try another.</p>';
+      if (last && last.msg === 'taken') out += '<p class="fm-msg is-warn">Already given by ' + esc((H.teams[last.by] || {}).name || '') + '. No points for this one.</p>';
       out += '<div class="fans">' + (b ? b.a : []).map(function (a, i) { var by = fmTakenBy(f.qi, i, t); return '<button class="fan' + (by != null ? ' is-taken' : '') + (mine === i ? ' is-cur' : '') + '" data-fmp="' + i + '" type="button"><span class="fan__n">' + (i + 1) + '</span><span>' + esc(a.a) + (by != null ? '<em> · ' + esc((H.teams[by] || {}).name || '') + ' has it</em>' : '') + '</span><span class="fan__p">' + a.p + '</span></button>'; }).join('') + '</div>';
       out += '<div class="w-actions" style="grid-template-columns:1fr 1fr;margin-top:10px"><button class="pbtn pbtn--bad pbtn--lg" data-fmp="-1" type="button">Not on the board</button><button class="pbtn pbtn--lg" data-fmp="-2" type="button">Pass</button></div>';
       out += '<div class="w-actions" style="grid-template-columns:1fr 2fr;margin-top:10px"><button class="pbtn pbtn--lg" data-fm="back" type="button"' + (f.qi ? '' : ' disabled') + '>← Back</button><button class="pbtn pbtn--white pbtn--lg" data-fm="nextq" type="button"' + (mine == null ? ' disabled' : '') + '>' + (f.qi + 1 < f.qs.length ? 'Next question →' : 'Done · recap their answers') + '</button></div>';
       return out;
     }
     if (f.phase === 'recap') {
-      out += prog + '<div class="fm-head"><span>' + esc(tm.name) + '’s answers · recap</span></div><div class="fm-rev">' + f.qs.map(function (qq, qi) { var bb = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && bb ? bb.a[a] : null; return '<div class="' + (qi < f.rc ? 'is-on' : '') + '"><b>' + esc(bb ? bb.q : '') + '</b><span>' + (ans ? esc(ans.a) : a === -2 ? 'Passed' : 'Not on the board') + '</span><em>' + (ans ? ans.p : 0) + '</em></div>'; }).join('') + '</div>';
+      out += prog + '<div class="fm-head"><span>' + esc(tm.name) + '’s answers · recap</span></div><div class="fm-rev">' + f.qs.map(function (qq, qi) { var bb = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && bb ? bb.a[a] : null; return '<div class="' + (qi < f.rc ? 'is-on' : '') + '"><b>' + esc(bb ? bb.q : '') + '</b><span>' + (ans ? esc(ans.a) : a === -2 ? 'Passed' : a === -3 ? 'Already taken' : 'Not on the board') + '</span><em>' + (ans ? ans.p : 0) + '</em></div>'; }).join('') + '</div>';
       var lastT = f.ti + 1 >= f.order.length;
       out += f.rc < f.qs.length ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="recap" type="button">Reveal answer ' + (f.rc + 1) + '</button>' : '<button class="pbtn pbtn--white pbtn--lg pbtn--block" data-fm="afterrecap" type="button">' + (lastT ? 'Show all the answers →' : 'Next: ' + esc((H.teams[f.order[f.ti + 1]] || {}).name || '') + ' →') + '</button>';
       return out;
@@ -948,12 +949,12 @@ function pqtMain() {
     var stEl = $('[data-su-title]'); if (stEl) stEl.value = SU.title;
     var sv = $('[data-su-savewrap]'); sv.hidden = !(fresh && inPlay()); $('[data-su-save]').checked = true;
     $('[data-su-go]').textContent = fresh || H.round === 0 ? 'Start new game' : 'Save setup';
-    $('[data-su-note]').textContent = fresh || H.round === 0 ? 'Scores start at 0 and the lobby goes up on the screen. Your cards and questions stay.' : 'Changes apply right away.';
+    $('[data-su-note]').textContent = fresh || H.round === 0 ? 'Scores start at 0 and the lobby goes up on the screen. Your cards and questions stay.' : 'New teams start from this round. Teams already playing keep their points.';
     paintSetup(); $('[data-setup]').hidden = false;
   }
   function paintSetup() {
     $('[data-su-tn]').textContent = SU.teams.length + ' of 8';
-    $('[data-su-teams]').innerHTML = SU.teams.map(function (t, i) { return '<div class="hc-su__team"><button class="hc-su__sw" type="button" data-su-col="' + i + '" style="background:' + t.color + '" aria-label="Change colour"></button><input class="hc-input" data-su-name="' + i + '" value="' + esc(t.name) + '" maxlength="24" aria-label="Team name"><button class="pbtn pbtn--sm pbtn--ghost" type="button" data-su-del="' + i + '" aria-label="Remove team"' + (SU.teams.length <= 2 ? ' disabled' : '') + '>✕</button></div>'; }).join('');
+    $('[data-su-teams]').innerHTML = SU.teams.map(function (t, i) { return '<div class="hc-su__team"><button class="hc-su__sw" type="button" data-su-col="' + i + '" style="background:' + t.color + '" aria-label="Change colour"></button><input class="hc-input" data-su-name="' + i + '" value="' + esc(t.name) + '" maxlength="24" aria-label="Team name"><button class="pbtn pbtn--sm pbtn--ghost" type="button" data-su-del="' + i + '" aria-label="Remove team"' + (SU.teams.length <= 2 || (!SU.fresh && H.round > 0 && i < H.teams.length) ? ' disabled' : '') + '>✕</button></div>'; }).join('');
     $('[data-su-add]').disabled = SU.teams.length >= 8;
     $('[data-su-count]').textContent = SU.plan.length;
     var opts = ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'talk'];
@@ -964,7 +965,7 @@ function pqtMain() {
     if (fresh && SU.fresh && inPlay() && $('[data-su-save]').checked) saveResult();
     snap();
     H.title = (SU.title || '').trim();
-    var old = H.teams; H.teams = SU.teams.map(function (t, i) { return { name: t.name.trim() || 'Team ' + String.fromCharCode(65 + i), color: t.color, score: fresh ? 0 : (old[i] ? old[i].score : 0) }; });
+    var old = H.teams; H.teams = SU.teams.map(function (t, i) { var o = !fresh && old[i]; return { name: t.name.trim() || 'Team ' + String.fromCharCode(65 + i), color: t.color, score: o ? o.score : 0, strikes: o ? o.strikes || 0 : 0, joined: o ? o.joined || 0 : (fresh ? 0 : Math.max(1, H.round)) }; });
     H.plan = SU.plan.slice();
     var t0 = $('[data-title]'); if (t0) t0.value = H.title;
     closeSheets();
@@ -984,7 +985,7 @@ function pqtMain() {
     $('[data-end-go]').classList.toggle('pbtn--o', !g);
     var rows = H.teams.map(function (t) { return t; }).slice().sort(function (a, b) { return b.score - a.score; });
     $('[data-end-sub]').textContent = (H.title || 'PQT') + ' · ' + H.round + ' of ' + H.plan.length + ' rounds played';
-    $('[data-end-list]').innerHTML = rows.map(function (t, i) { var rp = roundPts(H.teams.indexOf(t)); return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '<small>' + rp.rounds.map(function (v, r) { return 'R' + (r + 1) + ' ' + v; }).join(' · ') + (rp.pen ? ' · Penalty ' + rp.pen : '') + '</small></b><em>' + t.score + '</em></li>'; }).join('');
+    $('[data-end-list]').innerHTML = rows.map(function (t, i) { var rp = roundPts(H.teams.indexOf(t)); return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '<small>' + rp.rounds.map(function (v, r) { return 'R' + (r + 1) + ' ' + (v == null ? '–' : v); }).join(' · ') + (rp.pen ? ' · Penalty ' + rp.pen : '') + '</small></b><em>' + t.score + '</em></li>'; }).join('');
     $('[data-endsheet]').hidden = false;
   }
   function confirmTwice(b) {
