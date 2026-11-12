@@ -365,7 +365,7 @@ function pqtMain() {
       else if (!on && pauseEl) { pauseEl.remove(); pauseEl = null; }
     }
     function bigX() {
-      var d = document.createElement('div'); d.className = 'sc-bigx'; d.innerHTML = '<span>✕</span>';
+      var d = document.createElement('div'); d.className = 'sc-bigx'; d.innerHTML = '<span>X</span>';
       document.body.appendChild(d); setTimeout(function () { d.remove(); }, 950);
     }
     var lastSec = null;
@@ -641,8 +641,10 @@ function pqtMain() {
   function fmB(qi) { return BOARDS[H.fm.qs[qi]]; }
   function fmTakenBy(qi, a, except) { var f = H.fm, who = null; f.order.forEach(function (t) { if (t !== except && (f.picks[t] || {})[qi] === a) who = t; }); return who; }
   function fmScore(t) { var f = H.fm, s = 0; f.qs.forEach(function (_, qi) { var a = (f.picks[t] || {})[qi], b = fmB(qi); if (a != null && a >= 0 && b && b.a[a]) s += b.a[a].p; }); return s; }
+  var fmAutoT = null;
+  function fmAuto() { clearTimeout(fmAutoT); var f = H.fm, key = f.ti + ':' + f.qi; fmAutoT = setTimeout(function () { var g = H.fm; if (g && g.phase === 'answer' && g.ti + ':' + g.qi === key) fmNextQ(); }, 1500); }
   function fmPick(a) {
-    var f = H.fm, t = fmTeam(); snap();
+    var f = H.fm, t = fmTeam(); snap(); fmAuto();
     var by = a >= 0 ? fmTakenBy(f.qi, a, t) : null;
     var pk = f.picks[t] = f.picks[t] || {}, old = pk[f.qi], b = fmB(f.qi);
     if (old != null && old >= 0 && b && b.a[old]) pts(t, -b.a[old].p);
@@ -758,7 +760,7 @@ function pqtMain() {
       if (last && last.msg === 'taken') out += '<p class="fm-msg is-warn">Already given by ' + esc((H.teams[last.by] || {}).name || '') + '. No points for this one.</p>';
       out += '<div class="fans">' + (b ? b.a : []).map(function (a, i) { var by = fmTakenBy(f.qi, i, t); return '<button class="fan' + (by != null ? ' is-taken' : '') + (mine === i ? ' is-cur' : '') + '" data-fmp="' + i + '" type="button"><span class="fan__n">' + (i + 1) + '</span><span>' + esc(a.a) + (by != null ? '<em> · ' + esc((H.teams[by] || {}).name || '') + ' has it</em>' : '') + '</span><span class="fan__p">' + a.p + '</span></button>'; }).join('') + '</div>';
       out += '<div class="w-actions" style="grid-template-columns:1fr 1fr;margin-top:10px"><button class="pbtn pbtn--bad pbtn--lg" data-fmp="-1" type="button">Not on the board</button><button class="pbtn pbtn--lg" data-fmp="-2" type="button">Pass</button></div>';
-      out += '<div class="w-actions" style="grid-template-columns:1fr 2fr;margin-top:10px"><button class="pbtn pbtn--lg" data-fm="back" type="button"' + (f.qi ? '' : ' disabled') + '>← Back</button><button class="pbtn pbtn--white pbtn--lg" data-fm="nextq" type="button"' + (mine == null ? ' disabled' : '') + '>' + (f.qi + 1 < f.qs.length ? 'Next question →' : 'Done · recap their answers') + '</button></div>';
+      out += '<div class="fm-auto"><button class="pbtn pbtn--sm pbtn--ghost" data-fm="back" type="button"' + (f.qi ? '' : ' disabled') + '>← Back</button><span>' + (mine != null ? 'Next question in a moment…' : 'Tap their answer · it moves on by itself') + '</span></div>';
       return out;
     }
     if (f.phase === 'recap') {
@@ -893,7 +895,7 @@ function pqtMain() {
     else if (d.qnext) qaNext(+d.qnext);
     else if (b.hasAttribute('data-qreveal')) qaReveal();
     else if (d.qclue) qaClue(+d.qclue);
-    else if (d.fm) { var fa = d.fm; if (fa === 'start') fmStartTeam(); else if (fa === 'nextq') fmNextQ(); else if (fa === 'recap') fmRecapNext(); else if (fa === 'afterrecap') fmAfterRecap(); else if (fa === 'finalnext') fmFinalNext(); else if (fa === 'back') { snap(); H.fm.last = null; if (H.fm.qi > 0) H.fm.qi--; push(); renderAll(); } }
+    else if (d.fm) { var fa = d.fm; if (fa === 'start') fmStartTeam(); else if (fa === 'nextq') fmNextQ(); else if (fa === 'recap') fmRecapNext(); else if (fa === 'afterrecap') fmAfterRecap(); else if (fa === 'finalnext') fmFinalNext(); else if (fa === 'back') { clearTimeout(fmAutoT); snap(); H.fm.last = null; if (H.fm.qi > 0) H.fm.qi--; push(); renderAll(); } }
     else if (d.fmp != null) fmPick(+d.fmp);
     else if (d.bd != null) bdAnswer(d.bd === '1');
     else if (d.qok != null) qaMark('ok', +d.qok);
