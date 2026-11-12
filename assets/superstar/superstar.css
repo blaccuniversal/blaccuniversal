@@ -50,7 +50,7 @@ svg{flex-shrink:0}
 @keyframes sway{50%{transform:rotate(-5deg)}}
 @media (prefers-reduced-motion:reduce){.home__mark{animation:none}}
 .logo{margin:0;line-height:0}
-.home__wm{width:clamp(250px,62vw,500px);max-width:100%;height:auto;display:block;margin:0 auto;transform:translateX(-2%)}
+.home__wm{width:clamp(280px,74vw,560px);max-width:100%;height:auto;display:block;margin:0 auto;transform:translateX(-2%)}
 .home__hero .btn{margin-top:8px;min-width:220px}
 .daily{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:20px;border:1px solid var(--bd2);border-radius:2px;background:var(--bg2);text-align:left;transition:border-color .2s}
 .daily:hover{border-color:#5a5a5a}

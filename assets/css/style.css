@@ -1344,7 +1344,7 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 /* Superstar project card */
 .proj__art--ss{background:radial-gradient(ellipse 55% 85% at 50% 115%,rgba(255,255,255,.08),transparent 70%)}
 .ss-art{display:flex;align-items:center;gap:clamp(12px,2.4vw,20px)}
-.proj__art img.ss-wm{width:auto;max-width:100%;height:clamp(60px,10vw,88px);margin-left:-2%}
+.proj__art img.ss-wm{width:auto;max-width:100%;height:clamp(50px,8.4vw,72px);margin-left:-2%}
 .ss-art b{font-size:clamp(36px,7vw,58px);font-weight:300;letter-spacing:-.04em;color:#fff;line-height:1}
 .proj--ss .proj__tag{color:#c9c9c9}
 
