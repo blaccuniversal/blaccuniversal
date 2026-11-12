@@ -540,10 +540,14 @@ function pqtMain() {
     lists.forEach(function (l) { l.innerHTML = html; });
   }
   function paintMenu() {
-    var ps0 = $('.hc-plansec'); if (ps0) ps0.hidden = H.round > 0;
+    var ps0 = $('.hc-plansec'); if (ps0) ps0.hidden = H.round > 0 && !H.ended;
+    var gs = $('[data-gsum]'); if (gs) gs.innerHTML = H.ended ? '<b>' + esc(H.title || 'Game night') + '</b><span>Game over · the winner is on the screen.</span>' : '<b>' + esc(H.title || 'Game night') + '</b><span>' + H.teams.length + ' teams · ' + H.plan.length + (H.plan.length === 1 ? ' round' : ' rounds') + ' · ' + H.plan.map(function (g) { return GNAME[g]; }).join(', ') + '</span>';
+    var gb = $('[data-gstart]'); if (gb) gb.hidden = !!H.ended;
+    var so = $('[data-setup-open]'); if (so) { so.textContent = H.ended ? 'Set up the next game' : 'Set up'; so.classList.toggle('pbtn--white', !!H.ended); }
+    var gt = $('[data-m-gtitle]'); if (gt) gt.textContent = H.title || 'This game';
     var n = nextPlanned(), b = $('[data-m-next]'), sb = $('[data-m-next-sub]');
-    if (b) b.textContent = n ? 'Start round ' + (H.round + 1) + ' of ' + H.plan.length : 'All rounds played · show winner';
-    if (sb) sb.textContent = n ? GNAME[n] + ' · from your game plan' : 'End the game with the podium.';
+    if (b) b.textContent = H.ended ? 'Game over · set up a new one' : n ? 'Start round ' + (H.round + 1) + ' of ' + H.plan.length : 'All rounds played · end game';
+    if (sb) sb.textContent = H.ended ? 'Name, teams and rounds for the next game.' : n ? GNAME[n] + ' · from your game plan' : 'Final scores and the winner on screen.';
     var ps = $('[data-m-plan-sub]'); if (ps) ps.textContent = H.plan.length + ' rounds · ' + H.plan.map(function (g) { return GNAME[g]; }).join(' → ');
   }
   function restartRound() {
@@ -555,7 +559,7 @@ function pqtMain() {
     H.view = 'intro'; push(); renderAll(); splash('Round ' + H.round, 'Restarted'); toast('Round ' + H.round + ' restarted');
   }
   function newGame() {
-    H.gameId = Date.now().toString(36);
+    H.gameId = Date.now().toString(36); H.ended = false;
     snap(); H.teams.forEach(function (t) { t.score = 0; }); H.round = 0; H.roundType = ''; H.ledger = []; H.paused = false;
     resetTally(); H.words.team = 0; H.timer.running = false; H.timer.remaining = H.timer.total;
     H.feud = { qi: 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
@@ -590,7 +594,7 @@ function pqtMain() {
     var hist = store('pqt_history') || [], rec = { id: H.gameId, at: Date.now(), title: H.title || 'Game night', rounds: H.round, games: H.plan.slice(0, H.round).map(function (g) { return GNAME[g]; }), teams: H.teams.map(function (t) { return { name: t.name, color: t.color, score: t.score }; }).sort(function (a, b) { return b.score - a.score; }) };
     hist = hist.filter(function (r) { return r.id !== rec.id; }); hist.unshift(rec); store('pqt_history', hist.slice(0, 40));
   }
-  function endGame() { snap(); saveResult(); H.timer.running = false; H.timer.remaining = timerLeft(); H.view = 'winner'; push(); renderAll(); fx('win'); toast('Winner on screen'); }
+  function endGame() { snap(); saveResult(); H.ended = true; H.timer.running = false; H.timer.remaining = timerLeft(); H.view = 'winner'; push(); renderAll(); fx('win'); toast('Winner on screen'); }
   function togglePause() { H.paused = !H.paused; push(); paintNow(); toast(H.paused ? 'Screen paused' : 'Screen resumed'); }
   function turnReady() { snap(); resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total; H.view = 'turn'; push(); renderAll(); }
   function turnStart() { snap(); if (H.view !== 'words') resetTally(); H.view = 'words'; H.timer.running = false; H.timer.remaining = H.timer.total; push(); timerStart(); renderAll(); }
@@ -627,6 +631,7 @@ function pqtMain() {
     var v = $('[data-now-view]'); if (!v) return;
     v.textContent = (H.paused ? 'Paused · ' : '') + (VIEWNAME[H.view] || H.view);
     if (H.view === 'qa') v.textContent = (H.paused ? 'Paused · ' : '') + (H.qa.mode === 'board' ? 'Number board' : GNAME[H.qa.type] + ' · ' + (H.qa.idx + 1) + ' of ' + ((QA[H.qa.type] || []).length));
+    if (H.ended) { v.textContent = 'Game over'; $('[data-now-round]').textContent = (H.title || 'Game night') + ' · winner on screen'; } else
     $('[data-now-round]').textContent = H.round ? 'Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[H.roundType] : H.plan.length + ' rounds planned · not started';
     var pb = $('[data-pause]'); pb.textContent = H.paused ? 'Resume screen' : 'Pause screen'; pb.classList.toggle('is-on', H.paused);
     var mp = $('[data-m-pause]'); if (mp) mp.textContent = H.paused ? 'Resume screen' : 'Pause screen';
@@ -637,7 +642,7 @@ function pqtMain() {
   var root = $('[data-host]');
   function renderAll() { renderViews(); renderTabs(); renderTab(); renderTeams(); paintTimer(); paintLink(); paintNow(); paintMenu(); renderPlan(); }
   function renderViews() { var gameV = ['words', 'answers', 'qa', 'intro', 'turn', 'turnend'].indexOf(H.view) > -1; $$('[data-view]').forEach(function (b) { var v = b.getAttribute('data-view'); b.classList.toggle('is-on', v === 'game' ? gameV : v === H.view); }); var gb = $('[data-view-game]'); if (gb) gb.textContent = H.roundType ? 'Game · ' + GNAME[H.roundType] : 'Game'; }
-  function paneOf() { return H.tab === 'quiz' && (H.roundType === 'words' || H.roundType === 'answers') ? H.roundType : H.tab; }
+  function paneOf() { if (H.ended && H.tab === 'quiz') return 'quiz'; return H.tab === 'quiz' && (H.roundType === 'words' || H.roundType === 'answers') ? H.roundType : H.tab; }
   function renderTabs() { var pn = paneOf(); $$('[data-tab]').forEach(function (b) { b.classList.toggle('is-on', b.getAttribute('data-tab') === H.tab); }); $$('[data-pane]').forEach(function (p) { p.hidden = p.getAttribute('data-pane') !== pn; }); }
   function teamOpts(sel) { return H.teams.map(function (t, i) { return '<option value="' + i + '"' + (i === sel ? ' selected' : '') + '>' + esc(t.name) + '</option>'; }).join(''); }
   function renderTeams() {
@@ -652,6 +657,7 @@ function pqtMain() {
   }
   function teamAward(lbl) { return '<div class="hc-row hc-award">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-qok="' + i + '"><i style="width:3px;height:14px;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '<button class="pbtn pbtn--sm pbtn--bad" data-qno>' + (lbl || 'Wrong') + '</button></div>'; }
   function renderQuiz() {
+    if (H.ended) return '<p class="hc-note" style="margin-top:0">This game is over. Set up the next one to keep playing.</p><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-setup-open type="button">Set up the next game</button>';
     var q = H.qa, type = QA_TYPES[H.roundType] ? H.roundType : '';
     if (!type) return '<p class="hc-note" style="margin-top:0">Start one of these rounds:</p><div class="hc-qstart">' + ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'talk'].map(function (t) { var n = t === 'words' ? WORDS.length : t === 'answers' ? BOARDS.length : (QA[t] || []).length; return '<button class="hc-mi" data-round="' + t + '" type="button"><b>' + GNAME[t] + '</b><span>' + n + ' in your cards</span></button>'; }).join('') + '</div>';
     var list = QA[type] || [], it = list[q.idx], out = '';
@@ -744,6 +750,13 @@ function pqtMain() {
     else if (b.hasAttribute('data-pause')) togglePause();
     else if (b.hasAttribute('data-menu-open')) { closeSheets(); $('[data-menu]').hidden = false; }
     else if (b.hasAttribute('data-menu-close') || b.hasAttribute('data-pick-close')) closeSheets();
+    else if (b.hasAttribute('data-setup-open')) openSetup(H.ended || H.round === 0);
+    else if (b.hasAttribute('data-su-add')) { if (SU.teams.length < 8) { var used = SU.teams.map(function (t) { return t.color; }); SU.teams.push({ name: 'Team ' + String.fromCharCode(65 + SU.teams.length), color: COLORS.filter(function (c) { return used.indexOf(c) < 0; })[0] || COLORS[0] }); paintSetup(); var ins = $$('[data-su-name]'); ins[ins.length - 1].select(); } }
+    else if (d.suDel != null) { if (SU.teams.length > 2) { SU.teams.splice(+d.suDel, 1); paintSetup(); } }
+    else if (d.suCol != null) { var tt = SU.teams[+d.suCol], usedC = SU.teams.map(function (x) { return x.color; }), ci = COLORS.indexOf(tt.color); for (var s2 = 1; s2 <= COLORS.length; s2++) { var nc = COLORS[(ci + s2) % COLORS.length]; if (usedC.indexOf(nc) < 0 || s2 === COLORS.length) { tt.color = nc; break; } } paintSetup(); }
+    else if (d.suN) { var nn = Math.max(1, Math.min(12, SU.plan.length + +d.suN)); if (!SU.fresh) nn = Math.max(nn, H.round || 1); var cyc = ['words', 'answers', 'names', 'spell', 'written', 'rapid']; while (SU.plan.length < nn) SU.plan.push(cyc[SU.plan.length % cyc.length]); SU.plan.length = nn; paintSetup(); }
+    else if (b.hasAttribute('data-su-go')) applySetup();
+    else if (b.hasAttribute('data-end-go')) { closeSheets(); endGame(); }
     else if (d.m) menuAct(d.m, b);
     else if (d.planN) { var n = Math.max(Math.max(1, H.round), Math.min(12, H.plan.length + +d.planN)); var cyc = ['words', 'answers', 'names', 'spell', 'written', 'rapid']; while (H.plan.length < n) H.plan.push(cyc[H.plan.length % cyc.length]); H.plan.length = n; push(); renderPlan(); paintMenu(); paintNow(); }
     else if (d.planI != null) { var k = +d.planI; if (k >= H.round) { var order = ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'talk']; H.plan[k] = order[(order.indexOf(H.plan[k]) + 1) % order.length]; push(); renderPlan(); paintMenu(); } }
@@ -779,12 +792,12 @@ function pqtMain() {
   });
   function closeSheets() { $$('.hc-sheet').forEach(function (s) { s.hidden = true; }); }
   function menuAct(m, b) {
-    if (m === 'newgame') { if (!confirmTwice(b.querySelector('b'))) return; closeSheets(); newGame(); }
+    if (m === 'newgame') { closeSheets(); openSetup(true); }
     else if (m === 'restart') { if (!confirmTwice(b.querySelector('b'))) return; closeSheets(); restartRound(); }
-    else if (m === 'next') { closeSheets(); goNext(); }
+    else if (m === 'next') { closeSheets(); if (H.ended) openSetup(true); else if (!nextPlanned()) openEnd(); else goNext(); }
     else if (m === 'pick') { closeSheets(); $('[data-pick-title]').textContent = 'Round ' + (H.round + 1); $('[data-pick]').hidden = false; }
     else if (m === 'plan') { closeSheets(); renderPlan(); $('[data-plan]').hidden = false; }
-    else if (m === 'end') { closeSheets(); endGame(); }
+    else if (m === 'end') { closeSheets(); openEnd(); }
     else if (m === 'pause') { closeSheets(); togglePause(); }
     else if (m === 'screen') { closeSheets(); var cs = $('[data-connect-sec]'); cs.dataset.force = '1'; cs.hidden = false; $('[data-codein]').focus(); window.scrollTo(0, 0); }
     else if (m === 'open') { closeSheets(); var w = window.open('/pqt/screen/', 'pqtscreen'); if (!w) location.href = '/pqt/screen/'; }
@@ -792,6 +805,43 @@ function pqtMain() {
     else if (m === 'lock') { try { localStorage.removeItem('pqt_pass'); } catch (e) {} location.reload(); }
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheets(); });
+  /* ---- setup + end sheets ---- */
+  var SU = null;
+  function inPlay() { return H.round > 0 && !H.ended && H.teams.some(function (t) { return t.score; }); }
+  function openSetup(fresh) {
+    SU = { fresh: !!fresh, title: H.title || '', teams: H.teams.map(function (t) { return { name: t.name, color: t.color }; }), plan: H.plan.slice() };
+    if (fresh && H.ended) SU.title = '';
+    $('[data-su-title]').value = SU.title;
+    var sv = $('[data-su-savewrap]'); sv.hidden = !(fresh && inPlay()); $('[data-su-save]').checked = true;
+    $('[data-su-go]').textContent = fresh || H.round === 0 ? 'Start new game' : 'Save setup';
+    $('[data-su-note]').textContent = fresh || H.round === 0 ? 'Scores start at 0 and the lobby goes up on the screen. Your cards and questions stay.' : 'Changes apply right away.';
+    paintSetup(); $('[data-setup]').hidden = false;
+  }
+  function paintSetup() {
+    $('[data-su-tn]').textContent = SU.teams.length + ' of 8';
+    $('[data-su-teams]').innerHTML = SU.teams.map(function (t, i) { return '<div class="hc-su__team"><button class="hc-su__sw" type="button" data-su-col="' + i + '" style="background:' + t.color + '" aria-label="Change colour"></button><input class="hc-input" data-su-name="' + i + '" value="' + esc(t.name) + '" maxlength="24" aria-label="Team name"><button class="pbtn pbtn--sm pbtn--ghost" type="button" data-su-del="' + i + '" aria-label="Remove team"' + (SU.teams.length <= 2 ? ' disabled' : '') + '>✕</button></div>'; }).join('');
+    $('[data-su-add]').disabled = SU.teams.length >= 8;
+    $('[data-su-count]').textContent = SU.plan.length;
+    var opts = ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'talk'];
+    $('[data-su-rounds]').innerHTML = SU.plan.map(function (g, i) { var locked = !SU.fresh && i < H.round; return '<label class="hc-su__round"><span>Round ' + (i + 1) + '</span><select class="hc-sel" data-su-r="' + i + '"' + (locked ? ' disabled' : '') + '>' + opts.map(function (o) { return '<option value="' + o + '"' + (o === g ? ' selected' : '') + '>' + GNAME[o] + '</option>'; }).join('') + '</select></label>'; }).join('');
+  }
+  function applySetup() {
+    var fresh = SU.fresh || H.round === 0;
+    if (fresh && SU.fresh && inPlay() && $('[data-su-save]').checked) saveResult();
+    snap();
+    H.title = (SU.title || '').trim() || 'Game night';
+    var old = H.teams; H.teams = SU.teams.map(function (t, i) { return { name: t.name.trim() || 'Team ' + String.fromCharCode(65 + i), color: t.color, score: fresh ? 0 : (old[i] ? old[i].score : 0) }; });
+    H.plan = SU.plan.slice();
+    var t0 = $('[data-title]'); if (t0) t0.value = H.title;
+    closeSheets();
+    if (fresh) newGame(); else { push(); renderAll(); toast('Setup saved'); }
+  }
+  function openEnd() {
+    var rows = H.teams.map(function (t) { return t; }).slice().sort(function (a, b) { return b.score - a.score; });
+    $('[data-end-sub]').textContent = (H.title || 'Game night') + ' · ' + H.round + ' of ' + H.plan.length + ' rounds played';
+    $('[data-end-list]').innerHTML = rows.map(function (t, i) { return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '</b><em>' + t.score + '</em></li>'; }).join('');
+    $('[data-endsheet]').hidden = false;
+  }
   function confirmTwice(b) {
     if (b.dataset.armed) { delete b.dataset.armed; b.textContent = b.dataset.label; return true; }
     b.dataset.label = b.textContent; b.dataset.armed = '1'; b.textContent = 'Tap again to confirm';
@@ -805,12 +855,14 @@ function pqtMain() {
     push(); renderTab();
   }
   root.addEventListener('input', function (e) {
+    var el0 = e.target; if (SU && el0.hasAttribute('data-su-title')) SU.title = el0.value; if (SU && el0.dataset.suName != null) SU.teams[+el0.dataset.suName].name = el0.value;
     var el = e.target;
     if (el.dataset.tname != null) { H.teams[+el.dataset.tname].name = el.value.slice(0, 28) || 'Team'; push(); }
     if (el.hasAttribute('data-codein')) el.value = cleanCode(el.value);
     if (el.hasAttribute('data-title')) { H.title = el.value.slice(0, 60); push(); }
   });
   root.addEventListener('change', function (e) {
+    if (SU && e.target.dataset.suR != null) SU.plan[+e.target.dataset.suR] = e.target.value;
     var el = e.target;
     if (el.hasAttribute('data-wteam')) { snap(); H.words.team = +el.value; push(); renderTab(); }
     if (el.hasAttribute('data-buzzcost')) { H.words.buzzCost = el.checked ? 1 : 0; save(); }

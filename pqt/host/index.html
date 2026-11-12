@@ -47,10 +47,9 @@
   <div class="hc-tabs" role="tablist"><button class="hc-tab" data-tab="teams" type="button">Teams</button><button class="hc-tab" data-tab="quiz" type="button">Game</button><button class="hc-tab" data-tab="cards" type="button">Cards</button></div>
 
   <section class="card hc-sec hc-plansec">
-    <h2>Rounds tonight</h2>
-    <div class="hc-plan__count"><span>Number of rounds</span><div class="hc-row"><button class="pbtn" data-plan-n="-1" type="button" aria-label="Fewer rounds">−</button><b data-plan-count>3</b><button class="pbtn" data-plan-n="1" type="button" aria-label="More rounds">+</button></div></div>
-    <ol class="hc-plan" data-plan-list></ol>
-    <p class="hc-note">Tap a round to switch its game. Also in Menu → Game plan.</p>
+    <h2>This game</h2>
+    <p class="hc-gsum" data-gsum></p>
+    <div class="hc-gbtns"><button class="pbtn pbtn--lg" data-setup-open type="button">Set up</button><button class="pbtn pbtn--white pbtn--lg" data-m="next" type="button" data-gstart>Start round 1 →</button></div>
   </section>
   <section class="card hc-sec" data-pane="teams">
     <h2>Teams &amp; scores <span class="hc-row"><button class="pbtn pbtn--sm pbtn--ghost" data-rmteam type="button">− Team</button><button class="pbtn pbtn--sm" data-addteam type="button">+ Team</button></span></h2>
@@ -84,18 +83,18 @@
     <div class="hc-sheet__bg" data-menu-close></div>
     <div class="hc-sheet__panel card">
       <div class="hc-sheet__head"><span class="eyebrow">Game menu</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Close</button></div>
-      <p class="hc-sheet__sub">Game</p>
-      <button class="hc-mi" data-m="newgame" type="button"><b>New game</b><span>Scores back to 0, round 1 next. Teams and cards stay.</span></button>
-      <button class="hc-mi" data-m="restart" type="button"><b>Restart this round</b><span>Undo this round’s points and start it again.</span></button>
+      <p class="hc-sheet__sub" data-m-gtitle>This game</p>
       <button class="hc-mi" data-m="next" type="button"><b data-m-next>Start next round</b><span data-m-next-sub>Follows your game plan.</span></button>
+      <button class="hc-mi" data-m="restart" type="button"><b>Restart this round</b><span>Undo this round’s points and start it again.</span></button>
+      <button class="hc-mi" data-m="pick" type="button"><b>Play a different game now</b><span>Swap the next round for any game.</span></button>
       <button class="hc-mi" data-m="plan" type="button"><b>Game plan</b><span data-m-plan-sub>How many rounds, and which game in each.</span></button>
-      <button class="hc-mi" data-m="pick" type="button"><b>Play a different game now</b><span>Pick any quiz game for the next round.</span></button>
-      <button class="hc-mi" data-m="end" type="button"><b>End game · show winner</b><span>Podium and confetti on the screen.</span></button>
+      <button class="hc-mi" data-m="end" type="button"><b>End game</b><span>Final scores, winner on screen, saved to the leaderboard.</span></button>
       <p class="hc-sheet__sub">Screen</p>
       <button class="hc-mi" data-m="pause" type="button"><b data-m-pause>Pause screen</b><span>Shows “Be right back” until you resume.</span></button>
       <button class="hc-mi" data-m="screen" type="button"><b>Change screen</b><span>Connect to a different screen code.</span></button>
       <button class="hc-mi" data-m="open" type="button"><b>Open screen on this device</b><span>For hosting and showing from one laptop.</span></button>
       <p class="hc-sheet__sub">Setup</p>
+      <button class="hc-mi" data-m="newgame" type="button"><b>New game</b><span>Name it, pick teams and rounds, then start fresh.</span></button>
       <button class="hc-mi" data-m="teams" type="button"><b>Teams &amp; scores</b><span>Names, colours, manual points.</span></button>
       <button class="hc-mi" data-m="cards" type="button"><b>Cards &amp; questions</b><span>Your words and survey boards.</span></button>
       <button class="hc-mi hc-mi--quiet" data-m="lock" type="button"><b>Lock this device</b><span>Asks for the pass again next time.</span></button>
@@ -121,6 +120,39 @@
       <div class="hc-plan__count"><span>Rounds</span><div class="hc-row"><button class="pbtn" data-plan-n="-1" type="button" aria-label="Fewer rounds">−</button><b data-plan-count>3</b><button class="pbtn" data-plan-n="1" type="button" aria-label="More rounds">+</button></div></div>
       <ol class="hc-plan" data-plan-list></ol>
       <p class="hc-note">Tap a round to switch its game. Played rounds are locked. The screen shows “Round 2 of 5” so everyone knows how far along you are.</p>
+    </div>
+  </div>
+  <div class="hc-sheet" data-setup hidden role="dialog" aria-modal="true" aria-label="Set up a game">
+    <div class="hc-sheet__bg" data-menu-close></div>
+    <div class="hc-sheet__panel card hc-setup">
+      <div class="hc-sheet__head"><span class="eyebrow">Set up a game</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Close</button></div>
+      <div class="hc-su">
+        <p class="hc-su__h"><span>01</span>Name</p>
+        <input class="hc-input" data-su-title maxlength="60" placeholder="Game night" aria-label="Game name">
+      </div>
+      <div class="hc-su">
+        <p class="hc-su__h"><span>02</span>Teams <em data-su-tn></em></p>
+        <div data-su-teams></div>
+        <button class="pbtn pbtn--sm hc-su__add" data-su-add type="button">+ Add team</button>
+      </div>
+      <div class="hc-su">
+        <p class="hc-su__h"><span>03</span>Rounds</p>
+        <div class="hc-plan__count"><span>Number of rounds</span><div class="hc-row"><button class="pbtn" data-su-n="-1" type="button" aria-label="Fewer rounds">−</button><b data-su-count>3</b><button class="pbtn" data-su-n="1" type="button" aria-label="More rounds">+</button></div></div>
+        <div data-su-rounds></div>
+      </div>
+      <label class="hc-su__save" data-su-savewrap hidden><input type="checkbox" data-su-save checked><span>Save the current game’s scores to the leaderboard first</span></label>
+      <button class="pbtn pbtn--white pbtn--lg pbtn--block" data-su-go type="button">Save setup</button>
+      <p class="hc-note" data-su-note>Scores go back to 0. Your cards and questions stay.</p>
+    </div>
+  </div>
+  <div class="hc-sheet" data-endsheet hidden role="dialog" aria-modal="true" aria-label="End game">
+    <div class="hc-sheet__bg" data-menu-close></div>
+    <div class="hc-sheet__panel card">
+      <div class="hc-sheet__head"><span class="eyebrow">End game</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Not yet</button></div>
+      <p class="hc-end__sub" data-end-sub></p>
+      <ol class="hc-end" data-end-list></ol>
+      <button class="pbtn pbtn--o pbtn--lg pbtn--block" data-end-go type="button">End game · show winner</button>
+      <p class="hc-note">The winner goes up on the screen and the scores are added to the leaderboard.</p>
     </div>
   </div>
   <div class="hc-toast" data-toast hidden></div>
