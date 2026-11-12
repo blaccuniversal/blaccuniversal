@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112061">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112171">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -63,6 +63,7 @@
     <details class="hc-cset"><summary><b>Spelling Bee</b><span data-cc="spell"></span></summary><p class="hc-note">One per line: <b>WORD | meaning | example sentence</b></p><textarea class="hc-input" data-qtxt="spell" spellcheck="false"></textarea></details>
     <details class="hc-cset"><summary><b>Written Round</b><span data-cc="written"></span></summary><p class="hc-note">The question, then the answer on the next line. Empty line between questions. For options, write them in the question as <b>[A] … [B] …</b>; for true or false, end the question with <b>True or false?</b> They show on their own lines.</p><textarea class="hc-input" data-qtxt="written" spellcheck="false"></textarea></details>
     <details class="hc-cset"><summary><b>Rapid Fire</b><span data-cc="rapid"></span></summary><p class="hc-note">The question, then the answer. Add <b>image: /path.png</b> on a third line to show a picture. Empty line between questions.</p><textarea class="hc-input" data-qtxt="rapid" spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>AlphaSum</b><span data-cc="alpha"></span></summary><p class="hc-note">One per line: <b>ANSWER | clue</b>. Add <b>| hard</b> to hide the word length. The numbers (A = 1 … Z = 26) are worked out for you.</p><textarea class="hc-input" data-qtxt="alpha" spellcheck="false" rows="10"></textarea></details>
     <details class="hc-cset"><summary><b>Discussion</b><span data-cc="talk"></span></summary><p class="hc-note">One topic per line.</p><textarea class="hc-input" data-qtxt="talk" spellcheck="false"></textarea></details>
     <div class="hc-row" style="margin-top:16px"><button class="pbtn pbtn--white" data-savecards type="button">Save cards</button><button class="pbtn pbtn--ghost pbtn--sm" data-samples type="button">Restore samples</button></div>
     <span data-ccount hidden></span>
@@ -92,6 +93,8 @@
       <button class="hc-mi" data-round="spell" type="button"><b>Spelling Bee</b><span>Pick a number, hear the word, one shot to spell it.</span></button>
       <button class="hc-mi" data-round="written" type="button"><b>Written Round</b><span>Ten questions, 10 seconds each. Answers revealed at the end.</span></button>
       <button class="hc-mi" data-round="rapid" type="button"><b>Rapid Fire</b><span>Pick a number, answer in 5 seconds.</span></button>
+      <button class="hc-mi" data-round="alpha" type="button"><b>AlphaSum</b><span>Crack the word from its number pattern and a clue. 30 seconds.</span></button>
+      <button class="hc-mi" data-round="star" type="button"><b>Superstar</b><span>One rapper per team. Follow the ball, land the rhyme. Judges score.</span></button>
       <button class="hc-mi" data-round="talk" type="button"><b>Discussion</b><span>A topic on screen. No points, just talk.</span></button>
     </div>
   </div>
@@ -136,11 +139,11 @@
   </div>
   <div class="hc-toast" data-toast hidden></div>
 </div>
-<script src="/assets/pqt/pqt-gate.js?v=261112061"></script>
+<script src="/assets/pqt/pqt-gate.js?v=261112171"></script>
 <script src="/assets/pqt/mqtt.min.js?v=5104"></script>
-<script src="/assets/pqt/peerjs.min.js?v=261112061"></script>
-<script src="/assets/pqt/pqt-data.js?v=261112061"></script>
-<script src="/assets/pqt/pqt.js?v=261112061"></script>
-<script src="/assets/pqt/pqt-offline.js?v=261112061"></script>
+<script src="/assets/pqt/peerjs.min.js?v=261112171"></script>
+<script src="/assets/pqt/pqt-data.js?v=261112171"></script>
+<script src="/assets/pqt/pqt.js?v=261112171"></script>
+<script src="/assets/pqt/pqt-offline.js?v=261112171"></script>
 </body>
 </html>
