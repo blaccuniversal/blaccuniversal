@@ -1,7 +1,7 @@
 /* PQT offline: keeps the game saved on this device so it opens and plays without internet */
-var CACHE = 'pqt-v3';
+var CACHE = 'pqt-v5';
 var CORE = ['/pqt/', '/pqt/host/', '/pqt/screen/',
-  '/assets/pqt/pqt.css', '/assets/pqt/pqt.js', '/assets/pqt/pqt-data.js', '/assets/pqt/pqt-gate.js', '/assets/pqt/pqt-home.js',
+  '/assets/pqt/pqt.css', '/assets/pqt/pqt.js', '/assets/pqt/pqt-data.js', '/assets/pqt/pqt-gate.js', '/assets/pqt/pqt-leaderboard.js', '/pqt/leaderboard/',
   '/assets/pqt/mqtt.min.js', '/assets/pqt/peerjs.min.js', '/assets/pqt/pqt-logo.png', '/assets/pqt/pqt-mark.png', '/assets/pqt/pqt-icon.png',
   '/assets/pqt/q/map-canada.png', '/assets/pqt/q/flag-wakanda.png', '/pqt/manifest.webmanifest'];
 function key(u) { u = new URL(u, self.location.href); if (u.origin === self.location.origin) u.search = ''; return u.href; }

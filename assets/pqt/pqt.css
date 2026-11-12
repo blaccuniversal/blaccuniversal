@@ -687,3 +687,28 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .hc-end li i{width:3px;height:16px}
 .hc-end li b{flex:1;font-weight:600}
 .hc-end li em{font-style:normal;font-family:var(--dot);font-weight:900;font-size:22px}
+/* leaderboard link + page */
+.pq-lblink{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 24px;color:#fff;text-decoration:none;transition:border-color .2s}
+.pq-lblink:hover{border-color:#3a3a3a}
+.pq-lblink__t{display:flex;flex-direction:column;gap:3px}
+.pq-lblink__t b{font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#cfcfcf}
+.pq-lblink__t span{font-size:13px;color:#7a7a7a}
+.pq-lblink svg{transition:transform .2s}
+.pq-lblink:hover svg{transform:translateX(3px)}
+.pq-lbtop{display:flex;align-items:center;justify-content:space-between;margin:0 0 4px}
+.pq-back{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:#cfcfcf;text-decoration:none;font-size:13px;letter-spacing:.04em}
+.pq-back:hover{color:#fff}
+.pq-lbmark{width:34px;height:auto;opacity:.9}
+.pq-lbh{margin:6px 0 10px;font-family:var(--sans);font-weight:300;font-size:clamp(34px,7vw,48px);letter-spacing:-.02em;line-height:1.05}
+/* host cleanup */
+button.hc-status{-webkit-appearance:none;appearance:none;background:transparent;border:1px solid transparent;border-radius:2px;padding:8px 10px;min-height:40px;font:inherit;font-size:12px;color:var(--mute);cursor:pointer}
+button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
+.hc-wset{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:12px 0}
+.hc-wset label{display:flex;align-items:center;gap:8px}
+.hc-wset span{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#7a7a7a}
+.hc-wset__t{display:flex;align-items:center;gap:4px}
+.hc-wset__t span{margin-right:4px}
+.hc-wset__t .pbtn.is-on{background:#fff;color:#000;border-color:#fff}
+.hc-wset__b{font-size:13px;color:#a8a8a8;margin-left:auto}
+.hc-wset__b input{accent-color:#fff}
+.hc-editteams{margin-top:14px}

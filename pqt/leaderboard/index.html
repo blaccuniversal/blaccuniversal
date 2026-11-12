@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://0.peerjs.com wss://0.peerjs.com wss://broker.hivemq.com:8884 wss://broker.emqx.io:8084; worker-src 'self' blob:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Leaderboard — PQT</title>
+<meta name="description" content="PQT: People, Quests & Triumphs. Trivia and game nights by BLACC Universal.">
+<meta name="theme-color" content="#0b0b0b">
+<link rel="manifest" href="/pqt/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/assets/pqt/pqt-icon.png">
+<link rel="apple-touch-icon" href="/assets/pqt/pqt-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112035">
+</head>
+<body>
+<div class="pq-land2">
+  <div class="pq-blur" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <header class="pq-top"><a class="pq-brand" href="/"><svg viewBox="0 0 563 418" aria-hidden="true"><g fill="#ffffff"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg><span>BLACC Universal</span></a><span class="eyebrow">Game night</span></header>
+  <main class="pq-board">
+    <div class="pq-lbtop"><a class="pq-back" href="/pqt/"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>PQT</a><img class="pq-lbmark" src="/assets/pqt/pqt-mark.png" alt="" width="371" height="400"></div>
+    <h1 class="pq-lbh">Leaderboard</h1>
+    <section class="pq-tile pq-stand" data-stand>
+      <div class="pq-stand__head"><h2>Standings</h2><span class="pq-stand__note">Points from finished games</span></div>
+      <div class="pq-seg" role="tablist" aria-label="Leaderboard period"><button type="button" role="tab" data-lb="all" class="is-on" aria-selected="true">All-time</button><button type="button" role="tab" data-lb="week" aria-selected="false">This week</button></div>
+      <div data-stand-list><p class="pq-stand__empty">No games played yet. When a host ends a game, the scores are added here.</p></div>
+      <p class="pq-stand__foot" data-stand-n></p>
+    </section>
+  </main>
+  <footer class="pq-foot">PQT · People, Quests &amp; Triumphs · by BLACC Universal</footer>
+</div>
+<script src="/assets/pqt/pqt-leaderboard.js?v=261112035"></script>
+<script src="/assets/pqt/pqt-offline.js?v=261112035"></script>
+</body>
+</html>

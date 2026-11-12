@@ -15,11 +15,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112034">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112035">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
-  <div class="hc-bar"><span class="hc-bar__title"><img class="pq-mark" src="/assets/pqt/pqt-mark.png" alt="PQT" width="371" height="400"></span><div class="hc-status" data-status><i></i><span>No screen</span></div><button class="pbtn pbtn--sm" data-undo type="button" aria-label="Undo last action">Undo</button><button class="pbtn pbtn--sm pbtn--white" data-menu-open type="button" aria-haspopup="dialog">Menu</button></div>
+  <div class="hc-bar"><span class="hc-bar__title"><img class="pq-mark" src="/assets/pqt/pqt-mark.png" alt="PQT" width="371" height="400"></span><button class="hc-status" data-status data-change type="button" aria-label="Screen connection"><i></i><span>No screen</span></button><button class="pbtn pbtn--sm" data-undo type="button" aria-label="Undo last action">Undo</button><button class="pbtn pbtn--sm pbtn--white" data-menu-open type="button" aria-haspopup="dialog">Menu</button></div>
   <div class="hc-now card" data-now><span class="hc-now__dot"></span><span class="hc-now__txt"><b data-now-view>Lobby</b><span data-now-round>No round yet</span></span><button class="pbtn pbtn--sm" data-pause type="button">Pause screen</button></div>
 
   <section class="card hc-sec" data-connect-sec>
@@ -34,15 +34,10 @@
 
   <section class="card hc-sec">
     <h2>On the screen now</h2>
-    <div class="hc-views"><button class="pbtn" data-view="lobby" type="button">Lobby</button><button class="pbtn" data-view="scores" type="button">Scores</button><button class="pbtn" data-view="ranking" type="button">Ranking</button><button class="pbtn" data-view="winner" type="button">Winner</button></div>
+    <div class="hc-views" style="grid-template-columns:repeat(3,1fr)"><button class="pbtn" data-view="lobby" type="button">Lobby</button><button class="pbtn" data-view="scores" type="button">Scores</button><button class="pbtn" data-view="ranking" type="button">Ranking</button></div>
     <div class="hc-views" style="margin-top:6px;grid-template-columns:1fr"><button class="pbtn" data-view="game" data-view-game type="button">Game</button></div>
   </section>
 
-  <section class="card hc-sec">
-    <h2>Timer</h2>
-    <div class="timer"><span class="timer__num" data-tnum>60</span><button class="pbtn pbtn--o pbtn--lg hc-grow" data-tgo type="button">Start</button><button class="pbtn pbtn--lg" data-treset type="button">Reset</button></div>
-    <div class="hc-tpre"><button class="pbtn pbtn--sm" data-tset="30000" type="button">30s</button><button class="pbtn pbtn--sm" data-tset="60000" type="button">60s</button><button class="pbtn pbtn--sm" data-tset="90000" type="button">90s</button><button class="pbtn pbtn--sm" data-tset="120000" type="button">2m</button><button class="pbtn pbtn--sm pbtn--ghost" data-tadd="-10000" type="button">−10</button><button class="pbtn pbtn--sm pbtn--ghost" data-tadd="10000" type="button">+10</button></div>
-  </section>
 
   <div class="hc-tabs" role="tablist"><button class="hc-tab" data-tab="teams" type="button">Teams</button><button class="hc-tab" data-tab="quiz" type="button">Game</button><button class="hc-tab" data-tab="cards" type="button">Cards</button></div>
 
@@ -52,11 +47,11 @@
     <div class="hc-gbtns"><button class="pbtn pbtn--lg" data-setup-open type="button">Set up</button><button class="pbtn pbtn--white pbtn--lg" data-m="next" type="button" data-gstart>Start round 1 →</button></div>
   </section>
   <section class="card hc-sec" data-pane="teams">
-    <h2>Teams &amp; scores <span class="hc-row"><button class="pbtn pbtn--sm pbtn--ghost" data-rmteam type="button">− Team</button><button class="pbtn pbtn--sm" data-addteam type="button">+ Team</button></span></h2>
+    <h2>Scores</h2>
     <div data-teams></div>
-    <div class="hc-row" style="margin-top:14px"><input class="hc-input hc-grow" data-title aria-label="Event name shown in the lobby" placeholder="Event name"><button class="pbtn pbtn--sm pbtn--bad" data-zero type="button">Reset scores</button></div>
+    <button class="pbtn pbtn--sm hc-editteams" data-setup-edit type="button">Edit teams &amp; name</button>
   </section>
-  <section class="card hc-sec" data-pane="words" hidden><h2>All Except These Ones</h2><div data-wpane></div><p class="hc-note">The clue giver describes the word without saying it or any word on the list. The screen shows the timer and the tally; each word appears there only after it’s been played.</p></section>
+  <section class="card hc-sec" data-pane="words" hidden><h2>All Except These Ones</h2><div data-wpane></div></section>
   <section class="card hc-sec" data-pane="answers" hidden><h2>Quests Feud</h2><div data-fpane></div></section>
   <section class="card hc-sec" data-pane="quiz" hidden><h2>Games</h2><div data-qpane></div></section>
   <section class="card hc-sec" data-pane="cards" hidden>
@@ -86,17 +81,10 @@
       <p class="hc-sheet__sub" data-m-gtitle>This game</p>
       <button class="hc-mi" data-m="next" type="button"><b data-m-next>Start next round</b><span data-m-next-sub>Follows your game plan.</span></button>
       <button class="hc-mi" data-m="restart" type="button"><b>Restart this round</b><span>Undo this round’s points and start it again.</span></button>
-      <button class="hc-mi" data-m="pick" type="button"><b>Play a different game now</b><span>Swap the next round for any game.</span></button>
       <button class="hc-mi" data-m="plan" type="button"><b>Game plan</b><span data-m-plan-sub>How many rounds, and which game in each.</span></button>
       <button class="hc-mi" data-m="end" type="button"><b>End game</b><span>Final scores, winner on screen, saved to the leaderboard.</span></button>
-      <p class="hc-sheet__sub">Screen</p>
-      <button class="hc-mi" data-m="pause" type="button"><b data-m-pause>Pause screen</b><span>Shows “Be right back” until you resume.</span></button>
-      <button class="hc-mi" data-m="screen" type="button"><b>Change screen</b><span>Connect to a different screen code.</span></button>
-      <button class="hc-mi" data-m="open" type="button"><b>Open screen on this device</b><span>For hosting and showing from one laptop.</span></button>
       <p class="hc-sheet__sub">Setup</p>
       <button class="hc-mi" data-m="newgame" type="button"><b>New game</b><span>Name it, pick teams and rounds, then start fresh.</span></button>
-      <button class="hc-mi" data-m="teams" type="button"><b>Teams &amp; scores</b><span>Names, colours, manual points.</span></button>
-      <button class="hc-mi" data-m="cards" type="button"><b>Cards &amp; questions</b><span>Your words and survey boards.</span></button>
       <button class="hc-mi hc-mi--quiet" data-m="lock" type="button"><b>Lock this device</b><span>Asks for the pass again next time.</span></button>
     </div>
   </div>
@@ -157,11 +145,11 @@
   </div>
   <div class="hc-toast" data-toast hidden></div>
 </div>
-<script src="/assets/pqt/pqt-gate.js?v=261112034"></script>
+<script src="/assets/pqt/pqt-gate.js?v=261112035"></script>
 <script src="/assets/pqt/mqtt.min.js?v=5104"></script>
-<script src="/assets/pqt/peerjs.min.js?v=261112034"></script>
-<script src="/assets/pqt/pqt-data.js?v=261112034"></script>
-<script src="/assets/pqt/pqt.js?v=261112034"></script>
-<script src="/assets/pqt/pqt-offline.js?v=261112034"></script>
+<script src="/assets/pqt/peerjs.min.js?v=261112035"></script>
+<script src="/assets/pqt/pqt-data.js?v=261112035"></script>
+<script src="/assets/pqt/pqt.js?v=261112035"></script>
+<script src="/assets/pqt/pqt-offline.js?v=261112035"></script>
 </body>
 </html>
