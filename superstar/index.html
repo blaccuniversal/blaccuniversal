@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Superstar · Freestyle on beat</title>
+<meta name="description" content="Superstar by BLACC Universal. Pick a beat, follow the ball, land your rhymes on the beat. A freestyle rap trainer with a built-in rhyme dictionary.">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="/superstar/manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="/superstar/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/superstar/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Superstar">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta property="og:title" content="Superstar · Freestyle on beat">
+<meta property="og:description" content="Pick a beat, follow the ball, land your rhymes on the beat.">
+<meta property="og:image" content="https://blaccuniversal.com/superstar/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/superstar/superstar.css?v=1">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="star" viewBox="0 0 100 100"><path d="M50 3l13.2 33.6 36 2.3-27.8 23 9 35L50 77.6 19.6 96.9l9-35L.8 38.9l36-2.3z"/></symbol>
+  <symbol id="blacc" viewBox="0 0 563 418"><g><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></symbol>
+</svg>
+
+<!-- ============ HOME ============ -->
+<section class="scr" data-scr="home">
+  <header class="top">
+    <a class="top__brand" href="/projects/" aria-label="BLACC Universal projects"><svg><use href="#blacc"/></svg><span>BLACC Universal</span></a>
+    <button class="ghost-ic" data-open="help" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg></button>
+  </header>
+  <main class="home wrap">
+    <div class="home__hero">
+      <svg class="home__star"><use href="#star"/></svg>
+      <h1 class="logo">Superstar</h1>
+      <p class="lead">Freestyle on beat. Follow the ball, land the rhyme.</p>
+      <button class="btn btn--big" data-go="setup">Start freestyle <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+
+    <button class="daily" data-daily>
+      <span class="daily__l">
+        <span class="eyebrow">Daily set · <span data-daily-date></span></span>
+        <b data-daily-title>16 bars on today's beat</b>
+        <span class="daily__s" data-daily-sub>Same words for everyone today.</span>
+      </span>
+      <span class="daily__r"><span class="streak" data-streak><svg><use href="#star"/></svg><b>0</b></span><span class="daily__go">Play</span></span>
+    </button>
+
+    <div class="tiles">
+      <button class="tile" data-go="dict"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2v0a2 2 0 0 0 2 2h13"/><path d="M9 8h6M9 12h4"/></svg><b>Rhyme dictionary</b><span>Find perfect and near rhymes</span></button>
+      <button class="tile" data-go="word"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.2" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/></svg><b>Random word</b><span>A word and its rhymes to warm up</span></button>
+      <button class="tile" data-open="help"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M10 8.5l5 3.5-5 3.5z" fill="currentColor"/></svg><b>How to play</b><span>Levels, the ball and tips</span></button>
+    </div>
+
+    <dl class="stats" data-stats>
+      <div><dt>Day streak</dt><dd data-st="streak">0</dd></div>
+      <div><dt>Sessions</dt><dd data-st="sessions">0</dd></div>
+      <div><dt>Bars rapped</dt><dd data-st="bars">0</dd></div>
+      <div><dt>Best streak</dt><dd data-st="best">0</dd></div>
+    </dl>
+    <p class="foot">A BLACC Universal project · <a href="/projects/">More projects</a></p>
+  </main>
+</section>
+
+<!-- ============ SETUP ============ -->
+<section class="scr" data-scr="setup" hidden>
+  <header class="top">
+    <button class="back" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span>Home</span></button>
+    <span class="top__title">New session</span>
+    <span class="top__sp"></span>
+  </header>
+  <main class="setup wrap">
+    <section class="blk">
+      <h2 class="eyebrow">Beat</h2>
+      <div class="beats" data-beats></div>
+      <div class="tempo">
+        <div class="tempo__row">
+          <label for="bpm">Tempo</label>
+          <output data-bpm-out>80 BPM</output>
+        </div>
+        <div class="tempo__row">
+          <input id="bpm" type="range" min="55" max="120" step="1" value="80" data-bpm>
+          <button class="btn btn--ghost btn--sm" data-tap>Tap</button>
+          <button class="btn btn--ghost btn--sm" data-bpm-reset>Reset</button>
+        </div>
+      </div>
+      <div class="mix" data-mix>
+        <button class="chip is-on" data-mixk="drums">Drums</button>
+        <button class="chip is-on" data-mixk="keys">Keys</button>
+        <button class="chip is-on" data-mixk="bass">Bass</button>
+        <button class="chip is-on" data-mixk="vinyl">Vinyl</button>
+      </div>
+    </section>
+
+    <section class="blk">
+      <h2 class="eyebrow">Level</h2>
+      <div class="levels" data-levels></div>
+    </section>
+
+    <section class="blk">
+      <h2 class="eyebrow">Length</h2>
+      <div class="seg" data-lens></div>
+    </section>
+
+    <section class="blk">
+      <h2 class="eyebrow">Options</h2>
+      <div class="opts">
+        <label class="opt"><span><b>Record video</b><small>Films you with sound and the beat. Saved on your device only.</small></span><input type="checkbox" data-opt="rec"><i></i></label>
+        <label class="opt"><span><b>Count-in</b><small>One bar of 1-2-3-4 before the words start.</small></span><input type="checkbox" data-opt="countin" checked><i></i></label>
+        <label class="opt"><span><b>Bouncing ball</b><small>Shows each beat and where the rhyme lands.</small></span><input type="checkbox" data-opt="ball" checked><i></i></label>
+        <label class="opt"><span><b>Show hidden words after</b><small>Reveal a suggested rhyme once the bar has passed.</small></span><input type="checkbox" data-opt="reveal" checked><i></i></label>
+      </div>
+    </section>
+
+    <div class="setup__go">
+      <button class="btn btn--big btn--full" data-start>Start <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </main>
+</section>
+
+<!-- ============ PLAY ============ -->
+<section class="scr scr--play" data-scr="play" hidden>
+  <video class="cam" data-cam playsinline muted autoplay hidden></video>
+  <header class="ptop">
+    <button class="ghost-ic" data-stop aria-label="Stop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div class="ptop__mid"><span data-p-bar>Bar 1 / 16</span><span class="dot-sep">·</span><span data-p-bpm>80 BPM</span><span class="rec" data-p-rec hidden><i></i>REC</span></div>
+    <span class="ptop__lvl" data-p-lvl>Beginner</span>
+  </header>
+  <div class="prompt" data-prompt>
+    <div class="rows" data-rows></div>
+    <div class="nowline" aria-hidden="true"></div>
+    <div class="ball" data-ball aria-hidden="true"></div>
+  </div>
+  <div class="count" data-count hidden></div>
+  <div class="pfoot"><div class="beatbar" data-beatbar><i></i><i></i><i></i><i></i></div></div>
+</section>
+
+<!-- ============ RESULTS ============ -->
+<section class="scr" data-scr="done" hidden>
+  <header class="top"><span class="top__sp"></span><span class="top__title">Session complete</span><span class="top__sp"></span></header>
+  <main class="done wrap">
+    <svg class="done__star"><use href="#star"/></svg>
+    <h1 class="h1" data-d-title>Nice run.</h1>
+    <p class="lead" data-d-sub></p>
+    <dl class="stats stats--done" data-d-stats></dl>
+    <div class="vid" data-vid hidden>
+      <video data-vid-el playsinline controls></video>
+      <div class="vid__btns"><button class="btn" data-vid-save>Save video</button><span class="vid__note" data-vid-note></span></div>
+    </div>
+    <div class="words" data-d-words></div>
+    <div class="done__btns">
+      <button class="btn btn--big" data-again>Go again</button>
+      <button class="btn btn--ghost btn--big" data-go="setup">Change settings</button>
+      <button class="btn btn--ghost btn--big" data-go="home">Home</button>
+    </div>
+  </main>
+</section>
+
+<!-- ============ DICTIONARY ============ -->
+<section class="scr" data-scr="dict" hidden>
+  <header class="top">
+    <button class="back" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span>Home</span></button>
+    <span class="top__title">Rhyme dictionary</span><span class="top__sp"></span>
+  </header>
+  <main class="dict wrap">
+    <form class="search" data-dsearch>
+      <input type="search" placeholder="Type a word" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="search" aria-label="Word to rhyme" data-dq>
+      <button class="btn" type="submit">Find</button>
+    </form>
+    <div data-dres><p class="muted">Type a word to see what rhymes with it. Tap any result to look it up.</p></div>
+  </main>
+</section>
+
+<!-- ============ RANDOM WORD ============ -->
+<section class="scr" data-scr="word" hidden>
+  <header class="top">
+    <button class="back" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span>Home</span></button>
+    <span class="top__title">Random word</span><span class="top__sp"></span>
+  </header>
+  <main class="rword wrap">
+    <p class="eyebrow">Rhyme with</p>
+    <div class="rword__w" data-rw>flow</div>
+    <div class="rword__list" data-rwl></div>
+    <div class="rword__btns">
+      <button class="btn btn--big" data-rw-next>New word</button>
+      <button class="btn btn--ghost btn--big" data-rw-dict>All rhymes</button>
+    </div>
+  </main>
+</section>
+
+<!-- ============ HELP SHEET ============ -->
+<div class="sheet" data-sheet="help" hidden>
+  <div class="sheet__bg" data-close></div>
+  <div class="sheet__in" role="dialog" aria-modal="true" aria-labelledby="help-h">
+    <button class="ghost-ic sheet__x" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <p class="eyebrow">How to play</p>
+    <h2 class="h2" id="help-h">Rap a line every bar</h2>
+    <ol class="steps">
+      <li><b>Pick a beat.</b> Choose one of the built-in beats, set the tempo, or tap your own.</li>
+      <li><b>Follow the ball.</b> It bounces on every beat. Four beats make one bar, and each bar is one line.</li>
+      <li><b>Land the rhyme.</b> The word sits on beat 4. Say whatever you like on beats 1 to 3, then hit the word as the ball lands on it.</li>
+    </ol>
+    <h3 class="eyebrow">Levels</h3>
+    <ul class="lvls">
+      <li><b>Freestyle</b><span>No words. Just you, the beat and the bars.</span></li>
+      <li><b>Beginner</b><span>Every rhyme shown, in pairs (AABB).</span></li>
+      <li><b>Intermediate</b><span>Only the first word of each pair. You find the rhyme.</span></li>
+      <li><b>Advanced</b><span>Only the second word. Set it up so your first line rhymes into it.</span></li>
+      <li><b>Expert</b><span>Four bars on one sound (AAAA). Only the last word is shown.</span></li>
+    </ul>
+    <h3 class="eyebrow">Tips</h3>
+    <ul class="tips">
+      <li>Use headphones when recording, so your mic only picks up your voice.</li>
+      <li>Start slow. Drop the tempo until landing every word feels easy, then speed up.</li>
+      <li>Play the daily set to keep your streak going.</li>
+    </ul>
+  </div>
+</div>
+
+<div class="toast" data-toast hidden></div>
+
+<script src="/assets/superstar/beat.js?v=1" defer></script>
+<script src="/assets/superstar/superstar.js?v=1" defer></script>
+</body>
+</html>
