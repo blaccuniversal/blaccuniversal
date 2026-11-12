@@ -642,3 +642,4 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .pq-stand__foot:empty{display:none}
 .pq-stand [data-stand-list]{width:100%;align-self:stretch}.pq-stand__head{width:100%;align-self:stretch}.pq-lb{width:100%}
 .pq-lb{grid-template-columns:2.4ch minmax(0,1fr) 5ch 7ch;border-radius:0}.pq-lb--head{letter-spacing:.12em}
+.pq-off{margin:6px 0 0;text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6a6a6a;display:flex;align-items:center;justify-content:center;gap:8px}.pq-off i{width:6px;height:6px;border-radius:50%;background:#4ade80}.pq-off[hidden]{display:none}
