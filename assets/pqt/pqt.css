@@ -364,3 +364,5 @@ body[data-locked] .hc,body[data-locked] .sc,body[data-locked] .sc-tap{display:no
 .hc-plan__r.is-done{opacity:.45}
 .hc-flow .hc-row{gap:6px;flex-wrap:nowrap}
 .sc-lobby__rounds{margin:1.6vh 0 0;font-family:var(--dot);font-weight:900;font-size:3vh;letter-spacing:.2em;text-transform:uppercase;color:var(--o2)}
+.pq-board__top{grid-template-columns:1fr}
+.pq-tile--title{min-height:210px}
