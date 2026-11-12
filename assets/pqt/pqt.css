@@ -918,3 +918,11 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-homebtn{margin:0 auto;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 10px;font-size:12px;letter-spacing:.04em;color:#9a9a9a;text-decoration:none;border:1px solid transparent;border-radius:2px}
 .hc-homebtn:hover{color:#fff;border-color:#2a2a2a}
 .hc-bar .hc-status{margin-left:0}
+/* formula: math look */
+.lb .lb-math,.lb .lb-math *{font-family:"Cambria Math","STIX Two Math","Latin Modern Math","Times New Roman",Times,serif!important}
+.lb-fx summary{align-items:center}
+.lb-fx summary .lb-fxl{display:inline!important;font-style:italic;font-size:22px;color:#e6e6e6;font-weight:400}
+.lb-fx summary b.lb-math{font-size:18px;font-weight:400;letter-spacing:.01em;color:#e6e6e6}
+.lb-math var{font-style:italic}
+.lb-fx dt.lb-math{font-size:17px;font-weight:400}
+.lb-season{margin:0 0 14px}.lb-h{margin:0 0 10px;line-height:1}

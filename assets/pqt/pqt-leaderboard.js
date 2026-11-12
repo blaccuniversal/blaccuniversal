@@ -57,11 +57,11 @@
       if (mode === 'all') {
         body.innerHTML = '<p class="lb-sub"><span>After Gameweek ' + C.after + '</span></p>' +
           '<ol class="lb-list">' + C.rows.map(function (t, i) { return '<li class="lb-row' + (i === 0 ? ' is-top' : '') + '"><span class="lb-n">' + t.rank + '</span><span class="lb-t">' + esc(t.name) + '</span>' + moveHtml(t) + '<b class="lb-p">' + f2(t.total) + '</b></li>'; }).join('') + '</ol>' +
-          '<details class="lb-fx"><summary><span>Weekly score</span><b>W = (P × B) + (S × 0.25)</b><em>How it works</em></summary><dl>' +
-          '<div><dt>P</dt><dd>Raw points the team earned that week.</dd></div>' +
-          '<div><dt>B</dt><dd>Entry boost for teams that join late: 1 + weeks missed ÷ ' + (S.length || 12) + '. Only on a team’s first week.</dd></div>' +
-          '<div><dt>S</dt><dd>Weeks in a row the team has played. Each one adds 0.25. Missing a week resets it.</dd></div>' +
-          '<div><dt>W</dt><dd>The week’s score, added to the season total. Absent teams get 0 but stay on the board.</dd></div></dl></details>' +
+          '<details class="lb-fx"><summary><i class="lb-math lb-fxl">fx</i><b class="lb-math"><var>W</var> = (<var>P</var> × <var>B</var>) + (<var>S</var> × 0.25)</b><em>How it works</em></summary><dl>' +
+          '<div><dt class="lb-math"><var>P</var></dt><dd>Raw points the team earned that week.</dd></div>' +
+          '<div><dt class="lb-math"><var>B</var></dt><dd>Entry boost for teams that join late: 1 + weeks missed ÷ ' + (S.length || 12) + '. Only on a team’s first week.</dd></div>' +
+          '<div><dt class="lb-math"><var>S</var></dt><dd>Weeks in a row the team has played. Each one adds 0.25. Missing a week resets it.</dd></div>' +
+          '<div><dt class="lb-math"><var>W</var></dt><dd>The week’s score, added to the season total. Absent teams get 0 but stay on the board.</dd></div></dl></details>' +
           (C.missing.length ? '<p class="lb-warn">Streak history missing for ' + esc(C.missing.join(', ')) + '. Their bonus is counted from this week.</p>' : '');
       } else {
         var w = weeks.filter(function (x) { return x.week === wk; })[0];
