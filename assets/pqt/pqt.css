@@ -836,3 +836,4 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .lb-row--gw.is-top .lb-n{align-self:start;padding-top:2px}
 .lb-row--gw.is-top{align-items:start}.lb-row--gw.is-top .lb-p{padding-top:1px}
 .sc-score{justify-content:flex-start;gap:1vh}.sc-score__pts{margin-top:auto}.sc-score__bd{justify-content:flex-start;margin-top:2vh;padding-top:1.6vh;border-top:1px solid #1f1f1f}.sc-score__x{margin-top:0}
+.pq-board--home{margin-top:auto;margin-bottom:auto;padding:clamp(12px,4vh,48px) 0}.pq-board--home .pq-lblink{margin-top:8px}@media (min-width:700px){.pq-board--home{width:min(88vw,640px)}}
