@@ -414,7 +414,7 @@
       if (n && n.w) { c.font = '600 ' + (34 * unit) + 'px "Open Sans",sans-serif'; c.fillStyle = 'rgba(255,255,255,.55)'; c.fillText(n.show ? n.w : '_____', W / 2, H - 215 * unit); }
     }
     c.textAlign = 'left'; c.font = '600 ' + (22 * unit) + 'px "Open Sans",sans-serif'; c.fillStyle = 'rgba(255,255,255,.85)';
-    c.fillText('★ SUPERSTAR', 28 * unit, 50 * unit);
+    c.fillText('SUPERSTAR', 28 * unit, 50 * unit);
     c.textAlign = 'right'; c.fillStyle = 'rgba(255,255,255,.6)';
     c.fillText(presetById(session.preset).name + ' · ' + session.bpm + ' BPM', W - 28 * unit, 50 * unit);
   }

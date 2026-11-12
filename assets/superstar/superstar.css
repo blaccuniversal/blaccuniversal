@@ -46,9 +46,9 @@ svg{flex-shrink:0}
 /* home */
 .home{flex:1;display:flex;flex-direction:column;gap:28px;padding-top:clamp(32px,7vh,72px);padding-bottom:32px}
 .home__hero{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
-.home__star{width:44px;height:44px;fill:var(--acc);margin-bottom:6px;animation:spin 14s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.home__star{animation:none}}
+.home__mark{width:auto;height:clamp(96px,16vh,150px);margin:0 0 4px;animation:sway 6s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes sway{50%{transform:rotate(-5deg)}}
+@media (prefers-reduced-motion:reduce){.home__mark{animation:none}}
 .logo{margin:0;font-size:clamp(48px,11vw,96px);font-weight:300;letter-spacing:-.04em;line-height:.95}
 .home__hero .btn{margin-top:10px}
 .daily{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;padding:20px;border:1px solid var(--bd2);border-radius:2px;background:var(--bg2);text-align:left;transition:border-color .2s}
@@ -166,7 +166,7 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 
 /* done */
 .done{display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding-top:36px;padding-bottom:40px}
-.done__star{width:40px;height:40px;fill:var(--acc)}
+.done__mark{width:auto;height:84px}
 .stats--done{width:100%;grid-template-columns:repeat(4,1fr)}
 .done__btns{display:flex;flex-wrap:wrap;gap:10px;width:100%;margin-top:6px}
 .words{display:flex;flex-wrap:wrap;gap:6px}
