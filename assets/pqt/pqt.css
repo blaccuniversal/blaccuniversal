@@ -602,3 +602,26 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .hc-now__txt span{line-height:1.4}
 .hc>.hc-now{margin-bottom:14px}
 .hc-fin{margin:6px 0 4px}
+/* home standings */
+.pq-stand{background:#050505;padding:22px 26px}
+.pq-stand__head{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 6px}
+.pq-stand__head h2{margin:0;font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#7a7a7a}
+.pq-stand__head span{font-size:12px;color:#5a5a5a}
+.pq-stand__empty{margin:10px 0 4px;font-size:13px;line-height:1.55;color:#7a7a7a}
+.pq-game{border-top:1px solid #161616}
+.pq-game:first-child{border-top:0}
+.pq-game summary{list-style:none;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 0;cursor:pointer}
+.pq-game summary::-webkit-details-marker{display:none}
+.pq-game__d{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--o2);white-space:nowrap}
+.pq-game__t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pq-game__t b{font-weight:500;font-size:14px;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pq-game__t span{font-size:12px;color:#7a7a7a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pq-game__w{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;white-space:nowrap}
+.pq-game__w i,.pq-rank i{width:3px;height:14px;flex:none}
+.pq-rank{list-style:none;margin:0 0 14px;padding:0}
+.pq-rank li{display:flex;align-items:center;gap:12px;padding:9px 0;border-top:1px solid #111;font-size:14px}
+.pq-rank__n{font-family:var(--dot);font-weight:900;color:#5a5a5a;width:2ch}
+.pq-rank li:first-child .pq-rank__n{color:var(--o2)}
+.pq-rank__name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pq-rank b{font-family:var(--dot);font-weight:900;font-size:18px}
+@media (max-width:520px){.pq-stand{padding:18px 18px}.pq-game summary{grid-template-columns:minmax(0,1fr) auto}.pq-game__d{grid-column:1/-1}}

@@ -68,7 +68,7 @@ function pqtMain() {
   function blocks(txt) { return String(txt || '').split(/\n\s*\n/).map(function (b) { return b.split('\n').map(function (l) { return l.trim(); }).filter(Boolean); }).filter(function (b) { return b.length; }); }
   function parseNames(txt) { return blocks(txt).map(function (b) { return { a: b[0], clues: b.slice(1) }; }).filter(function (x) { return x.clues.length; }); }
   function parseSpell(txt) { return String(txt || '').split('\n').map(function (l) { var p = l.split('|').map(function (s) { return s.trim(); }); return p[0] ? { w: p[0].toUpperCase(), d: p[1] || '', e: p[2] || '' } : null; }).filter(Boolean); }
-  function parseQA(txt) { return blocks(txt).map(function (b) { var img = ''; b = b.filter(function (l) { var m = l.match(/^image:\s*(\S+)/i); if (m) { img = m[1]; return false; } return true; }); return b.length ? { q: b[0], a: b[1] || '', img: img } : null; }).filter(Boolean); }
+  function parseQA(txt) { return blocks(txt).map(function (b) { var img = ''; b = b.filter(function (l) { var m = l.match(/^image:\s*(\S+)/i); if (m) { img = m[1]; return false; } return true; }); var qs = [b[0]], r = 1; while (r < b.length - 1 && (/^\[[A-H]\]/.test(b[r]) || /^true or false\??$/i.test(b[r]))) qs.push(b[r++]); return b.length ? { q: qs.join(' '), a: b[r] || '', img: img } : null; }).filter(Boolean); }
   function parseTalk(txt) { return String(txt || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean); }
   function qSplit(s) {
     s = String(s || ''); var o = { stem: s, opts: [], tf: false };
@@ -555,6 +555,7 @@ function pqtMain() {
     H.view = 'intro'; push(); renderAll(); splash('Round ' + H.round, 'Restarted'); toast('Round ' + H.round + ' restarted');
   }
   function newGame() {
+    H.gameId = Date.now().toString(36);
     snap(); H.teams.forEach(function (t) { t.score = 0; }); H.round = 0; H.roundType = ''; H.ledger = []; H.paused = false;
     resetTally(); H.words.team = 0; H.timer.running = false; H.timer.remaining = H.timer.total;
     H.feud = { qi: 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
@@ -584,7 +585,12 @@ function pqtMain() {
     H.timer.running = false; H.timer.remaining = timerLeft(); push(); renderAll();
   }
   function qaBoard() { snap(); H.qa.mode = 'board'; H.timer.running = false; H.view = 'qa'; push(); renderAll(); }
-  function endGame() { snap(); H.timer.running = false; H.timer.remaining = timerLeft(); H.view = 'winner'; push(); renderAll(); fx('win'); toast('Winner on screen'); }
+  function saveResult() {
+    if (!H.gameId) H.gameId = Date.now().toString(36);
+    var hist = store('pqt_history') || [], rec = { id: H.gameId, at: Date.now(), title: H.title || 'Game night', rounds: H.round, games: H.plan.slice(0, H.round).map(function (g) { return GNAME[g]; }), teams: H.teams.map(function (t) { return { name: t.name, color: t.color, score: t.score }; }).sort(function (a, b) { return b.score - a.score; }) };
+    hist = hist.filter(function (r) { return r.id !== rec.id; }); hist.unshift(rec); store('pqt_history', hist.slice(0, 40));
+  }
+  function endGame() { snap(); saveResult(); H.timer.running = false; H.timer.remaining = timerLeft(); H.view = 'winner'; push(); renderAll(); fx('win'); toast('Winner on screen'); }
   function togglePause() { H.paused = !H.paused; push(); paintNow(); toast(H.paused ? 'Screen paused' : 'Screen resumed'); }
   function turnReady() { snap(); resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total; H.view = 'turn'; push(); renderAll(); }
   function turnStart() { snap(); if (H.view !== 'words') resetTally(); H.view = 'words'; H.timer.running = false; H.timer.remaining = H.timer.total; push(); timerStart(); renderAll(); }

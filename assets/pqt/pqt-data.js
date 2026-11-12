@@ -260,9 +260,9 @@ window.PQT_SAMPLE_SPELL = [
 window.PQT_SAMPLE_WRITTEN = [
   'An extended period of abnormal and abysmal precipitation is called what?\nDrought',
   'Djibouti, Eritrea, Ethiopia, Somalia as well as Somaliland make up the peninsula in the eastern part of the African mainland known as what?\nHorn of Africa',
-  'In 2026, World Cup winning goal scorer Ferran Torres made a switch from FC Barcelona to [A] Liverpool FC [B] Paris FC [C] None [D] FC Metz\n[C] None',
+  'In 2026, World Cup winning goal scorer Ferran Torres made a switch from FC Barcelona to\n[A] Liverpool FC [B] Paris FC [C] None [D] FC Metz\n[C] None',
   'There are 187 African billionaires on Forbes’ list of over 3,500 world billionaires. True or false?\nFalse',
-  'Which of these men was Alexander the Great? [A] Alexander I [B] Alexander II [C] Alexander III [D] Alexander I of Russia\n[C] Alexander III',
+  'Which of these men was Alexander the Great?\n[A] Alexander I [B] Alexander II [C] Alexander III [D] Alexander I of Russia\n[C] Alexander III',
   'Who is the first person to win two Nobel Prizes in the separate fields of physics and chemistry?\nMarie Curie',
   'Technology operating at the scale of individual atoms and molecules is called what?\nNanotechnology',
   'What is the total amount of greenhouse gas emissions that can be released while keeping global warming below a specific target called?\nCarbon budget',
