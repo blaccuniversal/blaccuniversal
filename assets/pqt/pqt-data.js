@@ -225,3 +225,71 @@ window.PQT_SAMPLE_BOARDS = [
   'Name a swallow you eat with your hands\nEba, 35\nAmala, 25\nPounded yam, 18\nFufu, 12\nSemo, 6\nTuwo, 4',
   'Name something you shout when your team wins\nYes!, 30\nGod did, 25\nI told you, 18\nThank God, 12\nLet\'s go, 9\nGoal!, 6'
 ].join('\n\n');
+
+/* From PQT Quests – Module 2409. Hosts can replace these in the console (Cards tab). */
+window.PQT_SAMPLE_NAMES = [
+  'Fela\nI was trained abroad in a different musical style. I built a compound like my own republic. My band name became a genre itself. I ran for president as a statement, and fused jazz horns with fierce politics.',
+  'Chinua Achebe\nI studied medicine before switching disciplines. My first piece answered colonial-era fiction and became a hugely translated novel. One time, I declined a national honor in protest and had beef with rapper 50 Cent.',
+  'Arnold Schwarzenegger\nI was born in Europe but eventually became one of the most recognizable faces in American cinema. Even though I was mostly typecast for macho roles, one of my most iconic roles was one where I was pregnant. I was born in Thal, Austria.',
+  'Steve Jobs\nI was given up for adoption at birth. I dropped out of school, but audited design classes. Was ousted from my own company, but made a comeback, some called it the world’s priciest. I also owned a major animation studio.',
+  'Mansa Musa\nI ruled an empire bigger than Western Europe and my pilgrimage reportedly crashed a region’s economy. Stuff like that happens when you’re rich beyond measure. I put my empire on European maps and my cities became Islamic scholarship hubs.',
+  'Chadwick Boseman\nI played a god and shortly after that, I played a character whose greatest strength was also his greatest weakness. Unfortunately, my story ended but this character is having a fresh start. I was born in Anderson, South Carolina, US.',
+  'Tems\nMy music is different from what the place I’m from is used to, yet my biggest international breakthrough involved a collaboration with an already established person from that same place. I was born in the city of Lagos.',
+  'Trevor Noah\nI was born under laws that made my parents’ union illegal. I grew up navigating multiple languages and identities at once, then took over a major US satire desk from a legend. I wrote a bestselling memoir about my rough childhood.',
+  'Ngozi Okonjo-Iweala\nI trained as an economist at elite American universities. Held a top position at a major global lender. Served twice as my country’s finance minister. Led anti-corruption reforms amid political resistance. First African to lead a major trade body.',
+  'John Mikel Obi\nI started off at a Pepsi Football Academy. I was only second to another, considered the greatest of his time, in my youth. I had two Premier League giants, Chelsea and Manchester United, fighting for my signature. I was born in Plateau State, Nigeria.',
+  'Michael Jordan\nMy mother helped make a deal for me that is considered one of the greatest negotiations ever. And because of that, my shoes are some of the most iconic ever. Oh, I also played some basketball. I was born in Brooklyn, in New York City.',
+  'Martin Luther King Jr.\nI was born during a period of enormous social division. I became famous by refusing to accept the limitations placed on people like me, eventually becoming one of the most influential voices in the fight for equality. I was born on an island in the US.'
+].join('\n\n');
+
+window.PQT_SAMPLE_SPELL = [
+  'PUSILLANIMOUS | Showing a lack of courage or determination; cowardly. | His pusillanimous response to the crisis disappointed his supporters.',
+  'ANTEDILUVIAN | Extremely old or old-fashioned. | My antediluvian computer takes about 20 minutes just to boot up.',
+  'PERIPATETIC | Travelling from place to place, especially for work. | Her peripatetic childhood meant she attended five schools in three countries.',
+  'MNEMONIC | A device, such as a pattern or rhyme, that assists in remembering something. | “Every Good Boy Does Fine” is a mnemonic for the lines on a treble clef.',
+  'DIAPHANOUS | Very light, delicate, and almost transparent. | She wore a diaphanous scarf that moved gently in the breeze.',
+  'AUTOCHTHONOUS | Indigenous or originating in the place where found. | The researchers studied the autochthonous plant species of Ibadan.',
+  'RENDEZVOUS | A meeting at an agreed time and place. | They arranged a rendezvous at the bar before the concert.',
+  'MACHIAVELLIAN | Cunning, scheming, and unscrupulous, especially in politics. | His Machiavellian tactics somehow got him to be president.',
+  'WELTSCHMERZ | A German loanword meaning melancholic sadness about the state of the world. | The Nigerian poet’s work is filled with youthful Weltschmerz.',
+  'BOUSTROPHEDON | Written alternately from left to right and right to left. | The ancient inscription was written in a curious boustrophedon style.',
+  'DESUETUDE | A state of no longer being used or practised. | Our culture of respect and honesty has gradually fallen into desuetude.',
+  'OBNUBILATE | To obscure, cloud or make difficult to understand. | Fear can obnubilate a person’s judgment.'
+].join('\n');
+
+window.PQT_SAMPLE_WRITTEN = [
+  'An extended period of abnormal and abysmal precipitation is called what?\nDrought',
+  'Djibouti, Eritrea, Ethiopia, Somalia as well as Somaliland make up the peninsula in the eastern part of the African mainland known as what?\nHorn of Africa',
+  'In 2026, World Cup winning goal scorer Ferran Torres made a switch from FC Barcelona to [A] Liverpool FC [B] Paris FC [C] None [D] FC Metz\n[C] None',
+  'There are 187 African billionaires on Forbes’ list of over 3,500 world billionaires. True or false?\nFalse',
+  'Which of these men was Alexander the Great? [A] Alexander I [B] Alexander II [C] Alexander III [D] Alexander I of Russia\n[C] Alexander III',
+  'Who is the first person to win two Nobel Prizes in the separate fields of physics and chemistry?\nMarie Curie',
+  'Technology operating at the scale of individual atoms and molecules is called what?\nNanotechnology',
+  'What is the total amount of greenhouse gas emissions that can be released while keeping global warming below a specific target called?\nCarbon budget',
+  'A diet of dry food without oil or wine, practised as religious fasting, is known as what?\nXerophagy (Xerophagia)',
+  'The quotient of 3 and 30 to one decimal place is what?\n0.1'
+].join('\n\n');
+
+window.PQT_SAMPLE_RAPID = [
+  'The natural science that is the study of celestial objects and the phenomena that occur in the cosmos is known as?\nAstronomy',
+  'What actor makes and performs music under the name Ilan Stone?\nAaron Pierre',
+  'The world’s largest island is Greenland. What is the world’s second largest island?\nNew Guinea',
+  'A high-concentration solution of salt in water, especially in or for foods, is known as what?\nBrine',
+  'What vocation is featured on the back of a 20 Naira note?\nPottery',
+  'What plant is known taxonomically as Camellia sinensis?\nTea',
+  'Which Nicholas Sparks novel was adapted to a film of the same name in 2004, starring Ryan Gosling and Rachel McAdams?\nThe Notebook',
+  'What country’s map is this?\nCanada\nimage: /assets/pqt/q/map-canada.png',
+  'The chocolate-flavoured variant of a caffè latte is known as what?\nMocaccino (Mocha, Caffè Mocha)',
+  'An oven, furnace, or heated enclosure used for processing a substance by burning, firing, or drying is called a what?\nKiln',
+  'What is the heaviest naturally occurring element on the periodic table by atomic number?\nUranium',
+  'Who is the youngest male sibling in the famous Jackson family of musicians?\nRandy Jackson',
+  'This flag is the flag of what apocryphal nation?\nWakanda\nimage: /assets/pqt/q/flag-wakanda.png',
+  'In 1762, British statesman and avid gambler John Montagu, while at a gambling table, requested what meal now named after his title?\nSandwich',
+  'The end product of the mixture of water and Plaster of Paris is what?\nGypsum'
+].join('\n\n');
+
+window.PQT_SAMPLE_TALK = [
+  'What makes a great leader?',
+  'Is social media making us more connected, or more alone?',
+  'If you could fix one thing about your city, what would it be?'
+].join('\n');

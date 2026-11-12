@@ -65,6 +65,15 @@ function pqtMain() {
     }).filter(Boolean);
   }
 
+  function blocks(txt) { return String(txt || '').split(/\n\s*\n/).map(function (b) { return b.split('\n').map(function (l) { return l.trim(); }).filter(Boolean); }).filter(function (b) { return b.length; }); }
+  function parseNames(txt) { return blocks(txt).map(function (b) { return { a: b[0], clues: b.slice(1) }; }).filter(function (x) { return x.clues.length; }); }
+  function parseSpell(txt) { return String(txt || '').split('\n').map(function (l) { var p = l.split('|').map(function (s) { return s.trim(); }); return p[0] ? { w: p[0].toUpperCase(), d: p[1] || '', e: p[2] || '' } : null; }).filter(Boolean); }
+  function parseQA(txt) { return blocks(txt).map(function (b) { var img = ''; b = b.filter(function (l) { var m = l.match(/^image:\s*(\S+)/i); if (m) { img = m[1]; return false; } return true; }); return b.length ? { q: b[0], a: b[1] || '', img: img } : null; }).filter(Boolean); }
+  function parseTalk(txt) { return String(txt || '').split('\n').map(function (l) { return l.trim(); }).filter(Boolean); }
+  var QA_TYPES = { names: 1, spell: 1, written: 1, rapid: 1, talk: 1 };
+  var QA_TIME = { names: 10000, written: 10000, rapid: 5000, spell: 30000 };
+  var QA_BOARD = { spell: 1, rapid: 1 };
+
   /* =====================================================================
      SCREEN
      ===================================================================== */
@@ -185,6 +194,7 @@ function pqtMain() {
       else if (v === 'intro') data = { r: S.round, n: S.rounds, rt: S.roundType, teams: S.teams.map(function (t) { return [t.name, t.color]; }), w: S.words.team };
       else if (v === 'turn' || v === 'turnend') data = { w: S.words, team: S.teams[S.words.team] || null };
       else if (v === 'winner') data = { teams: S.teams };
+      else if (v === 'qa') data = { qa: S.qa, teams: S.teams.map(function (t) { return t.name; }) };
       else data = {};
       var sg = v + sig(data);
       if (sg === lastSig.v) return;
@@ -234,6 +244,18 @@ function pqtMain() {
           '<div class="sc-stream">' + (w.stream || []).map(function (s) { return '<span class="' + s[1] + '">' + esc(s[0]) + '</span>'; }).join('') + '</div></div></div>';
       },
       intro: function () {
+        var QR = {
+          names: ['A vague description of a famous person or thing appears.', 'Respond with “Hi, my name is…” and the answer.', 'Give as many answers as you can within 10 seconds.'],
+          spell: ['Pick a number. Delegate a player to spell.', 'You’ll hear the word, its meaning and an example.', 'You get only one shot at spelling.'],
+          written: ['Ten questions: science, art, business, tech, geography and more.', 'Each question gets 10 seconds. Write your answers down.', 'Answers are revealed at the end of the round.'],
+          rapid: ['Pick a number. The question behind it is read to you.', 'Answer within 5 seconds.', 'Try as many times as you can within your time.'],
+          talk: ['A topic goes up on the screen.', 'Share your thoughts. Hear each other out.', 'No points, just good conversation.']
+        };
+        if (QR[S.roundType]) {
+          var NM = { names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion' };
+          return '<div class="sc-intro"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + '</p><h1 class="sc-intro__t">' + NM[S.roundType] + '</h1>' +
+            '<ol class="sc-intro__rules">' + QR[S.roundType].map(function (r, i) { return '<li style="animation-delay:' + (0.35 + i * 0.15) + 's"><b>0' + (i + 1) + '</b>' + esc(r) + '</li>'; }).join('') + '</ol></div>';
+        }
         var isW = S.roundType === 'words';
         var rules = isW ? ['One clue giver per team, against the clock.', 'Describe the word. Don’t say it, or any banned word.', 'Every word guessed is a point. A buzz costs one.']
                         : ['We asked people a question. Find their top answers.', 'Each answer you find adds its points to the board.', 'Three strikes and the other team can steal it all.'];
@@ -261,6 +283,20 @@ function pqtMain() {
         }).join('');
         var conf = ''; for (var i = 0; i < 70; i++) conf += '<i style="left:' + (Math.random() * 100).toFixed(1) + '%;animation-delay:' + (Math.random() * 3).toFixed(2) + 's;animation-duration:' + (3 + Math.random() * 3).toFixed(2) + 's;background:' + ['#ff6a2b', '#f3f3f3', '#f2b23a', '#e2461c'][i % 4] + '"></i>';
         return '<div class="sc-win"><div class="sc-confetti" aria-hidden="true">' + conf + '</div><p class="sc-intro__r">Champions</p><h1 class="sc-win__t">' + esc(top ? top.name : '') + '</h1><div class="sc-podium">' + pod + '</div></div>';
+      },
+      qa: function () {
+        var q = S.qa; if (!q) return '';
+        var NM = { names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion' };
+        if (q.mode === 'board') {
+          return '<div class="sc-qa"><p class="sc-intro__r">' + NM[q.type] + '</p><h2 class="sc-qa__h">Pick a number</h2><div class="sc-numboard">' +
+            Array.apply(null, Array(q.n)).map(function (_, i) { return '<span class="' + (q.used.indexOf(i) > -1 ? 'is-used' : '') + '">' + (i + 1) + '</span>'; }).join('') + '</div></div>';
+        }
+        var head = '<div class="sc-qa__top"><p class="sc-intro__r">' + NM[q.type] + ' · ' + (q.type === 'spell' ? 'Word ' : q.type === 'talk' ? 'Topic ' : 'Question ') + (q.idx + 1) + (QA_BOARD[q.type] ? '' : ' of ' + q.n) + (q.type === 'written' && q.phase === 'reveal' ? ' · Answer reveal' : '') + '</p>' + (QA_TIME[q.type] && !(q.type === 'written' && q.phase === 'reveal') ? '<span class="sc-qa__timer" data-ringnum></span>' : '') + '</div>';
+        var mark = q.mark === 'ok' ? '<span class="sc-mark-ok">✓</span>' : q.mark === 'no' ? '<span class="sc-mark-no">✕</span>' : '';
+        if (q.type === 'names') return '<div class="sc-qa">' + head + '<div class="sc-qa__clues">' + (q.clues || []).map(function (c) { return '<p>' + esc(c) + '</p>'; }).join('') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Hi, my name is…</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
+        if (q.type === 'spell') return '<div class="sc-qa">' + head + '<div class="sc-qa__word' + (q.w ? ' is-on' : '') + '">' + (q.w ? esc(q.w) : '<i>???</i>') + mark + '</div><p class="sc-qa__def">' + esc(q.d || '') + '</p>' + (q.e ? '<p class="sc-qa__ex">' + (/^[“"]/.test(q.e) ? esc(q.e) : '“' + esc(q.e) + '”') + '</p>' : '') + '</div>';
+        if (q.type === 'talk') return '<div class="sc-qa sc-qa--talk">' + head + '<p class="sc-qa__q sc-qa__q--big">' + esc(q.q || '') + '</p></div>';
+        return '<div class="sc-qa">' + head + '<div class="sc-qa__body' + (q.img ? ' has-img' : '') + '"><p class="sc-qa__q">' + esc(q.q || '') + '</p>' + (q.img ? '<img class="sc-qa__img" src="' + esc(q.img) + '" alt="">' : '') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
       },
       answers: function () {
         var f = S.feud;
@@ -304,7 +340,7 @@ function pqtMain() {
     var lastSec = null;
     function tickClock(force) {
       var left = timerRun ? Math.max(0, timerEnd - Date.now()) : timerLeft;
-      var show = S && timerTotal > 0 && ['words', 'join', 'intro', 'turn', 'turnend', 'winner', 'lobby'].indexOf(S.view) < 0 && (timerRun || left < timerTotal);
+      var show = S && timerTotal > 0 && ['words', 'join', 'intro', 'turn', 'turnend', 'winner', 'lobby', 'qa'].indexOf(S.view) < 0 && (timerRun || left < timerTotal);
       clock.hidden = !show;
       clock.querySelector('span').textContent = fmtT(left);
       clock.classList.toggle('is-low', timerRun && left <= 10000);
@@ -331,13 +367,18 @@ function pqtMain() {
     words: { team: 0, deck: [], pos: 0, correct: 0, skipped: 0, buzzed: 0, stream: [], buzzCost: 1 },
     feud: { qi: 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 },
     wordsTxt: window.PQT_SAMPLE_WORDS || '', boardsTxt: window.PQT_SAMPLE_BOARDS || '',
-    round: 0, roundType: '', paused: false, ledger: [], plan: ['words', 'answers', 'words']
+    round: 0, roundType: '', paused: false, ledger: [], plan: ['words', 'answers', 'words'],
+    namesTxt: window.PQT_SAMPLE_NAMES || '', spellTxt: window.PQT_SAMPLE_SPELL || '', writtenTxt: window.PQT_SAMPLE_WRITTEN || '', rapidTxt: window.PQT_SAMPLE_RAPID || '', talkTxt: window.PQT_SAMPLE_TALK || '',
+    qa: { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }, qaUsed: {}, qaPos: {}
   };
   var H = store('pqt_host') || JSON.parse(JSON.stringify(DEF));
   Object.keys(DEF).forEach(function (k) { if (H[k] == null) H[k] = JSON.parse(JSON.stringify(DEF[k])); });
   // Hosts still on the first 40 sample words get the bigger sample list automatically
   if (window.PQT_SAMPLE_WORDS && H.wordsTxt === window.PQT_SAMPLE_WORDS.split('\n').slice(0, 40).join('\n')) H.wordsTxt = window.PQT_SAMPLE_WORDS;
   var WORDS = parseWords(H.wordsTxt), BOARDS = parseBoards(H.boardsTxt);
+  var QA = {};
+  function loadQA() { QA = { names: parseNames(H.namesTxt), spell: parseSpell(H.spellTxt), written: parseQA(H.writtenTxt), rapid: parseQA(H.rapidTxt), talk: parseTalk(H.talkTxt) }; }
+  loadQA();
   if (!H.words.deck.length || H.words.deck.length !== WORDS.length) { H.words.deck = shuffle(WORDS.map(function (_, i) { return i; })); H.words.pos = 0; }
   if (H.timer.running && H.timer.endsAt) { H.timer.remaining = Math.max(0, H.timer.endsAt - Date.now()); if (!H.timer.remaining) H.timer.running = false; }
   var hist = [];
@@ -355,10 +396,23 @@ function pqtMain() {
       teams: H.teams.map(function (x) { return { name: x.name, color: x.color, score: x.score }; }),
       timer: { total: t.total, remaining: left, running: t.running },
       words: { team: w.team, correct: w.correct, skipped: w.skipped, buzzed: w.buzzed, stream: w.stream.slice(-14), pts: w.correct - (w.buzzCost ? w.buzzed : 0) },
+      qa: qaPub(),
       feud: b ? { key: H.feud.qi + ':' + b.q, q: b.q, n: b.a.length, out: out, strikes: f.strikes, bank: f.awardedTo != null ? 0 : bank, awardedTo: f.awardedTo, awardedPts: f.awardedPts } : null
     };
   }
   var hmq = null, mqScreen = false, seqN = 0;
+  function qaItem() { var q = H.qa, list = QA[q.type] || []; return list[q.idx]; }
+  function qaPub() {
+    var q = H.qa; if (!q.type) return null;
+    var list = QA[q.type] || [], it = list[q.idx], o = { type: q.type, mode: q.mode, n: list.length, idx: q.idx, used: H.qaUsed[q.type] || [], revealed: q.revealed, mark: q.mark, phase: q.phase };
+    if (q.mode === 'q' && it) {
+      if (q.type === 'names') { o.clues = it.clues.slice(0, q.clue); o.total = it.clues.length; if (q.revealed) o.a = it.a; }
+      else if (q.type === 'spell') { o.d = it.d; o.e = q.revealed ? it.e : it.e.replace(new RegExp(it.w.replace(/[^A-Za-z]/g, ''), 'gi'), '______'); if (q.revealed) o.w = it.w; }
+      else if (q.type === 'talk') { o.q = it; }
+      else { o.q = it.q; o.img = it.img; if (q.revealed) o.a = it.a; }
+    }
+    return o;
+  }
   function send(m) {
     if (m.t === 'state') m.seq = Date.now() * 100 + (seqN = (seqN + 1) % 100);
     if (m.t === 'fx') m.id = Math.random().toString(36).slice(2, 10);
@@ -455,10 +509,11 @@ function pqtMain() {
     snap(); H.round++; H.roundType = type; H.ledger = []; H.paused = false;
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
     if (type === 'answers') H.feud = { qi: H.feud.qi || 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
+    if (QA_TYPES[type]) H.qa = { type: type, mode: QA_BOARD[type] ? 'board' : 'q', idx: (H.qaPos[type] || 0) % Math.max(1, (QA[type] || []).length), clue: 1, revealed: false, mark: '', phase: 'ask' };
     if (H.round > H.plan.length) H.plan.push(type); else H.plan[H.round - 1] = type;
-    H.view = 'intro'; H.tab = type; push(); renderAll(); toast('Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[type]);
+    H.view = 'intro'; H.tab = QA_TYPES[type] ? 'quiz' : type; push(); renderAll(); toast('Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[type]);
   }
-  var GNAME = { words: 'Don’t Say It', answers: 'Top Answers' };
+  var GNAME = { words: 'Don’t Say It', answers: 'Top Answers', names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion' };
   function nextPlanned() { return H.round < H.plan.length ? H.plan[H.round] : null; }
   function goNext() { var n = nextPlanned(); if (n) startRound(n); else endGame(); }
   function renderPlan() {
@@ -475,21 +530,46 @@ function pqtMain() {
     var n = nextPlanned(), b = $('[data-m-next]'), sb = $('[data-m-next-sub]');
     if (b) b.textContent = n ? 'Start round ' + (H.round + 1) + ' of ' + H.plan.length : 'All rounds played · show winner';
     if (sb) sb.textContent = n ? GNAME[n] + ' · from your game plan' : 'End the game with the podium.';
-    var ps = $('[data-m-plan-sub]'); if (ps) ps.textContent = H.plan.length + ' rounds · ' + H.plan.map(function (g) { return g === 'words' ? 'DSI' : 'TA'; }).join(' → ');
+    var ps = $('[data-m-plan-sub]'); if (ps) ps.textContent = H.plan.length + ' rounds · ' + H.plan.map(function (g) { return GNAME[g]; }).join(' → ');
   }
   function restartRound() {
     if (!H.roundType) { toast('No round to restart yet'); return; }
     snap(); H.ledger.forEach(function (l) { var t = team(l[0]); if (t) t.score -= l[1]; }); H.ledger = [];
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
     if (H.roundType === 'answers') H.feud = { qi: H.feud.qi, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
+    if (QA_TYPES[H.roundType]) { H.qaUsed[H.roundType] = []; H.qa = { type: H.roundType, mode: QA_BOARD[H.roundType] ? 'board' : 'q', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; }
     H.view = 'intro'; push(); renderAll(); splash('Round ' + H.round, 'Restarted'); toast('Round ' + H.round + ' restarted');
   }
   function newGame() {
     snap(); H.teams.forEach(function (t) { t.score = 0; }); H.round = 0; H.roundType = ''; H.ledger = []; H.paused = false;
     resetTally(); H.words.team = 0; H.timer.running = false; H.timer.remaining = H.timer.total;
     H.feud = { qi: 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
+    H.qa = { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; H.qaUsed = {}; H.qaPos = {};
     H.view = 'lobby'; push(); renderAll(); splash('New game', H.title); toast('New game started');
   }
+  function qaTimer() { var t = QA_TIME[H.qa.type]; if (!t) return; H.timer.total = t; H.timer.running = false; H.timer.remaining = t; }
+  function qaShow(i, autoStart) {
+    snap(); var q = H.qa; q.idx = i; q.mode = 'q'; q.clue = 1; q.revealed = false; q.mark = '';
+    if (QA_BOARD[q.type]) { var u = H.qaUsed[q.type] = H.qaUsed[q.type] || []; if (u.indexOf(i) < 0) u.push(i); }
+    H.qaPos[q.type] = i; H.view = 'qa'; qaTimer(); push(); if (autoStart && QA_TIME[q.type] && q.type !== 'spell') timerStart(); renderAll();
+  }
+  function qaNext(d) {
+    var q = H.qa, n = (QA[q.type] || []).length; if (!n) return;
+    var i = q.idx + d; if (i < 0) i = 0;
+    if (i >= n) { if (q.type === 'written' && q.phase === 'ask') { qaPhase('reveal'); return; } toast('That was the last one'); return; }
+    if (q.type === 'written' && q.phase === 'reveal') { snap(); q.idx = i; q.revealed = true; q.mode = 'q'; H.view = 'qa'; push(); renderAll(); return; }
+    qaShow(i, true);
+  }
+  function qaPhase(ph) { snap(); var q = H.qa; q.phase = ph; q.idx = 0; q.mode = 'q'; q.revealed = ph === 'reveal'; H.timer.running = false; H.view = 'qa'; push(); renderAll(); if (ph === 'reveal') splash('Answer reveal', GNAME.written); }
+  function qaReveal() { snap(); H.qa.revealed = !H.qa.revealed; if (H.qa.revealed) { H.timer.running = false; H.timer.remaining = timerLeft(); fx('ding'); } push(); renderAll(); }
+  function qaClue(d) { var it = qaItem(); if (!it) return; snap(); H.qa.clue = Math.max(1, Math.min(it.clues.length, H.qa.clue + d)); push(); renderAll(); }
+  function qaMark(kind, ti) {
+    snap(); var q = H.qa;
+    if (kind === 'ok') { var p = 1; if (q.type === 'names') { var it = qaItem(); if (it && it.clues.length > 1) p = Math.max(1, it.clues.length + 1 - q.clue); } if (ti != null) pts(ti, p); q.mark = 'ok'; q.revealed = true; fx('ok'); if (ti != null) toast('+' + p + ' to ' + H.teams[ti].name); }
+    else { q.mark = 'no'; q.revealed = q.type !== 'rapid' ? true : q.revealed; fx('buzz'); }
+    H.timer.running = false; H.timer.remaining = timerLeft(); push(); renderAll();
+  }
+  function qaBoard() { snap(); H.qa.mode = 'board'; H.timer.running = false; H.view = 'qa'; push(); renderAll(); }
   function endGame() { snap(); H.timer.running = false; H.timer.remaining = timerLeft(); H.view = 'winner'; push(); renderAll(); fx('win'); toast('Winner on screen'); }
   function togglePause() { H.paused = !H.paused; push(); paintNow(); toast(H.paused ? 'Screen paused' : 'Screen resumed'); }
   function turnReady() { snap(); resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total; H.view = 'turn'; push(); renderAll(); }
@@ -522,10 +602,11 @@ function pqtMain() {
   function feudRevealAll() { snap(); var b = BOARDS[H.feud.qi]; if (!b) return; b.a.forEach(function (_, i) { if (!H.feud.out[i]) H.feud.out[i] = 's'; }); fx('ding'); push(); renderTab(); }
   function feudGo(qi) { snap(); H.feud = { qi: (qi + BOARDS.length) % Math.max(1, BOARDS.length), out: {}, strikes: 0, awardedTo: null, awardedPts: 0 }; H.view = 'answers'; push(); renderAll(); }
   function setView(v) { H.view = v; push(); renderViews(); paintNow(); }
-  var VIEWNAME = { lobby: 'Lobby', scores: 'Scores', ranking: 'Ranking', winner: 'Winner', words: 'Don’t Say It · playing', answers: 'Top Answers board', intro: 'Round intro', turn: 'Up next', turnend: 'Time’s up' };
+  var VIEWNAME = { qa: 'Question on screen', lobby: 'Lobby', scores: 'Scores', ranking: 'Ranking', winner: 'Winner', words: 'Don’t Say It · playing', answers: 'Top Answers board', intro: 'Round intro', turn: 'Up next', turnend: 'Time’s up' };
   function paintNow() {
     var v = $('[data-now-view]'); if (!v) return;
     v.textContent = (H.paused ? 'Paused · ' : '') + (VIEWNAME[H.view] || H.view);
+    if (H.view === 'qa') v.textContent = (H.paused ? 'Paused · ' : '') + (H.qa.mode === 'board' ? 'Number board' : GNAME[H.qa.type] + ' · ' + (H.qa.idx + 1) + ' of ' + ((QA[H.qa.type] || []).length));
     $('[data-now-round]').textContent = H.round ? 'Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[H.roundType] : H.plan.length + ' rounds planned · not started';
     var pb = $('[data-pause]'); pb.textContent = H.paused ? 'Resume screen' : 'Pause screen'; pb.classList.toggle('is-on', H.paused);
     var mp = $('[data-m-pause]'); if (mp) mp.textContent = H.paused ? 'Resume screen' : 'Pause screen';
@@ -547,6 +628,40 @@ function pqtMain() {
       return '<div class="team"><span class="team__sw" style="background:' + t.color + '"></span><input class="team__name" data-tname="' + i + '" value="' + esc(t.name) + '" aria-label="Team name">' +
         '<div class="team__ctl"><button class="pbtn" data-sc="' + i + ':-1" aria-label="Minus 1">−</button><span class="team__score">' + t.score + '</span><button class="pbtn" data-sc="' + i + ':1" aria-label="Plus 1">+</button><button class="pbtn pbtn--ghost" data-sc="' + i + ':5">+5</button></div></div>';
     }).join('');
+  }
+  function teamAward(lbl) { return '<div class="hc-row hc-award">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-qok="' + i + '"><i style="width:3px;height:14px;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '<button class="pbtn pbtn--sm pbtn--bad" data-qno>' + (lbl || 'Wrong') + '</button></div>'; }
+  function renderQuiz() {
+    var q = H.qa, type = QA_TYPES[H.roundType] ? H.roundType : '';
+    if (!type) return '<p class="hc-note" style="margin-top:0">Start one of these rounds:</p><div class="hc-qstart">' + ['names', 'spell', 'written', 'rapid', 'talk'].map(function (t) { return '<button class="hc-mi" data-round="' + t + '" type="button"><b>' + GNAME[t] + '</b><span>' + (QA[t] || []).length + ' in your cards</span></button>'; }).join('') + '</div>';
+    var list = QA[type] || [], it = list[q.idx], out = '';
+    if (!list.length) return '<p class="mute">No ' + GNAME[type] + ' content yet. Add some in the Cards tab.</p>';
+    if (H.view === 'intro') out += '<div class="hc-flowbox"><button class="pbtn pbtn--o pbtn--lg pbtn--block" ' + (QA_BOARD[type] ? 'data-qboard' : 'data-qgo="' + q.idx + '"') + '>' + (QA_BOARD[type] ? 'Show the number board' : 'Show ' + (type === 'talk' ? 'the topic' : 'question ' + (q.idx + 1))) + '</button></div>';
+    if (QA_BOARD[type]) {
+      var used = H.qaUsed[type] || [];
+      out += '<p class="hc-sub">Number board · tap the number the team picks</p><div class="hc-board">' + list.map(function (_, i) { return '<button class="hc-num' + (used.indexOf(i) > -1 ? ' is-used' : '') + (q.mode === 'q' && q.idx === i ? ' is-cur' : '') + '" data-qgo="' + i + '">' + (i + 1) + '</button>'; }).join('') + '</div>';
+    }
+    if (q.mode === 'q' && it && H.view === 'qa') {
+      if (type === 'names') {
+        out += '<div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">' + (q.idx + 1) + ' of ' + list.length + ' · answer</p><div class="wcard__word">' + esc(it.a) + '</div></div>';
+        out += '<div class="hc-qtext">' + it.clues.map(function (c, k) { return '<p class="' + (k < q.clue ? '' : 'is-off') + '">' + esc(c) + '</p>'; }).join('') + '</div>';
+        if (it.clues.length > 1) out += '<div class="hc-row"><button class="pbtn pbtn--sm" data-qclue="1">Next clue (' + q.clue + '/' + it.clues.length + ')</button><span class="hc-note" style="margin:0">Worth ' + Math.max(1, it.clues.length + 1 - q.clue) + ' now</span></div>';
+      } else if (type === 'spell') {
+        out += '<div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Word ' + (q.idx + 1) + ' · say it aloud</p><div class="wcard__word">' + esc(it.w) + '</div><p class="hc-qdef">' + esc(it.d) + '</p><p class="hc-qex">' + esc(it.e) + '</p></div>';
+      } else if (type === 'talk') {
+        out += '<div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Topic ' + (q.idx + 1) + ' of ' + list.length + '</p><div class="hc-qtopic">' + esc(it) + '</div></div>';
+      } else {
+        out += '<div class="hc-qtext"><p class="hc-qlabel">' + (type === 'written' && q.phase === 'reveal' ? 'Answer reveal · ' : '') + 'Question ' + (q.idx + 1) + ' of ' + list.length + '</p><p>' + esc(it.q) + '</p>' + (it.img ? '<img class="hc-qimg" src="' + esc(it.img) + '" alt="">' : '') + '</div><div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Answer</p><div class="wcard__word hc-qans">' + esc(it.a) + '</div></div>';
+      }
+      if (type === 'talk') out += '<div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Previous</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">Next topic →</button></div>';
+      else if (type === 'written' && q.phase === 'ask') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (q.idx + 1 < list.length ? 'Next question →' : 'Start answer reveal →') + '</button></div><p class="hc-note">Each question gets ' + fmtT(QA_TIME.written) + ' seconds. The answer stays hidden until the reveal.</p>';
+      else if (type === 'written') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">Next answer →</button></div><p class="hc-sub" style="margin-top:14px">Add up each team’s sheet and score them</p>' + H.teams.map(function (t, i) { return '<div class="team"><span class="team__sw" style="background:' + t.color + '"></span><span class="team__name" style="display:flex;align-items:center">' + esc(t.name) + '</span><div class="team__ctl"><button class="pbtn" data-sc="' + i + ':-1">−</button><span class="team__score">' + t.score + '</span><button class="pbtn" data-sc="' + i + ':1">+</button></div></div>'; }).join('');
+      else {
+        out += '<div class="hc-row" style="margin:10px 0"><button class="pbtn" data-qreveal>' + (q.revealed ? 'Hide answer' : 'Reveal answer') + '</button>' + (QA_TIME[type] ? '<button class="pbtn" data-qtime>' + (H.timer.running ? 'Pause timer' : 'Start ' + fmtT(QA_TIME[type]) + 's timer') + '</button>' : '') + '</div>';
+        out += '<p class="hc-sub">Correct? Tap the team</p>' + teamAward(type === 'spell' ? 'Misspelt' : 'Wrong');
+        out += '<div class="w-actions" style="grid-template-columns:1fr 1fr;margin-top:12px">' + (QA_BOARD[type] ? '<button class="pbtn pbtn--lg pbtn--white" data-qboard>Back to the board</button><button class="pbtn pbtn--lg" data-qgo="' + q.idx + '">Replay</button>' : '<button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">Next →</button>') + '</div>';
+      }
+    }
+    return out;
   }
   function renderTab() {
     var tab = H.tab;
@@ -578,11 +693,14 @@ function pqtMain() {
         '<h2 style="margin:18px 0 8px">' + (f.awardedTo != null ? 'Awarded ' + f.awardedPts + ' to ' + esc(H.teams[f.awardedTo] ? H.teams[f.awardedTo].name : '') : 'Bank: ' + bank + ' — give to') + '</h2>' +
         (f.awardedTo != null ? '' : '<div class="hc-row">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-faw="' + i + '"' + (bank ? '' : ' disabled') + '><i style="width:8px;height:8px;border-radius:50%;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '</div>') +
         '<p class="hc-note">Tap an answer to reveal it on the screen (tap again to hide). Points count towards the bank until you award them. “Reveal rest” shows the remaining answers without adding points.</p>';
+    } else if (tab === 'quiz') {
+      $('[data-qpane]').innerHTML = renderQuiz();
     } else if (tab === 'cards') {
       var wa = $('[data-wtxt]'), ba = $('[data-btxt]');
       if (document.activeElement !== wa) wa.value = H.wordsTxt;
       if (document.activeElement !== ba) ba.value = H.boardsTxt;
-      $('[data-ccount]').textContent = WORDS.length + ' words · ' + BOARDS.length + ' questions';
+      ['names', 'spell', 'written', 'rapid', 'talk'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el && document.activeElement !== el) el.value = H[k + 'Txt'] || ''; });
+      $('[data-ccount]').textContent = WORDS.length + ' words · ' + BOARDS.length + ' boards · ' + QA.names.length + ' people · ' + QA.spell.length + ' spellings · ' + QA.written.length + ' written · ' + QA.rapid.length + ' rapid';
     }
   }
 
@@ -603,9 +721,17 @@ function pqtMain() {
     else if (b.hasAttribute('data-menu-open')) { closeSheets(); $('[data-menu]').hidden = false; }
     else if (b.hasAttribute('data-menu-close') || b.hasAttribute('data-pick-close')) closeSheets();
     else if (d.m) menuAct(d.m, b);
-    else if (d.planN) { var n = Math.max(Math.max(1, H.round), Math.min(12, H.plan.length + +d.planN)); while (H.plan.length < n) H.plan.push(H.plan.length % 2 ? 'answers' : 'words'); H.plan.length = n; push(); renderPlan(); paintMenu(); paintNow(); }
-    else if (d.planI != null) { var k = +d.planI; if (k >= H.round) { H.plan[k] = H.plan[k] === 'words' ? 'answers' : 'words'; push(); renderPlan(); paintMenu(); } }
+    else if (d.planN) { var n = Math.max(Math.max(1, H.round), Math.min(12, H.plan.length + +d.planN)); var cyc = ['words', 'answers', 'names', 'spell', 'written', 'rapid']; while (H.plan.length < n) H.plan.push(cyc[H.plan.length % cyc.length]); H.plan.length = n; push(); renderPlan(); paintMenu(); paintNow(); }
+    else if (d.planI != null) { var k = +d.planI; if (k >= H.round) { var order = ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'talk']; H.plan[k] = order[(order.indexOf(H.plan[k]) + 1) % order.length]; push(); renderPlan(); paintMenu(); } }
     else if (b.hasAttribute('data-gonext')) goNext();
+    else if (d.qgo != null) qaShow(+d.qgo, true);
+    else if (b.hasAttribute('data-qboard')) qaBoard();
+    else if (d.qnext) qaNext(+d.qnext);
+    else if (b.hasAttribute('data-qreveal')) qaReveal();
+    else if (d.qclue) qaClue(+d.qclue);
+    else if (d.qok != null) qaMark('ok', +d.qok);
+    else if (b.hasAttribute('data-qno')) qaMark('no');
+    else if (b.hasAttribute('data-qtime')) { H.timer.running ? timerPause() : timerStart(); renderTab(); }
     else if (d.fa != null) feudToggle(+d.fa);
     else if (b.hasAttribute('data-fx')) feudStrike();
     else if (b.hasAttribute('data-fxclear')) { snap(); H.feud.strikes = 0; push(); renderTab(); }
@@ -623,8 +749,8 @@ function pqtMain() {
     else if (b.hasAttribute('data-connect')) { var ok = connect($('[data-codein]').value); $('[data-codein]').classList.toggle('is-bad', !ok); delete $('[data-connect-sec]').dataset.force; }
     else if (b.hasAttribute('data-change')) { var cs = $('[data-connect-sec]'); cs.dataset.force = '1'; cs.hidden = false; $('[data-codein]').focus(); }
     else if (b.hasAttribute('data-opensc')) { var w = window.open('/pqt/screen/', 'pqtscreen'); if (!w) location.href = '/pqt/screen/'; }
-    else if (b.hasAttribute('data-savecards')) { H.wordsTxt = $('[data-wtxt]').value; H.boardsTxt = $('[data-btxt]').value; reloadBanks(); b.textContent = 'Saved'; setTimeout(function () { b.textContent = 'Save cards'; }, 1500); }
-    else if (b.hasAttribute('data-samples')) { if (confirmTwice(b)) { H.wordsTxt = window.PQT_SAMPLE_WORDS; H.boardsTxt = window.PQT_SAMPLE_BOARDS; reloadBanks(); renderTab(); } }
+    else if (b.hasAttribute('data-savecards')) { H.wordsTxt = $('[data-wtxt]').value; H.boardsTxt = $('[data-btxt]').value; ['names', 'spell', 'written', 'rapid', 'talk'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el) H[k + 'Txt'] = el.value; }); loadQA(); reloadBanks(); b.textContent = 'Saved'; setTimeout(function () { b.textContent = 'Save cards'; }, 1500); }
+    else if (b.hasAttribute('data-samples')) { if (confirmTwice(b)) { H.wordsTxt = window.PQT_SAMPLE_WORDS; H.boardsTxt = window.PQT_SAMPLE_BOARDS; H.namesTxt = window.PQT_SAMPLE_NAMES; H.spellTxt = window.PQT_SAMPLE_SPELL; H.writtenTxt = window.PQT_SAMPLE_WRITTEN; H.rapidTxt = window.PQT_SAMPLE_RAPID; H.talkTxt = window.PQT_SAMPLE_TALK; loadQA(); reloadBanks(); renderTab(); } }
   });
   function closeSheets() { $$('.hc-sheet').forEach(function (s) { s.hidden = true; }); }
   function menuAct(m, b) {
