@@ -837,3 +837,28 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .lb-row--gw.is-top{align-items:start}.lb-row--gw.is-top .lb-p{padding-top:1px}
 .sc-score{justify-content:flex-start;gap:1vh}.sc-score__pts{margin-top:auto}.sc-score__bd{justify-content:flex-start;margin-top:2vh;padding-top:1.6vh;border-top:1px solid #1f1f1f}.sc-score__x{margin-top:0}
 .pq-board--home{margin-top:auto;margin-bottom:auto;padding:clamp(12px,4vh,48px) 0}.pq-board--home .pq-lblink{margin-top:8px}@media (min-width:700px){.pq-board--home{width:min(88vw,640px)}}
+/* leaderboard type pass */
+.lb,.lb *{font-family:var(--sans)}
+.lb-p,.lb-mv,.lb-n{font-variant-numeric:tabular-nums lining-nums}
+.lb-t{font-size:16px;font-weight:400;line-height:1.35;color:#e6e6e6}
+.lb-row.is-top .lb-t{font-weight:600;color:#fff}
+.lb-p{font-size:16px;font-weight:500;color:#e6e6e6}
+.lb-row.is-top .lb-p{font-weight:700;color:#fff}
+.lb-n{font-size:14px;font-weight:500}
+.lb-star{display:block;margin:8px 0 4px;font-size:12px;line-height:1;color:var(--o2)}
+.lb-ppl{display:flex;flex-wrap:wrap;column-gap:0;row-gap:2px;font-size:13px;font-weight:400;line-height:1.5;color:#9a9a9a}
+.lb-ppl span{white-space:nowrap}
+.lb-ppl span:not(:last-child)::after{content:"·";margin:0 7px;color:#4a4a4a}
+.lb-fx summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.lb-fx summary span{font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#7a7a7a}
+.lb-fx summary b{font-size:14px;font-weight:500;color:#e6e6e6;letter-spacing:.02em}
+.lb-fx summary em{font-size:12px;color:#7a7a7a}
+.lb-fx dt{font-style:normal;font-weight:600;color:#fff}
+.lb-fx dd{font-size:13px}
+.lb-gw h2{font-weight:300;font-size:clamp(26px,6vw,34px);letter-spacing:-.01em}
+.lb-gw__row b{font-weight:600}
+.lb-h{font-weight:300;letter-spacing:-.025em}
+.lb-sub{justify-content:center}
+.lb-mv{font-weight:600}
+.lb-t small{display:none}
+.lb-fx summary span,.lb-fx summary b,.lb-fx summary em,.lb-fx dt{font-family:var(--sans)}.lb-fx summary i{display:none}.lb-ppl span.eol::after{content:none}

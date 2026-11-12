@@ -57,7 +57,7 @@
       if (mode === 'all') {
         body.innerHTML = '<p class="lb-sub"><span>After Gameweek ' + C.after + '</span></p>' +
           '<ol class="lb-list">' + C.rows.map(function (t, i) { return '<li class="lb-row' + (i === 0 ? ' is-top' : '') + '"><span class="lb-n">' + t.rank + '</span><span class="lb-t">' + esc(t.name) + '</span>' + moveHtml(t) + '<b class="lb-p">' + f2(t.total) + '</b></li>'; }).join('') + '</ol>' +
-          '<details class="lb-fx"><summary><i>fx</i><span>W = (P × B) + (S × 0.25)</span><em>How scoring works</em></summary><dl>' +
+          '<details class="lb-fx"><summary><span>Weekly score</span><b>W = (P × B) + (S × 0.25)</b><em>How it works</em></summary><dl>' +
           '<div><dt>P</dt><dd>Raw points the team earned that week.</dd></div>' +
           '<div><dt>B</dt><dd>Entry boost for teams that join late: 1 + weeks missed ÷ ' + (S.length || 12) + '. Only on a team’s first week.</dd></div>' +
           '<div><dt>S</dt><dd>Weeks in a row the team has played. Each one adds 0.25. Missing a week resets it.</dd></div>' +
@@ -68,9 +68,12 @@
         var res = w.results.slice().sort(function (a, b) { return b.points - a.points; }), dt = longDate(w.date);
         body.innerHTML = (weeks.length > 1 ? '<div class="lb-wks">' + weeks.map(function (x) { return '<button type="button" data-lbwk="' + x.week + '"' + (x.week === wk ? ' class="is-on"' : '') + '>Week ' + x.week + '</button>'; }).join('') + '</div>' : '') +
           '<div class="lb-gw"><h2>Gameweek ' + w.week + '</h2><div class="lb-gw__row"><b>Final results</b><span>' + dt.day + ', ' + dt.date + '</span></div></div>' +
-          '<ol class="lb-list">' + res.map(function (r, i) { return '<li class="lb-row lb-row--gw' + (i === 0 ? ' is-top' : '') + '"><span class="lb-n">' + (i + 1) + '</span><span class="lb-t">' + esc(r.team) + (i === 0 && r.players && r.players.length ? '<small><i>★</i>' + r.players.map(esc).join(' · ') + '</small>' : '') + '</span><b class="lb-p">' + r.points + '</b></li>'; }).join('') + '</ol>';
+          '<ol class="lb-list">' + res.map(function (r, i) { return '<li class="lb-row lb-row--gw' + (i === 0 ? ' is-top' : '') + '"><span class="lb-n">' + (i + 1) + '</span><span class="lb-t">' + esc(r.team) + (i === 0 && r.players && r.players.length ? '<span class="lb-star" aria-hidden="true">★</span><span class="lb-ppl">' + r.players.map(function (n) { return '<span>' + esc(n) + '</span>'; }).join('') + '</span>' : '') + '</span><b class="lb-p">' + r.points + '</b></li>'; }).join('') + '</ol>';
       }
+      eol();
     }
+    function eol() { root.querySelectorAll('.lb-ppl').forEach(function (box) { var sp = box.children; for (var i = 0; i < sp.length; i++) { sp[i].classList.remove('eol'); } for (var k = 0; k < sp.length - 1; k++) { if (sp[k + 1].offsetTop > sp[k].offsetTop) sp[k].classList.add('eol'); } }); }
+    window.addEventListener('resize', eol);
     root.addEventListener('click', function (e) {
       var b = e.target.closest('[data-lbtab],[data-lbwk]'); if (!b) return;
       if (b.hasAttribute('data-lbtab')) mode = b.getAttribute('data-lbtab'); else wk = +b.getAttribute('data-lbwk');
