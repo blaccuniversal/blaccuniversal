@@ -915,3 +915,6 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-fm__r.is-top{border-color:var(--o2)}
 .sc-fm__r.is-top b{color:var(--o2)}
 .sc-fm__r.is-top,.sc-fm .sc-fm__r:has(> b:first-child:is(:not(:empty))){}.sc-fm--tot .sc-fm__r{grid-template-columns:8vh minmax(0,1fr) 16vh}
+.hc-homebtn{margin:0 auto;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 10px;font-size:12px;letter-spacing:.04em;color:#9a9a9a;text-decoration:none;border:1px solid transparent;border-radius:2px}
+.hc-homebtn:hover{color:#fff;border-color:#2a2a2a}
+.hc-bar .hc-status{margin-left:0}
