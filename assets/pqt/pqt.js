@@ -523,13 +523,14 @@ function pqtMain() {
     snap(); H.round++; H.roundType = type; H.ledger = []; H.paused = false;
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
     if (type === 'answers') H.feud = { qi: H.feud.qi || 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
+    H.picks = {};
     if (QA_TYPES[type]) H.qa = { wr: {}, type: type, mode: QA_BOARD[type] ? 'board' : 'q', idx: (H.qaPos[type] || 0) % Math.max(1, (QA[type] || []).length), clue: 1, revealed: false, mark: '', phase: 'ask' };
     if (H.round > H.plan.length) H.plan.push(type); else H.plan[H.round - 1] = type;
     H.view = 'intro'; H.tab = 'quiz'; push(); renderAll(); toast('Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[type]);
   }
   var GNAME = { words: 'All Except These Ones', answers: 'Quests Feud', names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion' };
   function nextPlanned() { return H.round < H.plan.length ? H.plan[H.round] : null; }
-  function goNext() { var n = nextPlanned(); if (n) startRound(n); else endGame(); }
+  function goNext() { var n = nextPlanned(); if (n) startRound(n); else openEnd(); }
   function renderPlan() {
     var lists = $$('[data-plan-list]'); if (!lists.length) return;
     $$('[data-plan-count]').forEach(function (c) { c.textContent = H.plan.length; });
@@ -563,7 +564,7 @@ function pqtMain() {
     snap(); H.teams.forEach(function (t) { t.score = 0; }); H.round = 0; H.roundType = ''; H.ledger = []; H.paused = false;
     resetTally(); H.words.team = 0; H.timer.running = false; H.timer.remaining = H.timer.total;
     H.feud = { qi: 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
-    H.qa = { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; H.qaUsed = {}; H.qaPos = {}; H.bq = null;
+    H.qa = { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; H.qaUsed = {}; H.qaPos = {}; H.bq = null; H.picks = {};
     H.view = 'lobby'; push(); renderAll(); splash('New game', H.title); toast('New game started');
   }
   function qaTimer() { var t = QA_TIME[H.qa.type]; if (!t) return; H.timer.total = t; H.timer.running = false; H.timer.remaining = t; }
@@ -584,7 +585,7 @@ function pqtMain() {
   }
   function qaShow(i, autoStart) {
     snap(); var q = H.qa; q.idx = i; q.mode = 'q'; q.clue = 1; q.revealed = false; q.mark = '';
-    if (QA_BOARD[q.type]) { var u = H.qaUsed[q.type] = H.qaUsed[q.type] || []; if (u.indexOf(i) < 0) u.push(i); var ow = turnTeam(); q.bd = { owner: ow, cur: ow, tried: [ow], res: null, adv: false }; }
+    if (QA_BOARD[q.type]) { var u = H.qaUsed[q.type] = H.qaUsed[q.type] || [], ow = turnTeam(); if (u.indexOf(i) < 0) { u.push(i); H.picks = H.picks || {}; H.picks[ow] = (H.picks[ow] || 0) + 1; } q.bd = { owner: ow, cur: ow, tried: [ow], res: null, adv: false }; }
     H.qaPos[q.type] = i; H.view = 'qa'; qaTimer(); push(); if (autoStart && QA_TIME[q.type] && q.type !== 'spell') timerStart(); renderAll();
   }
   function qaNext(d) {
@@ -777,6 +778,7 @@ function pqtMain() {
     else if (d.suN) { var nn = Math.max(1, Math.min(12, SU.plan.length + +d.suN)); if (!SU.fresh) nn = Math.max(nn, H.round || 1); var cyc = ['words', 'answers', 'names', 'spell', 'written', 'rapid']; while (SU.plan.length < nn) SU.plan.push(cyc[SU.plan.length % cyc.length]); SU.plan.length = nn; paintSetup(); }
     else if (b.hasAttribute('data-su-go')) applySetup();
     else if (b.hasAttribute('data-end-go')) { closeSheets(); endGame(); }
+    else if (b.hasAttribute('data-end-back')) { closeSheets(); var g2 = pickGap(); if (g2) { var bi = -1; H.teams.forEach(function (t, i) { if (bi < 0 && t.name === g2.behind[0].name) bi = i; }); if (H.qa.bd && !H.qa.bd.adv) H.qa.bd.adv = true; H.qa.turn = bi < 0 ? 0 : bi; } H.tab = 'quiz'; qaBoard(); }
     else if (d.m) menuAct(d.m, b);
     else if (d.planN) { var n = Math.max(Math.max(1, H.round), Math.min(12, H.plan.length + +d.planN)); var cyc = ['words', 'answers', 'names', 'spell', 'written', 'rapid']; while (H.plan.length < n) H.plan.push(cyc[H.plan.length % cyc.length]); H.plan.length = n; push(); renderPlan(); paintMenu(); paintNow(); }
     else if (d.planI != null) { var k = +d.planI; if (k >= H.round) { var order = ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'talk']; H.plan[k] = order[(order.indexOf(H.plan[k]) + 1) % order.length]; push(); renderPlan(); paintMenu(); } }
@@ -859,7 +861,18 @@ function pqtMain() {
     closeSheets();
     if (fresh) newGame(); else { push(); renderAll(); toast('Setup saved'); }
   }
+  function pickGap() {
+    if (!QA_BOARD[H.roundType] || !H.picks) return null;
+    var c = H.teams.map(function (_, i) { return H.picks[i] || 0; }), mx = Math.max.apply(null, c);
+    if (!mx) return null;
+    var behind = H.teams.map(function (t, i) { return { name: t.name, n: c[i] }; }).filter(function (x) { return x.n < mx; });
+    return behind.length ? { max: mx, behind: behind } : null;
+  }
   function openEnd() {
+    var g = pickGap(), wb = $('[data-end-warn]');
+    if (wb) { wb.hidden = !g; if (g) wb.innerHTML = '<b>Not everyone has had the same number of picks</b><span>' + g.behind.map(function (x) { return esc(x.name) + (x.n ? ' has picked ' + x.n : ' hasn’t picked yet'); }).join(' · ') + '. Others have picked ' + g.max + '.</span><button class="pbtn pbtn--white" data-end-back type="button">Back to the board · ' + esc(g.behind[0].name) + ' picks</button>'; }
+    $('[data-end-go]').textContent = g ? 'End anyway' : 'End game · show winner';
+    $('[data-end-go]').classList.toggle('pbtn--o', !g);
     var rows = H.teams.map(function (t) { return t; }).slice().sort(function (a, b) { return b.score - a.score; });
     $('[data-end-sub]').textContent = (H.title || 'Game night') + ' · ' + H.round + ' of ' + H.plan.length + ' rounds played';
     $('[data-end-list]').innerHTML = rows.map(function (t, i) { return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '</b><em>' + t.score + '</em></li>'; }).join('');

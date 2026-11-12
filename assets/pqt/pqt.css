@@ -735,3 +735,50 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-qa__who.is-bonus{color:var(--o2)}
 .sc-qa__top{flex-wrap:wrap}
 .sc-qa__who{width:100%}
+/* season leaderboard */
+.lb{border:1px solid #1a1a1a;background:#050505;padding:clamp(22px,5vw,40px) clamp(18px,5vw,40px) clamp(18px,4vw,30px)}
+.lb-season,.lb-sub{display:flex;align-items:center;gap:14px;margin:0;font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#bdbdbd}
+.lb-season::before,.lb-season::after,.lb-sub::before,.lb-sub::after{content:"";flex:1;height:1px;background:#2a2a2a}
+.lb-h{margin:10px 0 18px;text-align:center;font-family:var(--sans);font-weight:700;font-size:clamp(40px,11vw,76px);line-height:.95;letter-spacing:-.03em;text-transform:uppercase;color:#e9e6df}
+.lb .pq-seg{margin-bottom:20px}
+.lb-sub{margin:4px 0 14px;font-size:11px;color:#8a8a8a}
+.lb-list{list-style:none;margin:0;padding:0}
+.lb-row{display:grid;grid-template-columns:2.2ch minmax(0,1fr) auto auto;gap:0 16px;align-items:baseline;padding:11px 0;border-left:0}
+.lb-n{font-size:20px;font-weight:300;color:#8a8a8a;padding-right:14px;border-right:1px solid #2a2a2a;align-self:stretch;display:flex;align-items:center}
+.lb-t{font-size:clamp(17px,4.6vw,22px);font-weight:300;color:#e6e6e6;min-width:0}
+.lb-t small{display:block;margin-top:8px;font-size:13px;line-height:1.6;color:#9a9a9a;font-weight:400}
+.lb-t small i{display:block;font-style:normal;color:#cfcfcf;margin-bottom:2px}
+.lb-p{font-size:clamp(17px,4.6vw,22px);font-weight:300;color:#e6e6e6;text-align:right;font-variant-numeric:tabular-nums}
+.lb-row.is-top .lb-n,.lb-row.is-top .lb-t,.lb-row.is-top .lb-p{font-weight:700;color:#fff}
+.lb-mv{font-size:13px;font-weight:600;text-align:center;min-width:3.4ch;letter-spacing:.02em}
+.lb-mv--eq{color:#5aa8ff}
+.lb-mv--up{color:#5ad18f}
+.lb-mv--dn{color:#ff6a6a}
+.lb-mv--new{color:#d4a64a;font-size:11px;letter-spacing:.08em}
+.lb-list li:not(.lb-row){display:none}
+.lb-gw{margin:0 0 14px;padding:0 0 16px;border-bottom:1px solid #2a2a2a}
+.lb-gw h2{margin:0;font-weight:700;font-size:clamp(32px,9vw,58px);letter-spacing:-.02em;line-height:1;text-transform:uppercase;color:#e9e6df}
+.lb-gw__row{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-top:12px}
+.lb-gw__row b{font-size:clamp(20px,5.5vw,32px);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--o2)}
+.lb-gw__row span{text-align:right;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#a8a8a8;line-height:1.5}
+.lb-wks{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}
+.lb-wks button{-webkit-appearance:none;appearance:none;background:transparent;border:1px solid #2a2a2a;border-radius:2px;color:#9a9a9a;font:inherit;font-size:12px;letter-spacing:.06em;min-height:36px;padding:0 12px;cursor:pointer}
+.lb-wks button.is-on{background:#fff;color:#000;border-color:#fff}
+.lb-fx{margin:22px 0 0;padding:16px 0 0;border-top:1px solid #1a1a1a}
+.lb-fx summary{list-style:none;display:flex;align-items:baseline;gap:14px;cursor:pointer;color:#cfcfcf}
+.lb-fx summary::-webkit-details-marker{display:none}
+.lb-fx summary i{font-family:Georgia,serif;font-size:20px;font-style:italic}
+.lb-fx summary span{font-family:Georgia,serif;font-size:15px}
+.lb-fx summary em{margin-left:auto;font-style:normal;font-size:12px;color:#7a7a7a;text-decoration:underline}
+.lb-fx dl{margin:14px 0 0;display:grid;gap:10px}
+.lb-fx dl div{display:grid;grid-template-columns:2ch 1fr;gap:12px}
+.lb-fx dt{font-family:Georgia,serif;font-style:italic;color:#fff}
+.lb-fx dd{margin:0;font-size:13px;line-height:1.55;color:#9a9a9a}
+.lb-warn{margin:14px 0 0;font-size:12px;color:#d4a64a}
+@media (max-width:520px){.lb-row{gap:0 12px}.lb-n{font-size:17px;padding-right:10px}}
+.hc-endwarn{display:flex;flex-direction:column;gap:8px;margin:0 0 14px;padding:14px;border:1px solid var(--o2);background:rgba(255,106,43,.06)}
+.hc-endwarn[hidden]{display:none}
+.hc-endwarn b{font-size:14px;color:#fff}
+.hc-endwarn span{font-size:13px;line-height:1.5;color:#cfcfcf}
+.hc-endwarn .pbtn{margin-top:4px}
+.lb-row.is-top .lb-n{align-items:flex-start}

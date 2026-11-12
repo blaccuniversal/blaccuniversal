@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112040">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=261112041">
 </head>
 <body>
 <div class="pq-land2">
@@ -23,17 +23,16 @@
   <header class="pq-top"><a class="pq-brand" href="/"><svg viewBox="0 0 563 418" aria-hidden="true"><g fill="#ffffff"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg><span>BLACC Universal</span></a><span class="eyebrow">Game night</span></header>
   <main class="pq-board">
     <div class="pq-lbtop"><a class="pq-back" href="/pqt/"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>PQT</a><img class="pq-lbmark" src="/assets/pqt/pqt-mark.png" alt="" width="371" height="400"></div>
-    <h1 class="pq-lbh">Leaderboard</h1>
-    <section class="pq-tile pq-stand" data-stand>
-      <div class="pq-stand__head"><h2>Standings</h2><span class="pq-stand__note">Points from finished games</span></div>
-      <div class="pq-seg" role="tablist" aria-label="Leaderboard period"><button type="button" role="tab" data-lb="all" class="is-on" aria-selected="true">All-time</button><button type="button" role="tab" data-lb="week" aria-selected="false">This week</button></div>
-      <div data-stand-list><p class="pq-stand__empty">No games played yet. When a host ends a game, the scores are added here.</p></div>
-      <p class="pq-stand__foot" data-stand-n></p>
-    </section>
+    <div class="lb" data-lbroot>
+      <p class="lb-season"><span data-lb-season>Season I</span></p>
+      <h1 class="lb-h">Leaderboard</h1>
+      <div class="pq-seg" role="tablist" aria-label="Leaderboard view"><button type="button" role="tab" data-lbtab="all" class="is-on" aria-selected="true">All-time</button><button type="button" role="tab" data-lbtab="week" aria-selected="false">Gameweek</button></div>
+      <div data-lb-body><p class="pq-stand__empty">Loading…</p></div>
+    </div>
   </main>
   <footer class="pq-foot">PQT · People, Quests &amp; Triumphs · by BLACC Universal</footer>
 </div>
-<script src="/assets/pqt/pqt-leaderboard.js?v=261112040"></script>
-<script src="/assets/pqt/pqt-offline.js?v=261112040"></script>
+<script src="/assets/pqt/pqt-leaderboard.js?v=261112041"></script>
+<script src="/assets/pqt/pqt-offline.js?v=261112041"></script>
 </body>
 </html>
