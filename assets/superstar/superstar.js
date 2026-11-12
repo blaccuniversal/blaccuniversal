@@ -223,10 +223,13 @@
     if (!session) return;
     geo.h = rowH();
     geo.nowY = promptEl.clientHeight * 0.38;
-    var first = session.rows[0].el, pr = promptEl.getBoundingClientRect();
-    var ds = first.querySelectorAll('.row__d');
-    geo.cols = Array.prototype.map.call(ds, function (d) { var b = d.getBoundingClientRect(); return b.left + b.width / 2 - pr.left; });
-    session.rows.forEach(function (r) { r.wx = null; });
+    session.rows.forEach(function (r) { r.wx = null; r.cols = null; });
+  }
+  function colsOf(r) {
+    if (r.cols) return r.cols;
+    var pr = promptEl.getBoundingClientRect();
+    r.cols = Array.prototype.map.call(r.el.querySelectorAll('.row__d'), function (d) { var b = d.getBoundingClientRect(); return b.left + b.width / 2 - pr.left; });
+    return r.cols;
   }
   function wordX(r) {
     if (r.wx != null) return r.wx;
@@ -273,6 +276,8 @@
     if (beat !== session.lastBeat) {
       session.lastBeat = beat;
       $$('.beatbar i').forEach(function (el, i) { el.classList.toggle('is-on', i <= beat); el.classList.toggle('is-four', i === 3); });
+      var cr = session.rows[bar];
+      if (cr && cr.el && beat < 3) { var sqs = cr.el.querySelectorAll('.row__d'); if (sqs[beat]) sqs[beat].classList.add('is-on'); }
       if (beat === 3 && session.rows[bar] && session.rows[bar].el && !session.rows[bar].count) {
         var el = session.rows[bar].el; el.classList.add('is-hit'); setTimeout(function () { el.classList.remove('is-hit'); }, 260);
       }
@@ -280,12 +285,12 @@
     // ball
     if (session.opts.ball && session.rows[bar] && session.rows[bar].el) {
       var f = inBar - beat, r = session.rows[bar];
-      var pts = [geo.cols[0], geo.cols[1], geo.cols[2], wordX(r)];
+      var cs = colsOf(r), pts = [cs[0], cs[1], cs[2], wordX(r)];
       var nxt = session.rows[bar + 1];
-      var x0 = pts[beat], x1 = beat < 3 ? pts[beat + 1] : (nxt && nxt.el ? geo.cols[0] : pts[3]);
+      var x0 = pts[beat], x1 = beat < 3 ? pts[beat + 1] : (nxt && nxt.el ? colsOf(nxt)[0] : pts[3]);
       var sq = sqOff(), b0 = beat === 3 ? wordTopOff(r) : sq, b1 = beat === 2 ? wordTopOff(r) : sq;
       var x = x0 + (x1 - x0) * f, base = b0 + (b1 - b0) * f;
-      var amp = Math.min(geo.h * 0.75, 90);
+      var amp = geo.h * 0.36;
       var y = geo.nowY - base - amp * 4 * f * (1 - f);
       ballEl.style.transform = 'translate(' + x + 'px,' + y + 'px)';
     }
