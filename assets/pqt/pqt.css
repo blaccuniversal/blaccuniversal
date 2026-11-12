@@ -506,3 +506,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .sc-bigx span{font-weight:200}
 .sc-tap{background:rgba(0,0,0,.92)}
 .sc-tap button{border-radius:2px}
+.hc>.hc-plansec{order:3}
+.hc-plansec .hc-plan__count{padding-top:0}
+.hc>.hc-tabs{order:4}.hc>[data-pane]{order:5}.hc>.hc-sec:not([data-pane]):not([data-connect-sec]){order:6}
+.hc>.hc-sec.hc-plansec:not([data-pane]):not([data-connect-sec]){order:3}

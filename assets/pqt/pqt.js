@@ -462,14 +462,16 @@ function pqtMain() {
   function nextPlanned() { return H.round < H.plan.length ? H.plan[H.round] : null; }
   function goNext() { var n = nextPlanned(); if (n) startRound(n); else endGame(); }
   function renderPlan() {
-    var list = $('[data-plan-list]'); if (!list) return;
-    $('[data-plan-count]').textContent = H.plan.length;
-    list.innerHTML = H.plan.map(function (g, i) {
+    var lists = $$('[data-plan-list]'); if (!lists.length) return;
+    $$('[data-plan-count]').forEach(function (c) { c.textContent = H.plan.length; });
+    var html = H.plan.map(function (g, i) {
       var done = i < H.round, cur = i === H.round - 1;
       return '<li><button class="hc-plan__r' + (done ? ' is-done' : '') + (cur ? ' is-cur' : '') + '" type="button" data-plan-i="' + i + '"' + (done ? ' disabled' : '') + '><span>Round ' + (i + 1) + (cur ? ' · now' : done ? ' · played' : '') + '</span><b>' + GNAME[g] + '</b></button></li>';
     }).join('');
+    lists.forEach(function (l) { l.innerHTML = html; });
   }
   function paintMenu() {
+    var ps0 = $('.hc-plansec'); if (ps0) ps0.hidden = H.round > 0;
     var n = nextPlanned(), b = $('[data-m-next]'), sb = $('[data-m-next-sub]');
     if (b) b.textContent = n ? 'Start round ' + (H.round + 1) + ' of ' + H.plan.length : 'All rounds played · show winner';
     if (sb) sb.textContent = n ? GNAME[n] + ' · from your game plan' : 'End the game with the podium.';

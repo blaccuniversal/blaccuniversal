@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611120320">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=202611120335">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -41,6 +41,12 @@
 
   <div class="hc-tabs" role="tablist"><button class="hc-tab" data-tab="teams" type="button">Teams</button><button class="hc-tab" data-tab="words" type="button">Don’t Say It</button><button class="hc-tab" data-tab="answers" type="button">Top Answers</button><button class="hc-tab" data-tab="cards" type="button">Cards</button></div>
 
+  <section class="card hc-sec hc-plansec">
+    <h2>Rounds tonight</h2>
+    <div class="hc-plan__count"><span>Number of rounds</span><div class="hc-row"><button class="pbtn" data-plan-n="-1" type="button" aria-label="Fewer rounds">−</button><b data-plan-count>3</b><button class="pbtn" data-plan-n="1" type="button" aria-label="More rounds">+</button></div></div>
+    <ol class="hc-plan" data-plan-list></ol>
+    <p class="hc-note">Tap a round to switch its game. Also in Menu → Game plan.</p>
+  </section>
   <section class="card hc-sec" data-pane="teams">
     <h2>Teams &amp; scores <span class="hc-row"><button class="pbtn pbtn--sm pbtn--ghost" data-rmteam type="button">− Team</button><button class="pbtn pbtn--sm" data-addteam type="button">+ Team</button></span></h2>
     <div data-teams></div>
@@ -98,10 +104,10 @@
   </div>
   <div class="hc-toast" data-toast hidden></div>
 </div>
-<script src="/assets/pqt/pqt-gate.js?v=202611120320"></script>
+<script src="/assets/pqt/pqt-gate.js?v=202611120335"></script>
 <script src="/assets/pqt/mqtt.min.js?v=5104"></script>
-<script src="/assets/pqt/peerjs.min.js?v=202611120320"></script>
-<script src="/assets/pqt/pqt-data.js?v=202611120320"></script>
-<script src="/assets/pqt/pqt.js?v=202611120320"></script>
+<script src="/assets/pqt/peerjs.min.js?v=202611120335"></script>
+<script src="/assets/pqt/pqt-data.js?v=202611120335"></script>
+<script src="/assets/pqt/pqt.js?v=202611120335"></script>
 </body>
 </html>
