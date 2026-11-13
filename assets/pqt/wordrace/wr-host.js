@@ -134,6 +134,7 @@
   }
 
   /* ---------- rendering ---------- */
+  function pl(n, one, many) { return n + ' ' + (Math.abs(n) === 1 ? one : (many || one + 's')); }
   function fmt(ms) { return String(Math.ceil(ms / 1000)); }
   function tLink(id) { var t = E.team(T, id), i = T.teams.indexOf(t); return V.badge({ name: t.name, c: V.color(i) }); }
   function render() {
@@ -268,11 +269,11 @@
   function decisionPane() {
     var d = T.decision, r = E.lastRound(T), s = E.summary(T);
     if (d.type === 'best-loser-tie') {
-      return '<section class="card hc-sec wr-dec"><p class="eyebrow">Your call</p><h3>Best Losers are tied on ' + d.pts + ' points</h3><p class="hc-note">The rules only settle a tie when all three losers of a seven-team draw are level. Choose which tied team plays ' + esc(E.tname(T, r.unmatched)) + ' in the revival.</p>' +
-        d.teams.map(function (x) { return '<div class="wr-li">' + tLink(x) + '<div><b>' + esc(E.tname(T, x)) + '</b><span>' + s[x].pts + ' pts · ' + s[x].won + ' battles won</span></div><button class="pbtn pbtn--sm pbtn--white" data-dec-team="' + x + '" type="button">Revive</button></div>'; }).join('') + '</section>';
+      return '<section class="card hc-sec wr-dec"><p class="eyebrow">Your call</p><h3>Best Losers are tied on ' + pl(d.pts, 'point') + '</h3><p class="hc-note">The rules only settle a tie when all three losers of a seven-team draw are level. Choose which tied team plays ' + esc(E.tname(T, r.unmatched)) + ' in the revival.</p>' +
+        d.teams.map(function (x) { return '<div class="wr-li">' + tLink(x) + '<div><b>' + esc(E.tname(T, x)) + '</b><span>' + s[x].pts + ' pts · ' + pl(s[x].won, 'battle') + ' won</span></div><button class="pbtn pbtn--sm pbtn--white" data-dec-team="' + x + '" type="button">Revive</button></div>'; }).join('') + '</section>';
     }
     return '<section class="card hc-sec wr-dec"><p class="eyebrow">Your call</p><h3>' + d.pool.length + ' teams qualified</h3><p class="hc-note">An odd number can’t be paired. The rules don’t say what happens here, so you decide. <b>Revival</b>: one team sits out, the others play, and the Best Loser of that round plays the team that sat out. <b>Bye</b>: one team goes straight through.</p>' +
-      d.pool.map(function (x) { return '<div class="wr-li">' + tLink(x) + '<div><b>' + esc(E.tname(T, x)) + '</b><span>' + s[x].pts + ' pts · ' + s[x].won + ' battles won</span></div><button class="pbtn pbtn--sm" data-dec-mode="revival" data-dec-t="' + x + '" type="button">Sits out</button><button class="pbtn pbtn--sm" data-dec-mode="bye" data-dec-t="' + x + '" type="button">Bye</button></div>'; }).join('') + '</section>';
+      d.pool.map(function (x) { return '<div class="wr-li">' + tLink(x) + '<div><b>' + esc(E.tname(T, x)) + '</b><span>' + s[x].pts + ' pts · ' + pl(s[x].won, 'battle') + ' won</span></div><button class="pbtn pbtn--sm" data-dec-mode="revival" data-dec-t="' + x + '" type="button">Sits out</button><button class="pbtn pbtn--sm" data-dec-mode="bye" data-dec-t="' + x + '" type="button">Bye</button></div>'; }).join('') + '</section>';
   }
   function logPane() {
     var ms = Object.keys(T.matchups).map(function (id) { return T.matchups[id]; }).filter(function (m) { return m.battles.length; });
@@ -290,7 +291,7 @@
     switch (a.act) {
       case 'create': s = 'Created “' + esc(a.name) + '”'; break;
       case 'team-add': s = 'Added ' + esc(a.name); break;
-      case 'start': s = 'Started with ' + a.teams.length + ' teams'; break;
+      case 'start': s = 'Started with ' + pl(a.teams.length, 'team'); break;
       case 'round-open': s = esc(a.label) + ' drawn' + (a.unmatched ? ' · ' + n(a.unmatched) + ' unmatched' : '') + (a.bye ? ' · ' + n(a.bye) + ' bye' : ''); break;
       case 'battle-start': s = 'Battle ' + a.battle + ': ' + a.s.toUpperCase() + ' → ' + a.e.toUpperCase(); break;
       case 'answer': s = n(a.team) + ' ' + (a.word ? '“' + esc(a.word) + '”' : '(called out)') + ' ' + (a.ok ? '✓' : '✗ ' + (E.REASONS[a.reason] || '')) + ' ' + (a.pts > 0 ? '+' : '') + a.pts + (a.by === 'host' ? ' (host)' : ''); break;

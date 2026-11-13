@@ -19,6 +19,7 @@ function pqtMain() {
     });
   }
   window.addEventListener('resize', function () { fitQ(); });
+  function pl(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
   function sstore(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
@@ -264,7 +265,7 @@ function pqtMain() {
           '<ul class="sc-join__steps"><li><b>1.</b> Type the code you see here.</li><li><b>2.</b> Tap Connect. This screen follows the host.</li><li><b>3.</b> Double-click or tap the screen for full screen.</li></ul></div></div>';
       },
       lobby: function () {
-        return '<div class="sc-lobby__logo"><img class="pq-logo" src="/assets/pqt/pqt-logo.png" alt="PQT · People, Quests &amp; Triumphs · MMXXIV" width="1400" height="298"></div>' + (S.title && S.title !== 'People, Quests & Triumphs' ? '<p class="sc-lobby__name">' + esc(S.title) + '</p>' : '') + (S.rounds ? '<p class="sc-lobby__rounds">' + S.rounds + ' rounds tonight</p>' : '') +
+        return '<div class="sc-lobby__logo"><img class="pq-logo" src="/assets/pqt/pqt-logo.png" alt="PQT · People, Quests &amp; Triumphs · MMXXIV" width="1400" height="298"></div>' + (S.title && S.title !== 'People, Quests & Triumphs' ? '<p class="sc-lobby__name">' + esc(S.title) + '</p>' : '') + (S.rounds ? '<p class="sc-lobby__rounds">' + pl(S.rounds, 'round') + ' tonight</p>' : '') +
           '<div class="sc-chips">' + S.teams.map(function (t) { return '<span class="sc-chip"><i style="background:' + t.color + '"></i>' + esc(t.name) + '</span>'; }).join('') + '</div>';
       },
       scores: function () {
@@ -335,7 +336,7 @@ function pqtMain() {
       fm: function () {
         var f = S.fm; if (!f) return '';
         function tiles(n, show, cls) { var h = '<div class="sc-fmb' + (cls || '') + '">'; for (var i = 0; i < n; i++) { var s = show[i]; h += '<div class="sc-fmb__t' + (s ? ' is-on' + (s.hl ? ' is-hl' : '') : '') + '"><span class="sc-fmb__n">' + (i + 1) + '</span>' + (s ? '<b>' + esc(s.a) + '</b><em>' + s.p + '</em>' + (s.by ? '<small>' + esc(s.by) + '</small>' : '') : '') + '</div>'; } return h + '</div>'; }
-        if (f.phase === 'ready') return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud · ' + esc(f.team) + ', you’re up</p><p class="sc-fm__sub">' + f.n + ' questions · 40 seconds</p><ol class="sc-fmq">' + (f.qs || []).map(function (q, i) { return '<li style="animation-delay:' + (0.3 + i * 0.35) + 's"><b>' + (i + 1) + '</b><span>' + esc(q) + '</span></li>'; }).join('') + '</ol></div>';
+        if (f.phase === 'ready') return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud · ' + esc(f.team) + ', you’re up</p><p class="sc-fm__sub">' + pl(f.n, 'question') + ' · 40 seconds</p><ol class="sc-fmq">' + (f.qs || []).map(function (q, i) { return '<li style="animation-delay:' + (0.3 + i * 0.35) + 's"><b>' + (i + 1) + '</b><span>' + esc(q) + '</span></li>'; }).join('') + '</ol></div>';
         if (f.phase === 'answer') {
           var show = {}; if (f.hit) show[f.hit.i] = { a: f.hit.a, p: f.hit.p, hl: 1 };
           var msg = f.msg === 'taken' ? '<div class="sc-fm__msg is-warn">Already given by ' + esc(f.takenBy) + ' · no points</div>' : f.msg === 'miss' ? '<div class="sc-fm__msg is-miss">Not on the board</div>' : f.msg === 'pass' ? '<div class="sc-fm__msg is-miss">Pass</div>' : '';
@@ -388,7 +389,7 @@ function pqtMain() {
         el.classList.toggle('is-out', !!r);
       });
       var b = $('[data-bank]', main); if (b) b.textContent = f.bank;
-      var a = $('[data-award]', main); if (a) a.textContent = f.awardedTo != null && S.teams[f.awardedTo] ? f.awardedPts + ' points to ' + S.teams[f.awardedTo].name : '';
+      var a = $('[data-award]', main); if (a) a.textContent = f.awardedTo != null && S.teams[f.awardedTo] ? pl(f.awardedPts, 'point') + ' to ' + S.teams[f.awardedTo].name : '';
       $$('[data-x] i', main).forEach(function (x, i) { x.classList.toggle('is-on', i < f.strikes); });
       var st = $('[data-steal]', main); if (st) st.hidden = !(f.strikes >= 3 && f.awardedTo == null);
     }
@@ -605,14 +606,14 @@ function pqtMain() {
   }
   function paintMenu() {
     var ps0 = $('.hc-plansec'); if (ps0) ps0.hidden = H.round > 0 && !H.ended;
-    var gs = $('[data-gsum]'); if (gs) gs.innerHTML = H.ended ? '<b>' + esc(H.title || 'PQT') + '</b><span>Game over · the winner is on the screen.</span>' : '<b>' + esc(H.title || 'PQT') + '</b><span>' + H.teams.length + ' teams · ' + H.plan.length + (H.plan.length === 1 ? ' round' : ' rounds') + ' · ' + H.plan.map(function (g) { return GNAME[g]; }).join(', ') + '</span>';
+    var gs = $('[data-gsum]'); if (gs) gs.innerHTML = H.ended ? '<b>' + esc(H.title || 'PQT') + '</b><span>Game over · the winner is on the screen.</span>' : '<b>' + esc(H.title || 'PQT') + '</b><span>' + pl(H.teams.length, 'team') + ' · ' + pl(H.plan.length, 'round') + ' · ' + H.plan.map(function (g) { return GNAME[g]; }).join(', ') + '</span>';
     var gb = $('[data-gstart]'); if (gb) gb.hidden = !!H.ended;
     var so = $('[data-setup-open]'); if (so) { so.textContent = H.ended ? 'Set up the next game' : 'Set up'; so.classList.toggle('pbtn--white', !!H.ended); }
     var gt = $('[data-m-gtitle]'); if (gt) gt.textContent = H.title || 'This game';
     var n = nextPlanned(), b = $('[data-m-next]'), sb = $('[data-m-next-sub]');
     if (b) b.textContent = H.ended ? 'Game over · set up a new one' : n ? 'Start round ' + (H.round + 1) + ' of ' + H.plan.length : 'All rounds played · end game';
     if (sb) sb.textContent = H.ended ? 'Name, teams and rounds for the next game.' : n ? GNAME[n] + ' · from your game plan' : 'Final scores and the winner on screen.';
-    var ps = $('[data-m-plan-sub]'); if (ps) ps.textContent = H.plan.length + ' rounds · ' + H.plan.map(function (g) { return GNAME[g]; }).join(' → ');
+    var ps = $('[data-m-plan-sub]'); if (ps) ps.textContent = pl(H.plan.length, 'round') + ' · ' + H.plan.map(function (g) { return GNAME[g]; }).join(' → ');
   }
   function restartRound() {
     if (!H.roundType) { toast('No round to restart yet'); return; }
@@ -842,7 +843,7 @@ function pqtMain() {
   }
   function feudStrike() { snap(); var f = H.feud; f.strikes = Math.min(3, f.strikes + 1); fx('buzz', { bigX: true }); push(); renderTab(); }
   function feudBank() { var b = BOARDS[H.feud.qi], s = 0; if (b) Object.keys(H.feud.out).forEach(function (i) { if (H.feud.out[i] === 'p' && b.a[i]) s += b.a[i].p; }); return s; }
-  function feudAward(ti) { var p = feudBank(); if (!p) return; snap(); pts(ti, p); H.feud.awardedTo = ti; H.feud.awardedPts = p; fx('win'); push(); renderTab(); toast(p + ' points to ' + H.teams[ti].name); }
+  function feudAward(ti) { var p = feudBank(); if (!p) return; snap(); pts(ti, p); H.feud.awardedTo = ti; H.feud.awardedPts = p; fx('win'); push(); renderTab(); toast(pl(p, 'point') + ' to ' + H.teams[ti].name); }
   function feudRevealAll() { snap(); var b = BOARDS[H.feud.qi]; if (!b) return; b.a.forEach(function (_, i) { if (!H.feud.out[i]) H.feud.out[i] = 's'; }); fx('ding'); push(); renderTab(); }
   function feudGo(qi) { snap(); H.feud = { qi: (qi + BOARDS.length) % Math.max(1, BOARDS.length), out: {}, strikes: 0, awardedTo: null, awardedPts: 0 }; H.view = 'answers'; push(); renderAll(); }
   function setView(v) { H.view = v; push(); renderViews(); paintNow(); }
@@ -852,7 +853,7 @@ function pqtMain() {
     v.textContent = (H.paused ? 'Paused · ' : '') + (VIEWNAME[H.view] || H.view);
     if (H.view === 'qa') v.textContent = (H.paused ? 'Paused · ' : '') + (H.qa.mode === 'board' ? 'Number board' : GNAME[H.qa.type] + ' · ' + (H.qa.idx + 1) + ' of ' + ((QA[H.qa.type] || []).length));
     if (H.ended) { v.textContent = 'Game over'; $('[data-now-round]').textContent = (H.title || 'PQT') + ' · winner on screen'; } else
-    $('[data-now-round]').textContent = H.round ? 'Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[H.roundType] : H.plan.length + ' rounds planned · not started';
+    $('[data-now-round]').textContent = H.round ? 'Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[H.roundType] : pl(H.plan.length, 'round') + ' planned · not started';
     var pb = $('[data-pause]'); pb.textContent = H.paused ? 'Resume screen' : 'Pause screen'; pb.classList.toggle('is-on', H.paused);
     var mp = $('[data-m-pause]'); if (mp) mp.textContent = H.paused ? 'Resume screen' : 'Pause screen';
     $('[data-now]').classList.toggle('is-paused', H.paused);
@@ -890,8 +891,8 @@ function pqtMain() {
     if (H.view === 'intro' || f.phase === 'ready') {
       var shown = H.view === 'fm' && f.shown === f.ti;
       return prog + (shown
-        ? '<p class="hc-note hc-lead">The ' + f.qs.length + ' questions are on the screen. Give ' + esc(tm.name) + ' a moment to read them, then start the clock.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="start" type="button">Start ' + esc(tm.name) + ' · ' + fmtT(FM_TIME[Math.min(f.ti, 1)]) + 's</button>'
-        : '<p class="hc-note hc-lead">Every team answers the same ' + f.qs.length + ' questions, one team at a time. First, reveal the questions on the screen.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="reveal" type="button">Reveal the ' + f.qs.length + ' questions</button><button class="pbtn pbtn--lg pbtn--block pbtn--ghost" data-fm="start" type="button" style="margin-top:8px">Skip and start ' + esc(tm.name) + ' · ' + fmtT(FM_TIME[Math.min(f.ti, 1)]) + 's</button>');
+        ? '<p class="hc-note hc-lead">The ' + (f.qs.length === 1 ? 'question is' : f.qs.length + ' questions are') + ' on the screen. Give ' + esc(tm.name) + ' a moment to read them, then start the clock.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="start" type="button">Start ' + esc(tm.name) + ' · ' + fmtT(FM_TIME[Math.min(f.ti, 1)]) + 's</button>'
+        : '<p class="hc-note hc-lead">Every team answers the same ' + (f.qs.length === 1 ? 'question' : f.qs.length + ' questions') + ', one team at a time. First, reveal the questions on the screen.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="reveal" type="button">Reveal the ' + (f.qs.length === 1 ? 'question' : f.qs.length + ' questions') + '</button><button class="pbtn pbtn--lg pbtn--block pbtn--ghost" data-fm="start" type="button" style="margin-top:8px">Skip and start ' + esc(tm.name) + ' · ' + fmtT(FM_TIME[Math.min(f.ti, 1)]) + 's</button>');
     }
     if (f.phase === 'answer') {
       var b = fmB(f.qi), mine = (f.picks[t] || {})[f.qi], last = f.last && f.last.qi === f.qi ? f.last : null;
@@ -1001,7 +1002,7 @@ function pqtMain() {
       if (document.activeElement !== wa) wa.value = H.wordsTxt;
       if (document.activeElement !== ba) ba.value = H.boardsTxt;
       ['names', 'spell', 'written', 'rapid', 'talk', 'alpha'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el && document.activeElement !== el) el.value = H[k + 'Txt'] || ''; });
-      var CC = { words: WORDS.length + ' words', boards: BOARDS.length + ' questions', names: QA.names.length + ' people', spell: QA.spell.length + ' words', written: QA.written.length + ' questions', rapid: QA.rapid.length + ' questions', talk: QA.talk.length + ' topics', alpha: QA.alpha.length + ' puzzles' }; $$('[data-cc]').forEach(function (el) { el.textContent = CC[el.getAttribute('data-cc')] || ''; });
+      var CC = { words: pl(WORDS.length, 'word'), boards: pl(BOARDS.length, 'question'), names: pl(QA.names.length, 'person', 'people'), spell: pl(QA.spell.length, 'word'), written: pl(QA.written.length, 'question'), rapid: pl(QA.rapid.length, 'question'), talk: pl(QA.talk.length, 'topic'), alpha: pl(QA.alpha.length, 'puzzle') }; $$('[data-cc]').forEach(function (el) { el.textContent = CC[el.getAttribute('data-cc')] || ''; });
     }
   }
 
@@ -1134,7 +1135,7 @@ function pqtMain() {
     $('[data-end-go]').textContent = g ? 'End anyway' : 'End game · show winner';
     $('[data-end-go]').classList.toggle('pbtn--o', !g);
     var rows = H.teams.map(function (t) { return t; }).slice().sort(function (a, b) { return b.score - a.score; });
-    $('[data-end-sub]').textContent = (H.title || 'PQT') + ' · ' + H.round + ' of ' + H.plan.length + ' rounds played';
+    $('[data-end-sub]').textContent = (H.title || 'PQT') + ' · ' + H.round + ' of ' + pl(H.plan.length, 'round') + ' played';
     $('[data-end-list]').innerHTML = rows.map(function (t, i) { var rp = roundPts(H.teams.indexOf(t)); return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '<small>' + rp.rounds.map(function (v, r) { return 'R' + (r + 1) + ' ' + (v == null ? '–' : v); }).join(' · ') + (rp.pen ? ' · Penalty ' + rp.pen : '') + '</small></b><em>' + t.score + '</em></li>'; }).join('');
     $('[data-endsheet]').hidden = false;
   }

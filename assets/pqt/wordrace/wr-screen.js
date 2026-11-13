@@ -96,8 +96,8 @@
   function next() {
     var e = queue.shift(); if (!e) return;
     var d = e.d || {};
-    if (e.k === 'correct') overlay('wrs-ov--ok', '<span class="wrs-ov__k">' + esc(d.team) + '</span><div class="wrs-ov__big">' + esc((d.word || 'Correct').toUpperCase()) + '</div><span class="wrs-ov__sub">+' + d.pts + ' points</span>', 2400);
-    else if (e.k === 'wrong') { overlay('wrs-ov--no', '<span class="wrs-ov__k">' + esc(d.team) + '</span><div class="wrs-ov__big">' + esc((d.word || '—').toUpperCase()) + '</div><span class="wrs-ov__sub">' + esc(reason(d.reason)) + (d.pts ? ' · ' + d.pts + ' points' : '') + '</span>', 1600); var st = root.querySelector('.wrs-letters'); if (st) st.classList.add('wrs-shake'); }
+    if (e.k === 'correct') overlay('wrs-ov--ok', '<span class="wrs-ov__k">' + esc(d.team) + '</span><div class="wrs-ov__big">' + esc((d.word || 'Correct').toUpperCase()) + '</div><span class="wrs-ov__sub">+' + d.pts + (d.pts === 1 ? ' point' : ' points') + '</span>', 2400);
+    else if (e.k === 'wrong') { overlay('wrs-ov--no', '<span class="wrs-ov__k">' + esc(d.team) + '</span><div class="wrs-ov__big">' + esc((d.word || '—').toUpperCase()) + '</div><span class="wrs-ov__sub">' + esc(reason(d.reason)) + (d.pts ? ' · ' + d.pts + (Math.abs(d.pts) === 1 ? ' point' : ' points') : '') + '</span>', 1600); var st = root.querySelector('.wrs-letters'); if (st) st.classList.add('wrs-shake'); }
     else if (e.k === 'time') overlay('wrs-ov--time', '<div class="wrs-ov__big">TIME</div><span class="wrs-ov__sub">New letters coming</span>', 1500);
     else if (e.k === 'matchup') overlay('wrs-ov--win', '<span class="wrs-ov__k">Matchup winner</span><div class="wrs-ov__big" style="font-size:11vh">' + esc(d.team) + '</div><span class="wrs-ov__mid">' + esc(d.score) + '</span>', 3800);
     else if (e.k === 'revival') overlay('wrs-ov--rev', '<span class="wrs-ov__k">Best Loser Revival</span><div class="wrs-ov__mid">' + (d.tied ? 'Three losers tied on points' : esc(d.best || '') + ' get a second chance') + '</div><span class="wrs-ov__sub">' + d.pairs.map(function (p) { return esc(p[0]) + ' v ' + esc(p[1]); }).join(' · ') + '</span>', 4500);
