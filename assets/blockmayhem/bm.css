@@ -301,3 +301,10 @@ html[data-theme=day] .lv__play{background:#111;color:#fff}
 .lvgrid--grid .lv__t{font-size:13px}
 .lvgrid--grid .lv__r{margin-top:6px}
 .lvgrid--grid .lv__k{color:var(--tx3);filter:none;top:10px;right:10px}
+.lvgrid--swipe .lv{min-height:clamp(300px,52vh,440px);justify-content:space-between}
+.lvgrid--swipe .lv__meta{flex:1;justify-content:center;gap:10px;padding:28px 24px 8px}
+.lvgrid--swipe .lv__n{font-size:clamp(84px,24vw,128px);font-weight:200;line-height:.9;color:var(--tx);letter-spacing:-.04em}
+.lvgrid--swipe .lv__t{font-size:24px;font-weight:700;white-space:normal}
+.lvgrid--swipe .lv__r{margin-top:6px;gap:6px}
+.lvgrid--swipe .lv__r i{width:12px;height:12px}
+.lvgrid--swipe .lv__play{margin:10px 24px 24px;width:calc(100% - 48px)}
