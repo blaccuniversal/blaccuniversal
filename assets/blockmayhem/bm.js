@@ -58,7 +58,7 @@
   var S = 1; // canvas px per logical unit
   var G = null, total = 0, broken = 0, lvl = 0, lives = 3, held = true, state = 'idle', wideUntil = 0, lastHit = 0, orbs = [], orbSeq = 0, flash = [];
   var bx = new Float32Array(MAXB), by = new Float32Array(MAXB), vx = new Float32Array(MAXB), vy = new Float32Array(MAXB), bo = new Int32Array(MAXB), n = 0;
-  var px = W / 2, target = W / 2, keyDir = 0, earned = 0, drops = [], parts = [], pops = [], rings = [], shake = 0, pglow = 0, slow = 1, t0 = 0, pvx = 0, lastPx = W / 2;
+  var gclock = 0, nextTimed = 0, px = W / 2, target = W / 2, keyDir = 0, earned = 0, drops = [], parts = [], pops = [], rings = [], shake = 0, pglow = 0, slow = 1, t0 = 0, pvx = 0, lastPx = W / 2;
 
   function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
@@ -97,6 +97,19 @@
       }
     });
   }
+  function spawnTimed(t, fx, fy) {
+    for (var tr = 0; tr < 300; tr++) {
+      var x = fx || 40 + Math.random() * (W - 80), y = fy || TOP + 60 + Math.random() * (PY - TOP - 260), ok = true;
+      for (var dy = -24; dy <= 24 && ok; dy += 8) for (var dx = -24; dx <= 24; dx += 8) if (solid(x + dx, y + dy) >= 0) { ok = false; break; }
+      if (!ok) continue;
+      orbs.forEach(function (o) { if (Math.hypot(o.x - x, o.y - y) < 60) ok = false; });
+      if (!ok) continue;
+      orbs.push({ id: ++orbSeq, t: t, x: x, y: y, r: 19, charges: 1, born: performance.now(), exp: gclock + (t === 'x20' ? 7000 : 10000), life: t === 'x20' ? 7000 : 10000 });
+      rings.push({ x: x, y: y, t: 1, c: '#ffd23f' }); pops.push({ x: x, y: y - 30, s: t === 'x20' ? '×20' : '×10', t: 1 });
+      blip(1046, .1, .045); setTimeout(function () { blip(1396, .14, .045); }, 90);
+      return;
+    }
+  }
   function addOrb(t, x, y) { orbs.push({ id: ++orbSeq, t: t, x: x, y: y, r: 14, charges: t === 'x3' ? 28 : 1, born: performance.now() }); }
 
   /* ---------- passkey (level 1 is free) ---------- */
@@ -134,7 +147,7 @@
     G = LV.make(i, rnd); total = 0; broken = 0;
     for (var k = 0; k < G.length; k++) if (G[k] && G[k] !== 9) total++;
     placeOrbs(spec.orbs, rng(5000 + i * 31));
-    lives = 3; n = 0; held = true; wideUntil = 0; earned = 0; flash = []; drops = []; parts = []; pops = []; rings = []; shake = 0; slow = 1; SPD = SPD0; t0 = performance.now(); lastHit = performance.now();
+    lives = 3; n = 0; held = true; wideUntil = 0; earned = 0; flash = []; drops = []; parts = []; pops = []; rings = []; shake = 0; slow = 1; SPD = SPD0; t0 = performance.now(); lastHit = performance.now(); gclock = 0; nextTimed = 15000 + Math.random() * 15000;
     px = target = W / 2; state = 'play';
     $('[data-lvname]').textContent = pad(i + 1) + ' · ' + spec.name;
     show('play'); hideOverlays(); resize(); hud();
@@ -202,7 +215,14 @@
         if (dx * dx + dy * dy > rr) { if (bo[q] === ob.id) bo[q] = 0; continue; }
         if (bo[q] === ob.id) continue;
         bo[q] = ob.id;
-        if (ob.t === 'x3') {
+        if (ob.t === 'x20' || ob.t === 'cd') {
+          var mult = ob.t === 'x20' ? 20 : Math.max(1, Math.ceil((ob.exp - gclock) / 1000)), base = Math.atan2(vx[q], -vy[q]);
+          for (var mI = 1; mI < mult; mI++) { var mm = addBall(bx[q], by[q], base + (mI / (mult - 1) - .5) * 2.2); if (mm >= 0) bo[mm] = ob.id; }
+          ob.charges = 0; shake = 12; buzz([20, 30, 40]); slow = .45; setTimeout(function () { if (state === 'play') slow = 1; }, 380);
+          for (var rI = 0; rI < 3; rI++) rings.push({ x: ob.x, y: ob.y, t: 1 + rI * .25, c: '#ffd23f' });
+          pops.push({ x: ob.x, y: ob.y - 26, s: '×' + mult + '!', t: 1.3, big: 1 });
+          [660, 880, 1320, 1760].forEach(function (f, i2) { setTimeout(function () { blip(f, .16, .05); }, i2 * 60); });
+        } else if (ob.t === 'x3') {
           var sp = Math.atan2(vx[q], -vy[q]);
           [-.35, .35].forEach(function (d) { var m = addBall(bx[q], by[q], sp + d); if (m >= 0) bo[m] = ob.id; });
           ob.charges--; blip(880 + (28 - ob.charges) * 18, .08, .05); rings.push({ x: ob.x, y: ob.y, t: 1, c: '#ffd23f' }); if (ob.charges % 4 === 0) pops.push({ x: ob.x, y: ob.y - 18, s: '×3', t: 1 }); shake = Math.min(6, shake + 1.2); buzz(8);
@@ -212,7 +232,15 @@
         } else if (ob.t === 'star') { save.stars++; earned++; persist(); ob.charges = 0; blip(1320, .14, .05, 'sine'); blip(1760, .2, .03, 'sine'); rings.push({ x: ob.x, y: ob.y, t: 1, c: '#ffd23f' }); pops.push({ x: ob.x, y: ob.y - 18, s: '+1 ★', t: 1 }); }
       }
     }
-    orbs = orbs.filter(function (o) { return o.charges > 0; });
+    gclock += dt * 1000;
+    orbs = orbs.filter(function (o) {
+      if (o.exp && gclock >= o.exp && o.charges > 0) { o.charges = 0; rings.push({ x: o.x, y: o.y, t: .6, c: '#555' }); blip(200, .12, .03); }
+      return o.charges > 0;
+    });
+    if (gclock > nextTimed && !held && n > 0 && !orbs.some(function (o) { return o.exp; })) {
+      nextTimed = gclock + 25000 + Math.random() * 20000;
+      spawnTimed(Math.random() < .4 ? 'x20' : 'cd');
+    }
     // falling drops
     var w2 = pw();
     for (var dI = drops.length - 1; dI >= 0; dI--) {
@@ -319,6 +347,17 @@
     orbs.forEach(function (o) {
       var p = 1 + Math.sin((now - o.born) / 320) * .06, r = o.r * p;
       if (o.t === 'star') { cx.fillStyle = '#ffd23f'; star(o.x, o.y, r * 1.05); return; }
+      if (o.exp) {
+        var rem = Math.max(0, o.exp - gclock), frac = rem / o.life, R0 = o.r * (1 + Math.sin(now / 110) * .08);
+        if (o.t === 'x20' && rem < 3000 && Math.sin(now / (rem < 1200 ? 45 : 90)) < 0) return; // blink before vanishing
+        cx.beginPath(); cx.arc(o.x, o.y, R0 + 7, 0, Math.PI * 2); cx.fillStyle = 'rgba(255,210,63,.12)'; cx.fill();
+        cx.beginPath(); cx.arc(o.x, o.y, R0, 0, Math.PI * 2); cx.fillStyle = '#000'; cx.fill();
+        cx.lineWidth = 2; cx.strokeStyle = 'rgba(255,210,63,.25)'; cx.stroke();
+        cx.beginPath(); cx.arc(o.x, o.y, R0, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * frac); cx.lineWidth = 3; cx.strokeStyle = '#ffd23f'; cx.stroke();
+        var lbl = o.t === 'x20' ? '×20' : '×' + Math.max(1, Math.ceil(rem / 1000));
+        cx.fillStyle = '#ffd23f'; cx.font = '800 ' + (lbl.length > 3 ? 13 : 15) + 'px "Open Sans",system-ui,sans-serif'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+        cx.fillText(lbl, o.x, o.y + .5); return;
+      }
       cx.beginPath(); cx.arc(o.x, o.y, r, 0, Math.PI * 2);
       if (o.t === 'x3') { cx.fillStyle = '#ffd23f'; cx.fill(); cx.fillStyle = '#000'; }
       else { cx.fillStyle = '#000'; cx.fill(); cx.lineWidth = 2; cx.strokeStyle = '#fff'; cx.stroke(); cx.fillStyle = '#fff'; }
@@ -345,7 +384,7 @@
     var sq = pglow * 2; rr(px - w / 2 - sq, PY + sq * .5, w + sq * 2, PH - sq * .5, 2); cx.fill();
     // pops
     cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.font = '800 15px "Open Sans",system-ui,sans-serif';
-    for (var qi = pops.length - 1; qi >= 0; qi--) { var pp = pops[qi]; pp.t -= .02; if (pp.t <= 0) { pops.splice(qi, 1); continue; } cx.globalAlpha = Math.min(1, pp.t * 1.6); cx.fillStyle = pp.s.charAt(0) === '+' && pp.s.indexOf('★') < 0 ? '#fff' : '#ffd23f'; cx.fillText(pp.s, pp.x, pp.y - (1 - pp.t) * 26); }
+    for (var qi = pops.length - 1; qi >= 0; qi--) { var pp = pops[qi]; pp.t -= .02; if (pp.t <= 0) { pops.splice(qi, 1); continue; } cx.globalAlpha = Math.min(1, pp.t * 1.6); cx.fillStyle = pp.s.charAt(0) === '+' && pp.s.indexOf('★') < 0 ? '#fff' : '#ffd23f'; if (pp.big) cx.font = '800 26px "Open Sans",system-ui,sans-serif'; cx.fillText(pp.s, pp.x, pp.y - (1 - Math.min(1, pp.t)) * 26); if (pp.big) cx.font = '800 15px "Open Sans",system-ui,sans-serif'; }
     if (pops.length > 12) pops.splice(0, pops.length - 12);
     cx.globalAlpha = 1;
     if (held && state === 'play') { cx.fillStyle = '#fff'; cx.beginPath(); cx.arc(px, PY - BR - 1, BR, 0, Math.PI * 2); cx.fill(); }
@@ -443,5 +482,5 @@
   if (matchMedia('(pointer:coarse)').matches) $('[data-hint]').textContent = 'Drag to move · Tap to launch';
   syncMute(); show('home'); requestAnimationFrame(loop);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('/blockmayhem/sw.js').catch(function () {});
-  window.__bm = { start: start, boost: boost, get n() { return n; }, get broken() { return broken; }, get total() { return total; }, launch: launch, setStars: function (s) { save.stars = s; }, dropX: function () { var b = null; drops.forEach(function (d) { if (d.y > 700 && (!b || d.y > b.y)) b = d; }); return b ? b.x : null; }, low: function () { var m = -1, x = W / 2; for (var i = 0; i < n; i++) if (vy[i] > 0 && by[i] > m && by[i] < PY) { m = by[i]; x = bx[i]; } return x; } };
+  window.__bm = { start: start, boost: boost, get n() { return n; }, get broken() { return broken; }, get total() { return total; }, launch: launch, setStars: function (s) { save.stars = s; }, timed: function (t, x, y) { spawnTimed(t, x, y); }, dropX: function () { var b = null; drops.forEach(function (d) { if (d.y > 700 && (!b || d.y > b.y)) b = d; }); return b ? b.x : null; }, low: function () { var m = -1, x = W / 2; for (var i = 0; i < n; i++) if (vy[i] > 0 && by[i] > m && by[i] < PY) { m = by[i]; x = bx[i]; } return x; } };
 })();

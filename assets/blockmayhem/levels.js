@@ -82,6 +82,46 @@
     { name: 'Mayhem', orbs: { x3: 4, p3: 2, star: 2 }, build: function (a, rnd) {
       each(a, function (c, r) { if (r > 52) return null; var v = Math.sin(c / 4.5) + Math.sin(r / 3.6); return v > 1.35 ? 3 : v > .7 ? 2 : 1; });
       rect(a, 9, 18, 14, 19, 9); rect(a, 45, 18, 50, 19, 9); rect(a, 27, 34, 32, 35, 9);
+    } }    ,
+    { name: 'Vault', orbs: [{ t: 'x3', c: 30, r: 20 }, { t: 'x3', c: 30, r: 32 }, { t: 'star', c: 30, r: 46 }], build: function (a) {
+      rect(a, 14, 8, 45, 42, 1); rect(a, 22, 16, 37, 34, 2);
+      rect(a, 11, 5, 12, 45, 9); rect(a, 47, 5, 48, 45, 9); rect(a, 11, 5, 48, 6, 9); rect(a, 11, 44, 48, 45, 9); rect(a, 28, 44, 31, 45, 0);
+    } },
+    { name: 'Skyline', orbs: { x3: 2, p3: 1, star: 1 }, build: function (a, rnd) {
+      var c = 1; while (c < 58) { var w = 4 + Math.floor(rnd() * 5), h = 12 + Math.floor(rnd() * 32); rect(a, c, 50 - h, Math.min(58, c + w - 1), 50, 1); for (var r = 50 - h + 2; r < 49; r += 3) for (var x = c + 1; x < c + w - 1; x += 2) if (rnd() < .5) a[r * COLS + x] = 2; c += w + 1; }
+    } },
+    { name: 'Twin Cores', orbs: [{ t: 'x3', c: 16, r: 34 }, { t: 'x3', c: 44, r: 34 }, { t: 'star', c: 30, r: 6 }], build: function (a) {
+      [16, 44].forEach(function (cx0) {
+        each(a, function (c, r) { var k = d(c, r, cx0, 22); return k < 12 ? (k < 5 ? 2 : 1) : null; });
+        each(a, function (c, r) { var k = d(c, r, cx0, 22); return k >= 13 && k < 14.2 && !(r > 30 && c >= cx0 - 2 && c <= cx0 + 1) ? 9 : null; });
+      });
+    } },
+    { name: 'Zigzag', orbs: { x3: 2, p3: 1, star: 1 }, build: function (a) {
+      each(a, function (c, r) { if (r > 50) return null; var z = Math.abs(((c % 20) + 20) % 20 - 10); var band = (r + z) % 12; return band < 2 ? 9 : band < 9 ? (band < 4 ? 2 : 1) : null; });
+      each(a, function (c, r) { return (c % 20 === 10 && r <= 50 && a[r * COLS + c] === 9) ? 0 : null; });
+    } },
+    { name: 'Eye', orbs: [{ t: 'x3', c: 30, r: 26 }, { t: 'p3', c: 10, r: 26 }, { t: 'star', c: 50, r: 26 }], build: function (a) {
+      each(a, function (c, r) { var x = (c + .5 - 30) / 28, y = (r + .5 - 26) / 16; if (Math.abs(y) > Math.cos(x * Math.PI / 2) * 1.0 || Math.abs(x) > 1) return null; var k = d(c, r, 30, 26); return k < 4 ? 3 : (k >= 9 && k < 10.2 && !(r > 30 && c >= 28 && c <= 31)) ? 9 : k < 9 ? 2 : 1; });
+    } },
+    { name: 'Rain', orbs: { x3: 3, star: 1 }, build: function (a, rnd) {
+      for (var c = 0; c < 60; c += 2) { var top = Math.floor(rnd() * 14), len = 18 + Math.floor(rnd() * 30); rect(a, c, top, c, Math.min(52, top + len), rnd() < .15 ? 2 : 1); }
+    } },
+    { name: 'Crown', orbs: { x3: 2, p3: 1, star: 2 }, build: function (a) {
+      rect(a, 8, 30, 51, 44, 1); rect(a, 8, 41, 51, 44, 2);
+      [8, 19, 30, 41, 51].forEach(function (c0, i) { var h = i % 2 ? 14 : 22; for (var k = 0; k < h; k++) { var w = Math.max(1, Math.round((1 - k / h) * 5)); rect(a, c0 - w, 30 - k, c0 + w - 1, 30 - k, 1); } a[(30 - h) * COLS + c0] = 3; });
+      [14, 25, 35, 46].forEach(function (c0) { rect(a, c0 - 1, 35, c0 + 1, 37, 3); });
+    } },
+    { name: 'Moon', orbs: { x3: 2, p3: 1, star: 2 }, build: function (a) {
+      each(a, function (c, r) { var k = d(c, r, 30, 26), k2 = d(c, r, 40, 20); return k < 24 && k2 > 18 ? (k < 10 ? 2 : 1) : null; });
+      [[46, 40, 2], [52, 32, 1], [44, 48, 1]].forEach(function (p) { each(a, function (c, r) { return d(c, r, p[0], p[1]) < p[2] + .6 ? 3 : null; }); });
+    } },
+    { name: 'Lattice', orbs: { x3: 3, p3: 1, star: 1 }, build: function (a) {
+      each(a, function (c, r) { if (r > 50) return null; var u = (c + r) % 12, v = ((c - r) % 12 + 12) % 12; return (u < 2 || v < 2) ? 1 : (u === 6 && v === 6) ? 3 : null; });
+      [[15, 12], [45, 12], [30, 27], [15, 42], [45, 42]].forEach(function (p) { rect(a, p[0] - 1, p[1] - 1, p[0] + 1, p[1] + 1, 9); });
+    } },
+    { name: 'Grand Mayhem', orbs: [{ t: 'x3', c: 30, r: 50 }, { t: 'x3', c: 10, r: 30 }, { t: 'x3', c: 50, r: 30 }, { t: 'p3', c: 30, r: 10 }, { t: 'star', c: 20, r: 18 }, { t: 'star', c: 40, r: 18 }], build: function (a) {
+      each(a, function (c, r) { if (r > 54) return null; var k = d(c, r, 30, 27); return k < 6 ? 3 : k < 16 ? 2 : 1; });
+      each(a, function (c, r) { var k = d(c, r, 30, 27); return (k >= 20 && k < 21.2 && !((r > 40 || r < 14) && c >= 28 && c <= 31) && !(c < 14 && r >= 25 && r <= 28) && !(c > 45 && r >= 25 && r <= 28)) ? 9 : null; });
     } }
   ];
   window.BMLevels = { COLS: COLS, ROWS: ROWS, list: L, make: function (i, rnd) { var a = g(); L[i].build(a, rnd); return a; } };
