@@ -1102,7 +1102,7 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-qa{width:94vw}
 .sc-qa__body{max-width:none;width:100%}
 .sc-qa__qw{width:100%}
-.sc-qa__q{font-weight:600;font-size:min(11.5vh,6.2vw);line-height:1.14;color:#fff;max-width:100%}
+.sc-qa__q{font-weight:600;font-size:min(6.3vh,3.4vw);line-height:1.14;color:#fff;max-width:100%}
 .sc-qa__q--big{font-size:min(11vh,6vw);line-height:1.12;max-width:100%}
 .sc-qa__body.has-img .sc-qa__q{font-size:min(8vh,3.6vw)}
 @media (max-width:700px){.sc-qa__q{font-size:min(7vw,52px)}.sc-qa__q--big{font-size:min(8.6vw,68px)}}
