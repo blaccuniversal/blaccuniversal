@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quests Feud Survey · PQT</title>
+<meta name="description" content="Answer this week’s 5 Quests Feud survey questions. Your answers build the boards for PQT game night.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="Quests Feud Survey · PQT">
+<meta property="og:description" content="5 quick questions. Your answers build the boards for PQT game night.">
+<meta property="og:image" content="https://blaccuniversal.com/assets/pqt/pqt-icon-512.png">
+<link rel="icon" type="image/png" href="/assets/pqt/pqt-icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/pqt/pqt-apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css?v=202611131600">
+<link rel="stylesheet" href="/assets/pqt/survey.css?v=1">
+</head>
+<body class="sv">
+  <div class="build__bar gutter">
+    <a class="brand sv-brand" href="/pqt/" aria-label="PQT"><img src="/assets/pqt/pqt-logo.png" alt="PQT · People, Quests &amp; Triumphs" width="1400" height="298"></a>
+  </div>
+  <main class="build__body gutter">
+    <div class="build__inner">
+      <p class="eyebrow" data-sv-week>Quests Feud survey</p>
+      <h1 class="build__title">Five quick questions.</h1>
+      <p class="sv-lead">Answer with the first thing that comes to mind. The most popular answers become the Quests Feud boards at PQT game night.</p>
+
+      <p class="sv-state" data-sv-loading>Loading this week’s questions…</p>
+      <div class="sv-state" data-sv-closed hidden><b>The survey is closed right now.</b><span>A new set of questions opens soon. Check back later this week.</span></div>
+      <div class="sv-state" data-sv-error hidden><b>Couldn’t load the questions.</b><span>Check your connection and refresh the page.</span></div>
+
+      <form class="build__form" data-sv-form hidden novalidate>
+        <div data-sv-qs></div>
+        <div class="field-row">
+          <div class="field"><label for="sv-name">Your name</label><input id="sv-name" name="name" type="text" autocomplete="given-name" maxlength="60" required></div>
+          <div class="field"><label for="sv-contact">Phone or email</label><input id="sv-contact" name="contact" type="text" autocomplete="tel" maxlength="80" placeholder="+234… or you@email.com" required></div>
+        </div>
+        <p class="sv-note">One entry per person each week. We only use this to stop repeat entries, never to contact you.</p>
+        <input type="text" name="website" class="sr-only" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <p class="build__error" role="alert" data-sv-err hidden></p>
+        <button class="btn build__send" type="submit">Submit answers</button>
+      </form>
+
+      <div class="build__done" role="status" data-sv-done hidden>
+        <span class="build__tick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <h3 data-sv-done-h>Thanks for answering.</h3>
+        <p data-sv-done-p>Your answers are in. Come to PQT game night to see if they made the board.</p>
+        <a class="btn" href="/pqt/">About PQT</a>
+      </div>
+    </div>
+  </main>
+<script src="/assets/pqt/survey.js?v=1"></script>
+</body>
+</html>

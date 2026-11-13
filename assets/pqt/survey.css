@@ -1,0 +1,13 @@
+/* PQT · Quests Feud survey */
+body.sv{background:#000;color:#fff;min-height:100vh}
+.sv-brand img{display:block;width:clamp(150px,22vw,210px);height:auto}
+.sv-lead{margin:-6px 0 10px;font-size:16px;line-height:1.6;color:#b5b5b5}
+.sv-state{margin:8px 0;font-size:16px;color:#9a9a9a;display:flex;flex-direction:column;gap:6px}
+.sv-state b{color:#fff;font-weight:600}
+.sv-q{display:flex;flex-direction:column;gap:10px;padding:18px 0;border-top:1px solid #1a1a1a}
+.sv-q:first-child{border-top:0;padding-top:4px}
+.sv-q label{display:flex;gap:14px;font-size:clamp(17px,2vw,20px);font-weight:500;line-height:1.4;color:#fff;letter-spacing:0}
+.sv-q label b{flex:none;width:22px;color:#ff6a2b;font-weight:600}
+.sv-q input{margin-left:36px;width:calc(100% - 36px)}
+.sv-note{margin:-4px 0 0;font-size:13px;line-height:1.5;color:#7a7a7a}
+@media (max-width:640px){.sv-q input{margin-left:0;width:100%}}
