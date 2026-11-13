@@ -298,7 +298,7 @@ function pqtMain() {
           talk: ['A topic goes up on the screen.', 'Share your thoughts. Hear each other out.', 'No points, just good conversation.'],
           alpha: ['Pick a number. An AlphaSum puzzle goes up: first letter, total, length and last letter. A = 1 … Z = 26.', 'Use the clue and the numbers to crack the word in 30 seconds.', 'Miss it and the next team gets a bonus shot.'],
           star: ['One rapper per team, one turn each.', 'Follow the ball. Land the rhyme on the fourth beat of every bar.', 'The judges score every turn.'],
-          race: ['Two letters spin, then stop: one to start the word, one to end it.', 'First team to call a real word that fits wins the battle.', 'Best of three. Winners go through, and the best loser gets a second chance.']
+          race: ['Two letters spin, then stop: one to start the word, one to end it.', 'First team to call a real word that fits wins the battle.', 'Best of three battles. The winner goes through.']
         };
         if (QR[S.roundType]) {
           var NM = { names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion', alpha: 'AlphaSum', star: 'Superstar', race: 'Word Race' };
