@@ -73,7 +73,28 @@
           '<ol class="lb-list">' + res.map(function (r, i) { return '<li class="lb-row lb-row--gw' + (i === 0 ? ' is-top' : '') + '"><span class="lb-n">' + (i > 0 && r.points === res[i - 1].points ? '=' : i + 1) + '</span><span class="lb-t">' + esc(r.team) + (i === 0 && r.players && r.players.length ? '<span class="lb-team"><span class="lb-star" aria-hidden="true">★</span><span class="lb-ppl">' + r.players.map(function (n) { return '<span>' + esc(n) + '</span>'; }).join('') + '</span></span>' : '') + '</span><b class="lb-p">' + r.points + '</b></li>'; }).join('') + '</ol>';
       }
     }
-    function eol() { root.querySelectorAll('.lb-ppl').forEach(function (box) { var sp = box.children; for (var i = 0; i < sp.length; i++) { sp[i].classList.remove('eol'); } for (var k = 0; k < sp.length - 1; k++) { if (sp[k + 1].offsetTop > sp[k].offsetTop) sp[k].classList.add('eol'); } }); }
+    // winners' names: balanced lines of at least 3 names (fewer only when there are fewer than 3 names, or a name is extremely long)
+    function eol() {
+      root.querySelectorAll('.lb-ppl').forEach(function (box) {
+        var names = box._names || (box._names = [].map.call(box.querySelectorAll('span'), function (x) { return x.textContent; }));
+        box.style.marginRight = '0px';
+        var row = box.closest('.lb-row'), reach = row ? Math.max(0, Math.floor(row.getBoundingClientRect().right - box.getBoundingClientRect().right)) : 0;
+        box.style.marginRight = -reach + 'px'; // names may run under the points column, never past the row
+        var n = names.length, maxRows = Math.max(1, Math.floor(n / 3)), W = box.clientWidth;
+        function build(r) {
+          var html = '', at = 0, base = Math.floor(n / r), extra = n % r;
+          for (var k = 0; k < r; k++) { var c = base + (k < extra ? 1 : 0); html += '<div class="lb-ppl__l">' + names.slice(at, at + c).map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') + '</div>'; at += c; }
+          box.innerHTML = html;
+          return [].every.call(box.children, function (l) { return l.scrollWidth <= W + 1; });
+        }
+        box.classList.remove('is-wrap'); box.style.fontSize = '';
+        var top = parseFloat(getComputedStyle(box).fontSize), size, r;
+        for (size = top; size >= 10; size -= .5) { box.style.fontSize = size + 'px'; for (r = 1; r <= maxRows; r++) if (build(r)) return; }
+        for (size = top; size >= 10; size -= .5) { box.style.fontSize = size + 'px'; if (build(Math.ceil(n / 3))) return; } // a very long name: lines of 3, last may be shorter
+        box.style.fontSize = ''; if (build(Math.ceil(n / 2))) return; // tiny screens only
+        box.classList.add('is-wrap');
+      });
+    }
     window.addEventListener('resize', eol);
     root.addEventListener('click', function (e) {
       var b = e.target.closest('[data-lbtab],[data-lbwk]'); if (!b) return;

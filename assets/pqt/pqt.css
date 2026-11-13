@@ -1127,3 +1127,9 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .lb-gw__row{flex-wrap:wrap;row-gap:4px;column-gap:16px}
 .pq-board--home .pq-tile__row{width:100%;max-width:400px;margin-left:auto;margin-right:auto}
 .lb-ppl span.eol::after{content:"·"!important;visibility:hidden}
+.lb-ppl{font-size:12px;row-gap:2px}.lb-ppl span:not(:last-child)::after{margin:0 6px}
+.lb-ppl{display:block}
+.lb-ppl__l{display:flex;white-space:nowrap}
+.lb-ppl.is-wrap .lb-ppl__l{flex-wrap:wrap;white-space:normal}
+.lb-ppl__l span:not(:last-child)::after{content:"·";margin:0 6px;color:#4a4a4a;visibility:visible}
+.lb-ppl__l span:last-child::after{content:none!important}
