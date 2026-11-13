@@ -919,7 +919,7 @@ function pqtMain() {
     return prog + '<p class="hc-note hc-lead">Quests Feud is done. The round totals are on the screen.</p><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-gonext type="button">' + (nx ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>';
   }
   function renderQuiz() {
-    if (H.ended) return '<p class="hc-note hc-lead">This game is over. Set up the next one to keep playing.</p><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-setup-open type="button">Set up the next game</button>';
+    if (H.ended) return '<p class="hc-note hc-lead">This game is over. Use “Set up the next game” above to keep playing.</p>';
     if (H.roundType === 'star') return renderStar();
     if (H.roundType === 'race') return renderRace();
     var q = H.qa, type = QA_TYPES[H.roundType] ? H.roundType : '';
