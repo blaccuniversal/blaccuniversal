@@ -180,3 +180,10 @@ body.is-playing{overflow:hidden;overscroll-behavior:none}
 .vacin.is-no{animation:vshake .35s}
 @keyframes vfade{from{opacity:0}}
 @keyframes vshake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.vac__umb{transform-origin:12.1px 19.8px;transform-box:view-box;animation:sway 4.5s ease-in-out infinite}
+.vac__guy{transform-origin:16px 18px;transform-box:view-box;animation:breathe 3.2s ease-in-out infinite}
+.vac__sun{animation:sun 6s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(3deg)}}
+@keyframes breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-.5px)}}
+@keyframes sun{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.vac__umb,.vac__guy,.vac__sun{animation:none}}
