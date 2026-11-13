@@ -171,6 +171,7 @@
     v.addEventListener('pointerup', function () {
       if (!downT) return;
       var now = performance.now(), dur = now - downT; downT = 0; clearTimeout(holdT);
+      if (save.secret && v.classList.contains('is-open') && dur < 700) { closeDoor(); return; }
       if (armed) {
         if (dur < 3000 && v.classList.contains('is-gold') && dur >= 0) {
           if (dur < 700 && now - lastUp < 3000) { after++; if (after >= 2) { showIn(); } }
@@ -198,6 +199,12 @@
       });
     });
     function done() { fm.hidden = true; inp.blur(); clearTimeout(hideT); clearTimeout(armT); armed = false; taps = 0; gold(false); }
+    function closeDoor() {
+      save.secret = false; save.open = {}; persist(); reset(); fm.hidden = true;
+      v.classList.remove('is-open'); v.classList.add('is-closing');
+      [784, 659, 523].forEach(function (f, i) { setTimeout(function () { blip(f, .18, .035); }, i * 90); });
+      setTimeout(function () { v.classList.remove('is-closing'); renderLevels(); }, 350);
+    }
     function openDoor(target) {
       if (target < 0) save.secret = true; else { save.open = save.open || {}; save.open[target] = 1; if (target + 1 > save.unlocked) save.unlocked = target + 1; }
       persist(); ac();

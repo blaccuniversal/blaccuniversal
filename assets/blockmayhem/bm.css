@@ -247,3 +247,4 @@ html[data-theme=day] .vacin button{border-color:#d2d0c9;color:#333}
 html[data-theme=day] .vac{color:#c9c7c0;--leaf:#fff}
 html[data-theme=day] .foot a{color:#5c5c5c}
 html[data-theme=day] .wide{color:#b88a00}
+.vac.is-closing{animation:vblink .35s ease-in-out}
