@@ -37,5 +37,36 @@ body.sv .build__bar{display:flex;align-items:center;justify-content:space-betwee
 .sv-out:hover{border-color:#8c8c8c;color:#fff}
 .sv-out svg{width:18px;height:18px}
 .sv-out{white-space:nowrap;flex:none}
-@media (max-width:480px){body.sv .build__bar .sv-brand img{width:min(200px,52vw)}.sv-out{padding:0 12px}}
+@media (max-width:480px){.sv-app .sv-brand img{width:min(200px,52vw)}.sv-out{padding:0 12px}}
 [data-ed-qs]{display:flex;flex-direction:column;gap:18px}
+/* ---- polished layout for every screen ---- */
+body.sv .build__bar{width:100%;max-width:800px;margin:0 auto;padding-left:clamp(20px,5vw,40px);padding-right:clamp(20px,5vw,40px)}
+body.sv .build__body{padding-left:clamp(20px,5vw,40px);padding-right:clamp(20px,5vw,40px);padding-bottom:clamp(48px,8vh,96px)}
+body.sv .build__inner{max-width:720px;gap:16px}
+body.sv .build__title{font-size:clamp(34px,4.6vw,58px);margin:2px 0 6px}
+body.sv .eyebrow{font-size:clamp(12px,1vw,13px)}
+.sv-lead{margin:0 0 clamp(14px,3vh,28px);font-size:clamp(16px,1.5vw,19px);line-height:1.6}
+.sv-q{gap:14px;padding:clamp(20px,3vh,28px) 0}
+.sv-q label{font-size:clamp(18px,1.8vw,22px);line-height:1.4}
+.sv-q label b{width:28px;font-variant-numeric:tabular-nums}
+.sv-q input{margin-left:42px;width:calc(100% - 42px)}
+body.sv .field input{min-height:56px;padding:15px 16px;font-size:17px}
+body.sv .field label{font-size:14px}
+body.sv .field-row{margin-top:clamp(8px,2vh,18px);gap:16px}
+.sv-note{font-size:13px}
+body.sv .build__send{min-width:240px;min-height:56px;font-size:16px;font-weight:600;margin-top:6px}
+body.sv .build__done{padding:clamp(24px,6vh,56px) 0}
+@media (max-width:640px){
+  .sv-q input{margin-left:0;width:100%}
+  .sv-lead br{display:none}
+  body.sv .build__send{width:100%}
+  body.sv .field-row{grid-template-columns:minmax(0,1fr)}
+}
+@media (min-width:1800px){
+  body.sv .build__bar{max-width:920px}
+  body.sv .build__inner{max-width:840px}
+  .sv-q label{font-size:24px}
+  body.sv .field input{min-height:62px;font-size:18px}
+}
+body.sv .sv-q label{font-size:clamp(18px,1.8vw,22px);font-weight:500;letter-spacing:0;color:#fff;line-height:1.4}
+@media (min-width:1800px){body.sv .sv-q label{font-size:24px}}
