@@ -1176,3 +1176,16 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-lb--many .sc-lb__team,.sc-lb--many .sc-lb__row:first-child .sc-lb__team{font-size:2.8vh}
 .sc-lb--many .sc-lb__rank{font-size:3vh}
 .sc-lb--many .sc-lb__pts{font-size:3.4vh}
+/* host bar on small phones: everything fits on one line */
+@media (max-width:400px){
+  .hc-bar{gap:4px;padding:10px}
+  .hc-homebtn{padding:0 6px;font-size:0;gap:0}
+  .hc-homebtn svg{width:16px;height:16px}
+  button.hc-status{padding:8px 6px}
+  .hc-bar .pbtn--sm{padding:0 10px}
+}
+/* Word Race round on a phone: less nesting, more room */
+@media (max-width:520px){
+  [data-pane="quiz"].hc-sec{padding:14px 12px}
+  .hc-raceframe{margin-top:6px}
+}

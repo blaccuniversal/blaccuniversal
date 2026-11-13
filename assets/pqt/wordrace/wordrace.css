@@ -341,3 +341,48 @@ body.wr-embed{height:auto;min-height:0}
 .wr-group>span{font-size:14px;font-weight:600;line-height:1.4}
 .wrs-board .wr-games{display:none}
 .wrs-board .wr-col--league{flex:1.3 1 0}
+/* inside PQT on a phone: flat sections instead of cards inside cards */
+.wr-embed .wr-hc>[data-app]>.card.hc-sec,.wr-embed .wr-hc>[data-app]>details.card{background:transparent;border:0;border-top:1px solid var(--line);border-radius:0;padding:16px 0}
+.wr-embed .wr-hc>[data-app]>.card.hc-sec:first-child{border-top:0;padding-top:4px}
+.wr-embed .wr-now{background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:4px 0 12px}
+.wr-embed .hc-tabs{margin-bottom:4px}
+@media (max-width:420px){
+  .wr-vs--3 .wr-vs__t b{font-size:14px}
+  .wr-vs__t .wr-badge{width:26px;height:26px;font-size:10px}
+  .wr-award--3 .pbtn--lg{font-size:13px;min-height:52px;padding:6px}
+  .wr-award--3 .pbtn--sm{font-size:12px;padding:0 4px}
+  .wr-letter{width:68px;height:78px;font-size:46px}
+  .wr-clock{font-size:38px;margin:4px auto 10px}
+  .wr-word{font-size:18px}
+  .wr-group{grid-template-columns:72px 1fr}
+}
+/* big screen opened on a phone (portrait): size by width instead of height */
+@media (max-aspect-ratio:4/5){
+  .wrs .sc-top{flex-wrap:wrap;height:auto;gap:4px 12px}
+  .wrs .sc-top .wrs-round{order:3;width:100%;text-align:center}
+  .wrs-stage{grid-template-columns:1fr;grid-template-rows:auto auto;gap:5vw}
+  .wrs-stage>.wrs-mid{order:-1}
+  .wrs-stage{display:flex;flex-direction:column;justify-content:center}
+  .wrs-stage>.wrs-team{display:none}
+  .wrs-stage::after{content:none}
+  .wrs-letter,.wrs-stage3 .wrs-letter{width:30vw;height:36vw;font-size:25vw;border-radius:2px}
+  .wrs-letters{gap:4vw}
+  .wrs-arrow{font-size:9vw;margin-top:5vw}
+  .wrs-tile__k{font-size:2.6vw}
+  .wrs-ring,.wrs-stage3 .wrs-ring{width:20vw;height:20vw}.wrs-ring b,.wrs-stage3 .wrs-ring b{font-size:8vw}
+  .wrs-label{font-size:3vw}.wrs-idle{font-size:4vw}
+  .wrs-row{gap:3vw}
+  .wrs-row .wrs-team .wr-badge{width:12vw;height:12vw;font-size:4vw}
+  .wrs-row .wrs-team__n,.wrs-team__n{font-size:4.6vw}
+  .wrs-team .wr-dots i{width:3vw;height:3vw}
+  .wrs-team__p{font-size:3.4vw}
+  .wrs .sc-bot{flex-direction:column;gap:2px;height:auto}
+  .wrs-ov__big{font-size:16vw!important}.wrs-ov__mid{font-size:7vw}.wrs-ov__sub,.wrs-ov__k{font-size:3.6vw}
+  .wrs-lobby__t{font-size:14vw}.wrs-lobby__tag{font-size:3vw;letter-spacing:.2em}.wrs-lobby__name{font-size:4vw}
+  .wrs-champ__n{font-size:12vw}
+  .wrs-table{font-size:3.6vw}.wrs-table th{font-size:2.4vw}
+}
+.wr-embed .hc-now,.wr-embed .wr-now{position:static}
+.wr-group{grid-template-columns:auto 1fr}
+.wr-group em{min-width:64px}
+@media (max-aspect-ratio:4/5){.wrs .sc-bot span:last-child{display:none}}

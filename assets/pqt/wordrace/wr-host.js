@@ -185,7 +185,7 @@
       '<form class="hc-row" data-addteam><input class="hc-input hc-grow" data-tname maxlength="40" placeholder="Team name" style="flex:1" autocomplete="off"><button class="pbtn pbtn--white" type="submit">Add</button></form>' +
       '<div class="wr-teams">' + T.teams.map(function (t, i) { return '<div class="wr-team">' + tLink(t.id) + '<b>' + esc(t.name) + '</b><button class="pbtn pbtn--sm pbtn--ghost" data-mv="' + t.id + '" data-d="-1" type="button" aria-label="Move up"' + (i ? '' : ' disabled') + '>↑</button><button class="pbtn pbtn--sm pbtn--ghost" data-mv="' + t.id + '" data-d="1" type="button" aria-label="Move down"' + (i < T.teams.length - 1 ? '' : ' disabled') + '>↓</button><button class="pbtn pbtn--sm pbtn--ghost" data-rm="' + t.id + '" type="button" aria-label="Remove">×</button></div>'; }).join('') + '</div>' +
       (T.teams.length > 2 ? '<button class="pbtn pbtn--sm wr-mt" data-shuffle type="button">Shuffle the draw</button>' : '') + '</section>' +
-      (T.teams.length >= 2 ? '<section class="card hc-sec"><h2>The draw</h2><p class="wr-fmt"><b>' + esc(p.text) + '</b><span>' + pl(p.matches, 'matchup') + ' · every team has the same path</span></p><p class="wr-k">' + esc(p.label) + '</p>' +
+      (T.teams.length >= 2 ? '<section class="card hc-sec"><h2>The draw</h2><p class="wr-fmt"><b>' + esc(p.text) + '</b><span>' + pl(p.matches, 'matchup') + ' · every team has the same path</span></p>' + (p.groups.length > 1 ? '<p class="wr-k">' + esc(p.label) + '</p>' : '') +
         p.groups.map(function (g, k) { return '<div class="wr-group"><em>' + (g.length === 2 ? (p.groups.length > 1 ? 'Matchup ' + (k + 1) : 'Final') : (p.label === 'League' ? 'Game ' : p.groups.length > 1 ? 'Group ' : 'Bangarang') + (p.label === 'League' || p.groups.length > 1 ? (k + 1) : '')) + '</em><span>' + g.map(function (x) { return esc(E.tname(T, x)); }).join(g.length === 2 ? ' v ' : ' · ') + '</span></div>'; }).join('') +
         '<p class="hc-note">The draw follows the order above. Use the arrows or shuffle to change it.</p></section>' : '') +
       '<details class="card hc-sec wr-det"><summary><h2>Scoring &amp; rules</h2></summary>' + cfgForm() + '</details>' +
@@ -238,7 +238,7 @@
       h += '<div class="wr-letters"><span class="wr-letter">' + b.s.toUpperCase() + '</span><span class="wr-arrow">→</span><span class="wr-letter">' + b.e.toUpperCase() + '</span></div>' +
         '<p class="wr-tier">' + V.tierLabel(b.tier) + (b.rolls.length ? ' · new letters ×' + b.rolls.length : '') + '</p>' +
         '<div class="wr-clock' + (lt <= 0 ? ' is-up' : lt < 6000 ? ' is-low' : '') + '" data-clock>' + (lt <= 0 ? 'Time' : fmt(lt)) + '</div>' +
-        '<input class="hc-input wr-word" data-word maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Word (optional for out-loud)">' +
+        '<input class="hc-input wr-word" data-word maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the word (optional)">' +
         '<p class="wr-check" data-check></p>' +
         '<div class="wr-award wr-award--' + b.part.length + '">' + b.part.map(function (x) { return '<button class="pbtn pbtn--good pbtn--lg" data-award="' + x + '" type="button">' + esc(E.tname(T, x)) + ' got it</button>'; }).join('') +
         b.part.map(function (x) { return '<button class="pbtn pbtn--bad pbtn--sm" data-wrong="' + x + '" type="button">' + esc(E.tname(T, x)) + ': wrong</button>'; }).join('') + '</div>' +
