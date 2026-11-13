@@ -1098,3 +1098,10 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-starbars .pbtn.is-on{background:#fff;color:#000;border-color:#fff}
 .hc-starscore{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0 0 6px}
 .hc-starscore .pbtn{min-width:0;padding:0;justify-content:center}
+/* bolder, bigger questions on the big screen (condensed bold like the slides) */
+@font-face{font-family:'PQT Cond';src:url(/assets/pqt/fonts/open-sans-wdth.woff2) format('woff2');font-weight:300 800;font-stretch:75% 100%;font-display:swap}
+.sc-qa__q{font-family:'PQT Cond','Open Sans',sans-serif;font-weight:700;font-stretch:75%;font-size:8.6vh;line-height:1.12;letter-spacing:-.005em;color:#fff;max-width:140vh}
+.sc-qa__q--big{font-size:10vh;line-height:1.08;max-width:150vh}
+.sc-qa__ans b{font-family:'PQT Cond','Open Sans',sans-serif;font-weight:700;font-stretch:75%;font-size:11vh}
+.sc-qa__h{font-family:'PQT Cond','Open Sans',sans-serif;font-weight:700;font-stretch:75%;font-size:8.4vh;letter-spacing:0}
+@media (max-width:700px){.sc-qa__q{font-size:min(7vw,52px)}.sc-qa__q--big{font-size:min(8.6vw,68px)}}
