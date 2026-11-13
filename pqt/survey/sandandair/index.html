@@ -11,9 +11,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css?v=202611131600">
-<link rel="stylesheet" href="/assets/pqt/survey.css?v=3">
+<link rel="stylesheet" href="/assets/pqt/survey.css?v=4">
 </head>
 <body class="sv">
+  <form class="sv-gate" data-ed-login autocomplete="off">
+    <img class="sv-gate__mark" src="/assets/pqt/pqt-mark.png" alt="" width="200" height="200">
+    <input id="ed-key" class="sv-gate__in" type="password" autocomplete="current-password" aria-label="Code" spellcheck="false" autofocus>
+  </form>
+  <div class="sv-app" data-ed-app hidden>
   <div class="build__bar gutter">
     <a class="brand sv-brand" href="/pqt/survey/" aria-label="Survey"><img src="/assets/pqt/pqt-logo.png" alt="PQT" width="1400" height="298"></a>
   </div>
@@ -21,12 +26,6 @@
     <div class="build__inner">
       <p class="eyebrow">Quests Feud survey · Editor</p>
       <h1 class="build__title">This week’s questions.</h1>
-
-      <form class="build__form" data-ed-login>
-        <div class="field"><label for="ed-key">Editor password</label><input id="ed-key" type="password" autocomplete="current-password" required></div>
-        <p class="build__error" role="alert" data-ed-lerr hidden></p>
-        <button class="btn build__send" type="submit">Open editor</button>
-      </form>
 
       <form class="build__form" data-ed-form hidden>
         <div class="sv-stat" data-ed-stat></div>
@@ -44,6 +43,7 @@
       </form>
     </div>
   </main>
-<script src="/assets/pqt/survey-edit.js?v=1"></script>
+</div>
+<script src="/assets/pqt/survey-edit.js?v=2"></script>
 </body>
 </html>

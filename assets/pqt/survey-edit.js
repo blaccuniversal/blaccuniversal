@@ -14,14 +14,14 @@
     $('[data-ed-stat]').innerHTML = '<b>' + (c.responses || 0) + '</b> ' + ((c.responses === 1) ? 'response' : 'responses') + ' so far for ' + (c.week || 'this week') + ' · survey is ' + (c.open ? '<em class="is-on">open</em>' : '<em>closed</em>');
   }
   function login(k, quiet) {
-    key = k; var err = $('[data-ed-lerr]'); err.hidden = true;
+    key = k; var gate = $('[data-ed-login]');
     return call({ action: 'load' }).then(function (c) {
       if (!c.ok) throw new Error(c.error);
       try { localStorage.setItem(KK, k); } catch (e) {}
-      $('[data-ed-login]').hidden = true; $('[data-ed-form]').hidden = false; fill(c);
-    }).catch(function (e) { if (quiet) return; err.textContent = e && e.message === 'key' ? 'Wrong password.' : 'Couldn’t reach the Sheet. Check your connection.'; err.hidden = false; });
+      gate.hidden = true; $('[data-ed-app]').hidden = false; $('[data-ed-form]').hidden = false; fill(c);
+    }).catch(function () { if (quiet) return; var i = $('#ed-key'); i.value = ''; gate.classList.remove('is-no'); void gate.offsetWidth; gate.classList.add('is-no'); i.focus(); });
   }
-  $('[data-ed-login]').addEventListener('submit', function (e) { e.preventDefault(); login($('#ed-key').value.trim()); });
+  $('[data-ed-login]').addEventListener('submit', function (e) { e.preventDefault(); var v = $('#ed-key').value.trim(); if (v) login(v); });
   $$('[data-open]').forEach(function (b) { b.addEventListener('click', function () { setOpen(b.getAttribute('data-open') === '1'); }); });
   $('[data-ed-form]').addEventListener('submit', function (e) {
     e.preventDefault(); var err = $('[data-ed-err]'), ok = $('[data-ed-saved]'), btn = e.target.querySelector('button[type=submit]'); err.hidden = true; ok.hidden = true;
