@@ -32,5 +32,10 @@
       if (!c.ok) throw new Error(c.error); fill(c); ok.hidden = false;
     }).catch(function () { err.textContent = 'Couldn’t save. Try again.'; err.hidden = false; }).then(function () { btn.disabled = false; btn.textContent = 'Save'; });
   });
+  $('[data-ed-out]').addEventListener('click', function () {
+    try { localStorage.removeItem(KK); } catch (e) {}
+    key = ''; $('[data-ed-app]').hidden = true; $('[data-ed-saved]').hidden = true;
+    var g = $('[data-ed-login]'); g.hidden = false; var i = $('#ed-key'); i.value = ''; i.focus();
+  });
   try { var k = localStorage.getItem(KK); if (k) login(k, true); } catch (e) {}
 })();

@@ -32,3 +32,10 @@ body.sv .build__bar{padding-top:clamp(28px,6vw,48px);padding-bottom:clamp(28px,6
 .sv-gate.is-no .sv-gate__in{animation:svShake .38s ease}
 @keyframes svShake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 @media (prefers-reduced-motion:reduce){.sv-gate__in{animation:none}}
+body.sv .build__bar{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.sv-out{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;background:transparent;border:1px solid #2a2a2a;border-radius:2px;color:#cfcfcf;font:inherit;font-size:14px;cursor:pointer}
+.sv-out:hover{border-color:#8c8c8c;color:#fff}
+.sv-out svg{width:18px;height:18px}
+.sv-out{white-space:nowrap;flex:none}
+@media (max-width:480px){body.sv .build__bar .sv-brand img{width:min(200px,52vw)}.sv-out{padding:0 12px}}
+[data-ed-qs]{display:flex;flex-direction:column;gap:18px}
