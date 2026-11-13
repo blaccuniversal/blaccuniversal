@@ -11,3 +11,13 @@ body.sv{background:#000;color:#fff;min-height:100vh}
 .sv-q input{margin-left:36px;width:calc(100% - 36px)}
 .sv-note{margin:-4px 0 0;font-size:13px;line-height:1.5;color:#7a7a7a}
 @media (max-width:640px){.sv-q input{margin-left:0;width:100%}}
+.sv-stat{padding:14px 16px;border:1px solid #222;border-radius:2px;background:#070707;font-size:14px;color:#9a9a9a}
+.sv-stat b{color:#fff;font-size:18px;font-weight:600}
+.sv-stat em{font-style:normal;color:#e8a0a0}.sv-stat em.is-on{color:#7fdc9a}
+.sv-toggle{display:grid;grid-template-columns:1fr 1fr;border:1px solid #2a2a2a;border-radius:2px;overflow:hidden}
+.sv-toggle button{height:48px;background:#0b0b0b;color:#9a9a9a;border:0;font:inherit;font-size:15px;cursor:pointer}
+.sv-toggle button[aria-pressed=true]{background:#fff;color:#000;font-weight:600}
+.sv-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.sv-link{color:#9a9a9a;font-size:14px}
+.sv-saved{margin:0;font-size:14px;color:#7fdc9a}
+.field textarea{min-height:0}

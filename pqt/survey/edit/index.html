@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Survey editor · PQT</title>
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" href="/assets/pqt/pqt-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css?v=202611131600">
+<link rel="stylesheet" href="/assets/pqt/survey.css?v=2">
+</head>
+<body class="sv">
+  <div class="build__bar gutter">
+    <a class="brand sv-brand" href="/pqt/survey/" aria-label="Survey"><img src="/assets/pqt/pqt-logo.png" alt="PQT" width="1400" height="298"></a>
+  </div>
+  <main class="build__body gutter">
+    <div class="build__inner">
+      <p class="eyebrow">Quests Feud survey · Editor</p>
+      <h1 class="build__title">This week’s questions.</h1>
+
+      <form class="build__form" data-ed-login>
+        <div class="field"><label for="ed-key">Editor password</label><input id="ed-key" type="password" autocomplete="current-password" required></div>
+        <p class="build__error" role="alert" data-ed-lerr hidden></p>
+        <button class="btn build__send" type="submit">Open editor</button>
+      </form>
+
+      <form class="build__form" data-ed-form hidden>
+        <div class="sv-stat" data-ed-stat></div>
+        <div class="field-row">
+          <div class="field"><label for="ed-week">Week name</label><input id="ed-week" name="week" type="text" maxlength="40" placeholder="Week 9" required></div>
+          <div class="field"><label>Survey</label>
+            <div class="sv-toggle" role="group"><button type="button" data-open="1">Open</button><button type="button" data-open="0">Closed</button></div>
+          </div>
+        </div>
+        <div data-ed-qs></div>
+        <p class="sv-note">Changing the week name starts a fresh week: everyone can answer again. Keep the same week name to just fix a typo.</p>
+        <p class="build__error" role="alert" data-ed-err hidden></p>
+        <div class="sv-row"><button class="btn build__send" type="submit">Save</button><a class="sv-link" href="/pqt/survey/" target="_blank" rel="noopener">View survey ↗</a></div>
+        <p class="sv-saved" data-ed-saved hidden>Saved. The survey shows the new questions now.</p>
+      </form>
+    </div>
+  </main>
+<script src="/assets/pqt/survey-edit.js?v=1"></script>
+</body>
+</html>
