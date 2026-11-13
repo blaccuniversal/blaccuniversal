@@ -123,5 +123,6 @@
   }, 100);
   document.addEventListener('dblclick', function () { if (!document.fullscreenElement && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(function () {}); });
 
+  if (q('embed') !== '1') { location.replace('/pqt/screen/'); return; } // only shown inside the PQT screen
   var c = WRLink.clean(q('c') || ''); if (c.length === 4) connect(c); else enter();
 })();

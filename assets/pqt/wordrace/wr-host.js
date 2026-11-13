@@ -11,6 +11,7 @@
   var curMid = null, wordDraft = '', revealed = '';
   var QS = new URLSearchParams(location.search), EMBED = QS.get('embed') === '1', EMBED_T = QS.get('t') || '';
   if (EMBED) document.body.classList.add('wr-embed');
+  else { location.replace('/pqt/host/'); return; } // Word Race is a PQT round, not a standalone game
   function toParent(msg) { if (EMBED && window.parent !== window) try { window.parent.postMessage(Object.assign({ wr: 1 }, msg), location.origin); } catch (e) {} }
 
   /* ---------- storage ---------- */
@@ -158,6 +159,7 @@
       }).join('') + '</section>' : '') + pubCard();
   }
   function pubCard() {
+    if (EMBED) return '';
     var k = ls('wr_pubkey');
     return '<section class="card hc-sec"><h2>Publishing</h2><p class="hc-note" style="margin-top:0">Results go to the PQT results sheet so anyone can see them on the Word Race page. ' + (k ? 'This device has a publish key.' : 'Add the publish key once on this device.') + '</p>' +
       '<div class="hc-row wr-mt"><input class="hc-input hc-grow" data-pkey type="password" autocomplete="off" placeholder="' + (k ? '••••••••' : 'Publish key') + '" style="flex:1">' + '<button class="pbtn" data-pkeysave type="button">' + (k ? 'Change' : 'Save') + '</button>' + (k ? '<button class="pbtn pbtn--ghost" data-pkeyclear type="button">Remove</button>' : '') + '</div></section>';
@@ -212,7 +214,7 @@
   function playPane() {
     if (T.status === 'done') {
       return '<section class="card hc-sec wr-champcard"><p class="eyebrow">Champion</p><div class="wr-champ">' + tLink(T.champion) + '<b>' + esc(E.tname(T, T.champion)) + '</b></div>' +
-        '<div class="hc-row wr-mt"><button class="pbtn pbtn--white" data-publish type="button">' + (T.published ? 'Publish again' : 'Publish results') + '</button><button class="pbtn" data-newt type="button">New tournament</button></div>' +
+        '<p class="hc-note">Add the points to the game scores above, then start the next round.</p>' +
         (T.published ? '<p class="hc-note">Published ' + new Date(T.published).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '.</p>' : '') + '</section>';
     }
     var m = curMatchup(); if (!m) return '<section class="card hc-sec"><p class="hc-note">Waiting…</p></section>';
@@ -278,7 +280,6 @@
       '<div class="hc-row"><select class="hc-input" data-cb style="flex:1 1 110px">' + [1, 2, 3].map(function (n) { return '<option value="' + n + '">Battle ' + n + '</option>'; }).join('') + '</select><select class="hc-input" data-ct style="flex:2 1 140px"></select><input class="hc-input" data-cd type="number" inputmode="numeric" placeholder="+/- pts" style="flex:1 1 90px"></div>' +
       '<input class="hc-input" data-cr maxlength="200" placeholder="Reason (required)"><button class="pbtn pbtn--white" type="submit">Apply correction</button></form><p class="hc-note">Corrections change points (and so who comes 1st in a Bangarang or who tops a league), not who won a battle. To change a battle winner, use Accept/Reject on the answer in Play.</p>' : '<p class="hc-note">No battles played yet.</p>') + '</section>' +
       '<section class="card hc-sec"><h2>Custom dictionary</h2><form class="hc-row" data-cw><input class="hc-input hc-grow" data-cwi maxlength="40" placeholder="Word to accept" style="flex:1" autocomplete="off"><button class="pbtn" type="submit">Add</button></form><p class="hc-note">' + (Object.keys(T.custom).length ? esc(Object.keys(T.custom).join(', ')) : 'Words added here count as valid for this tournament.') + '</p></section>' +
-      '<section class="card hc-sec"><h2>Results<button class="pbtn pbtn--sm" data-publish type="button">Publish now</button></h2><p class="hc-note" style="margin-top:0">' + (T.published ? 'Last published ' + new Date(T.published).toLocaleString() + '.' : 'Not published yet.') + ' Results also publish on their own after each matchup when this device has a publish key.</p></section>' +
       '<section class="card hc-sec"><h2>Audit log</h2><div class="wr-audit">' + T.audit.slice().reverse().map(auditLine).join('') + '</div></section>';
     return h;
   }
