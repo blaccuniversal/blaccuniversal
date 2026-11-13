@@ -1115,3 +1115,13 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .pq-tile__row{text-transform:uppercase;white-space:nowrap;font-size:min(11px,2.4vw);letter-spacing:min(.2em,.42vw);line-height:1;color:#7a7a7a}
 .pq-tile__row span:first-child{align-items:center;gap:min(10px,2.4vw)}
 .pq-tile__row i{flex:none;width:9px;height:9px}
+
+/* gameweek view: points pinned right, names get the room, weeks on one line */
+.lb-row.lb-row--gw{grid-template-columns:2.6ch minmax(0,1fr) auto}
+.lb-row--gw .lb-p{text-align:right}
+.lb-wks{display:flex;flex-wrap:nowrap;align-items:center;gap:4px;margin:0 0 20px}
+.lb-wks__k{flex:none;margin-right:8px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#7a7a7a}
+.lb-wks button{flex:1 1 0;min-width:0;max-width:52px;padding:0;min-height:36px;font-size:13px;letter-spacing:0;font-variant-numeric:tabular-nums}
+.lb-gw__row b,.lb-gw__row span{white-space:nowrap}
+@media (max-width:360px){.lb-gw__row span{font-size:11px}.lb-ppl{font-size:12px}.lb-ppl span:not(:last-child)::after{margin:0 5px}}
+.lb-gw__row{flex-wrap:wrap;row-gap:4px;column-gap:16px}

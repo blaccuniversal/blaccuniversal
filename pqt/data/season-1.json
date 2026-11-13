@@ -68,6 +68,103 @@
   },
   "weeks": [
     {
+      "week": 1,
+      "date": "2026-10-01",
+      "results": [
+        {
+          "team": "Quiztopher Knowlan",
+          "points": 28,
+          "players": [
+            "Ben Obasa",
+            "Bunmi Oye",
+            "Dipo (SMK)",
+            "Joe Stacks",
+            "Oluwaseun Oye",
+            "Priscilla",
+            "Sophia"
+          ]
+        },
+        {
+          "team": "Minions",
+          "points": 14
+        },
+        {
+          "team": "Sages",
+          "points": 11
+        },
+        {
+          "team": "The Malimbes",
+          "points": 5
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "date": "2026-10-08",
+      "results": [
+        {
+          "team": "Quiztopher Knowlan",
+          "points": 22,
+          "players": [
+            "Ameenah",
+            "Ben Obasa",
+            "Bunmi Oye",
+            "Joe Stacks",
+            "Matthew Ogwiji",
+            "Shalom Abraham",
+            "Usman Muhammed",
+            "Yusuf Rabe"
+          ]
+        },
+        {
+          "team": "Minions",
+          "points": 19
+        },
+        {
+          "team": "The Malimbes",
+          "points": 16
+        },
+        {
+          "team": "Sages",
+          "points": 15
+        },
+        {
+          "team": "We Just Met",
+          "points": 15
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "date": "2026-10-15",
+      "results": [
+        {
+          "team": "Quiztopher Knowlan",
+          "points": 43,
+          "players": [
+            "Ameenah",
+            "Ben Obasa",
+            "Bunmi Oye",
+            "Joe Stacks",
+            "Matthew Ogwiji",
+            "Sophie"
+          ]
+        },
+        {
+          "team": "Minions",
+          "points": 40
+        },
+        {
+          "team": "Sages",
+          "points": 32
+        },
+        {
+          "team": "Black",
+          "points": 17
+        }
+      ]
+    },
+    {
       "week": 4,
       "date": "2026-10-22",
       "results": [
