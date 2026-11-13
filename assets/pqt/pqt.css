@@ -1125,3 +1125,5 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .lb-gw__row b,.lb-gw__row span{white-space:nowrap}
 @media (max-width:360px){.lb-gw__row span{font-size:11px}.lb-ppl{font-size:12px}.lb-ppl span:not(:last-child)::after{margin:0 5px}}
 .lb-gw__row{flex-wrap:wrap;row-gap:4px;column-gap:16px}
+.pq-board--home .pq-tile__row{width:100%;max-width:400px;margin-left:auto;margin-right:auto}
+.lb-ppl span.eol::after{content:"·"!important;visibility:hidden}

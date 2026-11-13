@@ -78,9 +78,10 @@
     root.addEventListener('click', function (e) {
       var b = e.target.closest('[data-lbtab],[data-lbwk]'); if (!b) return;
       if (b.hasAttribute('data-lbtab')) mode = b.getAttribute('data-lbtab'); else wk = +b.getAttribute('data-lbwk');
-      paint();
+      paint(); eol();
     });
-    paint();
+    paint(); eol();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(eol);
   }
   function $(s) { return root.querySelector(s); }
   fetch(SRC, { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(draw).catch(function () {
