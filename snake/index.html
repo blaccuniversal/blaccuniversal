@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Snake · BLACC Universal</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="icon" type="image/png" sizes="192x192" href="/snake/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/snake/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<script>try{var _s=JSON.parse(localStorage.getItem("sn_save_v1"));if(_s&&_s.theme==="day")document.documentElement.setAttribute("data-theme","day")}catch(e){}</script>
+<link rel="stylesheet" href="/assets/snake/snake.css?v=1">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="blacc" viewBox="0 0 563 418"><g><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></symbol>
+  <symbol id="snd" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="snd__w"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="snd__x"/></symbol>
+  <symbol id="th" viewBox="0 0 24 24"><g class="th__sun" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g><path class="th__moon" fill="none" stroke="currentColor" stroke-width="1.6" d="M19.5 14.6A7.6 7.6 0 0 1 9.4 4.5a7.6 7.6 0 1 0 10.1 10.1z"/></symbol>
+</svg>
+
+<!-- HOME -->
+<section class="scr" data-scr="home" hidden>
+  <header class="top">
+    <a class="top__brand" href="/projects/" aria-label="BLACC Universal projects"><svg><use href="#blacc"/></svg><span>BLACC Universal</span></a>
+    <div class="top__r">
+      <button class="ic th" data-act="theme" aria-label="Day or night"><svg viewBox="0 0 24 24"><g class="th__sun" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g><path class="th__moon" fill="none" stroke="currentColor" stroke-width="1.6" d="M19.5 14.6A7.6 7.6 0 0 1 9.4 4.5a7.6 7.6 0 1 0 10.1 10.1z"/></svg></button>
+      <button class="ic" data-act="mute" aria-label="Sound"><svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="snd__w"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="snd__x"/></svg></button>
+      <button class="ic" data-act="help" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+  <main class="wrap home">
+    <div class="hero">
+      <div class="mark" aria-hidden="true"><svg viewBox="0 0 112 40"><g class="mark__s"><rect x="0" y="24" width="14" height="14" rx="1" opacity=".35"/><rect x="16" y="24" width="14" height="14" rx="1" opacity=".5"/><rect x="32" y="24" width="14" height="14" rx="1" opacity=".65"/><rect x="48" y="24" width="14" height="14" rx="1" opacity=".8"/><rect x="48" y="8" width="14" height="14" rx="1" opacity=".9"/><rect x="64" y="8" width="14" height="14" rx="1"/></g><rect class="mark__f" x="96" y="11" width="9" height="9" rx="1"/></svg></div>
+      <h1 class="wm">Snake</h1>
+      <p class="lead">Eat, grow, don’t bite yourself.</p>
+    </div>
+
+    <section class="set">
+      <p class="eyebrow">Speed</p>
+      <div class="speeds" role="group" aria-label="Speed">
+        <button data-speed="1">1</button><button data-speed="2">2</button><button data-speed="3">3</button><button data-speed="4">4</button><button data-speed="5">5</button><button data-speed="6">6</button><button data-speed="7">7</button><button data-speed="8">8</button><button data-speed="9">9</button>
+      </div>
+      <p class="eyebrow">Maze</p>
+      <div class="mazes" data-mazes></div>
+    </section>
+
+    <div class="go">
+      <div class="go__best"><span data-best-label></span><b>Best <span data-best>0</span></b></div>
+      <button class="btn btn--big btn--full" data-act="play">Play</button>
+    </div>
+    <dl class="stats">
+      <div><dt>Top score</dt><dd data-top>0</dd></div>
+      <div><dt>Games</dt><dd data-games>0</dd></div>
+    </dl>
+  </main>
+</section>
+
+<!-- PLAY -->
+<section class="scr play" data-scr="play" hidden>
+  <header class="ptop">
+    <button class="ic" data-act="pause" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="3.6" height="14" rx=".6"/><rect x="13.9" y="5" width="3.6" height="14" rx=".6"/></svg></button>
+    <div class="ptop__mid"><b data-hud-maze></b><span>Length <span data-len>4</span> · Best <span data-hud-best>0</span></span></div>
+    <div class="ptop__score" data-score>0</div>
+  </header>
+  <div class="bonusbar" data-bonus hidden><i></i></div>
+  <div class="stage" data-stage>
+    <canvas data-cv></canvas>
+    <p class="hint" data-hint>Swipe or tap to start</p>
+  </div>
+  <nav class="pad" aria-label="Direction pad">
+    <button data-pad="0,-1" class="pad__u" aria-label="Up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+    <button data-pad="-1,0" class="pad__l" aria-label="Left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button data-pad="1,0" class="pad__r" aria-label="Right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    <button data-pad="0,1" class="pad__d" aria-label="Down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+  </nav>
+
+  <div class="ov" data-ov="pause" hidden><div class="ov__card">
+    <p class="eyebrow">Paused</p>
+    <button class="btn btn--big btn--full" data-act="resume">Resume</button>
+    <button class="btn btn--big btn--full btn--ghost" data-act="again">Restart</button>
+    <button class="btn btn--big btn--full btn--ghost" data-act="home">Change speed or maze</button>
+    <div class="ov__row">
+      <button class="ic ic--row th" data-act="theme"><svg viewBox="0 0 24 24"><g class="th__sun" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g><path class="th__moon" fill="none" stroke="currentColor" stroke-width="1.6" d="M19.5 14.6A7.6 7.6 0 0 1 9.4 4.5a7.6 7.6 0 1 0 10.1 10.1z"/></svg><span>Mode</span></button>
+      <button class="ic ic--row" data-act="mute"><svg viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4.2 4.2 0 0 1 0 6M18 6.5a7.8 7.8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="snd__w"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" class="snd__x"/></svg><span>Sound</span></button>
+      <button class="ic ic--row padt" data-act="pad-toggle" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg><span>Pad</span></button>
+    </div>
+  </div></div>
+  <div class="ov" data-ov="over" hidden><div class="ov__card">
+    <p class="eyebrow" data-over-title>Game over</p>
+    <h2 data-over-score>0</h2>
+    <p class="ov__best" data-over-best></p>
+    <p class="ov__len">Length <b data-over-len>4</b></p>
+    <button class="btn btn--big btn--full" data-act="again">Play again</button>
+    <button class="btn btn--big btn--full btn--ghost" data-act="home">Change speed or maze</button>
+  </div></div>
+</section>
+
+<!-- HELP -->
+<div class="sheet" data-help hidden><div class="sheet__card">
+  <div class="sheet__head"><b>How to play</b><button class="ic" data-act="help-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <ol class="howto">
+    <li><b>Steer.</b> Swipe on a phone, or use the arrow keys or W A S D. Turn on the on-screen pad from the pause menu if you prefer buttons.</li>
+    <li><b>Eat the gold squares.</b> Each one makes you longer and scores points equal to your speed.</li>
+    <li><b>Grab the bonus.</b> Every fifth meal a spinning gold diamond appears. The faster you reach it, the more it’s worth.</li>
+    <li><b>Don’t crash.</b> Hitting a wall or your own tail ends the game. In mazes with gaps, you can go off one edge and come back on the other.</li>
+    <li><b>Beat your best</b> for each maze and speed.</li>
+  </ol>
+</div></div>
+
+<script src="/assets/snake/snake.js?v=1"></script>
+</body>
+</html>
