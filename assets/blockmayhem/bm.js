@@ -29,18 +29,41 @@
     var best = 0; Object.keys(save.rate).forEach(function (k) { best += save.rate[k]; });
     $('[data-st-rating]').textContent = best + ' / ' + LV.list.length * 3;
   }
+  var thumbs = {};
+  function thumb(i) {
+    var key = (save.theme === 'day' ? 'd' : 'n') + i; if (thumbs[key]) return thumbs[key];
+    var g = LV.make(i, rng(1000 + i * 77)), c = document.createElement('canvas'), q = 3; c.width = COLS * q; c.height = ROWS * q;
+    var x = c.getContext('2d');
+    for (var r = 0; r < ROWS; r++) for (var k = 0; k < COLS; k++) { var v = g[r * COLS + k]; if (!v) continue; x.fillStyle = colorOf(v, r); x.fillRect(k * q, r * q, q - (v === 9 ? 0 : .6), q - (v === 9 ? 0 : .6)); }
+    return (thumbs[key] = c.toDataURL());
+  }
+  var LOCK = '<svg class="lv__k" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></svg>';
   function renderLevels() {
     var lvScr = $('[data-scr=levels]'); lvScr.classList.toggle('is-secret', !!save.secret); $('[data-vac]').classList.toggle('is-open', !!save.secret); $('[data-lvtitle]').textContent = save.secret ? 'All access' : 'Levels'; syncBurn();
-    var box = $('[data-lvgrid]'); box.innerHTML = '';
+    var view = save.lvView || 'grid', box = $('[data-lvgrid]'); box.innerHTML = '';
+    box.className = 'lvgrid lvgrid--' + view;
+    $$('[data-lview]').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-lview') === view ? 'true' : 'false'); });
+    var cur = Math.min(save.unlocked, LV.list.length) - 1;
     LV.list.forEach(function (l, i) {
-      var b = document.createElement('button'), locked = !save.secret && i + 1 > save.unlocked, rt = save.rate[i] || 0;
-      b.className = 'lv' + (locked ? ' is-locked' : '') + (rt ? ' is-done' : '');
+      var b = document.createElement('button'), locked = !save.secret && i + 1 > save.unlocked, rt = save.rate[i] || 0,
+        needKey = i > 0 && !hasKey() && !locked && !(save.open && save.open[i]);
+      b.className = 'lv' + (locked ? ' is-locked' : '') + (rt ? ' is-done' : '') + (i === cur ? ' is-cur' : '');
       b.disabled = locked;
-      b.innerHTML = (i > 0 && !hasKey() && !locked && !(save.open && save.open[i]) ? '<svg class="lv__k" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></svg>' : '') + '<span class="lv__n">' + pad(i + 1) + '</span><span class="lv__t">' + l.name + '</span><span class="lv__r">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= rt ? 'is-on' : '') + '"></i>'; }).join('') + '</span>';
+      var dots = '<span class="lv__r">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= rt ? 'is-on' : '') + '"></i>'; }).join('') + '</span>';
+      var img = view === 'list' ? '' : '<span class="lv__img"><img src="' + thumb(i) + '" alt="" loading="lazy"></span>';
+      b.innerHTML = img + '<span class="lv__meta"><span class="lv__n">' + pad(i + 1) + '</span><span class="lv__t">' + l.name + '</span>' + dots + '</span>' + (locked || needKey ? LOCK : '') +
+        (view === 'swipe' ? '<span class="lv__play">' + (locked ? 'Locked' : 'Play') + '</span>' : '');
       b.addEventListener('click', function () { start(i); });
       box.appendChild(b);
     });
+    var cnt = $('[data-lvcount]'); cnt.hidden = view !== 'swipe';
+    if (view === 'swipe') {
+      var upd = function () { var w = box.firstChild ? box.firstChild.offsetWidth + 12 : 1, k = Math.round(box.scrollLeft / w); cnt.textContent = pad(Math.min(LV.list.length, k + 1)) + ' / ' + LV.list.length; };
+      box.onscroll = upd;
+      requestAnimationFrame(function () { var el = box.children[cur]; if (el) box.scrollLeft = el.offsetLeft - (box.clientWidth - el.offsetWidth) / 2; upd(); });
+    } else { box.onscroll = null; var c2 = box.children[cur]; if (c2 && view !== 'swipe') { /* keep page at top */ } }
   }
+  $$('[data-lview]').forEach(function (b) { b.addEventListener('click', function () { save.lvView = b.getAttribute('data-lview'); persist(); renderLevels(); }); });
 
   /* ---------- audio ---------- */
   var AC = null, lastTick = 0;
@@ -73,6 +96,7 @@
     var mc = document.querySelector('meta[name=theme-color]'); if (mc) mc.content = t === 'day' ? '#f4f3ef' : '#000000';
     $$('[data-act=theme]').forEach(function (b) { b.classList.toggle('is-day', t === 'day'); b.setAttribute('aria-label', t === 'day' ? 'Switch to night mode' : 'Switch to day mode'); });
     if (G) drawAll();
+    if (!$('[data-scr=levels]').hidden) renderLevels();
   }
   function colorOf(v, r) {
     if (v === 9) return T.steel;
