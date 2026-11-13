@@ -24,7 +24,7 @@
     ix.unshift({ id: T.id, name: T.name, created: T.created, status: T.status, champion: T.champion ? E.tname(T, T.champion) : null, teams: T.teams.length });
     ls('wr_index', ix.slice(0, 40)); if (!EMBED) ls('wr_cur', T.id);
   }
-  function load(id) { var t = ls('wr_t_' + id); if (t) { T = t; auditSeen = T.audit.length; curMid = null; ls('wr_cur', id); startLink(); } }
+  function load(id) { var t = ls('wr_t_' + id); if (t) { T = t; if (T.config) T.config.speedBonus = 0; auditSeen = T.audit.length; curMid = null; ls('wr_cur', id); startLink(); } }
 
   /* ---------- toast ---------- */
   var tt; function toast(msg, bad) { toastEl.textContent = msg; toastEl.hidden = false; toastEl.classList.toggle('is-bad', !!bad); clearTimeout(tt); tt = setTimeout(function () { toastEl.hidden = true; }, 2600); }
@@ -47,7 +47,7 @@
       else if (a.act === 'revival-open') { k = 'revival'; d = { pairs: a.pairs.map(function (p) { return p.map(function (x) { return E.tname(T, x); }); }), tied: !!a.twoStage, best: a.bestLoser ? E.tname(T, a.bestLoser) : null }; }
       else if (a.act === 'revival-qualified') { k = 'revived'; d = { team: E.tname(T, a.team) }; }
       else if (a.act === 'round-open') { k = 'round'; d = { label: a.label }; }
-      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); toParent({ t: 'done', id: T.id, champion: d.team, teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won }; }) }); }
+      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); toParent({ t: 'done', id: T.id, champion: d.team, teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon, mDrawn: 0 }; }) }); }
       if (k) push(k, d);
     }
   }
@@ -169,9 +169,8 @@
     function tb(k, label) { return '<label class="wr-f"><span>' + label + '</span><span class="wr-f__in"><input class="hc-input" type="number" inputmode="numeric" data-tb="' + k + '" min="0" max="50" value="' + c.tierBonus[k] + '"><em>pts</em></span></label>'; }
     function seg(k, opts) { return '<div class="wr-seg wr-seg--' + opts.length + '" data-cfgseg="' + k + '">' + opts.map(function (o) { return '<button class="pbtn' + (String(c[k]) === String(o[0]) ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div>'; }
     return '<div class="wr-cfg">' +
-      num('battleSecs', 'Battle countdown', 5, 300, 'sec') + num('spinSecs', 'Letter spin', 0, 30, 'sec') + num('minLength', 'Minimum word length', 2, 10, 'letters') + num('speedSecs', 'Speed window', 1, 120, 'sec') +
+      num('battleSecs', 'Battle countdown', 5, 300, 'sec') + num('spinSecs', 'Letter spin', 0, 30, 'sec') + num('minLength', 'Minimum word length', 2, 10, 'letters') +
       num('validPoints', 'Correct word', 0, 100, 'pts') + num('invalidPenalty', 'Wrong word penalty', 0, 50, 'pts') +
-      num('speedBonus', 'Speed bonus', 0, 50, 'pts') +
       tb('easy', 'Bonus · easy letters') + tb('medium', 'Bonus · medium letters') + tb('hard', 'Bonus · hard letters') + '</div>' +
       '<p class="wr-k">Letter difficulty</p>' + seg('difficulty', [['mixed', 'Mixed'], ['easy', 'Easy'], ['medium', 'Medium'], ['hard', 'Hard']]) +
       '<p class="wr-k">Answers</p>' + seg('answerMode', [['voice', 'Out loud'], ['phones', 'Team phones']]) +

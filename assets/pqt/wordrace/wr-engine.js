@@ -10,8 +10,8 @@
     battleSecs: 30,          // countdown per letter pair
     spinSecs: 10,            // letters spin like a randomiser for this long before they stop and the clock starts
     validPoints: 10,         // a correct word
-    speedBonus: 5,           // extra for a correct word inside the speed window
-    speedSecs: 10,           // the speed window
+    speedBonus: 0,           // no points for speed (kept at 0 on purpose)
+    speedSecs: 10,
     tierBonus: { easy: 0, medium: 3, hard: 6 }, // difficulty bonus by letter-pair tier
     invalidPenalty: 2,       // taken off for a wrong word
     minLength: 3,

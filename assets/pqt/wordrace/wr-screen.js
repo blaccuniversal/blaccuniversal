@@ -38,7 +38,7 @@
     if (key && key !== lastLetters && b.running) { flip = true; lastLetters = key; }
     root.innerHTML = '<div class="sc wrs">' + top + '<div class="sc-main">' + main + '</div><div class="sc-bot"><span>' + esc(S.name) + '</span><span>' + (S.next && S.next.length && S.scene === 'battle' ? 'Next · ' + esc(S.next[0]) : 'People, Quests &amp; Triumphs') + '</span></div></div>' + (S.paused ? '<div class="wrs-pause">Paused</div>' : '');
     if (flip) root.querySelectorAll('.wrs-letter').forEach(function (x) { x.classList.add('is-flip'); });
-    if (ovEl) { if (S.scene !== 'battle') clearOv(); else root.appendChild(ovEl); }
+    if (ovEl && S.scene !== 'battle') clearOv();
     lastScene = S.scene;
     playEvent();
   }
@@ -82,7 +82,7 @@
   var queue = [], playing = false, evInit = false;
   function overlay(cls, html, ms) {
     clearTimeout(ovT); if (ovEl) ovEl.remove();
-    ovEl = document.createElement('div'); ovEl.className = 'wrs-ov ' + cls; ovEl.innerHTML = html; root.appendChild(ovEl); playing = true;
+    ovEl = document.createElement('div'); ovEl.className = 'wrs-ov ' + cls; ovEl.innerHTML = html; document.body.appendChild(ovEl); playing = true; // outside the repainted area, so it plays once
     ovT = setTimeout(function () { if (!ovEl) { playing = false; return next(); } ovEl.classList.add('is-out'); var x = ovEl; ovEl = null; setTimeout(function () { x.remove(); playing = false; next(); }, 400); }, ms);
   }
   function clearOv() { clearTimeout(ovT); queue = []; playing = false; if (ovEl) { ovEl.remove(); ovEl = null; } }

@@ -1140,3 +1140,4 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-racepts{display:grid;gap:6px;margin:8px 0 14px}
 .hc-racepts div{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid #1a1a1a;font-size:14px}
 .hc-racepts b{font-variant-numeric:tabular-nums}
+.hc-racepts i{font-style:normal;color:#7a7a7a;font-size:12px;margin-left:6px}

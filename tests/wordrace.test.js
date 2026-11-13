@@ -91,7 +91,7 @@ test('Answers: invalid, wrong letters, repeat, short, timeout, no draw', () => {
   const T = make(2, { minLength: 4 }); const m = T.matchups[cur(T).matchups[0]];
   E.startBattle(T, m.id, dict, { s: 's', e: 't', tier: 'easy' });
   let a = E.submit(T, m.id, m.a, 'sxqt', dict, { ms: 3000 }); eq([a.ok, a.reason, a.pts], [false, 'unknown', -2], 'not a word → penalty');
-  a = E.submit(T, m.id, m.b, 'start', dict, { ms: 4000 }); eq([a.ok, a.pts], [true, 15], 'valid within speed window 10+5');
+  a = E.submit(T, m.id, m.b, 'start', dict, { ms: 4000 }); eq([a.ok, a.pts], [true, 10], 'valid word 10, no speed bonus');
   eq(m.battles[0].winner, m.b, 'first valid wins');
   E.startBattle(T, m.id, dict, { s: 's', e: 't', tier: 'hard' });
   a = E.submit(T, m.id, m.a, 'start', dict, { ms: 20000 }); eq(a.reason, 'repeat', 'repeat rejected');
@@ -102,7 +102,7 @@ test('Answers: invalid, wrong letters, repeat, short, timeout, no draw', () => {
   const b = m.battles[1]; ok(!b.winner && b.rolls.length === 1 && (b.s + b.e) !== before, 'timeout → new letters, same battle');
   E.timeout(T, m.id, dict, null, { s: 'b', e: 'e', tier: 'easy' });
   a = E.submit(T, m.id, m.a, 'Brave!', dict, { ms: 2000 }); eq([a.ok, a.word], [true, 'brave'], 'normalised and valid');
-  eq(m.pts.a, -2 - 2 - 2 - 2 - 2 + 15, 'penalties add up (5 wrong + 15)');
+  eq(m.pts.a, -2 - 2 - 2 - 2 - 2 + 10, 'penalties add up (5 wrong + 10)');
   E.addCustomWord(T, 'bukke'); E.startBattle(T, m.id, dict, { s: 'b', e: 'e', tier: 'easy' }); a = E.submit(T, m.id, m.b, 'bukke', dict, { ms: 30000 }); eq(a.reason, 'custom', 'custom dictionary');
 });
 test('Manual validation mode needs the host', () => {
