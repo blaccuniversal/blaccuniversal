@@ -23,7 +23,7 @@
         else each(a, function (c, r) { return d(c, r, p[0], p[1]) < 7.5 ? (d(c, r, p[0], p[1]) < 3 ? 2 : 1) : null; });
       });
     } },
-    { name: 'Not So Fast', orbs: [{ t: 'x3', c: 30, r: 44 }, { t: 'star', c: 30, r: 10 }], build: function (a) {
+    { name: 'Dillydally-ish', orbs: [{ t: 'x3', c: 30, r: 44 }, { t: 'star', c: 30, r: 10 }], build: function (a) {
       each(a, function (c, r) { var k = d(c, r, 30, 28); return k < 24.5 ? 1 : null; });
       each(a, function (c, r) { var k = d(c, r, 30, 28); return k >= 26 && k < 27.2 && !(r > 40 && c >= 27 && c <= 32) ? 9 : null; });
       each(a, function (c, r) { return r >= 45 && d(c, r, 30, 28) < 26 ? 0 : null; });
@@ -62,7 +62,7 @@
     { name: 'Hourglass', orbs: { x3: 2, star: 1 }, build: function (a) {
       each(a, function (c, r) { if (r < 2 || r > 50) return null; var hw = 4 + Math.abs(r - 26) * 1.0; return Math.abs(c + .5 - 30) < hw ? (Math.abs(r - 26) < 4 ? 3 : 1) : null; });
     } },
-    { name: 'Not So Fast II', orbs: [{ t: 'x3', c: 30, r: 46 }, { t: 'x3', c: 30, r: 5 }, { t: 'star', c: 18, r: 20 }], build: function (a) {
+    { name: 'Dillydally-ish II', orbs: [{ t: 'x3', c: 30, r: 46 }, { t: 'x3', c: 30, r: 5 }, { t: 'star', c: 18, r: 20 }], build: function (a) {
       each(a, function (c, r) { var k = d(c, r, 30, 27); return k < 25.5 ? (k < 10 ? 3 : k < 17 ? 2 : 1) : null; });
       each(a, function (c, r) { var k = d(c, r, 30, 27); return k >= 27 && k < 28.2 && !(r > 40 && c >= 29 && c <= 30) ? 9 : null; });
       each(a, function (c, r) { return r >= 44 && d(c, r, 30, 27) < 27 ? 0 : null; });
