@@ -18,7 +18,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=11">
+<script>try{var _s=JSON.parse(localStorage.getItem("bm_save_v1"));if(_s&&_s.theme==="day")document.documentElement.setAttribute("data-theme","day")}catch(e){}</script>
+<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=12">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -32,6 +33,7 @@
   <header class="top">
     <a class="top__brand" href="/projects/" aria-label="BLACC Universal projects"><svg><use href="#blacc"/></svg><span>BLACC Universal</span></a>
     <div class="top__r">
+      <button class="ic th" data-act="theme" aria-label="Switch to day mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><g class="th__sun"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g><path class="th__moon" d="M19.5 14.6A7.6 7.6 0 0 1 9.4 4.5a7.6 7.6 0 1 0 10.1 10.1z"/></svg></button>
       <button class="ic" data-act="mute" aria-label="Sound on"><svg><use href="#snd"/></svg></button>
       <button class="ic" data-act="help" aria-label="How to play"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg></button>
     </div>
@@ -62,9 +64,8 @@
   <header class="top">
     <button class="back" data-act="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Home</span></button>
     <b class="top__t" data-lvtitle>Levels</b>
-    <span class="top__sp"><button class="ic burn" data-burn hidden aria-label="Burn through blocks" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.8c.6 3 3.2 4.6 4.6 7.4 1.6 3.2.4 7.6-3.4 8.9.9-1.6.6-3.6-.9-4.9-.4 1.6-1.4 2.6-2.6 3.1.3-1.5-.2-2.8-1.2-3.8-1.4 2-1.6 4.1-.6 5.8C4.5 18 3.8 14 5.6 10.8c1.4-2.4 3.6-3.6 4.6-6.2.6 1 1 2 1 3.2C12 6.6 12.3 4.8 12 2.8z"/></svg></button><button class="ic shuf" data-shuf hidden aria-label="New background"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3.5c4 0 6 10 10 10H21M18 14l3 3-3 3M3 17h3.5c1.6 0 2.8-1.6 3.9-3.6M13.6 9.6C14.7 8 15.6 7 17 7h4M18 4l3 3-3 3"/></svg></button></span>
+    <span class="top__sp"><button class="ic burn" data-burn hidden aria-label="Burn through blocks" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.8c.6 3 3.2 4.6 4.6 7.4 1.6 3.2.4 7.6-3.4 8.9.9-1.6.6-3.6-.9-4.9-.4 1.6-1.4 2.6-2.6 3.1.3-1.5-.2-2.8-1.2-3.8-1.4 2-1.6 4.1-.6 5.8C4.5 18 3.8 14 5.6 10.8c1.4-2.4 3.6-3.6 4.6-6.2.6 1 1 2 1 3.2C12 6.6 12.3 4.8 12 2.8z"/></svg></button></span>
   </header>
-  <div class="bgfx" data-bgfx aria-hidden="true"></div>
   <main class="wrap levels">
     <div class="lvgrid" data-lvgrid></div>
     <button class="vac" data-vac aria-label="Lounge" tabindex="-1">
@@ -105,7 +106,7 @@
     <button class="btn btn--big btn--full" data-act="resume">Resume</button>
     <button class="btn btn--big btn--full btn--ghost" data-act="restart">Restart level</button>
     <button class="btn btn--big btn--full btn--ghost" data-act="levels">All levels</button>
-    <div class="ov__row"><button class="ic ic--row" data-act="mute" aria-label="Sound on"><svg><use href="#snd"/></svg><span>Sound</span></button><button class="ic ic--row burn" data-burn hidden aria-label="Burn through blocks" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.8c.6 3 3.2 4.6 4.6 7.4 1.6 3.2.4 7.6-3.4 8.9.9-1.6.6-3.6-.9-4.9-.4 1.6-1.4 2.6-2.6 3.1.3-1.5-.2-2.8-1.2-3.8-1.4 2-1.6 4.1-.6 5.8C4.5 18 3.8 14 5.6 10.8c1.4-2.4 3.6-3.6 4.6-6.2.6 1 1 2 1 3.2C12 6.6 12.3 4.8 12 2.8z"/></svg><span>Burn</span></button></div>
+    <div class="ov__row"><button class="ic ic--row th" data-act="theme" aria-label="Switch to day mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><g class="th__sun"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></g><path class="th__moon" d="M19.5 14.6A7.6 7.6 0 0 1 9.4 4.5a7.6 7.6 0 1 0 10.1 10.1z"/></svg><span>Mode</span></button><button class="ic ic--row" data-act="mute" aria-label="Sound on"><svg><use href="#snd"/></svg><span>Sound</span></button><button class="ic ic--row burn" data-burn hidden aria-label="Burn through blocks" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.8c.6 3 3.2 4.6 4.6 7.4 1.6 3.2.4 7.6-3.4 8.9.9-1.6.6-3.6-.9-4.9-.4 1.6-1.4 2.6-2.6 3.1.3-1.5-.2-2.8-1.2-3.8-1.4 2-1.6 4.1-.6 5.8C4.5 18 3.8 14 5.6 10.8c1.4-2.4 3.6-3.6 4.6-6.2.6 1 1 2 1 3.2C12 6.6 12.3 4.8 12 2.8z"/></svg><span>Burn</span></button></div>
   </div></div>
   <div class="ov" data-ov="win" hidden><div class="ov__card">
     <p class="eyebrow">Cleared</p>
@@ -170,7 +171,7 @@
 </div></div>
 
 <script src="/assets/blockmayhem/levels.js?v=5"></script>
-<script src="/assets/blockmayhem/bm.js?v=11"></script>
+<script src="/assets/blockmayhem/bm.js?v=12"></script>
 <script src="/assets/js/install.js?v=1" data-app="Block Mayhem" data-icon="/blockmayhem/icon-192.png" data-key="bm" defer></script>
 </body>
 </html>
