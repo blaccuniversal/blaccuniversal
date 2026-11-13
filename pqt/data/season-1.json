@@ -4,17 +4,66 @@
   "length": 12,
   "boostPerWeek": 12,
   "streakBonus": 0.25,
-  "note": "Totals before the first listed week come from the published leaderboard after Gameweek 6. Streaks and debut weeks for those teams are still needed to score Gameweek 7 onwards.",
+  "note": "Totals before the first scored week come from the published leaderboard after Gameweek 7. Streaks are weeks played in a row up to Gameweek 7.",
   "start": {
-    "afterWeek": 6,
+    "afterWeek": 7,
     "teams": [
-      { "team": "Quiztopher Knowlan", "total": 184.25, "rank": 1, "prevRank": 1, "streak": null, "debut": null },
-      { "team": "Minions", "total": 146.25, "rank": 2, "prevRank": 2, "streak": null, "debut": null },
-      { "team": "Sages", "total": 140.25, "rank": 3, "prevRank": 3, "streak": null, "debut": null },
-      { "team": "We Just Met", "total": 58.25, "rank": 4, "prevRank": 5, "streak": null, "debut": null },
-      { "team": "Black", "total": 53.58, "rank": 5, "prevRank": 4, "streak": 0, "debut": null },
-      { "team": "The Malimbes", "total": 39.00, "rank": 6, "prevRank": 6, "streak": null, "debut": null },
-      { "team": "Tribunal", "total": 24.33, "rank": 7, "prevRank": null, "streak": 1, "debut": 6 }
+      {
+        "team": "Quiztopher Knowlan",
+        "total": 215.0,
+        "rank": 1,
+        "prevRank": 1,
+        "streak": 7,
+        "debut": null
+      },
+      {
+        "team": "Minions",
+        "total": 172.0,
+        "rank": 2,
+        "prevRank": 2,
+        "streak": 7,
+        "debut": null
+      },
+      {
+        "team": "Sages",
+        "total": 162.0,
+        "rank": 3,
+        "prevRank": 3,
+        "streak": 7,
+        "debut": null
+      },
+      {
+        "team": "We Just Met",
+        "total": 75.0,
+        "rank": 4,
+        "prevRank": 4,
+        "streak": 3,
+        "debut": null
+      },
+      {
+        "team": "Black",
+        "total": 53.58,
+        "rank": 5,
+        "prevRank": 5,
+        "streak": 0,
+        "debut": null
+      },
+      {
+        "team": "The Malimbes",
+        "total": 39.0,
+        "rank": 6,
+        "prevRank": 6,
+        "streak": 0,
+        "debut": null
+      },
+      {
+        "team": "Tribunal",
+        "total": 24.33,
+        "rank": 7,
+        "prevRank": 7,
+        "streak": 0,
+        "debut": 6
+      }
     ]
   },
   "weeks": [
@@ -22,12 +71,67 @@
       "week": 6,
       "date": "2026-11-05",
       "results": [
-        { "team": "Sages", "points": 30, "players": ["Ajoke", "Bolade", "Cynthia", "Emmanuel ThankGod", "Henrietta", "Mak", "PK", "Tobi Adegbite"] },
-        { "team": "Quiztopher Knowlan", "points": 29 },
-        { "team": "We Just Met", "points": 25 },
-        { "team": "Minions", "points": 22 },
-        { "team": "The Malimbes", "points": 18 },
-        { "team": "Tribunal", "points": 17 }
+        {
+          "team": "Sages",
+          "points": 30,
+          "players": [
+            "Ajoke",
+            "Bolade",
+            "Cynthia",
+            "Emmanuel ThankGod",
+            "Henrietta",
+            "Mak",
+            "PK",
+            "Tobi Adegbite"
+          ]
+        },
+        {
+          "team": "Quiztopher Knowlan",
+          "points": 29
+        },
+        {
+          "team": "We Just Met",
+          "points": 25
+        },
+        {
+          "team": "Minions",
+          "points": 22
+        },
+        {
+          "team": "The Malimbes",
+          "points": 18
+        },
+        {
+          "team": "Tribunal",
+          "points": 17
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "date": "2026-11-12",
+      "results": [
+        {
+          "team": "Quiztopher Knowlan",
+          "points": 29,
+          "players": [
+            "Ben Obasa",
+            "Bunmi Oye",
+            "Sophie"
+          ]
+        },
+        {
+          "team": "Minions",
+          "points": 24
+        },
+        {
+          "team": "Sages",
+          "points": 20
+        },
+        {
+          "team": "We Just Met",
+          "points": 16
+        }
       ]
     }
   ]
