@@ -1,7 +1,7 @@
 /* PQT · Quests Feud weekly survey. Questions and answers live in a Google Sheet via an Apps Script web app. */
 (function () {
   'use strict';
-  var ENDPOINT = ''; // paste the Apps Script web app URL here (ends in /exec)
+  var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwlYm7KzVBhDFraAMpyDYUcqV1EhbY1HUNlimdzXe9yyUNtZS169ok9eeKW73Kv7gFO7g/exec';
   var $ = function (s) { return document.querySelector(s); };
   var form = $('[data-sv-form]'), err = $('[data-sv-err]'), week = '', LK = 'pqt_survey';
   function show(sel) { ['[data-sv-loading]', '[data-sv-closed]', '[data-sv-error]', '[data-sv-form]', '[data-sv-done]'].forEach(function (s) { $(s).hidden = s !== sel; }); }
