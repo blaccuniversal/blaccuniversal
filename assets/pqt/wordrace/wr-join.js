@@ -33,7 +33,7 @@
   }
   function team(id) { return (S.teams || []).filter(function (t) { return t.id === id; })[0]; }
   function play() {
-    var t = team(me), m = S.m, b = S.battle, mine = m && (m.a.id === me || m.b.id === me);
+    var t = team(me), m = S.m, b = S.battle, inM = m && m.teams.some(function (x) { return x.id === me; }), mine = inM && b && (!b.part || b.part.indexOf(me) > -1);
     var running = b && b.running && mine && !S.paused && !b.spin;
     var spinning = b && b.running && mine && !S.paused && b.spin;
     endAt = running ? S.rx + b.left : 0;
@@ -48,9 +48,10 @@
     } else {
       var msg;
       if (S.paused) msg = 'The host has paused the game.';
-      else if (mine && b && b.winner) msg = b.winner === (t && t.name) ? 'You took battle ' + b.n + '. Get ready for the next one.' : b.winner + ' took battle ' + b.n + '. Next one coming.';
-      else if (mine) msg = 'You’re up: ' + esc(m.a.name) + ' v ' + esc(m.b.name) + '. The letters appear here when the host starts the battle.';
-      else if (m) msg = 'Now playing: ' + esc(m.a.name) + ' v ' + esc(m.b.name) + '. Your phone wakes up when it’s your turn.';
+      else if (inM && b && b.running && !mine) msg = 'Sit tight. This decider is for the teams that are level on points.';
+      else if (inM && b && b.winner) msg = b.winner === (t && t.name) ? (b.tb ? 'You won the decider' : 'You took battle ' + b.n) + '. Get ready for the next one.' : b.winner + ' took battle ' + b.n + '. Next one coming.';
+      else if (inM) msg = 'You’re up: ' + esc(m.teams.map(function (x) { return x.name; }).join(m.teams.length === 2 ? ' v ' : ' · ')) + '. The letters appear here when the host starts the battle.';
+      else if (m) msg = 'Now playing: ' + esc(m.teams.map(function (x) { return x.name; }).join(m.teams.length === 2 ? ' v ' : ' · ')) + '. Your phone wakes up when it’s your turn.';
       else msg = 'Waiting for the host.';
       h += '<div class="card"><p class="wrj-wait">' + msg + '</p></div>';
     }

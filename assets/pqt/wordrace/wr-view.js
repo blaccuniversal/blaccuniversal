@@ -7,59 +7,61 @@
   function color(i) { return COLORS[i % COLORS.length]; }
   function badge(t, cls) { if (!t) return '<span class="wr-badge ' + (cls || '') + '">?</span>'; return '<span class="wr-badge ' + (cls || '') + '" style="--c:' + t.c + '">' + esc(initials(t.name)) + '</span>'; }
 
-  /* A compact, names-included model of the bracket. Safe to send to screens and publish. */
+  /* A compact, names-included model of the tournament. Safe to send to screens and publish. */
   function model(T) {
     var idx = {}; T.teams.forEach(function (t, i) { idx[t.id] = { id: t.id, name: t.name, c: color(i) }; });
     function mm(id) {
       var m = T.matchups[id]; if (!m) return null;
-      return { id: m.id, label: m.label || '', a: idx[m.a], b: idx[m.b], wa: m.wins.a, wb: m.wins.b, pa: m.pts.a, pb: m.pts.b, w: m.winner, done: m.done, live: !m.done && m.battles.length > 0,
-        battles: m.battles.map(function (b) { var win = b.attempts.filter(function (a) { return a.ok && a.counted !== false && a.team === b.winner; })[0]; return { n: b.n, s: b.s, e: b.e, tier: b.tier, w: b.winner, word: win ? win.word : '', ms: win ? win.ms : null, tries: b.attempts.length, rolls: b.rolls.length }; }) };
+      var order = m.rank || m.teams;
+      return { id: m.id, label: m.label || '', kind: m.kind, done: m.done, live: !m.done && m.battles.length > 0, slots: m.slots || 0,
+        teams: m.teams.map(function (x) { return { t: idx[x], pts: m.pts[x], wins: m.wins[x], place: m.rank ? m.rank.indexOf(x) + 1 : 0 }; }),
+        rank: (m.rank || []).map(function (x) { return idx[x]; }), keep: m.keep || 0,
+        battles: m.battles.map(function (b) { var win = b.attempts.filter(function (a) { return a.ok && a.team === b.winner; })[0]; return { n: b.n, s: b.s, e: b.e, tier: b.tier, tb: !!b.tb, w: b.winner ? idx[b.winner] : null, word: win ? win.word : '', ms: win ? win.ms : null, tries: b.attempts.length, rolls: b.rolls.length }; }),
+        order: order.map(function (x) { return idx[x]; }) };
     }
     return {
       name: T.name, id: T.id, status: T.status, created: T.created, finished: T.finished || null, champion: T.champion ? idx[T.champion] : null,
       teams: T.teams.map(function (t) { return idx[t.id]; }),
-      decision: T.decision ? { type: T.decision.type, teams: (T.decision.teams || T.decision.pool || []).map(function (x) { return idx[x]; }) } : null,
-      rounds: T.rounds.map(function (r) {
-        return { id: r.id, label: r.label, kind: r.kind, done: r.done, unmatched: r.unmatched ? idx[r.unmatched] : null, bye: r.bye ? idx[r.bye] : null,
-          matchups: r.matchups.map(mm),
-          losers: (r.losers || []).map(function (l) { return { t: idx[l.team], pts: l.pts }; }),
-          bestLoser: r.bestLoser ? idx[r.bestLoser] : null, byHost: !!r.bestLoserByHost, tied: (r.tiedLosers || []).map(function (x) { return idx[x]; }),
-          revival: r.revival ? { matchups: r.revival.matchups.map(mm), final: r.revival.final ? mm(r.revival.final) : null, qualified: r.revival.qualified ? idx[r.revival.qualified] : null, two: r.revival.twoStage } : null,
-          qualified: (r.qualified || []).map(function (x) { return idx[x]; }) };
+      stages: (T.stages || []).map(function (st) {
+        var o = { id: st.id, label: st.label, t: st.t, done: st.done, keep: st.keep, matchups: st.matchups.map(mm), tb: st.tb ? mm(st.tb) : null, qualified: (st.qualified || []).map(function (x) { return idx[x]; }) };
+        if (st.t === 'league') o.table = leagueTable(T, st).map(function (r) { return { t: idx[r.team], pts: r.pts, won: r.won, played: r.played }; });
+        return o;
       })
     };
   }
-
-  function mHTML(m, opts) {
-    if (!m) return '';
-    function side(t, w, p, isW) { return '<div class="wr-bm__t' + (m.done ? (isW ? ' is-w' : ' is-l') : '') + '">' + badge(t) + '<span class="wr-bm__n">' + esc(t ? t.name : '?') + '</span><span class="wr-bm__p" title="Points">' + p + '</span><b class="wr-bm__s">' + w + '</b></div>'; }
-    return '<div class="wr-bm' + (m.live ? ' is-live' : '') + (m.done ? ' is-done' : '') + '" data-mid="' + m.id + '">' + (opts && opts.label && m.label ? '<span class="wr-bm__lab">' + esc(m.label) + '</span>' : '') +
-      side(m.a, m.wa, m.pa, m.w && m.a && m.w === m.a.id) + side(m.b, m.wb, m.pb, m.w && m.b && m.w === m.b.id) + '</div>';
+  function leagueTable(T, st) {
+    var rows = {}; st.pool.forEach(function (x) { rows[x] = { team: x, pts: 0, won: 0, played: 0 }; });
+    st.matchups.forEach(function (id) { var m = T.matchups[id]; m.teams.forEach(function (x) { var r = rows[x]; if (!r) return; r.pts += m.pts[x]; r.won += m.wins[x]; if (m.battles.length) r.played++; }); });
+    var q = st.qualified || [];
+    return st.pool.map(function (x) { return rows[x]; }).sort(function (a, b) { return b.pts - a.pts || (q.indexOf(b.team) > -1) - (q.indexOf(a.team) > -1); });
   }
-  /* Bracket HTML: main path in columns, revival path in its own lane under the round it belongs to. */
+
+  function mHTML(m) {
+    if (!m) return '';
+    var sorted = m.done ? m.teams.slice().sort(function (a, b) { return a.place - b.place; }) : m.teams;
+    return '<div class="wr-bm' + (m.live ? ' is-live' : '') + (m.done ? ' is-done' : '') + (m.kind !== 'duel' ? ' wr-bm--bang' : '') + '" data-mid="' + m.id + '">' + (m.label ? '<span class="wr-bm__lab">' + esc(m.label) + '</span>' : '') +
+      sorted.map(function (x) {
+        var through = m.done && (m.kind === 'tb' ? x.place <= m.slots : m.keep ? x.place <= m.keep : x.place === 1);
+        return '<div class="wr-bm__t' + (m.done ? (through ? ' is-w' : ' is-l') : '') + '">' + badge(x.t) + '<span class="wr-bm__n">' + esc(x.t ? x.t.name : '?') + '</span><b class="wr-bm__s">' + (m.kind === 'tb' ? (x.place && x.place <= m.slots ? '✓' : '') : x.pts) + '</b></div>';
+      }).join('') + '</div>';
+  }
+  function tableHTML(s) {
+    if (!s.table) return '';
+    return '<div class="wr-table"><div class="wr-table__h"><span>Team</span><span>Pts</span></div>' + s.table.map(function (r, i) {
+      var q = s.done && s.qualified.some(function (x) { return x.id === r.t.id; });
+      return '<div class="wr-table__r' + (q ? ' is-q' : '') + '"><span>' + (i + 1) + '</span>' + badge(r.t) + '<b>' + esc(r.t.name) + '</b><em>' + r.pts + '</em></div>';
+    }).join('') + '</div>';
+  }
+  /* One column per stage; a league shows its table and its games. */
   function bracket(M) {
-    if (!M || !M.rounds.length) return '<p class="wr-empty">The bracket appears when the tournament starts.</p>';
-    var cols = M.rounds.map(function (r) {
-      var h = '<div class="wr-col"><p class="wr-col__h">' + esc(r.label) + '</p>' + r.matchups.map(function (m) { return mHTML(m); }).join('');
-      if (r.unmatched) h += '<div class="wr-solo"><span class="wr-solo__k">Unmatched</span>' + badge(r.unmatched) + '<span>' + esc(r.unmatched.name) + '</span></div>';
-      if (r.bye) h += '<div class="wr-solo"><span class="wr-solo__k">Bye (host)</span>' + badge(r.bye) + '<span>' + esc(r.bye.name) + '</span></div>';
-      h += '</div>';
-      if (!r.losers.length && !r.revival) return h;
-      h += '<div class="wr-col wr-col--rev"><p class="wr-col__h">Revival · ' + esc(r.label) + '</p>';
-      if (r.losers.length) {
-        h += '<div class="wr-losers"><p class="wr-lane__h">Losers by aggregate points</p>' + r.losers.slice().sort(function (a, b) { return b.pts - a.pts; }).map(function (l) {
-          var best = (r.bestLoser && r.bestLoser.id === l.t.id), tied = r.tied.some(function (x) { return x.id === l.t.id; });
-          return '<div class="wr-loser' + (best ? ' is-best' : '') + (tied ? ' is-tied' : '') + '">' + badge(l.t) + '<span>' + esc(l.t.name) + '</span><b>' + l.pts + '</b>' + (best ? '<em>' + (r.byHost ? 'Best Loser (host pick)' : 'Best Loser') + '</em>' : tied ? '<em>Tied</em>' : '') + '</div>';
-        }).join('') + '</div>';
-      }
-      if (r.revival) {
-        h += '<div class="wr-lane"><p class="wr-lane__h">Revival round</p>' + r.revival.matchups.map(function (m) { return mHTML(m); }).join('') + (r.revival.final ? '<p class="wr-lane__h">Revival Final</p>' + mHTML(r.revival.final) : (r.revival.two ? '<p class="wr-lane__note">Winners meet in the Revival Final</p>' : '')) +
-          (r.revival.qualified ? '<p class="wr-lane__q">' + badge(r.revival.qualified) + esc(r.revival.qualified.name) + ' qualifies</p>' : '') + '</div>';
-      }
+    if (!M || !M.stages || !M.stages.length) return '<p class="wr-empty">The bracket appears when the tournament starts.</p>';
+    var cols = M.stages.map(function (s) {
+      var h = '<div class="wr-col' + (s.t === 'league' ? ' wr-col--league' : '') + '"><p class="wr-col__h">' + esc(s.label) + '</p>';
+      if (s.t === 'league') h += tableHTML(s) + (s.tb ? '<p class="wr-lane__h">Tie-break</p>' + mHTML(s.tb) : '') + '<div class="wr-games">' + s.matchups.map(mHTML).join('') + '</div>';
+      else h += s.matchups.map(mHTML).join('');
       return h + '</div>';
     });
     if (M.champion) cols.push('<div class="wr-col wr-col--champ"><p class="wr-col__h">Champion</p><div class="wr-champ">' + badge(M.champion, 'wr-badge--lg') + '<b>' + esc(M.champion.name) + '</b></div></div>');
-    else if (M.decision) cols.push('<div class="wr-col"><p class="wr-col__h">Waiting</p><p class="wr-lane__note">The host is settling: ' + (M.decision.type === 'odd-pool' ? 'an odd number of qualified teams' : 'tied Best Losers') + '.</p></div>');
     return '<div class="wr-bracket">' + cols.join('') + '</div>';
   }
   function tierLabel(t) { return t === 'easy' ? 'Easy' : t === 'medium' ? 'Medium' : t === 'hard' ? 'Hard' : ''; }

@@ -24,7 +24,7 @@
     ix.unshift({ id: T.id, name: T.name, created: T.created, status: T.status, champion: T.champion ? E.tname(T, T.champion) : null, teams: T.teams.length });
     ls('wr_index', ix.slice(0, 40)); if (!EMBED) ls('wr_cur', T.id);
   }
-  function load(id) { var t = ls('wr_t_' + id); if (t) { T = t; if (T.config) T.config.speedBonus = 0; auditSeen = T.audit.length; curMid = null; ls('wr_cur', id); startLink(); } }
+  function load(id) { var t = ls('wr_t_' + id); if (t && t.v !== 2) { toast('That tournament used the old rules, so it can’t be continued here.', true); return; } if (t) { T = t; auditSeen = T.audit.length; curMid = null; ls('wr_cur', id); startLink(); } }
 
   /* ---------- toast ---------- */
   var tt; function toast(msg, bad) { toastEl.textContent = msg; toastEl.hidden = false; toastEl.classList.toggle('is-bad', !!bad); clearTimeout(tt); tt = setTimeout(function () { toastEl.hidden = true; }, 2600); }
@@ -42,12 +42,11 @@
       var a = T.audit[auditSeen], k = null, d = {};
       if (a.act === 'battle-start') { k = 'letters'; d = { s: a.s, e: a.e, n: a.battle }; timeUp = false; }
       else if (a.act === 'timeout') { k = 'reroll'; d = { next: a.next }; timeUp = false; }
-      else if (a.act === 'answer') { k = a.ok ? 'correct' : 'wrong'; d = { team: E.tname(T, a.team), word: a.word, reason: a.reason, pts: a.pts }; fb[a.team] = { n: lastAns[a.team] || 0, ok: a.ok, reason: a.reason, word: a.word }; }
-      else if (a.act === 'matchup-won') { k = 'matchup'; d = { team: E.tname(T, a.team), score: a.score }; }
-      else if (a.act === 'revival-open') { k = 'revival'; d = { pairs: a.pairs.map(function (p) { return p.map(function (x) { return E.tname(T, x); }); }), tied: !!a.twoStage, best: a.bestLoser ? E.tname(T, a.bestLoser) : null }; }
-      else if (a.act === 'revival-qualified') { k = 'revived'; d = { team: E.tname(T, a.team) }; }
-      else if (a.act === 'round-open') { k = 'round'; d = { label: a.label }; }
-      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); toParent({ t: 'done', id: T.id, champion: d.team, teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon }; }) }); }
+      else if (a.act === 'answer') { k = a.ok ? 'correct' : 'wrong'; d = { team: E.tname(T, a.team), word: a.word, reason: a.reason, pts: a.ok && !a.tb ? T.config.battlePoints : 0, tb: !!a.tb }; fb[a.team] = { n: lastAns[a.team] || 0, ok: a.ok, reason: a.reason, word: a.word }; }
+      else if (a.act === 'matchup-done') { k = 'matchup'; var dm = T.matchups[a.matchup]; d = { kind: a.kind, rank: a.rank.map(function (x) { return E.tname(T, x); }), pts: a.rank.map(function (x) { return a.pts[x]; }), label: dm ? dm.label : '' }; }
+      else if (a.act === 'tiebreak-open') { k = 'tiebreak'; d = { teams: a.teams.map(function (x) { return E.tname(T, x); }), slots: a.slots }; }
+      else if (a.act === 'stage-open') { k = 'round'; d = { label: a.label }; }
+      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); toParent({ t: 'done', id: T.id, champion: d.team, teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon, game: sm[x.id].game }; }) }); }
       if (k) push(k, d);
     }
   }
@@ -75,28 +74,28 @@
   function left(b) { if (!b) return 0; if (T.paused && T.pausedLeft != null) return T.pausedLeft; if (spinLeft(b) > 0) return b.secs * 1000; return Math.max(0, b.secs * 1000 - (Date.now() - (b.rollAt || b.startedAt))); }
   var LET = 'ABCDEFGHIJKLMNOPRSTUVWY';
   function rl() { return LET[Math.floor(Math.random() * LET.length)]; }
-  function sideView(m, k) { var t = E.team(T, m[k]), i = T.teams.indexOf(t); return { id: t.id, name: t.name, c: V.color(i), wins: m.wins[k], pts: m.pts[k] }; }
+  function teamView(m, x) { var t = E.team(T, x), i = T.teams.indexOf(t); return { id: t.id, name: t.name, c: V.color(i), wins: m.wins[x], pts: m.pts[x] }; }
+  function mName(x) { return (x.label ? x.label + ': ' : '') + x.teams.map(function (y) { return E.tname(T, y); }).join(x.kind === 'duel' ? ' v ' : ' · '); }
   function broadcast() {
     if (!link || !T) return;
-    var m = curMatchup(), b = m ? E.curBattle(m) : null, done = lastFinished(), r = E.lastRound(T);
+    var m = curMatchup(), b = m ? E.curBattle(m) : null, done = lastFinished(), r = E.lastStage(T);
     var lastB = m && m.battles.length ? m.battles[m.battles.length - 1] : null;
     var lastA = lastB && lastB.attempts.length ? lastB.attempts[lastB.attempts.length - 1] : null;
     var st = {
       at: Date.now(), code: T.room, name: T.name, status: T.status, paused: !!T.paused, scene: scene, mode: T.config.answerMode,
       round: r ? r.label : '', evs: evs,
-      m: m ? { id: m.id, label: m.label, a: sideView(m, 'a'), b: sideView(m, 'b'), n: m.battles.length } : null,
-      battle: lastB ? { n: lastB.n, spin: b ? spinLeft(b) : 0, s: b && spinLeft(b) > 0 ? '' : lastB.s, e: b && spinLeft(b) > 0 ? '' : lastB.e, tier: lastB.tier, running: !!b, left: left(b), secs: lastB.secs, winner: lastB.winner ? E.tname(T, lastB.winner) : null,
+      m: m ? { id: m.id, label: m.label, kind: m.kind, teams: m.teams.map(function (x) { return teamView(m, x); }), n: E.regular(m).length, total: m.battles.length } : null,
+      battle: lastB ? { tb: !!lastB.tb, part: lastB.part, n: lastB.n, spin: b ? spinLeft(b) : 0, s: b && spinLeft(b) > 0 ? '' : lastB.s, e: b && spinLeft(b) > 0 ? '' : lastB.e, tier: lastB.tier, running: !!b, left: left(b), secs: lastB.secs, winner: lastB.winner ? E.tname(T, lastB.winner) : null,
         last: lastA ? { team: E.tname(T, lastA.team), word: lastA.word, ok: lastA.ok, reason: lastA.reason } : null } : null,
-      prev: done ? { a: E.tname(T, done.a), b: E.tname(T, done.b), wa: done.wins.a, wb: done.wins.b, w: E.tname(T, done.winner), label: done.label } : null,
-      next: E.openMatchups(T).filter(function (x) { return !m || x.id !== m.id; }).slice(0, 3).map(function (x) { return (x.label ? x.label + ': ' : '') + E.tname(T, x.a) + ' v ' + E.tname(T, x.b); }),
+      prev: done ? { kind: done.kind, rank: done.rank.map(function (x) { return E.tname(T, x); }), label: done.label } : null,
+      next: E.openMatchups(T).filter(function (x) { return !m || x.id !== m.id; }).slice(0, 3).map(mName),
       bracket: V.model(T), standings: standings(),
       champion: T.champion ? E.tname(T, T.champion) : null,
-      teams: T.teams.map(function (t, i) { return { id: t.id, name: t.name, c: V.color(i) }; }), joined: joined, fb: fb,
-      decision: T.decision ? T.decision.type : null
+      teams: T.teams.map(function (t, i) { return { id: t.id, name: t.name, c: V.color(i) }; }), joined: joined, fb: fb
     };
     link.publish(st);
   }
-  function standings() { var s = E.summary(T); return T.teams.map(function (t, i) { var x = s[t.id]; return { name: t.name, c: V.color(i), won: x.won, pts: x.pts, status: x.status, revival: x.revival }; }); }
+  function standings() { var s = E.summary(T); return T.teams.map(function (t, i) { var x = s[t.id]; return { name: t.name, c: V.color(i), won: x.won, pts: x.pts, status: x.status, mWon: x.mWon }; }); }
 
   /* Messages from team phones. They can only join and answer; the host engine decides everything. */
   function onIn(msg) {
@@ -111,8 +110,8 @@
     }
     if (msg.t !== 'ans' || T.config.answerMode !== 'phones') return;
     if (!pins[msg.team] || String(msg.pin) !== pins[msg.team]) return;
-    var m = curMatchup(); if (!m || (m.a !== msg.team && m.b !== msg.team)) return;
-    var b = E.curBattle(m); if (!b || T.paused || T.status !== 'live' || spinLeft(b) > 0) return;
+    var m = curMatchup(); if (!m || m.teams.indexOf(msg.team) < 0) return;
+    var b = E.curBattle(m); if (!b || b.part.indexOf(msg.team) < 0 || T.paused || T.status !== 'live' || spinLeft(b) > 0) return;
     var nowT = Date.now(); if (lastAns['t_' + msg.team] && nowT - lastAns['t_' + msg.team] < 1200) return; // one answer per 1.2s per team
     lastAns['t_' + msg.team] = nowT; lastAns[msg.team] = msg.n;
     var word = String(msg.word || '').slice(0, 40), ms = nowT - (b.rollAt || b.startedAt);
@@ -166,12 +165,10 @@
   function cfgForm() {
     var c = T.config;
     function num(k, label, min, max, suf) { return '<label class="wr-f"><span>' + label + '</span><span class="wr-f__in"><input class="hc-input" type="number" inputmode="numeric" data-cfg="' + k + '" min="' + min + '" max="' + max + '" value="' + c[k] + '">' + (suf ? '<em>' + suf + '</em>' : '') + '</span></label>'; }
-    function tb(k, label) { return '<label class="wr-f"><span>' + label + '</span><span class="wr-f__in"><input class="hc-input" type="number" inputmode="numeric" data-tb="' + k + '" min="0" max="50" value="' + c.tierBonus[k] + '"><em>pts</em></span></label>'; }
     function seg(k, opts) { return '<div class="wr-seg wr-seg--' + opts.length + '" data-cfgseg="' + k + '">' + opts.map(function (o) { return '<button class="pbtn' + (String(c[k]) === String(o[0]) ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div>'; }
     return '<div class="wr-cfg">' +
       num('battleSecs', 'Battle countdown', 5, 300, 'sec') + num('spinSecs', 'Letter spin', 0, 30, 'sec') + num('minLength', 'Minimum word length', 2, 10, 'letters') +
-      num('validPoints', 'Correct word', 0, 100, 'pts') + num('invalidPenalty', 'Wrong word penalty', 0, 50, 'pts') +
-      tb('easy', 'Bonus · easy letters') + tb('medium', 'Bonus · medium letters') + tb('hard', 'Bonus · hard letters') + '</div>' +
+      '</div><p class="hc-note">Every matchup is 3 battles. Each battle won is 3 points. Wrong words cost nothing.</p>' +
       '<p class="wr-k">Letter difficulty</p>' + seg('difficulty', [['mixed', 'Mixed'], ['easy', 'Easy'], ['medium', 'Medium'], ['hard', 'Hard']]) +
       '<p class="wr-k">Answers</p>' + seg('answerMode', [['voice', 'Out loud'], ['phones', 'Team phones']]) +
       '<p class="wr-k">Checking words</p>' + seg('autoValidate', [['true', 'Dictionary + host'], ['false', 'Host only']]) +
@@ -182,12 +179,13 @@
     var p = E.preview(T);
     app.innerHTML =
       '<section class="card hc-sec"><h2>Tournament<button class="pbtn pbtn--sm pbtn--ghost" data-close type="button">Close</button></h2><input class="hc-input" data-rename maxlength="60" value="' + esc(T.name) + '"></section>' +
-      '<section class="card hc-sec"><h2>Teams <span class="wr-count">' + T.teams.length + ' / 12</span></h2>' +
+      '<section class="card hc-sec"><h2>Teams <span class="wr-count">' + T.teams.length + ' of 12</span></h2>' +
       '<form class="hc-row" data-addteam><input class="hc-input hc-grow" data-tname maxlength="40" placeholder="Team name" style="flex:1" autocomplete="off"><button class="pbtn pbtn--white" type="submit">Add</button></form>' +
       '<div class="wr-teams">' + T.teams.map(function (t, i) { return '<div class="wr-team">' + tLink(t.id) + '<b>' + esc(t.name) + '</b><button class="pbtn pbtn--sm pbtn--ghost" data-mv="' + t.id + '" data-d="-1" type="button" aria-label="Move up"' + (i ? '' : ' disabled') + '>↑</button><button class="pbtn pbtn--sm pbtn--ghost" data-mv="' + t.id + '" data-d="1" type="button" aria-label="Move down"' + (i < T.teams.length - 1 ? '' : ' disabled') + '>↓</button><button class="pbtn pbtn--sm pbtn--ghost" data-rm="' + t.id + '" type="button" aria-label="Remove">×</button></div>'; }).join('') + '</div>' +
       (T.teams.length > 2 ? '<button class="pbtn pbtn--sm wr-mt" data-shuffle type="button">Shuffle the draw</button>' : '') + '</section>' +
-      (T.teams.length >= 2 ? '<section class="card hc-sec"><h2>First round</h2>' + p.pairs.map(function (x) { return '<div class="wr-pair">' + tLink(x[0]) + '<b>' + esc(E.tname(T, x[0])) + '</b><span>v</span><b>' + esc(E.tname(T, x[1])) + '</b>' + tLink(x[1]) + '</div>'; }).join('') +
-        (p.unmatched ? '<div class="wr-pair wr-pair--solo">' + tLink(p.unmatched) + '<b>' + esc(E.tname(T, p.unmatched)) + '</b><span>unmatched · plays the Best Loser</span></div>' : '') + '<p class="hc-note">Teams are paired in the order above. Use the arrows or shuffle to change the draw.</p></section>' : '') +
+      (T.teams.length >= 2 ? '<section class="card hc-sec"><h2>The draw</h2><p class="wr-fmt"><b>' + esc(p.text) + '</b><span>' + pl(p.matches, 'matchup') + ' · every team has the same path</span></p><p class="wr-k">' + esc(p.label) + '</p>' +
+        p.groups.map(function (g, k) { return '<div class="wr-group"><em>' + (g.length === 2 ? (p.groups.length > 1 ? 'Matchup ' + (k + 1) : 'Final') : (p.label === 'League' ? 'Game ' : p.groups.length > 1 ? 'Group ' : 'Bangarang') + (p.label === 'League' || p.groups.length > 1 ? (k + 1) : '')) + '</em><span>' + g.map(function (x) { return esc(E.tname(T, x)); }).join(g.length === 2 ? ' v ' : ' · ') + '</span></div>'; }).join('') +
+        '<p class="hc-note">The draw follows the order above. Use the arrows or shuffle to change it.</p></section>' : '') +
       '<details class="card hc-sec wr-det"><summary><h2>Scoring &amp; rules</h2></summary>' + cfgForm() + '</details>' +
       '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-start type="button"' + (T.teams.length < 2 || !dict ? ' disabled' : '') + '>' + (dict ? 'Start tournament' : dictErr ? 'Dictionary failed to load' : 'Loading dictionary…') + '</button>';
     var inp = app.querySelector('[data-tname]'); if (inp && document.activeElement === document.body) inp.focus();
@@ -201,7 +199,7 @@
   }
   function renderLive() {
     var tabs = [['play', 'Play'], ['bracket', 'Bracket'], ['log', 'Log'], ['settings', 'Settings']];
-    var h = '<div class="hc-now card wr-now"><span class="hc-now__txt"><b>' + esc(T.name) + '</b><span>' + esc(E.lastRound(T) ? E.lastRound(T).label : '') + (T.paused ? ' · Paused' : '') + (T.status === 'done' ? ' · Finished' : '') + '</span></span>' +
+    var h = '<div class="hc-now card wr-now"><span class="hc-now__txt"><b>' + esc(T.name) + '</b><span>' + esc(E.lastStage(T) ? E.lastStage(T).label : '') + (T.paused ? ' · Paused' : '') + (T.status === 'done' ? ' · Finished' : '') + '</span></span>' +
       (T.status !== 'done' ? '<button class="pbtn pbtn--sm" data-pause type="button">' + (T.paused ? 'Resume' : 'Pause') + '</button>' : '') + '<button class="pbtn pbtn--sm pbtn--ghost" data-close type="button">Close</button></div>' +
       '<div class="hc-tabs" role="tablist">' + tabs.map(function (x) { return '<button class="hc-tab' + (tab === x[0] ? ' is-on' : '') + '" data-tab="' + x[0] + '" type="button">' + x[1] + '</button>'; }).join('') + '</div>';
     if (tab === 'play') h += playPane() + screenCard();
@@ -217,21 +215,22 @@
         '<div class="hc-row wr-mt"><button class="pbtn pbtn--white" data-publish type="button">' + (T.published ? 'Publish again' : 'Publish results') + '</button><button class="pbtn" data-newt type="button">New tournament</button></div>' +
         (T.published ? '<p class="hc-note">Published ' + new Date(T.published).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '.</p>' : '') + '</section>';
     }
-    if (T.decision) return decisionPane();
     var m = curMatchup(); if (!m) return '<section class="card hc-sec"><p class="hc-note">Waiting…</p></section>';
-    var b = E.curBattle(m), open = E.openMatchups(T), A = E.tname(T, m.a), B = E.tname(T, m.b);
+    var b = E.curBattle(m), open = E.openMatchups(T), part = b ? b.part : E.nextParticipants(m), reg = E.regular(m).length, stl = E.lastStage(T).label;
+    var tbNext = m.kind === 'tb' || reg >= 3;
     var h = '<section class="card hc-sec wr-play">' +
-      (open.length > 1 ? '<div class="wr-pick">' + open.map(function (x) { return '<button class="pbtn pbtn--sm' + (x.id === m.id ? ' is-on' : '') + '" data-pickm="' + x.id + '" type="button"' + (b && x.id !== m.id ? ' disabled' : '') + '>' + (x.label ? esc(x.label) + ' · ' : '') + esc(E.tname(T, x.a)) + ' v ' + esc(E.tname(T, x.b)) + '</button>'; }).join('') + '</div>' : '') +
-      '<p class="eyebrow">' + esc(m.label || E.lastRound(T).label) + ' · Battle ' + (b ? b.n : m.battles.length + 1) + ' of 3</p>' +
-      '<div class="wr-vs">' + vsSide(m, 'a') + '<span class="wr-vs__x">v</span>' + vsSide(m, 'b') + '</div>';
+      (open.length > 1 ? '<div class="wr-pick">' + open.map(function (x) { return '<button class="pbtn pbtn--sm' + (x.id === m.id ? ' is-on' : '') + '" data-pickm="' + x.id + '" type="button"' + (b && x.id !== m.id ? ' disabled' : '') + '>' + esc(mName(x)) + '</button>'; }).join('') + '</div>' : '') +
+      '<p class="eyebrow">' + esc(m.label && m.label !== stl ? stl + ' · ' + m.label : stl) + ' · ' + (tbNext ? (m.kind === 'tb' ? 'Tie-break battle' : 'Decider battle') : 'Battle ' + (b ? b.n : reg + 1) + ' of 3') + '</p>' +
+      '<div class="wr-vs wr-vs--' + m.teams.length + '">' + m.teams.map(function (x) { return vsSide(m, x, part.indexOf(x) > -1); }).join('') + '</div>' +
+      (tbNext && !b ? '<p class="hc-note" style="text-align:center">' + esc(part.map(function (x) { return E.tname(T, x); }).join(', ')) + (m.kind === 'tb' ? ' are level in the table. First correct word goes through.' : ' are level on points. First correct word settles it. Deciders score nothing.') + '</p>' : '');
     if (!b) {
-      h += '<button class="pbtn pbtn--white pbtn--lg pbtn--block wr-mt" data-battle type="button"' + (T.paused ? ' disabled' : '') + '>Start battle ' + (m.battles.length + 1) + '</button>' +
+      h += '<button class="pbtn pbtn--white pbtn--lg pbtn--block wr-mt" data-battle type="button"' + (T.paused ? ' disabled' : '') + '>' + (tbNext ? 'Start decider' : 'Start battle ' + (reg + 1)) + '</button>' +
         '<details class="wr-det wr-mt"><summary class="hc-note">Choose the letters yourself</summary><form class="hc-row wr-mt" data-letters><input class="hc-input wr-l" maxlength="1" data-ls placeholder="S" aria-label="First letter"><span>→</span><input class="hc-input wr-l" maxlength="1" data-le placeholder="T" aria-label="Last letter"><button class="pbtn" type="submit">Start with these</button></form></details>';
     } else {
       var lt = left(b), sp = spinLeft(b);
       if (sp > 0) {
         h += '<div class="wr-letters is-spin" data-spin><span class="wr-letter">' + rl() + '</span><span class="wr-arrow">→</span><span class="wr-letter">' + rl() + '</span></div><p class="wr-tier">Letters stop in <b data-spinleft>' + fmt(sp) + '</b></p>' +
-          '<div class="wr-award wr-mt"><button class="pbtn pbtn--good pbtn--lg" disabled type="button">' + esc(A) + ' got it</button><button class="pbtn pbtn--good pbtn--lg" disabled type="button">' + esc(B) + ' got it</button></div><p class="hc-note" style="text-align:center">The clock starts when the letters stop.</p>' + battleLog(m) + '</section>';
+          '<div class="wr-award wr-award--' + b.part.length + ' wr-mt">' + b.part.map(function (x) { return '<button class="pbtn pbtn--good pbtn--lg" disabled type="button">' + esc(E.tname(T, x)) + ' got it</button>'; }).join('') + '</div><p class="hc-note" style="text-align:center">The clock starts when the letters stop.</p>' + battleLog(m) + '</section>';
         return h + (T.config.answerMode === 'phones' ? pinsCard() : '');
       }
       h += '<div class="wr-letters"><span class="wr-letter">' + b.s.toUpperCase() + '</span><span class="wr-arrow">→</span><span class="wr-letter">' + b.e.toUpperCase() + '</span></div>' +
@@ -239,24 +238,31 @@
         '<div class="wr-clock' + (lt <= 0 ? ' is-up' : lt < 6000 ? ' is-low' : '') + '" data-clock>' + (lt <= 0 ? 'Time' : fmt(lt)) + '</div>' +
         '<input class="hc-input wr-word" data-word maxlength="40" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Word (optional for out-loud)">' +
         '<p class="wr-check" data-check></p>' +
-        '<div class="wr-award"><button class="pbtn pbtn--good pbtn--lg" data-award="' + m.a + '" type="button">' + esc(A) + ' got it</button><button class="pbtn pbtn--good pbtn--lg" data-award="' + m.b + '" type="button">' + esc(B) + ' got it</button>' +
-        '<button class="pbtn pbtn--bad pbtn--sm" data-wrong="' + m.a + '" type="button">' + esc(A) + ': wrong word</button><button class="pbtn pbtn--bad pbtn--sm" data-wrong="' + m.b + '" type="button">' + esc(B) + ': wrong word</button></div>' +
+        '<div class="wr-award wr-award--' + b.part.length + '">' + b.part.map(function (x) { return '<button class="pbtn pbtn--good pbtn--lg" data-award="' + x + '" type="button">' + esc(E.tname(T, x)) + ' got it</button>'; }).join('') +
+        b.part.map(function (x) { return '<button class="pbtn pbtn--bad pbtn--sm" data-wrong="' + x + '" type="button">' + esc(E.tname(T, x)) + ': wrong</button>'; }).join('') + '</div>' +
         '<button class="pbtn pbtn--block wr-mt' + (lt <= 0 ? ' pbtn--o' : '') + '" data-timeout type="button">Time’s up · new letters</button>';
       if (pend.length) h += '<div class="wr-pend"><p class="wr-k">Waiting for your check</p>' + pend.map(function (p, i) { return '<div class="wr-li"><div><b>' + esc(p.word) + '</b><span>' + esc(E.tname(T, p.team)) + ' · ' + (p.ms / 1000).toFixed(1) + 's</span></div><button class="pbtn pbtn--sm pbtn--good" data-pacc="' + i + '" type="button">Accept</button><button class="pbtn pbtn--sm pbtn--bad" data-prej="' + i + '" type="button">Reject</button></div>'; }).join('') + '</div>';
     }
     h += battleLog(m) + '</section>';
     var done = lastFinished();
-    if (done && !b && !m.battles.length) h = '<div class="wr-banner">' + esc(E.tname(T, done.winner)) + ' beat ' + esc(E.tname(T, done.loser)) + ' ' + Math.max(done.wins.a, done.wins.b) + '–' + Math.min(done.wins.a, done.wins.b) + '</div>' + h;
+    if (done && !b && !m.battles.length) h = '<div class="wr-banner">' + esc(resultLine(done)) + '</div>' + h;
     if (T.config.answerMode === 'phones') h += pinsCard();
     return h;
   }
-  function vsSide(m, k) { return '<div class="wr-vs__t">' + tLink(m[k]) + '<b>' + esc(E.tname(T, m[k])) + '</b><span class="wr-dots">' + [0, 1].map(function (i) { return '<i' + (i < m.wins[k] ? ' class="on"' : '') + '></i>'; }).join('') + '</span><span class="wr-pts">' + m.pts[k] + ' pts</span></div>'; }
+  function resultLine(m) {
+    var r = m.rank.map(function (x) { return E.tname(T, x); });
+    if (m.kind === 'duel') return r[0] + ' beat ' + r[1] + ' ' + m.wins[m.rank[0]] + '–' + m.wins[m.rank[1]];
+    if (m.kind === 'tb') return r.slice(0, m.slots).join(' and ') + ' through on the tie-break';
+    return r[0] + ' win' + (m.label ? ' ' + m.label : ' the Bangarang') + ' · ' + m.rank.map(function (x) { return E.tname(T, x) + ' ' + m.pts[x]; }).join(', ');
+  }
+  function vsSide(m, x, active) { return '<div class="wr-vs__t' + (active ? '' : ' is-off') + '">' + tLink(x) + '<b>' + esc(E.tname(T, x)) + '</b><span class="wr-dots">' + [0, 1, 2].map(function (i) { return '<i' + (i < m.wins[x] ? ' class="on"' : '') + '></i>'; }).join('') + '</span><span class="wr-pts">' + pl(m.pts[x], 'pt') + '</span></div>'; }
   function battleLog(m) {
     if (!m.battles.length) return '';
     return '<div class="wr-log">' + m.battles.slice().reverse().map(function (b) {
-      return '<div class="wr-logb"><p class="wr-k">Battle ' + b.n + ' · ' + (!b.winner && spinLeft(b) > 0 ? '? → ?' : b.s.toUpperCase() + ' → ' + b.e.toUpperCase()) + (b.winner ? ' · won by ' + esc(E.tname(T, b.winner)) : '') + '</p>' +
+      return '<div class="wr-logb"><p class="wr-k">' + (b.tb ? 'Decider' : 'Battle ' + b.n) + ' · ' + (!b.winner && spinLeft(b) > 0 ? '? → ?' : b.s.toUpperCase() + ' → ' + b.e.toUpperCase()) + (b.winner ? ' · won by ' + esc(E.tname(T, b.winner)) : '') + '</p>' +
         (b.attempts.length ? b.attempts.map(function (a, i) {
-          return '<div class="wr-att' + (a.ok ? ' is-ok' : ' is-no') + (a.counted === false ? ' is-void' : '') + '"><b>' + esc(a.word || '(no word)') + '</b><span>' + esc(E.tname(T, a.team)) + ' · ' + (a.ok ? '✓' : '✗ ' + (E.REASONS[a.reason] || '')) + (a.by === 'host' ? ' · host' : '') + ' · ' + (a.ms / 1000).toFixed(1) + 's</span><em>' + (a.counted === false ? '—' : (a.pts > 0 ? '+' : '') + a.pts) + '</em>' +
+          var won = a.ok && b.winner === a.team && i === b.attempts.findIndex(function (z) { return z.ok; });
+          return '<div class="wr-att' + (a.ok ? ' is-ok' : ' is-no') + (a.ok && !won ? ' is-void' : '') + '"><b>' + esc(a.word || '(called out)') + '</b><span>' + esc(E.tname(T, a.team)) + ' · ' + (a.ok ? '✓' : '✗ ' + (E.REASONS[a.reason] || '')) + (a.by === 'host' ? ' · host' : '') + ' · ' + (a.ms / 1000).toFixed(1) + 's</span><em>' + (won ? (b.tb ? 'wins' : '+' + T.config.battlePoints) : '') + '</em>' +
             '<button class="pbtn pbtn--sm pbtn--ghost" data-ovr="' + m.id + ':' + b.n + ':' + i + ':' + (a.ok ? 0 : 1) + '" type="button">' + (a.ok ? 'Reject' : 'Accept') + '</button>' + (a.ok ? '' : '<button class="pbtn pbtn--sm pbtn--ghost" data-addw="' + esc(a.word) + '" type="button" title="Add to custom dictionary">+ dict</button>') + '</div>';
         }).join('') : '<p class="hc-note">No answers yet.</p>') + '</div>';
     }).join('') + '</div>';
@@ -265,21 +271,12 @@
     return '<section class="card hc-sec"><h2>Team PINs</h2><p class="hc-note" style="margin-top:0">Give each team its PIN privately. They join at blaccuniversal.com/pqt/wordrace/join with code <b>' + esc(T.room) + '</b>.</p><div class="wr-pins">' +
       T.teams.map(function (t) { return '<div class="wr-pin">' + tLink(t.id) + '<b>' + esc(t.name) + '</b><code>' + esc((T.pins || {})[t.id] || '') + '</code><span>' + (joined[t.id] ? joined[t.id] + ' joined' : '') + '</span></div>'; }).join('') + '</div></section>';
   }
-  function decisionPane() {
-    var d = T.decision, r = E.lastRound(T), s = E.summary(T);
-    if (d.type === 'best-loser-tie') {
-      return '<section class="card hc-sec wr-dec"><p class="eyebrow">Your call</p><h3>Best Losers are tied on ' + pl(d.pts, 'point') + '</h3><p class="hc-note">The rules only settle a tie when all three losers of a seven-team draw are level. Choose which tied team plays ' + esc(E.tname(T, r.unmatched)) + ' in the revival.</p>' +
-        d.teams.map(function (x) { return '<div class="wr-li">' + tLink(x) + '<div><b>' + esc(E.tname(T, x)) + '</b><span>' + s[x].pts + ' pts · ' + pl(s[x].won, 'battle') + ' won</span></div><button class="pbtn pbtn--sm pbtn--white" data-dec-team="' + x + '" type="button">Revive</button></div>'; }).join('') + '</section>';
-    }
-    return '<section class="card hc-sec wr-dec"><p class="eyebrow">Your call</p><h3>' + d.pool.length + ' teams qualified</h3><p class="hc-note">An odd number can’t be paired. The rules don’t say what happens here, so you decide. <b>Revival</b>: one team sits out, the others play, and the Best Loser of that round plays the team that sat out. <b>Bye</b>: one team goes straight through.</p>' +
-      d.pool.map(function (x) { return '<div class="wr-li">' + tLink(x) + '<div><b>' + esc(E.tname(T, x)) + '</b><span>' + s[x].pts + ' pts · ' + pl(s[x].won, 'battle') + ' won</span></div><button class="pbtn pbtn--sm" data-dec-mode="revival" data-dec-t="' + x + '" type="button">Sits out</button><button class="pbtn pbtn--sm" data-dec-mode="bye" data-dec-t="' + x + '" type="button">Bye</button></div>'; }).join('') + '</section>';
-  }
   function logPane() {
     var ms = Object.keys(T.matchups).map(function (id) { return T.matchups[id]; }).filter(function (m) { return m.battles.length; });
     var h = '<section class="card hc-sec"><h2>Correct points</h2>' + (ms.length ? '<form data-corr class="wr-corr">' +
-      '<select class="hc-input" data-cm>' + ms.map(function (m) { return '<option value="' + m.id + '">' + esc((m.label ? m.label + ': ' : '') + E.tname(T, m.a) + ' v ' + E.tname(T, m.b)) + '</option>'; }).join('') + '</select>' +
+      '<select class="hc-input" data-cm>' + ms.filter(function (m) { return m.kind !== 'tb'; }).map(function (m) { return '<option value="' + m.id + '">' + esc(mName(m)) + '</option>'; }).join('') + '</select>' +
       '<div class="hc-row"><select class="hc-input" data-cb style="flex:1 1 110px">' + [1, 2, 3].map(function (n) { return '<option value="' + n + '">Battle ' + n + '</option>'; }).join('') + '</select><select class="hc-input" data-ct style="flex:2 1 140px"></select><input class="hc-input" data-cd type="number" inputmode="numeric" placeholder="+/- pts" style="flex:1 1 90px"></div>' +
-      '<input class="hc-input" data-cr maxlength="200" placeholder="Reason (required)"><button class="pbtn pbtn--white" type="submit">Apply correction</button></form><p class="hc-note">Corrections change points (and so the Best Loser), not who won a battle. To change a winner, use Accept/Reject on the answer in Play.</p>' : '<p class="hc-note">No battles played yet.</p>') + '</section>' +
+      '<input class="hc-input" data-cr maxlength="200" placeholder="Reason (required)"><button class="pbtn pbtn--white" type="submit">Apply correction</button></form><p class="hc-note">Corrections change points (and so who comes 1st in a Bangarang or who tops a league), not who won a battle. To change a battle winner, use Accept/Reject on the answer in Play.</p>' : '<p class="hc-note">No battles played yet.</p>') + '</section>' +
       '<section class="card hc-sec"><h2>Custom dictionary</h2><form class="hc-row" data-cw><input class="hc-input hc-grow" data-cwi maxlength="40" placeholder="Word to accept" style="flex:1" autocomplete="off"><button class="pbtn" type="submit">Add</button></form><p class="hc-note">' + (Object.keys(T.custom).length ? esc(Object.keys(T.custom).join(', ')) : 'Words added here count as valid for this tournament.') + '</p></section>' +
       '<section class="card hc-sec"><h2>Results<button class="pbtn pbtn--sm" data-publish type="button">Publish now</button></h2><p class="hc-note" style="margin-top:0">' + (T.published ? 'Last published ' + new Date(T.published).toLocaleString() + '.' : 'Not published yet.') + ' Results also publish on their own after each matchup when this device has a publish key.</p></section>' +
       '<section class="card hc-sec"><h2>Audit log</h2><div class="wr-audit">' + T.audit.slice().reverse().map(auditLine).join('') + '</div></section>';
@@ -290,18 +287,14 @@
     switch (a.act) {
       case 'create': s = 'Created “' + esc(a.name) + '”'; break;
       case 'team-add': s = 'Added ' + esc(a.name); break;
-      case 'start': s = 'Started with ' + pl(a.teams.length, 'team'); break;
-      case 'round-open': s = esc(a.label) + ' drawn' + (a.unmatched ? ' · ' + n(a.unmatched) + ' unmatched' : '') + (a.bye ? ' · ' + n(a.bye) + ' bye' : ''); break;
-      case 'battle-start': s = 'Battle ' + a.battle + ': ' + a.s.toUpperCase() + ' → ' + a.e.toUpperCase(); break;
-      case 'answer': s = n(a.team) + ' ' + (a.word ? '“' + esc(a.word) + '”' : '(called out)') + ' ' + (a.ok ? '✓' : '✗ ' + (E.REASONS[a.reason] || '')) + ' ' + (a.pts > 0 ? '+' : '') + a.pts + (a.by === 'host' ? ' (host)' : ''); break;
+      case 'start': s = 'Started with ' + pl(a.teams.length, 'team') + (a.format ? ' · ' + esc(a.format) : ''); break;
+      case 'stage-open': s = esc(a.label) + ' drawn'; break;
+      case 'stage-done': s = 'Through: ' + a.qualified.map(n).join(', '); break;
+      case 'tiebreak-open': s = 'Tie-break: ' + a.teams.map(n).join(', '); break;
+      case 'battle-start': s = (a.tb ? 'Decider' : 'Battle ' + a.battle) + ': ' + a.s.toUpperCase() + ' → ' + a.e.toUpperCase(); break;
+      case 'answer': s = n(a.team) + ' ' + (a.word ? '“' + esc(a.word) + '”' : '(called out)') + ' ' + (a.ok ? '✓' : '✗ ' + (E.REASONS[a.reason] || '')) + (a.by === 'host' ? ' (host)' : ''); break;
       case 'timeout': s = 'Time up · new letters ' + a.next.toUpperCase().split('').join(' → '); break;
-      case 'matchup-won': s = n(a.team) + ' won ' + a.score; break;
-      case 'revival-open': s = 'Revival: ' + a.pairs.map(function (p) { return n(p[0]) + ' v ' + n(p[1]); }).join(', ') + (a.twoStage ? ' (three-way tie)' : ''); break;
-      case 'revival-final-open': s = 'Revival Final drawn'; break;
-      case 'revival-qualified': s = n(a.team) + ' qualified through the revival'; break;
-      case 'round-done': s = 'Qualified: ' + a.qualified.map(n).join(', '); break;
-      case 'decision-needed': s = 'Waiting for host decision (' + (a.type === 'odd-pool' ? 'odd number of teams' : 'tied Best Losers') + ')'; break;
-      case 'decision': s = 'Host chose ' + n(a.team) + (a.mode ? ' · ' + a.mode : ''); break;
+      case 'matchup-done': var mm = T.matchups[a.matchup]; s = mm && mm.rank ? esc(resultLine(mm)) : 'Matchup finished'; break;
       case 'override': s = 'Host ' + (a.ok ? 'accepted' : 'rejected') + ' “' + esc(a.word) + '”' + (a.note ? ' · ' + esc(a.note) : ''); break;
       case 'correction': s = 'Correction ' + (a.delta > 0 ? '+' : '') + a.delta + ' to ' + n(a.team) + ', battle ' + a.battle + ' · “' + esc(a.reason) + '”'; break;
       case 'custom-word': s = 'Added “' + esc(a.word) + '” to the custom dictionary'; break;
@@ -358,8 +351,6 @@
     if (d.pacc || d.prej) { var i = +(d.pacc || d.prej), p = pend[i]; pend.splice(i, 1); return act(function () { E.submit(T, p.mid, p.team, p.word, dict, { ms: p.ms, verdict: !!d.pacc }); }); }
     if (d.ovr) { var o = d.ovr.split(':'); return act(function () { E.override(T, o[0], +o[1], +o[2], o[3] === '1', 'host'); }, 'Updated.'); }
     if (d.addw) return act(function () { E.addCustomWord(T, d.addw); }, 'Added to the custom dictionary. Accept the answer to count it.');
-    if (d.decTeam) return act(function () { E.decide(T, { team: d.decTeam }); });
-    if (d.decMode) return act(function () { E.decide(T, { mode: d.decMode, team: d.decT }); });
     if ('publish' in d) { publish(false); return; }
     if ('newt' in d) { if (link) link.end(); link = null; T = null; ls('wr_cur', null); render(); return; }
   });
@@ -367,7 +358,6 @@
   function readCfg() {
     var c = {};
     app.querySelectorAll('[data-cfg]').forEach(function (i) { c[i.dataset.cfg] = +i.value; });
-    var tb = {}; app.querySelectorAll('[data-tb]').forEach(function (i) { tb[i.dataset.tb] = +i.value; }); if (Object.keys(tb).length) c.tierBonus = tb;
     app.querySelectorAll('[data-cfgseg]').forEach(function (s) { var on = s.querySelector('.is-on'); if (!on) return; var v = on.dataset.v; c[s.dataset.cfgseg] = v === 'true' ? true : v === 'false' ? false : v; });
     return c;
   }
@@ -385,7 +375,7 @@
     if (e.target.hasAttribute('data-rename')) act(function () { E.rename(T, e.target.value); });
     if (e.target.hasAttribute('data-cm')) fillCorrTeams();
   });
-  function fillCorrTeams() { var sel = app.querySelector('[data-cm]'), ct = app.querySelector('[data-ct]'); if (!sel || !ct) return; var m = T.matchups[sel.value]; ct.innerHTML = [m.a, m.b].map(function (x) { return '<option value="' + x + '">' + esc(E.tname(T, x)) + '</option>'; }).join(''); var cb = app.querySelector('[data-cb]'); cb.innerHTML = m.battles.map(function (b) { return '<option value="' + b.n + '">Battle ' + b.n + '</option>'; }).join(''); }
+  function fillCorrTeams() { var sel = app.querySelector('[data-cm]'), ct = app.querySelector('[data-ct]'); if (!sel || !ct) return; var m = T.matchups[sel.value]; ct.innerHTML = m.teams.map(function (x) { return '<option value="' + x + '">' + esc(E.tname(T, x)) + '</option>'; }).join(''); var cb = app.querySelector('[data-cb]'); cb.innerHTML = m.battles.map(function (b) { return '<option value="' + b.n + '">Battle ' + b.n + '</option>'; }).join(''); }
   new MutationObserver(function () { if (app.querySelector('[data-ct]') && !app.querySelector('[data-ct]').options.length) fillCorrTeams(); }).observe(app, { childList: true });
 
   /* ---------- countdown ---------- */

@@ -21,7 +21,7 @@
     var C = 2 * Math.PI * 46, f = secs ? Math.max(0, Math.min(1, ms / (secs * 1000))) : 0;
     return '<div class="wrs-ring' + (ms <= 0 ? ' is-up' : ms < 6000 ? ' is-low' : '') + '" data-ring><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="46"/><circle class="fg" cx="50" cy="50" r="46" stroke-dasharray="' + C.toFixed(1) + '" stroke-dashoffset="' + (C * (1 - f)).toFixed(1) + '"/></svg><b>' + (ms <= 0 ? '0' : Math.ceil(ms / 1000)) + '</b></div>';
   }
-  function team(t, cls) { return '<div class="wrs-team ' + (cls || '') + '">' + V.badge(t) + '<div class="wrs-team__n">' + esc(t.name) + '</div><span class="wr-dots">' + [0, 1].map(function (i) { return '<i' + (i < t.wins ? ' class="on"' : '') + '></i>'; }).join('') + '</span><span class="wrs-team__p">' + t.pts + ' pts</span></div>'; }
+  function team(t, cls) { return '<div class="wrs-team ' + (cls || '') + '">' + V.badge(t) + '<div class="wrs-team__n">' + esc(t.name) + '</div><span class="wr-dots">' + [0, 1, 2].map(function (i) { return '<i' + (i < t.wins ? ' class="on"' : '') + '></i>'; }).join('') + '</span><span class="wrs-team__p">' + t.pts + (t.pts === 1 ? ' pt' : ' pts') + '</span></div>'; }
 
   function paint() {
     if (!S) return;
@@ -30,7 +30,7 @@
     if (b && b.running && !b.spin) endAt = S.rx + b.left; else endAt = 0;
     spinEnd = b && b.running && b.spin ? S.rx + b.spin : 0; if (spinEnd && !spinTot) spinTot = b.spin; if (!spinEnd) spinTot = 0;
     if (S.status === 'done' && S.champion && S.scene === 'battle') { champion(); return; }
-    if (S.status === 'setup' || !S.bracket || !S.bracket.rounds.length) main = lobby();
+    if (S.status === 'setup' || !S.bracket || !S.bracket.stages.length) main = lobby();
     else if (S.scene === 'bracket') main = '<div class="wrs-board"><p class="wrs-label">' + esc(S.name) + ' · Bracket</p>' + V.bracket(S.bracket) + '</div>';
     else if (S.scene === 'standings') main = standings();
     else main = battle();
@@ -49,28 +49,28 @@
   }
   function battle() {
     var m = S.m, b = S.battle;
-    if (S.decision) return '<div class="wrs-lobby"><span class="wrs-lobby__tag">Hold tight</span><p class="wrs-ov__mid">The host is settling who goes through.</p></div>';
     if (!m) return lobby();
     var running = b && b.running, ms = running ? Math.max(0, endAt - Date.now()) : 0;
-    var wa = '', wb = '';
-    if (b && !running && b.winner) { wa = b.winner === m.a.name ? 'is-win' : 'is-lose'; wb = b.winner === m.b.name ? 'is-win' : 'is-lose'; }
+    function cls(t) { if (b && b.part && b.part.indexOf(t.id) < 0) return 'is-off'; return b && !running && b.winner ? (b.winner === t.name ? 'is-win' : 'is-lose') : ''; }
+    var lab = esc(m.label || S.round) + ' · ' + (b && b.tb ? 'Decider' : 'Battle ' + (b ? b.n : m.n + 1));
     var mid;
     if (b && running && b.spin) {
-      mid = '<p class="wrs-label">' + esc(m.label || S.round) + ' · Battle ' + b.n + '</p>' +
+      mid = '<p class="wrs-label">' + lab + '</p>' +
         '<div class="wrs-letters is-spin"><div class="wrs-tile"><span class="wrs-tile__k">Starts with</span><span class="wrs-letter" data-spinl>' + rl() + '</span></div><span class="wrs-arrow">→</span><div class="wrs-tile"><span class="wrs-tile__k">Ends with</span><span class="wrs-letter" data-spinl>' + rl() + '</span></div></div><p class="wrs-idle">Get ready…</p>';
     } else if (b && (running || b.winner)) {
-      mid = '<p class="wrs-label">' + esc(m.label || S.round) + ' · Battle ' + b.n + '</p>' +
+      mid = '<p class="wrs-label">' + lab + '</p>' +
         '<div class="wrs-letters"><div class="wrs-tile"><span class="wrs-tile__k">Starts with</span><span class="wrs-letter">' + b.s.toUpperCase() + '</span></div><span class="wrs-arrow">→</span><div class="wrs-tile"><span class="wrs-tile__k">Ends with</span><span class="wrs-letter">' + b.e.toUpperCase() + '</span></div></div>' +
-        (running ? ring(ms, b.secs) : '<p class="wrs-idle">' + (b.winner ? esc(b.winner) + ' take battle ' + b.n + (b.last && b.last.ok && b.last.word ? ' with <b style="color:#fff">' + esc(b.last.word.toUpperCase()) + '</b>' : '') : '') + '</p>');
+        (running ? ring(ms, b.secs) : '<p class="wrs-idle">' + (b.winner ? esc(b.winner) + (b.tb ? ' win the decider' : ' take battle ' + b.n) + (b.last && b.last.ok && b.last.word ? ' with <b style="color:#fff">' + esc(b.last.word.toUpperCase()) + '</b>' : '') : '') + '</p>');
     } else {
-      mid = '<p class="wrs-label">' + esc(m.label || S.round) + '</p><div class="wrs-letters"><div class="wrs-tile"><span class="wrs-tile__k">Starts with</span><span class="wrs-letter" style="opacity:.12">?</span></div><span class="wrs-arrow">→</span><div class="wrs-tile"><span class="wrs-tile__k">Ends with</span><span class="wrs-letter" style="opacity:.12">?</span></div></div><p class="wrs-idle">Battle ' + (m.n + 1) + ' up next</p>';
+      mid = '<p class="wrs-label">' + esc(m.label || S.round) + '</p><div class="wrs-letters"><div class="wrs-tile"><span class="wrs-tile__k">Starts with</span><span class="wrs-letter" style="opacity:.12">?</span></div><span class="wrs-arrow">→</span><div class="wrs-tile"><span class="wrs-tile__k">Ends with</span><span class="wrs-letter" style="opacity:.12">?</span></div></div><p class="wrs-idle">' + (m.n >= 3 ? 'Decider up next' : 'Battle ' + (m.n + 1) + ' of 3 up next') + '</p>';
     }
-    return '<div class="wrs-stage">' + team(m.a, wa) + '<div class="wrs-mid">' + mid + '</div>' + team(m.b, wb) + '</div>';
+    if (m.teams.length === 2) return '<div class="wrs-stage">' + team(m.teams[0], cls(m.teams[0])) + '<div class="wrs-mid">' + mid + '</div>' + team(m.teams[1], cls(m.teams[1])) + '</div>';
+    return '<div class="wrs-stage3"><div class="wrs-mid">' + mid + '</div><div class="wrs-row wrs-row--' + m.teams.length + '">' + m.teams.map(function (t) { return team(t, cls(t)); }).join('') + '</div></div>';
   }
   function standings() {
     var rows = (S.standings || []).slice().sort(function (a, b) { var o = { champion: 0, in: 1, waiting: 2, out: 3 }; return (o[a.status] - o[b.status]) || (b.won - a.won) || (b.pts - a.pts); });
-    return '<div class="wrs-board" style="align-items:center"><p class="wrs-label">' + esc(S.name) + ' · Standings</p><table class="wrs-table"><thead><tr><th>Team</th><th>Battles won</th><th>Points</th><th>Status</th></tr></thead><tbody>' +
-      rows.map(function (r) { return '<tr class="' + (r.status === 'out' ? 'is-out' : '') + '"><td>' + V.badge(r) + esc(r.name) + '</td><td>' + r.won + '</td><td>' + r.pts + '</td><td><em>' + (r.status === 'champion' ? 'Champion' : r.status === 'out' ? 'Out' : r.status === 'waiting' ? 'Revival?' : r.revival ? 'Revived' : 'Still in') + '</em></td></tr>'; }).join('') + '</tbody></table></div>';
+    return '<div class="wrs-board" style="align-items:center"><p class="wrs-label">' + esc(S.name) + ' · Standings</p><table class="wrs-table"><thead><tr><th>Team</th><th>Battles won</th><th>Points</th><th>Matchups won</th><th>Status</th></tr></thead><tbody>' +
+      rows.map(function (r) { return '<tr class="' + (r.status === 'out' ? 'is-out' : '') + '"><td>' + V.badge(r) + esc(r.name) + '</td><td>' + r.won + '</td><td>' + r.pts + '</td><td>' + (r.mWon || 0) + '</td><td><em>' + (r.status === 'champion' ? 'Champion' : r.status === 'out' ? 'Out' : 'Still in') + '</em></td></tr>'; }).join('') + '</tbody></table></div>';
   }
   function champion() {
     var t = (S.teams || []).filter(function (x) { return x.name === S.champion; })[0] || { name: S.champion, c: '#ff6a2b' };
@@ -96,12 +96,11 @@
   function next() {
     var e = queue.shift(); if (!e) return;
     var d = e.d || {};
-    if (e.k === 'correct') overlay('wrs-ov--ok', '<span class="wrs-ov__k">' + esc(d.team) + '</span><div class="wrs-ov__big">' + esc((d.word || 'Correct').toUpperCase()) + '</div><span class="wrs-ov__sub">+' + d.pts + (d.pts === 1 ? ' point' : ' points') + '</span>', 2400);
+    if (e.k === 'correct') overlay('wrs-ov--ok', '<span class="wrs-ov__k">' + esc(d.team) + '</span><div class="wrs-ov__big">' + esc((d.word || 'Correct').toUpperCase()) + '</div><span class="wrs-ov__sub">' + (d.tb ? 'Wins the decider' : '+' + d.pts + (d.pts === 1 ? ' point' : ' points')) + '</span>', 2400);
     else if (e.k === 'wrong') { overlay('wrs-ov--no', '<span class="wrs-ov__k">' + esc(d.team) + '</span><div class="wrs-ov__big">' + esc((d.word || '—').toUpperCase()) + '</div><span class="wrs-ov__sub">' + esc(reason(d.reason)) + (d.pts ? ' · ' + d.pts + (Math.abs(d.pts) === 1 ? ' point' : ' points') : '') + '</span>', 1600); var st = root.querySelector('.wrs-letters'); if (st) st.classList.add('wrs-shake'); }
     else if (e.k === 'time') overlay('wrs-ov--time', '<div class="wrs-ov__big">TIME</div><span class="wrs-ov__sub">New letters coming</span>', 1500);
-    else if (e.k === 'matchup') overlay('wrs-ov--win', '<span class="wrs-ov__k">Matchup winner</span><div class="wrs-ov__big" style="font-size:11vh">' + esc(d.team) + '</div><span class="wrs-ov__mid">' + esc(d.score) + '</span>', 3800);
-    else if (e.k === 'revival') overlay('wrs-ov--rev', '<span class="wrs-ov__k">Best Loser Revival</span><div class="wrs-ov__mid">' + (d.tied ? 'Three losers tied on points' : esc(d.best || '') + ' get a second chance') + '</div><span class="wrs-ov__sub">' + d.pairs.map(function (p) { return esc(p[0]) + ' v ' + esc(p[1]); }).join(' · ') + '</span>', 4500);
-    else if (e.k === 'revived') overlay('wrs-ov--rev', '<span class="wrs-ov__k">Back in the race</span><div class="wrs-ov__big" style="font-size:10vh">' + esc(d.team) + '</div><span class="wrs-ov__sub">qualified through the revival</span>', 3800);
+    else if (e.k === 'matchup') overlay('wrs-ov--win', '<span class="wrs-ov__k">' + (d.kind === 'tb' ? 'Through on the tie-break' : d.kind === 'duel' ? 'Matchup winner' : (d.label ? esc(d.label) + ' · ' : '') + 'Bangarang winner') + '</span><div class="wrs-ov__big" style="font-size:11vh">' + esc(d.rank[0]) + '</div>' + (d.kind === 'tb' ? '' : '<span class="wrs-ov__mid">' + d.rank.map(function (n, i) { return esc(n) + ' ' + d.pts[i]; }).join(' · ') + '</span>'), 4200);
+    else if (e.k === 'tiebreak') overlay('wrs-ov--rev', '<span class="wrs-ov__k">Level in the table</span><div class="wrs-ov__mid">' + d.teams.map(esc).join(' · ') + '</div><span class="wrs-ov__sub">Tie-break: first correct word goes through</span>', 4000);
     else if (e.k === 'round') overlay('', '<span class="wrs-ov__k">Next stage</span><div class="wrs-ov__big" style="font-size:12vh">' + esc(d.label) + '</div>', 2800);
     else next();
   }

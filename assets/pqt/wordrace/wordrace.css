@@ -297,3 +297,47 @@ body.wr-embed::before{display:none}
 .wr-embed,.wr-embed body{height:auto}
 html:has(body.wr-embed){height:auto}
 body.wr-embed{height:auto;min-height:0}
+
+/* v2: formats, 3-team matchups, league tables */
+.wr-fmt{margin:0 0 4px;display:flex;flex-direction:column;gap:3px}
+.wr-fmt b{font-size:15px;font-weight:600}.wr-fmt span{font-size:12px;color:var(--mute)}
+.wr-group{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:9px 0;border-top:1px solid var(--line)}
+.wr-group:first-of-type{border-top:0}
+.wr-group span{display:inline-flex;align-items:center;gap:8px;min-width:0}
+.wr-group b{font-weight:600;font-size:14px}
+.wr-group i{font-style:normal;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.wr-vs--3{grid-template-columns:repeat(3,1fr)}
+.wr-vs--4{grid-template-columns:repeat(2,1fr);gap:14px}
+.wr-vs__t.is-off{opacity:.35}
+.wr-award--3{grid-template-columns:repeat(3,1fr)}
+.wr-award--3 .pbtn--lg{font-size:14px}
+.wr-award--4{grid-template-columns:repeat(2,1fr)}
+.wr-games{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.wr-games .wr-bm__t{padding:5px 10px}
+.wr-table{border:1px solid var(--line);border-radius:2px;background:#050505}
+.wr-table__h{display:flex;justify-content:space-between;padding:6px 10px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--line)}
+.wr-table__r{display:grid;grid-template-columns:16px auto 1fr auto;align-items:center;gap:8px;padding:6px 10px;font-size:13px;border-top:1px solid var(--line)}
+.wr-table__r:first-of-type{border-top:0}
+.wr-table__r>span{color:var(--dim);font-size:11px}
+.wr-table__r .wr-badge{width:22px;height:22px;font-size:9px}
+.wr-table__r b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wr-table__r em{font-style:normal;font-variant-numeric:tabular-nums;font-weight:600}
+.wr-table__r.is-q em{color:var(--o2)}
+.wr-col--league{flex-basis:270px}
+.wrs-stage3{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vh}
+.wrs-stage3 .wrs-letter{width:20vh;height:23vh;font-size:16vh}
+.wrs-stage3 .wrs-ring{width:12vh;height:12vh}.wrs-stage3 .wrs-ring b{font-size:5vh}
+.wrs-row{display:grid;grid-template-columns:repeat(3,1fr);gap:4vw;width:min(100%,150vh)}
+.wrs-row--4{grid-template-columns:repeat(4,1fr)}
+.wrs-row .wrs-team .wr-badge{width:8vh;height:8vh;font-size:2.8vh}
+.wrs-row .wrs-team__n{font-size:3.4vh}
+.wrs-team.is-off{opacity:.25}
+.wrs-board .wr-table__r{padding:.6vh .8vw;font-size:1.7vh}
+.wrs-board .wr-table__r .wr-badge{width:2.4vh;height:2.4vh;font-size:.9vh}
+.wrs-board .wr-games .wr-bm__t{padding:.35vh .8vw}
+.wrs-board .wr-games .wr-bm__n{font-size:1.5vh}
+.wr-group{display:grid;grid-template-columns:84px 1fr;align-items:baseline;gap:10px}
+.wr-group em{font-style:normal;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.wr-group>span{font-size:14px;font-weight:600;line-height:1.4}
+.wrs-board .wr-games{display:none}
+.wrs-board .wr-col--league{flex:1.3 1 0}
