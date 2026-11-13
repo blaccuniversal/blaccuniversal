@@ -47,7 +47,7 @@
       else if (a.act === 'revival-open') { k = 'revival'; d = { pairs: a.pairs.map(function (p) { return p.map(function (x) { return E.tname(T, x); }); }), tied: !!a.twoStage, best: a.bestLoser ? E.tname(T, a.bestLoser) : null }; }
       else if (a.act === 'revival-qualified') { k = 'revived'; d = { team: E.tname(T, a.team) }; }
       else if (a.act === 'round-open') { k = 'round'; d = { label: a.label }; }
-      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); toParent({ t: 'done', id: T.id, champion: d.team, teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon, mDrawn: 0 }; }) }); }
+      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); toParent({ t: 'done', id: T.id, champion: d.team, teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon }; }) }); }
       if (k) push(k, d);
     }
   }

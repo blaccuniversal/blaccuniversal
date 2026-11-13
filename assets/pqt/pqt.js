@@ -635,8 +635,8 @@ function pqtMain() {
   }
   /* ---------- Word Race round: the tournament runs inside the console, using this game's teams ---------- */
   function raceCode() { var c = ''; for (var i = 0; i < 4; i++) c += ALPHA[Math.floor(Math.random() * ALPHA.length)]; return c; }
-  var RACE_WIN = 3, RACE_DRAW = 1; // game-score points per Word Race matchup
-  function racePts(t) { return RACE_WIN * (t.mWon || 0) + RACE_DRAW * (t.mDrawn || 0); }
+  var RACE_WIN = 3; // game-score points per Word Race matchup won (matchups can't be tied)
+  function racePts(t) { return RACE_WIN * (t.mWon || 0); }
   function raceNew() {
     if (!window.WREngine) { toast('Word Race did not load. Reload the page.'); return; }
     var E = window.WREngine, T = E.create((H.title || 'PQT') + ' · Word Race', { answerMode: 'voice' });
@@ -652,7 +652,7 @@ function pqtMain() {
       ? '<button class="pbtn pbtn--lg pbtn--block" data-race="intro" type="button">Back to the rules on screen</button>'
       : '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-race="show" type="button">Show Word Race on the screen</button>') + '</div>';
     if (r.result) {
-      out += '<div class="hc-turn is-done"><span>Champion</span><b>' + esc(r.result.champion) + '</b></div><p class="hc-sub" style="margin-top:14px">Game points · 3 per matchup won, 1 for a tie</p><div class="hc-racepts">' +
+      out += '<div class="hc-turn is-done"><span>Champion</span><b>' + esc(r.result.champion) + '</b></div><p class="hc-sub" style="margin-top:14px">Game points · 3 per matchup won</p><div class="hc-racepts">' +
         r.result.teams.map(function (t) { var w = t.mWon || 0; return '<div><span>' + esc(t.name) + ' <i>' + pl(w, 'matchup') + ' won</i></span><b>' + racePts(t) + '</b></div>'; }).join('') + '</div>' +
         (r.added ? '<p class="hc-note">Added to the game scores.</p>' : '<button class="pbtn pbtn--white pbtn--lg pbtn--block" data-race="add" type="button">Add these to the game scores</button>') +
         '<button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + (nx ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>';
