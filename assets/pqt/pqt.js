@@ -9,6 +9,16 @@ function pqtMain() {
   var mode = document.body.getAttribute('data-mode');
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return [].slice.call((r || document).querySelectorAll(s)); }
+  function fitQ(root) {
+    var qs = (root || document).querySelectorAll('.sc-qa__q'); if (!qs.length) return;
+    var maxH = window.innerHeight * 0.5;
+    Array.prototype.forEach.call(qs, function (q) {
+      q.style.fontSize = '';
+      var fs = parseFloat(getComputedStyle(q).fontSize), min = window.innerHeight * 0.045, n = 0;
+      while (q.getBoundingClientRect().height > maxH && fs > min && n++ < 30) { fs *= 0.94; q.style.fontSize = fs + 'px'; }
+    });
+  }
+  window.addEventListener('resize', function () { fitQ(); });
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
   function sstore(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
@@ -227,6 +237,7 @@ function pqtMain() {
       var html = VIEWS[v] ? VIEWS[v]() : VIEWS.join();
       main.innerHTML = '<div class="sc-view' + (changed ? '' : ' sc-view--same') + '">' + html + '</div>';
       if (!changed) main.firstChild.style.animation = 'none';
+      fitQ(main);
       if (v === 'answers') { tileKey = S.feud && S.feud.key; updateFeud(true); }
       if (window.PQTStar) { var stp = v === 'star' && S.star && S.star.phase === 'play'; if (stp) { var sh = $('[data-sst]', main); if (sh) window.PQTStar.mount(sh, { key: S.star.seed, team: S.star.team, preset: S.star.preset, bpm: S.star.bpm, level: S.star.level, bars: S.star.bars, seed: S.star.seed }); } else window.PQTStar.stop(); }
       if (v === 'scores') {

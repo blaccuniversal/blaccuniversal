@@ -1098,7 +1098,11 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-starbars .pbtn.is-on{background:#fff;color:#000;border-color:#fff}
 .hc-starscore{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:0 0 6px}
 .hc-starscore .pbtn{min-width:0;padding:0;justify-content:center}
-/* bolder, bigger questions on the big screen */
-.sc-qa__q{font-weight:700;font-size:9.2vh;line-height:1.16;color:#fff;max-width:160vh}
-.sc-qa__q--big{font-size:10vh;line-height:1.12}
+/* big-screen questions: use the full width, fit the text to the screen */
+.sc-qa{width:94vw}
+.sc-qa__body{max-width:none;width:100%}
+.sc-qa__qw{width:100%}
+.sc-qa__q{font-weight:600;font-size:min(11.5vh,6.2vw);line-height:1.14;color:#fff;max-width:100%}
+.sc-qa__q--big{font-size:min(11vh,6vw);line-height:1.12;max-width:100%}
+.sc-qa__body.has-img .sc-qa__q{font-size:min(8vh,3.6vw)}
 @media (max-width:700px){.sc-qa__q{font-size:min(7vw,52px)}.sc-qa__q--big{font-size:min(8.6vw,68px)}}
