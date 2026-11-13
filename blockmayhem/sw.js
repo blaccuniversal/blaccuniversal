@@ -1,5 +1,5 @@
 /* Block Mayhem service worker */
-var CACHE = 'blockmayhem-v5';
+var CACHE = 'blockmayhem-v6';
 var CORE = ['/blockmayhem/', '/assets/blockmayhem/bm.css', '/assets/blockmayhem/bm.js', '/assets/blockmayhem/levels.js', '/blockmayhem/manifest.webmanifest', '/blockmayhem/icon-192.png', '/blockmayhem/apple-touch-icon.png'];
 self.addEventListener('install', function (e) { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(CORE); }).catch(function () {})); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k.indexOf('blockmayhem-') === 0 && k !== CACHE; }).map(function (k) { return caches.delete(k); })); }).then(function () { return self.clients.claim(); })); });

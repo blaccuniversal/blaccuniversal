@@ -147,3 +147,6 @@ body.is-playing{overflow:hidden;overscroll-behavior:none}
 .gate__alt button{color:#fff;text-decoration:underline;text-underline-offset:3px;font-size:14px}
 .lv{position:relative}
 .lv__k{position:absolute;top:12px;right:12px;width:16px;height:16px;color:var(--tx3)}
+.cheat-link{margin-top:4px;font-size:14px;color:var(--tx2);text-decoration:underline;text-underline-offset:3px}
+.cheat-link:hover{color:#fff}
+.levels .cheat-link{display:block;margin:20px auto 0}

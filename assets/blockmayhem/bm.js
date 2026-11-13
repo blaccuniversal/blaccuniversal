@@ -141,6 +141,19 @@
       .then(function () { btn.disabled = false; });
   });
 
+  /* ---------- cheat codes: jump to a level ---------- */
+  var CHEAT = {"924cf26bc1159e5a261e": 1, "97c1800ba1ee4d0fe142": 2, "50b9d02bb2c603aa4ce8": 3, "2913d357e669544727a1": 4, "e63c967fb77dba5aa024": 5, "de792ae936dbcf561f48": 6, "0395fbaf01e01af4fa20": 7, "fd390dde1ab7e8868ff1": 8, "6521d0be6475998bbae7": 9, "0c3450af45e8f39d9265": 10, "bac5626eb785a9b8a2c2": 11, "3c32b462696d41e6eb40": 12, "d86dcd9a1c47914efbb0": 13, "ae91453358aa170003f3": 14, "1fd67bf53f4bde020404": 15, "3220472acbd01985de91": 16, "abbdbaa2c87733dd1b92": 17, "e1e14242e07ab3ac1867": 18, "0a0dc35a686a97d6aed0": 19, "affd1dbb45875fb25fc7": 20, "8e2dad636a6b6c5ff33a": 21, "87ae86de0cf3626a47a3": 22, "331bc7431548dc9f8dc5": 23, "5f2f0196e1cd52b32fa1": 24, "302eba2aab3474033a9d": 25, "3590b22c1d97a5bc121e": 26, "7417f2ba6f5c2ee7b446": 27, "2ab53651e4fb694b7cca": 28, "3399e6ce8a7770612ef6": 29}, CSALT = 'bu-bm-cheat-v1:', cheatEl = $('[data-cheat]');
+  $('[data-cform]').addEventListener('submit', function (e) {
+    e.preventDefault(); var inp = $('[data-cform] input'), msg = $('[data-cmsg]'), v = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); if (!v) return;
+    crypto.subtle.digest('SHA-256', new TextEncoder().encode(CSALT + v)).then(function (d) {
+      var h = Array.prototype.map.call(new Uint8Array(d), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, 20), i = CHEAT[h];
+      if (i == null) { msg.textContent = 'That code doesn’t open anything.'; msg.className = 'gate__msg is-err'; return; }
+      if (i + 1 > save.unlocked) save.unlocked = i + 1; persist();
+      inp.value = ''; msg.textContent = ''; cheatEl.hidden = true; blip(988, .12, .05); setTimeout(function () { blip(1318, .18, .05); }, 90);
+      start(i);
+    });
+  });
+
   function start(i) {
     if (i > 0 && !hasKey()) { openGate(i); return; }
     lvl = i; var spec = LV.list[i], rnd = rng(1000 + i * 77);
@@ -471,6 +484,8 @@
     else if (a === 'help') $('[data-help]').hidden = false;
     else if (a === 'help-close') $('[data-help]').hidden = true;
     else if (a === 'gate-close') closeGate();
+    else if (a === 'cheat') { $('[data-cmsg]').textContent = ''; cheatEl.hidden = false; if (matchMedia('(pointer:fine)').matches) setTimeout(function () { $('[data-cform] input').focus(); }, 40); }
+    else if (a === 'cheat-close') cheatEl.hidden = true;
     else if (a === 'gate-req') gview('req');
     else if (a === 'gate-key') gview('key');
     else if (a === 'mute') { save.muted = !save.muted; persist(); syncMute(); }

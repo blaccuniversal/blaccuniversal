@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=2">
+<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=3">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -47,6 +47,7 @@
         <button class="btn btn--big" data-act="continue" data-continue>Play</button>
         <button class="btn btn--big btn--ghost" data-act="levels">Levels</button>
       </div>
+      <button class="cheat-link" data-act="cheat">Have a cheat code?</button>
     </div>
     <dl class="stats">
       <div><dt>Cleared</dt><dd data-st-cleared>0</dd></div>
@@ -66,6 +67,7 @@
   </header>
   <main class="wrap levels">
     <div class="lvgrid" data-lvgrid></div>
+    <button class="cheat-link" data-act="cheat">Have a cheat code?</button>
   </main>
 </section>
 
@@ -132,6 +134,17 @@
   </ol>
 </div></div>
 
+<!-- CHEAT CODE -->
+<div class="sheet gate" data-cheat hidden><div class="sheet__card">
+  <div class="sheet__head"><b>Cheat code</b><button class="ic" data-act="cheat-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <p class="gate__p">Got a secret code? Enter it to jump straight to its level.</p>
+  <form class="gate__form" data-cform>
+    <input type="text" placeholder="Enter code" aria-label="Cheat code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" class="gate__code">
+    <button class="btn btn--big btn--full" type="submit">Open level</button>
+    <p class="gate__msg" data-cmsg role="status"></p>
+  </form>
+</div></div>
+
 <!-- PASSKEY -->
 <div class="sheet gate" data-gate hidden><div class="sheet__card">
   <div class="sheet__head"><b>Unlock all levels</b><button class="ic" data-act="gate-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -163,6 +176,6 @@
 </div></div>
 
 <script src="/assets/blockmayhem/levels.js?v=4"></script>
-<script src="/assets/blockmayhem/bm.js?v=5"></script>
+<script src="/assets/blockmayhem/bm.js?v=6"></script>
 </body>
 </html>
