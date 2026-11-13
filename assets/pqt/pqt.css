@@ -1147,3 +1147,7 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-qa--written .sc-qa__q,.sc-qa--rapid .sc-qa__q,
 .sc-qa--written .q-opts span,.sc-qa--rapid .q-opts span,
 .sc-qa--written .sc-qa__ans b,.sc-qa--rapid .sc-qa__ans b{font-family:"PQT Cond","Open Sans",sans-serif;font-weight:700;letter-spacing:0}
+/* +10% for the condensed Written / Rapid Fire text */
+.sc-qa--written .sc-qa__q,.sc-qa--rapid .sc-qa__q{font-size:min(6.93vh,3.74vw)}
+.sc-qa--written .q-opts li,.sc-qa--rapid .q-opts li{font-size:4.4vh}
+.sc-qa--written .sc-qa__ans b,.sc-qa--rapid .sc-qa__ans b{font-size:9.9vh}
