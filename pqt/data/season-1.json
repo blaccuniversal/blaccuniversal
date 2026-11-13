@@ -68,6 +68,66 @@
   },
   "weeks": [
     {
+      "week": 4,
+      "date": "2026-10-22",
+      "results": [
+        {
+          "team": "Quiztopher Knowlan",
+          "points": 35,
+          "players": [
+            "Ben Obasa",
+            "Bunmi Oye",
+            "Oluwaseun Oye",
+            "Sophie"
+          ]
+        },
+        {
+          "team": "Black",
+          "points": 33
+        },
+        {
+          "team": "Minions",
+          "points": 29
+        },
+        {
+          "team": "Sages",
+          "points": 21
+        }
+      ]
+    },
+    {
+      "week": 5,
+      "date": "2026-10-29",
+      "results": [
+        {
+          "team": "Sages",
+          "points": 26,
+          "players": [
+            "Ajoke",
+            "Authority",
+            "Bolade",
+            "Henrietta",
+            "Mak",
+            "Olusegun",
+            "PK",
+            "Tobi Adegbite"
+          ]
+        },
+        {
+          "team": "Quiztopher Knowlan",
+          "points": 22
+        },
+        {
+          "team": "Minions",
+          "points": 17
+        },
+        {
+          "team": "We Just Met",
+          "points": 16
+        }
+      ]
+    },
+    {
       "week": 6,
       "date": "2026-11-05",
       "results": [
