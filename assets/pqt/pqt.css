@@ -1163,3 +1163,16 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 /* questions: a little breathing room at the sides, and no lone last word */
 .sc-qa__q{padding:0 3vw;text-wrap:pretty}
 .sc-qa__qw{max-width:100%}
+
+/* ranking with 9–12 teams: tighter rows so all fit */
+.sc-lb--many{padding:2vh 4vh}
+.sc-lb--many .sc-lb__row{padding:1.25vh 0}
+.sc-lb--many .sc-lb__team,.sc-lb--many .sc-lb__row:first-child .sc-lb__team{font-size:3.1vh}
+.sc-lb--many .sc-lb__rank{font-size:3.4vh}
+.sc-lb--many .sc-lb__pts{font-size:3.8vh}
+.sc-lb--many{padding:1.6vh 4vh}
+.sc-lb--many .sc-lb__head{padding-bottom:1vh}
+.sc-lb--many .sc-lb__row{padding:.85vh 0}
+.sc-lb--many .sc-lb__team,.sc-lb--many .sc-lb__row:first-child .sc-lb__team{font-size:2.8vh}
+.sc-lb--many .sc-lb__rank{font-size:3vh}
+.sc-lb--many .sc-lb__pts{font-size:3.4vh}

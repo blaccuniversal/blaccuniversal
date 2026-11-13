@@ -5,7 +5,8 @@ function pqtMain() {
   'use strict';
   var PREFIX = 'blaccpqt-';
   var ALPHA = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-  var COLORS = ['#ff6a2b', '#f3f3f3', '#5aa8ff', '#5ad18f', '#f2b23a', '#c58cff', '#ff6fa3', '#4fd6d6'];
+  var COLORS = ['#ff6a2b', '#f3f3f3', '#5aa8ff', '#5ad18f', '#f2b23a', '#c58cff', '#ff6fa3', '#4fd6d6', '#b6e06a', '#ff9f80', '#8fb3ff', '#e0c3a0'];
+  var MAXT = 12; // most teams in one game
   var mode = document.body.getAttribute('data-mode');
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return [].slice.call((r || document).querySelectorAll(s)); }
@@ -276,7 +277,7 @@ function pqtMain() {
       },
       ranking: function () {
         var rows = teamsSorted(), rank = 0, last = null;
-        return '<div class="sc-lb"><div class="sc-lb__head"><span>Rank</span><span>Team</span><span>Points</span></div>' +
+        return '<div class="sc-lb' + (rows.length > 8 ? ' sc-lb--many' : '') + '"><div class="sc-lb__head"><span>Rank</span><span>Team</span><span>Points</span></div>' +
           rows.map(function (r, k) {
             if (r.t.score !== last) { rank = k + 1; last = r.t.score; }
             return '<div class="sc-lb__row" style="--c:' + r.t.color + ';animation-delay:' + (k * 0.08) + 's"><span class="sc-lb__rank">#' + rank + '</span><span class="sc-lb__team"><i></i><span>' + esc(r.t.name) + '</span></span><span class="sc-lb__pts">' + r.t.score + '</span></div>';
@@ -1027,7 +1028,7 @@ function pqtMain() {
     else if (b.hasAttribute('data-menu-open')) { closeSheets(); $('[data-menu]').hidden = false; }
     else if (b.hasAttribute('data-menu-close') || b.hasAttribute('data-pick-close')) closeSheets();
     else if (b.hasAttribute('data-setup-open')) openSetup(H.ended || H.round === 0);
-    else if (b.hasAttribute('data-su-add')) { if (SU.teams.length < 8) { var used = SU.teams.map(function (t) { return t.color; }); SU.teams.push({ name: 'Team ' + String.fromCharCode(65 + SU.teams.length), color: COLORS.filter(function (c) { return used.indexOf(c) < 0; })[0] || COLORS[0] }); paintSetup(); var ins = $$('[data-su-name]'); ins[ins.length - 1].select(); } }
+    else if (b.hasAttribute('data-su-add')) { if (SU.teams.length < MAXT) { var used = SU.teams.map(function (t) { return t.color; }); SU.teams.push({ name: 'Team ' + String.fromCharCode(65 + SU.teams.length), color: COLORS.filter(function (c) { return used.indexOf(c) < 0; })[0] || COLORS[0] }); paintSetup(); var ins = $$('[data-su-name]'); ins[ins.length - 1].select(); } }
     else if (d.suDel != null) { if (SU.teams.length > 2) { SU.teams.splice(+d.suDel, 1); paintSetup(); } }
     else if (d.suCol != null) { var tt = SU.teams[+d.suCol], usedC = SU.teams.map(function (x) { return x.color; }), ci = COLORS.indexOf(tt.color); for (var s2 = 1; s2 <= COLORS.length; s2++) { var nc = COLORS[(ci + s2) % COLORS.length]; if (usedC.indexOf(nc) < 0 || s2 === COLORS.length) { tt.color = nc; break; } } paintSetup(); }
     else if (d.suN) { var nn = Math.max(1, Math.min(12, SU.plan.length + +d.suN)); if (!SU.fresh) nn = Math.max(nn, H.round || 1); var cyc = ['words', 'answers', 'names', 'spell', 'written', 'rapid']; while (SU.plan.length < nn) SU.plan.push(cyc[SU.plan.length % cyc.length]); SU.plan.length = nn; paintSetup(); }
@@ -1068,7 +1069,7 @@ function pqtMain() {
     else if (b.hasAttribute('data-treset')) timerReset();
     else if (d.tset) timerReset(+d.tset);
     else if (d.tadd) timerAdd(+d.tadd);
-    else if (b.hasAttribute('data-addteam')) { if (H.teams.length < 8) { snap(); H.teams.push({ name: 'Team ' + String.fromCharCode(65 + H.teams.length), color: COLORS[H.teams.length % COLORS.length], score: 0 }); push(); renderTeams(); } }
+    else if (b.hasAttribute('data-addteam')) { if (H.teams.length < MAXT) { snap(); H.teams.push({ name: 'Team ' + String.fromCharCode(65 + H.teams.length), color: COLORS[H.teams.length % COLORS.length], score: 0 }); push(); renderTeams(); } }
     else if (b.hasAttribute('data-rmteam')) { if (H.teams.length > 1) { snap(); H.teams.pop(); if (H.words.team >= H.teams.length) H.words.team = 0; push(); renderAll(); } }
     else if (b.hasAttribute('data-zero')) { if (confirmTwice(b)) { snap(); H.teams.forEach(function (t) { t.score = 0; }); push(); renderTeams(); } }
     else if (b.hasAttribute('data-undo')) { var s = hist.pop(); if (s) { H = JSON.parse(s); push(); renderAll(); } }
@@ -1107,9 +1108,9 @@ function pqtMain() {
     paintSetup(); $('[data-setup]').hidden = false;
   }
   function paintSetup() {
-    $('[data-su-tn]').textContent = SU.teams.length + ' of 8';
+    $('[data-su-tn]').textContent = SU.teams.length + ' of ' + MAXT;
     $('[data-su-teams]').innerHTML = SU.teams.map(function (t, i) { return '<div class="hc-su__team"><button class="hc-su__sw" type="button" data-su-col="' + i + '" style="background:' + t.color + '" aria-label="Change colour"></button><input class="hc-input" data-su-name="' + i + '" value="' + esc(t.name) + '" maxlength="24" aria-label="Team name"><button class="pbtn pbtn--sm pbtn--ghost" type="button" data-su-del="' + i + '" aria-label="Remove team"' + (SU.teams.length <= 2 || (!SU.fresh && H.round > 0 && i < H.teams.length) ? ' disabled' : '') + '>✕</button></div>'; }).join('');
-    $('[data-su-add]').disabled = SU.teams.length >= 8;
+    $('[data-su-add]').disabled = SU.teams.length >= MAXT;
     $('[data-su-count]').textContent = SU.plan.length;
     var opts = ['words', 'answers', 'names', 'spell', 'written', 'rapid', 'alpha', 'star', 'race', 'talk'];
     $('[data-su-rounds]').innerHTML = SU.plan.map(function (g, i) { var locked = !SU.fresh && i < H.round; return '<label class="hc-su__round"><span>Round ' + (i + 1) + '</span><select class="hc-sel" data-su-r="' + i + '"' + (locked ? ' disabled' : '') + '>' + opts.map(function (o) { return '<option value="' + o + '"' + (o === g ? ' selected' : '') + '>' + GNAME[o] + '</option>'; }).join('') + '</select></label>'; }).join('');
