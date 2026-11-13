@@ -18,6 +18,8 @@
     if (name === 'home') renderHome();
     if (name === 'levels') renderLevels();
   }
+  function fmt(ms) { var t = Math.floor(ms / 1000), m = Math.floor(t / 60), x = t % 60; return m + ':' + (x < 10 ? '0' : '') + x; }
+  function fmtLong(ms) { var t = Math.floor(ms / 1000), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60), x = t % 60; return h ? h + 'h ' + m + 'm' : m ? m + 'm ' + (x < 10 ? '0' : '') + x + 's' : x + 's'; }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
 
   function renderHome() {
@@ -26,6 +28,7 @@
     var cleared = Object.keys(save.rate).length;
     $('[data-st-cleared]').textContent = cleared + ' / ' + LV.list.length;
     $('[data-st-stars]').textContent = save.stars;
+    $('[data-st-time]').textContent = fmtLong(save.total || 0);
     var best = 0; Object.keys(save.rate).forEach(function (k) { best += save.rate[k]; });
     $('[data-st-rating]').textContent = best + ' / ' + LV.list.length * 3;
   }
@@ -49,7 +52,8 @@
         needKey = i > 0 && !hasKey() && !locked && !(save.open && save.open[i]);
       b.className = 'lv' + (locked ? ' is-locked' : '') + (rt ? ' is-done' : '') + (i === cur ? ' is-cur' : '');
       b.disabled = locked;
-      var dots = '<span class="lv__r">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= rt ? 'is-on' : '') + '"></i>'; }).join('') + '</span>';
+      var bt = save.best && save.best[i];
+      var dots = '<span class="lv__r">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= rt ? 'is-on' : '') + '"></i>'; }).join('') + (bt ? '<em class="lv__bt">' + (view === 'swipe' ? 'Best ' : '') + fmt(bt) + '</em>' : '') + '</span>';
       var img = true ? '' : '<span class="lv__img"><img src="' + thumb(i) + '" alt="" loading="lazy"></span>';
       b.innerHTML = img + '<span class="lv__meta"><span class="lv__n">' + pad(i + 1) + '</span><span class="lv__t">' + l.name + '</span>' + dots + '</span>' + (locked || needKey ? LOCK : '') +
         (view === 'swipe' ? '<span class="lv__play">' + (locked ? 'Locked' : 'Play') + '</span>' : '');
@@ -82,7 +86,7 @@
   var S = 1; // canvas px per logical unit
   var G = null, total = 0, broken = 0, lvl = 0, lives = 3, held = true, state = 'idle', wideUntil = 0, lastHit = 0, orbs = [], orbSeq = 0, flash = [];
   var bx = new Float32Array(MAXB), by = new Float32Array(MAXB), vx = new Float32Array(MAXB), vy = new Float32Array(MAXB), bo = new Int32Array(MAXB), n = 0;
-  var gclock = 0, nextTimed = 0, fireUntil = 0, fireUsed = true, px = W / 2, target = W / 2, keyDir = 0, earned = 0, drops = [], parts = [], pops = [], rings = [], shake = 0, pglow = 0, slow = 1, t0 = 0, pvx = 0, lastPx = W / 2;
+  var playMs = 0, roundOn = false, saveT = 0, gclock = 0, nextTimed = 0, fireUntil = 0, fireUsed = true, px = W / 2, target = W / 2, keyDir = 0, earned = 0, drops = [], parts = [], pops = [], rings = [], shake = 0, pglow = 0, slow = 1, t0 = 0, pvx = 0, lastPx = W / 2;
 
   function rng(seed) { var a = seed >>> 0; return function () { a = (a + 0x6D2B79F5) >>> 0; var t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
@@ -249,7 +253,7 @@
     G = LV.make(i, rnd); total = 0; broken = 0;
     for (var k = 0; k < G.length; k++) if (G[k] && G[k] !== 9) total++;
     placeOrbs(spec.orbs, rng(5000 + i * 31));
-    lives = 3; n = 0; held = true; wideUntil = 0; earned = 0; flash = []; drops = []; parts = []; pops = []; rings = []; shake = 0; slow = 1; SPD = SPD0; t0 = performance.now(); lastHit = performance.now(); gclock = 0; nextTimed = 15000 + Math.random() * 15000; fireUntil = 0; fireUsed = lvl < 12 || Math.random() < .35;
+    lives = 3; n = 0; held = true; wideUntil = 0; earned = 0; flash = []; drops = []; parts = []; pops = []; rings = []; shake = 0; slow = 1; SPD = SPD0; t0 = performance.now(); lastHit = performance.now(); playMs = 0; roundOn = false; gclock = 0; nextTimed = 15000 + Math.random() * 15000; fireUntil = 0; fireUsed = lvl < 12 || Math.random() < .35;
     px = target = W / 2; state = 'play';
     $('[data-lvname]').textContent = pad(i + 1) + ' · ' + spec.name;
     show('play'); hideOverlays(); resize(); hud();
@@ -268,7 +272,7 @@
   }
   function launch() {
     if (!held || state !== 'play') return;
-    held = false; $('[data-hint]').hidden = true; ac();
+    held = false; roundOn = true; $('[data-hint]').hidden = true; ac();
     addBall(px, PY - BR - 1, Math.max(-.6, Math.min(.6, pvx / 2500 + (Math.random() - .5) * .25))); pglow = 1; blip(330, .06, .05, 'sine');
   }
   function pw() { return performance.now() < wideUntil ? 150 : 92; }
@@ -382,13 +386,17 @@
 
   function loseLife() {
     lives--; hud(); blip(180, .3, .06, 'sine'); shake = 10; buzz([30, 40, 30]); drops = [];
-    if (lives <= 0) { state = 'over'; openOverlay('fail'); return; }
+    if (lives <= 0) { state = 'over'; persist(); $('[data-fail-time]').textContent = fmt(playMs); openOverlay('fail'); return; }
     held = true; $('[data-hint]').hidden = false;
   }
   function win() {
     state = 'over'; var rt = lives, prev = save.rate[lvl] || 0;
     var bonus = 2 + rt; save.stars += bonus; earned += bonus;
     if (rt > prev) save.rate[lvl] = rt;
+    save.best = save.best || {}; var pb = save.best[lvl], nb = false;
+    if (!save.secret && (!pb || playMs < pb)) { save.best[lvl] = Math.round(playMs); nb = true; }
+    $('[data-win-time]').textContent = fmt(playMs);
+    $('[data-win-best]').innerHTML = save.secret ? 'Cheat mode · not a record' : (nb ? (pb ? '<b>New best!</b> Was ' + fmt(pb) : '<b>First clear</b>') : 'Best ' + fmt(pb));
     if (lvl + 2 > save.unlocked) save.unlocked = Math.min(LV.list.length, lvl + 2);
     persist();
     [523, 659, 784].forEach(function (f, i) { setTimeout(function () { blip(f, .22, .05); }, i * 110); });
@@ -423,6 +431,7 @@
     hudEls.lives.forEach(function (e, i) { e.classList.toggle('is-on', i < lives); });
     hudEls.stars.textContent = save.stars;
     hudEls.balls.textContent = n + (n === 1 ? ' ball' : ' balls');
+    hudEls.time.textContent = fmt(playMs);
     hudEls.cleared.textContent = broken + ' / ' + total;
     hudEls.bar.style.transform = 'scaleX(' + (total ? broken / total : 0) + ')';
     $$('[data-boost]').forEach(function (b) { var t = b.getAttribute('data-boost'); b.disabled = save.stars < BOOST[t] || (t === 'x3' && n === 0); });
@@ -534,6 +543,7 @@
     if (!G || document.body.classList.contains('is-playing') === false) { last = now; return; }
     var rdt = Math.min(.033, (now - last) / 1000 || 0); last = now;
     var dt = rdt * slow;
+    if (state === 'play' && roundOn) { playMs += rdt * 1000; save.total = (save.total || 0) + rdt * 1000; if (now - saveT > 10000) { saveT = now; persist(); } }
     if (state === 'play') {
       if (keyDir) target = px + keyDir * 900 * rdt;
       var w = pw(); target = Math.max(w / 2, Math.min(W - w / 2, target));
@@ -590,7 +600,7 @@
   /* ---------- overlays ---------- */
   function hideOverlays() { $$('[data-ov]').forEach(function (o) { o.hidden = true; }); }
   function openOverlay(name) { hideOverlays(); var o = $('[data-ov="' + name + '"]'); if (o) o.hidden = false; }
-  function pause() { if (state !== 'play') return; state = 'paused'; openOverlay('pause'); }
+  function pause() { if (state !== 'play') return; state = 'paused'; persist(); openOverlay('pause'); }
   function resume() { if (state !== 'paused') return; state = 'play'; hideOverlays(); last = performance.now(); }
   document.addEventListener('visibilitychange', function () { if (document.hidden) pause(); });
 
@@ -617,7 +627,7 @@
   $$('[data-burn]').forEach(function (b) { b.addEventListener('click', function () { save.burn = save.burn === false; persist(); syncBurn(); blip(save.burn !== false ? 520 : 260, .1, .04, 'sawtooth'); }); });
   function syncMute() { $$('[data-act=mute]').forEach(function (b) { b.classList.toggle('is-off', !!save.muted); b.setAttribute('aria-label', save.muted ? 'Sound off' : 'Sound on'); }); }
 
-  hudEls = { lives: $$('[data-life]'), stars: $('[data-stars]'), balls: $('[data-balls]'), cleared: $('[data-cleared]'), bar: $('[data-bar]'), wide: $('[data-wide]') };
+  hudEls = { time: $('[data-time]'), lives: $$('[data-life]'), stars: $('[data-stars]'), balls: $('[data-balls]'), cleared: $('[data-cleared]'), bar: $('[data-bar]'), wide: $('[data-wide]') };
   if (matchMedia('(pointer:coarse)').matches) $('[data-hint]').textContent = 'Drag to move · Tap to launch';
   setTheme(save.theme === 'day' ? 'day' : 'night'); syncMute(); syncBurn(); show('home'); requestAnimationFrame(loop);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('/blockmayhem/sw.js').catch(function () {});

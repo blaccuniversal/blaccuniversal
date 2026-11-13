@@ -44,7 +44,7 @@ button:focus-visible,a:focus-visible{outline:2px solid #9a9a9a;outline-offset:2p
 .wm{margin:6px 0 0;font-size:clamp(44px,9vw,84px);font-weight:800;letter-spacing:-.04em;line-height:.95}
 .hero__btns{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:10px}
 .hero__btns .btn{min-width:180px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);margin:0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin:0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
 .stats div{padding:16px 0}
 .stats dt{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3)}
 .stats dd{margin:6px 0 0;font-size:24px;font-weight:300;font-variant-numeric:tabular-nums}
@@ -308,3 +308,14 @@ html[data-theme=day] .lv__play{background:#111;color:#fff}
 .lvgrid--swipe .lv__r{margin-top:6px;gap:6px}
 .lvgrid--swipe .lv__r i{width:12px;height:12px}
 .lvgrid--swipe .lv__play{margin:10px 24px 24px;width:calc(100% - 48px)}
+.ptime{color:var(--tx);font-weight:600}
+.ov__time{margin:0;font-size:15px;color:var(--tx2)}
+.ov__time b{color:var(--tx);font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;margin-left:4px}
+.ov__best{margin:0 0 6px;font-size:13px;color:var(--tx2);font-variant-numeric:tabular-nums}
+.ov__best b{color:var(--acc);font-weight:700}
+.lv__bt{margin-left:auto;font-style:normal;font-size:11px;font-weight:600;color:var(--tx2);font-variant-numeric:tabular-nums}
+.lv__r{align-items:center;width:100%}
+.lvgrid--list .lv__r{width:auto;gap:4px}
+.lvgrid--list .lv__bt{margin-left:10px;min-width:34px;text-align:right}
+.lvgrid--swipe .lv__bt{font-size:14px;margin-left:12px}
+@media (max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.stats div:nth-child(-n+2){border-bottom:1px solid var(--bd)}.stats div:nth-child(odd){padding-right:12px;border-right:1px solid var(--bd)}.stats div:nth-child(even){padding-left:16px}}

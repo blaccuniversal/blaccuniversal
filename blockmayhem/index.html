@@ -19,7 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
 <script>try{var _s=JSON.parse(localStorage.getItem("bm_save_v1"));if(_s&&_s.theme==="day")document.documentElement.setAttribute("data-theme","day")}catch(e){}</script>
-<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=16">
+<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=17">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -54,6 +54,7 @@
       <div><dt>Cleared</dt><dd data-st-cleared>0</dd></div>
       <div><dt>Rating</dt><dd data-st-rating>0</dd></div>
       <div><dt>Stars</dt><dd data-st-stars>0</dd></div>
+      <div><dt>Time played</dt><dd data-st-time>0s</dd></div>
     </dl>
     <p class="foot">A BLACC Universal project · <a href="/projects/">More projects</a></p>
   </main>
@@ -90,7 +91,7 @@
     <button class="ic" data-act="pause" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="3.6" height="14" rx=".6"/><rect x="13.9" y="5" width="3.6" height="14" rx=".6"/></svg></button>
     <div class="ptop__mid">
       <b data-lvname>01</b>
-      <span><span data-cleared>0 / 0</span> · <span data-balls>0 balls</span></span>
+      <span><span data-cleared>0 / 0</span> · <span data-balls>0 balls</span> · <span data-time class="ptime">0:00</span></span>
     </div>
     <div class="ptop__r">
       <span class="lives" aria-label="Lives"><i data-life></i><i data-life></i><i data-life></i></span>
@@ -120,6 +121,8 @@
     <p class="eyebrow">Cleared</p>
     <h2 data-win-name></h2>
     <div class="rate" data-win-rate></div>
+    <p class="ov__time">Cleared in <b data-win-time>0:00</b></p>
+    <p class="ov__best" data-win-best></p>
     <p class="ov__earn"><svg><use href="#star"/></svg><span data-win-earned>+0</span> stars</p>
     <button class="btn btn--big btn--full" data-act="next" data-next>Next level</button>
     <button class="btn btn--big btn--full btn--ghost" data-act="retry">Play again</button>
@@ -128,6 +131,7 @@
   <div class="ov" data-ov="fail" hidden><div class="ov__card">
     <p class="eyebrow">Out of balls</p>
     <h2>Dillydally-ish.</h2>
+    <p class="ov__time">You lasted <b data-fail-time>0:00</b></p>
     <button class="btn btn--big btn--full" data-act="retry">Try again</button>
     <button class="btn btn--big btn--full btn--ghost" data-act="levels">All levels</button>
   </div></div>
@@ -179,7 +183,7 @@
 </div></div>
 
 <script src="/assets/blockmayhem/levels.js?v=5"></script>
-<script src="/assets/blockmayhem/bm.js?v=16"></script>
+<script src="/assets/blockmayhem/bm.js?v=17"></script>
 <script src="/assets/js/install.js?v=1" data-app="Block Mayhem" data-icon="/blockmayhem/icon-192.png" data-key="bm" defer></script>
 </body>
 </html>
