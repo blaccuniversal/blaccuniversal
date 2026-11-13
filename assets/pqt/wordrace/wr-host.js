@@ -8,7 +8,10 @@
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwlYm7KzVBhDFraAMpyDYUcqV1EhbY1HUNlimdzXe9yyUNtZS169ok9eeKW73Kv7gFO7g/exec';
   var T = null, dict = null, dictErr = false, link = null, tab = 'play', scene = 'battle', evs = [], evId = Date.now(), auditSeen = 0;
   var pend = [], seenN = {}, lastAns = {}, fb = {}, joined = {}, armed = null, timeUp = false, pubBusy = false;
-  var curMid = null, wordDraft = '';
+  var curMid = null, wordDraft = '', revealed = '';
+  var QS = new URLSearchParams(location.search), EMBED = QS.get('embed') === '1', EMBED_T = QS.get('t') || '';
+  if (EMBED) document.body.classList.add('wr-embed');
+  function toParent(msg) { if (EMBED && window.parent !== window) try { window.parent.postMessage(Object.assign({ wr: 1 }, msg), location.origin); } catch (e) {} }
 
   /* ---------- storage ---------- */
   function ls(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
@@ -19,7 +22,7 @@
     ls('wr_t_' + T.id, T);
     var ix = index().filter(function (x) { return x.id !== T.id; });
     ix.unshift({ id: T.id, name: T.name, created: T.created, status: T.status, champion: T.champion ? E.tname(T, T.champion) : null, teams: T.teams.length });
-    ls('wr_index', ix.slice(0, 40)); ls('wr_cur', T.id);
+    ls('wr_index', ix.slice(0, 40)); if (!EMBED) ls('wr_cur', T.id);
   }
   function load(id) { var t = ls('wr_t_' + id); if (t) { T = t; auditSeen = T.audit.length; curMid = null; ls('wr_cur', id); startLink(); } }
 
@@ -44,7 +47,7 @@
       else if (a.act === 'revival-open') { k = 'revival'; d = { pairs: a.pairs.map(function (p) { return p.map(function (x) { return E.tname(T, x); }); }), tied: !!a.twoStage, best: a.bestLoser ? E.tname(T, a.bestLoser) : null }; }
       else if (a.act === 'revival-qualified') { k = 'revived'; d = { team: E.tname(T, a.team) }; }
       else if (a.act === 'round-open') { k = 'round'; d = { label: a.label }; }
-      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; }
+      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); toParent({ t: 'done', id: T.id, champion: d.team, teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won }; }) }); }
       if (k) push(k, d);
     }
   }
@@ -68,7 +71,10 @@
     curMid = m ? m.id : null; return m;
   }
   function lastFinished() { var best = null; Object.keys(T.matchups).forEach(function (id) { var m = T.matchups[id]; if (m.done) { var t = m.battles.length ? m.battles[m.battles.length - 1].endedAt || 0 : 0; if (!best || t > best.t) best = { m: m, t: t }; } }); return best && best.m; }
-  function left(b) { if (!b) return 0; if (T.paused && T.pausedLeft != null) return T.pausedLeft; return Math.max(0, b.secs * 1000 - (Date.now() - (b.rollAt || b.startedAt))); }
+  function spinLeft(b) { if (!b) return 0; if (T.paused && T.pausedSpin != null) return T.pausedSpin; return Math.max(0, (b.rollAt || 0) - Date.now()); }
+  function left(b) { if (!b) return 0; if (T.paused && T.pausedLeft != null) return T.pausedLeft; if (spinLeft(b) > 0) return b.secs * 1000; return Math.max(0, b.secs * 1000 - (Date.now() - (b.rollAt || b.startedAt))); }
+  var LET = 'ABCDEFGHIJKLMNOPRSTUVWY';
+  function rl() { return LET[Math.floor(Math.random() * LET.length)]; }
   function sideView(m, k) { var t = E.team(T, m[k]), i = T.teams.indexOf(t); return { id: t.id, name: t.name, c: V.color(i), wins: m.wins[k], pts: m.pts[k] }; }
   function broadcast() {
     if (!link || !T) return;
@@ -79,7 +85,7 @@
       at: Date.now(), code: T.room, name: T.name, status: T.status, paused: !!T.paused, scene: scene, mode: T.config.answerMode,
       round: r ? r.label : '', evs: evs,
       m: m ? { id: m.id, label: m.label, a: sideView(m, 'a'), b: sideView(m, 'b'), n: m.battles.length } : null,
-      battle: lastB ? { n: lastB.n, s: lastB.s, e: lastB.e, tier: lastB.tier, running: !!b, left: left(b), secs: lastB.secs, winner: lastB.winner ? E.tname(T, lastB.winner) : null,
+      battle: lastB ? { n: lastB.n, spin: b ? spinLeft(b) : 0, s: b && spinLeft(b) > 0 ? '' : lastB.s, e: b && spinLeft(b) > 0 ? '' : lastB.e, tier: lastB.tier, running: !!b, left: left(b), secs: lastB.secs, winner: lastB.winner ? E.tname(T, lastB.winner) : null,
         last: lastA ? { team: E.tname(T, lastA.team), word: lastA.word, ok: lastA.ok, reason: lastA.reason } : null } : null,
       prev: done ? { a: E.tname(T, done.a), b: E.tname(T, done.b), wa: done.wins.a, wb: done.wins.b, w: E.tname(T, done.winner), label: done.label } : null,
       next: E.openMatchups(T).filter(function (x) { return !m || x.id !== m.id; }).slice(0, 3).map(function (x) { return (x.label ? x.label + ': ' : '') + E.tname(T, x.a) + ' v ' + E.tname(T, x.b); }),
@@ -106,7 +112,7 @@
     if (msg.t !== 'ans' || T.config.answerMode !== 'phones') return;
     if (!pins[msg.team] || String(msg.pin) !== pins[msg.team]) return;
     var m = curMatchup(); if (!m || (m.a !== msg.team && m.b !== msg.team)) return;
-    var b = E.curBattle(m); if (!b || T.paused || T.status !== 'live') return;
+    var b = E.curBattle(m); if (!b || T.paused || T.status !== 'live' || spinLeft(b) > 0) return;
     var nowT = Date.now(); if (lastAns['t_' + msg.team] && nowT - lastAns['t_' + msg.team] < 1200) return; // one answer per 1.2s per team
     lastAns['t_' + msg.team] = nowT; lastAns[msg.team] = msg.n;
     var word = String(msg.word || '').slice(0, 40), ms = nowT - (b.rollAt || b.startedAt);
@@ -132,6 +138,7 @@
   function tLink(id) { var t = E.team(T, id), i = T.teams.indexOf(t); return V.badge({ name: t.name, c: V.color(i) }); }
   function render() {
     var ae = document.activeElement, keep = ae && ae.hasAttribute && ae.hasAttribute('data-word');
+    if (!T && EMBED) { app.innerHTML = '<p class="hc-note">This Word Race round could not be found on this device. Restart the round from PQT.</p>'; return; }
     if (!T) return renderHome();
     if (T.status === 'setup') return renderSetup();
     renderLive();
@@ -161,9 +168,9 @@
     function tb(k, label) { return '<label class="wr-f"><span>' + label + '</span><span class="wr-f__in"><input class="hc-input" type="number" inputmode="numeric" data-tb="' + k + '" min="0" max="50" value="' + c.tierBonus[k] + '"><em>pts</em></span></label>'; }
     function seg(k, opts) { return '<div class="wr-seg wr-seg--' + opts.length + '" data-cfgseg="' + k + '">' + opts.map(function (o) { return '<button class="pbtn' + (String(c[k]) === String(o[0]) ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div>'; }
     return '<div class="wr-cfg">' +
-      num('battleSecs', 'Battle countdown', 5, 300, 'sec') + num('minLength', 'Minimum word length', 2, 10, 'letters') +
+      num('battleSecs', 'Battle countdown', 5, 300, 'sec') + num('spinSecs', 'Letter spin', 0, 30, 'sec') + num('minLength', 'Minimum word length', 2, 10, 'letters') + num('speedSecs', 'Speed window', 1, 120, 'sec') +
       num('validPoints', 'Correct word', 0, 100, 'pts') + num('invalidPenalty', 'Wrong word penalty', 0, 50, 'pts') +
-      num('speedBonus', 'Speed bonus', 0, 50, 'pts') + num('speedSecs', 'Speed window', 1, 120, 'sec') +
+      num('speedBonus', 'Speed bonus', 0, 50, 'pts') +
       tb('easy', 'Bonus · easy letters') + tb('medium', 'Bonus · medium letters') + tb('hard', 'Bonus · hard letters') + '</div>' +
       '<p class="wr-k">Letter difficulty</p>' + seg('difficulty', [['mixed', 'Mixed'], ['easy', 'Easy'], ['medium', 'Medium'], ['hard', 'Hard']]) +
       '<p class="wr-k">Answers</p>' + seg('answerMode', [['voice', 'Out loud'], ['phones', 'Team phones']]) +
@@ -186,6 +193,7 @@
     var inp = app.querySelector('[data-tname]'); if (inp && document.activeElement === document.body) inp.focus();
   }
   function screenCard() {
+    if (EMBED) return '<section class="card hc-sec"><h2>On the PQT screen</h2><div class="wr-seg wr-seg--3" data-scene>' + [['battle', 'Battle'], ['bracket', 'Bracket'], ['standings', 'Standings']].map(function (o) { return '<button class="pbtn' + (scene === o[0] ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div><p class="hc-note">The PQT screen shows this once you tap “Show Word Race on the screen” above.</p></section>';
     return '<section class="card hc-sec"><h2>Big screen<span class="wr-code">' + esc(T.room || '') + '</span></h2>' +
       '<div class="wr-seg wr-seg--3" data-scene>' + [['battle', 'Battle'], ['bracket', 'Bracket'], ['standings', 'Standings']].map(function (o) { return '<button class="pbtn' + (scene === o[0] ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div>' +
       '<p class="hc-note">On the TV open <b>blaccuniversal.com/pqt/wordrace/screen</b> and type <b>' + esc(T.room) + '</b>. ' + (T.config.answerMode === 'phones' ? 'Teams join at <b>blaccuniversal.com/pqt/wordrace/join</b>.' : '') + '</p>' +
@@ -220,7 +228,12 @@
       h += '<button class="pbtn pbtn--white pbtn--lg pbtn--block wr-mt" data-battle type="button"' + (T.paused ? ' disabled' : '') + '>Start battle ' + (m.battles.length + 1) + '</button>' +
         '<details class="wr-det wr-mt"><summary class="hc-note">Choose the letters yourself</summary><form class="hc-row wr-mt" data-letters><input class="hc-input wr-l" maxlength="1" data-ls placeholder="S" aria-label="First letter"><span>→</span><input class="hc-input wr-l" maxlength="1" data-le placeholder="T" aria-label="Last letter"><button class="pbtn" type="submit">Start with these</button></form></details>';
     } else {
-      var lt = left(b);
+      var lt = left(b), sp = spinLeft(b);
+      if (sp > 0) {
+        h += '<div class="wr-letters is-spin" data-spin><span class="wr-letter">' + rl() + '</span><span class="wr-arrow">→</span><span class="wr-letter">' + rl() + '</span></div><p class="wr-tier">Letters stop in <b data-spinleft>' + fmt(sp) + '</b></p>' +
+          '<div class="wr-award wr-mt"><button class="pbtn pbtn--good pbtn--lg" disabled type="button">' + esc(A) + ' got it</button><button class="pbtn pbtn--good pbtn--lg" disabled type="button">' + esc(B) + ' got it</button></div><p class="hc-note" style="text-align:center">The clock starts when the letters stop.</p>' + battleLog(m) + '</section>';
+        return h + (T.config.answerMode === 'phones' ? pinsCard() : '');
+      }
       h += '<div class="wr-letters"><span class="wr-letter">' + b.s.toUpperCase() + '</span><span class="wr-arrow">→</span><span class="wr-letter">' + b.e.toUpperCase() + '</span></div>' +
         '<p class="wr-tier">' + V.tierLabel(b.tier) + (b.rolls.length ? ' · new letters ×' + b.rolls.length : '') + '</p>' +
         '<div class="wr-clock' + (lt <= 0 ? ' is-up' : lt < 6000 ? ' is-low' : '') + '" data-clock>' + (lt <= 0 ? 'Time' : fmt(lt)) + '</div>' +
@@ -241,7 +254,7 @@
   function battleLog(m) {
     if (!m.battles.length) return '';
     return '<div class="wr-log">' + m.battles.slice().reverse().map(function (b) {
-      return '<div class="wr-logb"><p class="wr-k">Battle ' + b.n + ' · ' + b.s.toUpperCase() + ' → ' + b.e.toUpperCase() + (b.winner ? ' · won by ' + esc(E.tname(T, b.winner)) : '') + '</p>' +
+      return '<div class="wr-logb"><p class="wr-k">Battle ' + b.n + ' · ' + (!b.winner && spinLeft(b) > 0 ? '? → ?' : b.s.toUpperCase() + ' → ' + b.e.toUpperCase()) + (b.winner ? ' · won by ' + esc(E.tname(T, b.winner)) : '') + '</p>' +
         (b.attempts.length ? b.attempts.map(function (a, i) {
           return '<div class="wr-att' + (a.ok ? ' is-ok' : ' is-no') + (a.counted === false ? ' is-void' : '') + '"><b>' + esc(a.word || '(no word)') + '</b><span>' + esc(E.tname(T, a.team)) + ' · ' + (a.ok ? '✓' : '✗ ' + (E.REASONS[a.reason] || '')) + (a.by === 'host' ? ' · host' : '') + ' · ' + (a.ms / 1000).toFixed(1) + 's</span><em>' + (a.counted === false ? '—' : (a.pts > 0 ? '+' : '') + a.pts) + '</em>' +
             '<button class="pbtn pbtn--sm pbtn--ghost" data-ovr="' + m.id + ':' + b.n + ':' + i + ':' + (a.ok ? 0 : 1) + '" type="button">' + (a.ok ? 'Reject' : 'Accept') + '</button>' + (a.ok ? '' : '<button class="pbtn pbtn--sm pbtn--ghost" data-addw="' + esc(a.word) + '" type="button" title="Add to custom dictionary">+ dict</button>') + '</div>';
@@ -331,7 +344,7 @@
     if (d.v && x.parentNode.hasAttribute('data-scene')) { scene = d.v; broadcast(); render(); return; }
     if ('opensc' in d) { window.open('/pqt/wordrace/screen/?c=' + encodeURIComponent(T.room), 'wrscreen', 'width=1280,height=720'); return; }
     if ('newroom' in d) { T.room = WRLink.code(); save(); joined = {}; startLink(); render(); return; }
-    if ('pause' in d) return act(function () { var m = curMatchup(), b = m && E.curBattle(m); if (!T.paused) { T.pausedLeft = b ? left(b) : null; E.pause(T, true); } else { if (b && T.pausedLeft != null) b.rollAt = Date.now() - (b.secs * 1000 - T.pausedLeft); T.pausedLeft = null; E.pause(T, false); } });
+    if ('pause' in d) return act(function () { var m = curMatchup(), b = m && E.curBattle(m); if (!T.paused) { T.pausedSpin = b ? spinLeft(b) : null; T.pausedLeft = b ? left(b) : null; E.pause(T, true); } else { if (b && T.pausedSpin) b.rollAt = Date.now() + T.pausedSpin; else if (b && T.pausedLeft != null) b.rollAt = Date.now() - (b.secs * 1000 - T.pausedLeft); T.pausedLeft = null; T.pausedSpin = null; E.pause(T, false); } });
     if (d.pickm) { curMid = d.pickm; render(); broadcast(); return; }
     if ('battle' in d) { if (!dict) return toast('The dictionary is not loaded. Choose the letters yourself below.', true); var m = curMatchup(); wordDraft = ''; pend = []; return act(function () { E.startBattle(T, m.id, dict); }); }
     if (d.award) {
@@ -378,15 +391,21 @@
   /* ---------- countdown ---------- */
   setInterval(function () {
     if (!T || T.status !== 'live') return;
-    var m = curMatchup(), b = m && E.curBattle(m), el = app.querySelector('[data-clock]'); if (!b || !el) return;
+    var m = curMatchup(), b = m && E.curBattle(m); if (!b) return;
+    var spEl = app.querySelector('[data-spin]'), rk = m.id + ':' + b.n + ':' + b.rollAt;
+    if (spinLeft(b) > 0) { if (spEl) { var ls2 = spEl.querySelectorAll('.wr-letter'); ls2[0].textContent = rl(); ls2[1].textContent = rl(); var sl = app.querySelector('[data-spinleft]'); if (sl) sl.textContent = fmt(spinLeft(b)); } return; }
+    if (revealed !== rk && !T.paused) { revealed = rk; broadcast(); if (spEl) { render(); return; } }
+    var el = app.querySelector('[data-clock]'); if (!el) return;
     var lt = left(b); el.textContent = lt <= 0 ? 'Time' : fmt(lt); el.classList.toggle('is-low', lt > 0 && lt < 6000); el.classList.toggle('is-up', lt <= 0);
     if (lt <= 0 && !timeUp && !T.paused) { timeUp = true; push('time', {}); broadcast(); var tb = app.querySelector('[data-timeout]'); if (tb) tb.classList.add('pbtn--o'); }
   }, 200);
   setInterval(function () { if (T && T.status === 'live') broadcast(); }, 5000); // keeps late joiners and clocks in step
 
   /* ---------- boot ---------- */
-  var cur = ls('wr_cur'); if (cur) load(cur);
+  if (EMBED) { if (EMBED_T) load(EMBED_T); } else { var cur = ls('wr_cur'); if (cur) load(cur); }
   render();
   if (window.WRDict) WRDict.load().then(function (d) { dict = d; render(); }).catch(function () { dictErr = true; render(); toast('The dictionary did not load. You can still judge words yourself.', true); });
   window.addEventListener('beforeunload', save);
+  var hcEl = document.querySelector('.wr-hc');
+  if (EMBED && window.ResizeObserver && hcEl) new ResizeObserver(function () { toParent({ t: 'h', h: Math.ceil(hcEl.getBoundingClientRect().height) + 4 }); }).observe(hcEl);
 })();

@@ -2,6 +2,8 @@
 (function () {
   'use strict';
   var V = window.WRView, esc = V.esc, root = document.querySelector('[data-screen]');
+  var spinEnd = 0, spinTot = 0, lastSpin = 0, LET = 'ABCDEFGHIJKLMNOPRSTUVWY';
+  function rl() { return LET[Math.floor(Math.random() * LET.length)]; }
   var S = null, link = null, endAt = 0, seenEv = 0, lastLetters = '', ovT = null, ovEl = null, lastScene = '';
   function q(k) { return new URLSearchParams(location.search).get(k); }
 
@@ -25,13 +27,14 @@
     if (!S) return;
     var main, top = '<div class="sc-top"><span class="wrs-brand">Word Race</span><span class="wrs-round">' + esc(S.round || S.name || '') + '</span><span class="sc-tag">PQT · ' + esc(S.code) + '</span></div>';
     var b = S.battle, m = S.m;
-    if (b && b.running) endAt = S.rx + b.left; else endAt = 0;
+    if (b && b.running && !b.spin) endAt = S.rx + b.left; else endAt = 0;
+    spinEnd = b && b.running && b.spin ? S.rx + b.spin : 0; if (spinEnd && !spinTot) spinTot = b.spin; if (!spinEnd) spinTot = 0;
     if (S.status === 'done' && S.champion && S.scene === 'battle') { champion(); return; }
     if (S.status === 'setup' || !S.bracket || !S.bracket.rounds.length) main = lobby();
     else if (S.scene === 'bracket') main = '<div class="wrs-board"><p class="wrs-label">' + esc(S.name) + ' · Bracket</p>' + V.bracket(S.bracket) + '</div>';
     else if (S.scene === 'standings') main = standings();
     else main = battle();
-    var flip = false, key = b ? b.s + b.e + ':' + b.n + ':' + (m && m.id) : '';
+    var flip = false, key = b && b.s ? b.s + b.e + ':' + b.n + ':' + (m && m.id) : '';
     if (key && key !== lastLetters && b.running) { flip = true; lastLetters = key; }
     root.innerHTML = '<div class="sc wrs">' + top + '<div class="sc-main">' + main + '</div><div class="sc-bot"><span>' + esc(S.name) + '</span><span>' + (S.next && S.next.length && S.scene === 'battle' ? 'Next · ' + esc(S.next[0]) : 'People, Quests &amp; Triumphs') + '</span></div></div>' + (S.paused ? '<div class="wrs-pause">Paused</div>' : '');
     if (flip) root.querySelectorAll('.wrs-letter').forEach(function (x) { x.classList.add('is-flip'); });
@@ -52,7 +55,10 @@
     var wa = '', wb = '';
     if (b && !running && b.winner) { wa = b.winner === m.a.name ? 'is-win' : 'is-lose'; wb = b.winner === m.b.name ? 'is-win' : 'is-lose'; }
     var mid;
-    if (b && (running || b.winner)) {
+    if (b && running && b.spin) {
+      mid = '<p class="wrs-label">' + esc(m.label || S.round) + ' · Battle ' + b.n + '</p>' +
+        '<div class="wrs-letters is-spin"><div class="wrs-tile"><span class="wrs-tile__k">Starts with</span><span class="wrs-letter" data-spinl>' + rl() + '</span></div><span class="wrs-arrow">→</span><div class="wrs-tile"><span class="wrs-tile__k">Ends with</span><span class="wrs-letter" data-spinl>' + rl() + '</span></div></div><p class="wrs-idle">Get ready…</p>';
+    } else if (b && (running || b.winner)) {
       mid = '<p class="wrs-label">' + esc(m.label || S.round) + ' · Battle ' + b.n + '</p>' +
         '<div class="wrs-letters"><div class="wrs-tile"><span class="wrs-tile__k">Starts with</span><span class="wrs-letter">' + b.s.toUpperCase() + '</span></div><span class="wrs-arrow">→</span><div class="wrs-tile"><span class="wrs-tile__k">Ends with</span><span class="wrs-letter">' + b.e.toUpperCase() + '</span></div></div>' +
         (running ? ring(ms, b.secs) : '<p class="wrs-idle">' + (b.winner ? esc(b.winner) + ' take battle ' + b.n + (b.last && b.last.ok && b.last.word ? ' with <b style="color:#fff">' + esc(b.last.word.toUpperCase()) + '</b>' : '') : '') + '</p>');
@@ -100,6 +106,14 @@
     else next();
   }
   function reason(r) { return { start: 'Wrong first letter', end: 'Wrong last letter', short: 'Too short', repeat: 'Already used', unknown: 'Not a word', empty: 'Wrong', dictionary: '' }[r] || 'Wrong'; }
+
+  /* the randomiser: letters flick fast, then slow down until they stop */
+  setInterval(function () {
+    if (!spinEnd) return; var els = root.querySelectorAll('[data-spinl]'); if (!els.length) return;
+    var rem = Math.max(0, spinEnd - Date.now()), f = spinTot ? 1 - rem / spinTot : 1, gap = 45 + 520 * f * f * f;
+    if (Date.now() - lastSpin < gap) return; lastSpin = Date.now();
+    els.forEach(function (x) { x.textContent = rl(); x.classList.remove('is-tick'); void x.offsetWidth; x.classList.add('is-tick'); });
+  }, 30);
 
   /* countdown without repainting everything */
   setInterval(function () {

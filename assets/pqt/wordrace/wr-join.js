@@ -34,10 +34,12 @@
   function team(id) { return (S.teams || []).filter(function (t) { return t.id === id; })[0]; }
   function play() {
     var t = team(me), m = S.m, b = S.battle, mine = m && (m.a.id === me || m.b.id === me);
-    var running = b && b.running && mine && !S.paused;
+    var running = b && b.running && mine && !S.paused && !b.spin;
+    var spinning = b && b.running && mine && !S.paused && b.spin;
     endAt = running ? S.rx + b.left : 0;
     var h = '<div class="card wrj-me">' + head + '<div class="hc-row" style="margin-top:8px">' + V.badge(t) + '<b style="font-size:18px">' + esc(t ? t.name : '') + '</b></div></div>';
     if (S.status === 'done') h += '<div class="card"><h1>' + (S.champion === (t && t.name) ? 'Champions!' : 'Tournament over') + '</h1><p class="wrj-wait">' + esc(S.champion) + ' won ' + esc(S.name) + '.</p></div>';
+    else if (spinning) h += '<div class="card wrj-pad"><p class="eyebrow">' + esc(m.label || S.round) + ' · Battle ' + b.n + '</p><div class="wr-letters is-spin" data-spin><span class="wr-letter">?</span><span class="wr-arrow">→</span><span class="wr-letter">?</span></div><p class="wrj-wait">Letters are spinning. Get ready…</p></div>';
     else if (running) {
       var f = S.fb && S.fb[me], fbh = '';
       if (f && myN && f.n === myN) fbh = '<p class="wrj-fb ' + (f.ok ? 'is-ok' : 'is-no') + '">' + (f.ok ? '✓ ' + esc(f.word) + ' · You win the battle' : '✗ ' + esc(f.word || '') + ' · ' + esc(reason(f.reason))) + '</p>';
@@ -60,6 +62,8 @@
   function reason(r) { return { start: 'Wrong first letter', end: 'Wrong last letter', short: 'Too short', repeat: 'Already used', unknown: 'Not in the dictionary', empty: 'Not accepted' }[r] || 'Not accepted'; }
   function tick() { var c = root.querySelector('[data-clock]'); if (!c || !endAt) return; var ms = Math.max(0, endAt - Date.now()); c.textContent = ms ? Math.ceil(ms / 1000) : 'Time'; c.classList.toggle('is-low', ms > 0 && ms < 6000); c.classList.toggle('is-up', !ms); }
   setInterval(tick, 200);
+  var LET = 'ABCDEFGHIJKLMNOPRSTUVWY';
+  setInterval(function () { var sp = root.querySelector('[data-spin]'); if (!sp) return; sp.querySelectorAll('.wr-letter').forEach(function (x) { x.textContent = LET[Math.floor(Math.random() * LET.length)]; }); }, 120);
 
   root.addEventListener('submit', function (e) {
     e.preventDefault(); var f = e.target;

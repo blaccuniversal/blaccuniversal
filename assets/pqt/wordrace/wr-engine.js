@@ -8,6 +8,7 @@
   /* ---------- central configuration (the only place defaults live) ---------- */
   var DEFAULTS = {
     battleSecs: 30,          // countdown per letter pair
+    spinSecs: 10,            // letters spin like a randomiser for this long before they stop and the clock starts
     validPoints: 10,         // a correct word
     speedBonus: 5,           // extra for a correct word inside the speed window
     speedSecs: 10,           // the speed window
@@ -29,7 +30,8 @@
       if (k === 'tierBonus' && c.tierBonus) Object.keys(c.tierBonus).forEach(function (t) { out.tierBonus[t] = +c.tierBonus[t] || 0; });
       else if (k in DEFAULTS) out[k] = c[k];
     });
-    ['battleSecs', 'validPoints', 'speedBonus', 'speedSecs', 'invalidPenalty', 'minLength'].forEach(function (k) { out[k] = Math.max(0, +out[k] || 0); });
+    ['battleSecs', 'spinSecs', 'validPoints', 'speedBonus', 'speedSecs', 'invalidPenalty', 'minLength'].forEach(function (k) { out[k] = Math.max(0, +out[k] || 0); });
+    out.spinSecs = Math.min(30, out.spinSecs);
     out.minLength = Math.max(2, out.minLength); out.battleSecs = Math.max(5, out.battleSecs);
     return out;
   }
@@ -204,7 +206,7 @@
     if (curBattle(m)) err('running', 'A battle is already running in this matchup.');
     var p = letters ? { s: letters.s.toLowerCase(), e: letters.e.toLowerCase(), tier: letters.tier || (dict ? dict.tierOf(letters.s, letters.e, T.config.minLength) : 'medium') } : drawLetters(T, dict, rnd);
     if (letters) T.pairsUsed[p.s + p.e] = 1;
-    var b = { n: m.battles.length + 1, s: p.s, e: p.e, tier: p.tier, startedAt: now(), secs: T.config.battleSecs, rolls: [], attempts: [], adj: { a: 0, b: 0 }, winner: null };
+    var t0 = now(), b = { n: m.battles.length + 1, s: p.s, e: p.e, tier: p.tier, startedAt: t0, rollAt: t0 + T.config.spinSecs * 1000, secs: T.config.battleSecs, rolls: [], attempts: [], adj: { a: 0, b: 0 }, winner: null };
     m.battles.push(b);
     log(T, 'battle-start', { matchup: mid, battle: b.n, s: p.s, e: p.e, tier: p.tier });
     return b;
@@ -234,6 +236,7 @@
     if (T.status !== 'live' || T.paused) err('status', 'The tournament is not live.');
     var m = getM(T, mid), sd = side(m, teamId); if (!sd) err('team', 'That team is not in this matchup.');
     var b = curBattle(m); if (!b) err('nobattle', 'Start a battle first.');
+    if (opts.ms == null && now() < (b.rollAt || 0)) err('spinning', 'The letters are still spinning.');
     var ms = opts.ms != null ? Math.max(0, +opts.ms) : now() - (b.rollAt || b.startedAt);
     var c = check(T, b, word, dict), ok = c.ok, by = 'auto';
     if (opts.verdict === true || opts.verdict === false) { ok = opts.verdict; by = 'host'; }
@@ -257,7 +260,7 @@
     b.rolls.push({ s: b.s, e: b.e, tier: b.tier, endedAt: now() });
     var p = letters ? { s: letters.s.toLowerCase(), e: letters.e.toLowerCase(), tier: letters.tier || 'medium' } : drawLetters(T, dict, rnd);
     if (letters) T.pairsUsed[p.s + p.e] = 1;
-    b.s = p.s; b.e = p.e; b.tier = p.tier; b.rollAt = now();
+    b.s = p.s; b.e = p.e; b.tier = p.tier; b.rollAt = now() + T.config.spinSecs * 1000;
     log(T, 'timeout', { matchup: mid, battle: b.n, next: p.s + p.e });
     return b;
   }

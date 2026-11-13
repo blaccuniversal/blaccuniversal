@@ -281,3 +281,19 @@ body[data-mode="wr-screen"]{overflow:hidden}
 .wrj-teams .pbtn{width:100%}
 .wrp-tag{font-size:min(12px,2.3vw);letter-spacing:min(.32em,.5vw);margin-right:calc(-1 * min(.32em,.5vw))}
 .wrp-acts .pbtn{flex:1 1 180px;max-width:240px}
+
+/* letter randomiser */
+.wr-letters.is-spin .wr-letter,.wrs-letters.is-spin .wrs-letter{background:#f2f2f2}
+.wrs-letter.is-tick{animation:wrtick .12s ease-out}
+@keyframes wrtick{from{transform:translateY(-5%);opacity:.85}to{transform:none;opacity:1}}
+.wrs-letters.is-spin .wrs-arrow{opacity:.4}
+
+/* inside the PQT host console */
+body.wr-embed{background:transparent}
+body.wr-embed::before{display:none}
+.wr-embed .hc-bar,.wr-embed [data-close],.wr-embed [data-newt]{display:none!important}
+.wr-embed .wr-hc{padding:0 0 20px;max-width:none}
+
+.wr-embed,.wr-embed body{height:auto}
+html:has(body.wr-embed){height:auto}
+body.wr-embed{height:auto;min-height:0}

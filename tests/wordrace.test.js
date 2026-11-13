@@ -106,7 +106,7 @@ test('Answers: invalid, wrong letters, repeat, short, timeout, no draw', () => {
   E.addCustomWord(T, 'bukke'); E.startBattle(T, m.id, dict, { s: 'b', e: 'e', tier: 'easy' }); a = E.submit(T, m.id, m.b, 'bukke', dict, { ms: 30000 }); eq(a.reason, 'custom', 'custom dictionary');
 });
 test('Manual validation mode needs the host', () => {
-  const T = make(2, { autoValidate: false }); const m = T.matchups[cur(T).matchups[0]]; E.startBattle(T, m.id, dict, L);
+  const T = make(2, { autoValidate: false, spinSecs: 0 }); const m = T.matchups[cur(T).matchups[0]]; E.startBattle(T, m.id, dict, L);
   let threw = null; try { E.submit(T, m.id, m.a, 'street', dict); } catch (e) { threw = e.code; } eq(threw, 'manual', 'blocked');
   const a = E.submit(T, m.id, m.a, 'street', dict, { verdict: true, ms: 12000 }); eq([a.ok, a.by], [true, 'host'], 'host accepts');
 });
@@ -163,6 +163,13 @@ test('Every team count 2–12 reaches a champion (random results, host picks fir
     const st = E.summary(T); ok(Object.values(st).filter(s => s.status === 'champion').length === 1, 'one champion n=' + n);
     const lastFinal = T.rounds[T.rounds.length - 1]; ok(lastFinal.label === 'Grand Final' || n === 2, 'ends with grand final n=' + n);
   }
+});
+test('Letters spin before the clock starts', () => {
+  const T = make(2, { spinSecs: 10 }); const m = T.matchups[cur(T).matchups[0]]; const b = E.startBattle(T, m.id, dict, L);
+  ok(b.rollAt - b.startedAt === 10000, 'clock starts 10s after the draw');
+  let threw = null; try { E.submit(T, m.id, m.a, 'street', dict); } catch (e) { threw = e.code; } eq(threw, 'spinning', 'no answers while spinning');
+  E.timeout(T, m.id, dict, seeded(3)); ok(b.rollAt > Date.now() + 9000, 'new letters spin too');
+  const T2 = make(2, { spinSecs: 0 }); const m2 = T2.matchups[cur(T2).matchups[0]]; E.startBattle(T2, m2.id, dict, L); const a = E.submit(T2, m2.id, m2.a, 'street', dict); ok(a.ok, 'spin can be turned off');
 });
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
 process.exit(fail ? 1 : 0);
