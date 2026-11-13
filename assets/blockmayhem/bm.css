@@ -219,5 +219,7 @@ body.is-playing{overflow:hidden;overscroll-behavior:none}
 .credit{margin:18px 0 0;font-size:11px;color:var(--tx3)}
 .credit a{color:var(--tx3)}
 .vac{touch-action:none}
-.vac.is-gold{color:#ffd23f!important;transition:color .25s}
+.vac.is-gold{color:#ffd23f!important;animation:vblink .7s ease-in-out infinite}
 .vac.is-gold .vi--umb{animation-duration:1.2s}
+@keyframes vblink{50%{opacity:.25}}
+.vac-dot{position:absolute;left:clamp(18px,5vw,32px);width:8px;height:8px;margin-top:-4px;border-radius:50%;background:#ffd23f;box-shadow:0 0 10px 2px rgba(255,210,63,.6);animation:vfade .4s ease,vblink 1.4s ease-in-out .4s infinite;pointer-events:none}
