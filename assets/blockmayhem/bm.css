@@ -156,6 +156,7 @@ body.is-playing{overflow:hidden;overscroll-behavior:none}
 .vac__door{display:none!important}
 .vac.is-open .vac__beach{display:none!important}
 .vac.is-open .vac__door{display:block!important;color:#ffd23f}
+.scr:not(.is-secret) .vac.is-open .vac__door{color:#ffd23f}
 .vac__chk{opacity:0;transform:scale(.4);transform-origin:18.2px 17.2px;transform-box:view-box;transition:opacity .3s .8s,transform .4s .8s cubic-bezier(.3,1.6,.5,1)}
 .vac.is-open .vac__chk{opacity:1;transform:none}
 .vac__leaf{transform-origin:5.5px 12px;transform-box:view-box;transition:transform .7s cubic-bezier(.5,0,.2,1)}
@@ -204,3 +205,16 @@ body.is-playing{overflow:hidden;overscroll-behavior:none}
 .burn{color:#ff8a1f}.burn.is-off{color:var(--fg2,#777);opacity:.6}
 .top__sp .burn{width:44px;height:44px}
 .ov__row{display:flex;justify-content:center;gap:6px;margin-top:4px}
+/* lounge icons (Icons8) */
+.vac__beach,.vac__door{position:relative;width:20px;height:20px}
+.vac__beach{display:block}
+.vi{position:absolute;inset:0;background:currentColor;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%}
+.vi--base{-webkit-mask-image:url(/blockmayhem/lounge-base.png);mask-image:url(/blockmayhem/lounge-base.png)}
+.vi--umb{-webkit-mask-image:url(/blockmayhem/lounge-umb.png);mask-image:url(/blockmayhem/lounge-umb.png);transform-origin:42.8% 40%;animation:sway 4.5s ease-in-out infinite}
+.vi--door{-webkit-mask-image:url(/blockmayhem/door-sprite.png);mask-image:url(/blockmayhem/door-sprite.png);-webkit-mask-size:2800% 100%;mask-size:2800% 100%;-webkit-mask-position:100% 0;mask-position:100% 0}
+.vac.is-open .vi--door{animation:doorplay 1.12s steps(27) .2s 1 both}
+@keyframes doorplay{from{-webkit-mask-position:0 0;mask-position:0 0}to{-webkit-mask-position:100% 0;mask-position:100% 0}}
+@media (prefers-reduced-motion:reduce){.vi--umb,.vac.is-open .vi--door{animation:none}}
+.vac{padding:12px}
+.credit{margin:18px 0 0;font-size:11px;color:var(--tx3)}
+.credit a{color:var(--tx3)}
