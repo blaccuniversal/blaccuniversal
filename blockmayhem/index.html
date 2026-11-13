@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=3">
+<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=4">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -47,7 +47,6 @@
         <button class="btn btn--big" data-act="continue" data-continue>Play</button>
         <button class="btn btn--big btn--ghost" data-act="levels">Levels</button>
       </div>
-      <button class="cheat-link" data-act="cheat">Have a cheat code?</button>
     </div>
     <dl class="stats">
       <div><dt>Cleared</dt><dd data-st-cleared>0</dd></div>
@@ -62,12 +61,16 @@
 <section class="scr" data-scr="levels" hidden>
   <header class="top">
     <button class="back" data-act="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>Home</span></button>
-    <b class="top__t">Levels</b>
+    <b class="top__t" data-lvtitle>Levels</b>
     <span class="top__sp"></span>
   </header>
   <main class="wrap levels">
     <div class="lvgrid" data-lvgrid></div>
-    <button class="cheat-link" data-act="cheat">Have a cheat code?</button>
+    <button class="vac" data-vac aria-label="Lounge" tabindex="-1">
+      <svg class="vac__beach" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9.5C3 5.6 6.2 3 9.8 3.4c3.4.4 5.8 3.2 5.7 6.6z"/><path d="M9.2 4.2c-.9 1.6-1.2 3.4-1 5.6M9.5 9.8l2.6 10"/><path d="M11 19.5h11"/><circle cx="20.3" cy="15.6" r="1.25"/><path d="M19 17.2l-5.6 1"/></svg>
+      <svg class="vac__door" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><rect x="6" y="2.8" width="12" height="18.4" rx=".6"/><rect class="vac__light" x="6.7" y="3.5" width="10.6" height="17" fill="#ffd23f" stroke="none"/><path class="vac__leaf" d="M6 2.8h12v18.4H6z" fill="#000"/><circle class="vac__knob" cx="15.6" cy="12.2" r=".7" fill="currentColor" stroke="none"/><path d="M3 21.2h18"/></svg>
+    </button>
+    <form class="vacin" data-vacin hidden autocomplete="off"><input type="text" aria-label="Code" autocapitalize="characters" spellcheck="false" maxlength="30"><button type="submit" aria-label="Enter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
   </main>
 </section>
 
@@ -134,17 +137,6 @@
   </ol>
 </div></div>
 
-<!-- CHEAT CODE -->
-<div class="sheet gate" data-cheat hidden><div class="sheet__card">
-  <div class="sheet__head"><b>Cheat code</b><button class="ic" data-act="cheat-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-  <p class="gate__p">Got a secret code? Enter it to jump straight to its level.</p>
-  <form class="gate__form" data-cform>
-    <input type="text" placeholder="Enter code" aria-label="Cheat code" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" class="gate__code">
-    <button class="btn btn--big btn--full" type="submit">Open level</button>
-    <p class="gate__msg" data-cmsg role="status"></p>
-  </form>
-</div></div>
-
 <!-- PASSKEY -->
 <div class="sheet gate" data-gate hidden><div class="sheet__card">
   <div class="sheet__head"><b>Unlock all levels</b><button class="ic" data-act="gate-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
@@ -176,6 +168,6 @@
 </div></div>
 
 <script src="/assets/blockmayhem/levels.js?v=4"></script>
-<script src="/assets/blockmayhem/bm.js?v=6"></script>
+<script src="/assets/blockmayhem/bm.js?v=7"></script>
 </body>
 </html>

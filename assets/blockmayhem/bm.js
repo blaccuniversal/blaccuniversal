@@ -30,9 +30,10 @@
     $('[data-st-rating]').textContent = best + ' / ' + LV.list.length * 3;
   }
   function renderLevels() {
+    var lvScr = $('[data-scr=levels]'); lvScr.classList.toggle('is-secret', !!save.secret); $('[data-vac]').classList.toggle('is-open', !!save.secret); $('[data-lvtitle]').textContent = save.secret ? 'All access' : 'Levels';
     var box = $('[data-lvgrid]'); box.innerHTML = '';
     LV.list.forEach(function (l, i) {
-      var b = document.createElement('button'), locked = i + 1 > save.unlocked, rt = save.rate[i] || 0;
+      var b = document.createElement('button'), locked = !save.secret && i + 1 > save.unlocked, rt = save.rate[i] || 0;
       b.className = 'lv' + (locked ? ' is-locked' : '') + (rt ? ' is-done' : '');
       b.disabled = locked;
       b.innerHTML = (i > 0 && !hasKey() && !locked ? '<svg class="lv__k" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></svg>' : '') + '<span class="lv__n">' + pad(i + 1) + '</span><span class="lv__t">' + l.name + '</span><span class="lv__r">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= rt ? 'is-on' : '') + '"></i>'; }).join('') + '</span>';
@@ -114,7 +115,7 @@
 
   /* ---------- passkey (level 1 is free) ---------- */
   var KEYS = ["4c907f22262c6233e46aa958", "86e6e88386e3ab8af06bde25", "86b374767a41492edb6af2f8", "46a915f40946afce6927d19d", "8f1544e7c2d8eeb3ae7fffa6", "f7a3e3b181035a590a9ec7ac", "5294f485512b377ed0e03404", "b789c0aa67e80b745df73ea8", "508fa7ef3037d73aa35d33a4", "a7cc96dc9a3e238f0339724d", "d218dd03a09621cd40fecf11", "ab1f70b5aa0d1c345bd7e375", "e79870e87074013125297ef6", "6f0b0f24cb55d950decdaa7e", "173e8d0d4e60b9facc7e0b92", "cc11aefddc0a2d65f6bbe568", "9c0485c044abdd8d32e6f6be", "23baae8b79ced6d4b0cb37ac", "a39f7f315569e418cd583a73", "b43628a6d3c8334ada36b838", "10a400cce4c3b60c395a8145", "56f31ab276efc5b8383c893b", "b3bcb610debad77100916e7c", "13c6dbbe62ac5ba1bcc43de6", "606a7690f50a0cc50f24eefa", "4c387046490ee7e2001965cc", "128afb621bd54184acb1b3b6", "f1a0dc85ba51096b8a236279", "7035be7a6be113a8d9bf6401", "90894109433d1fb52523bbed", "fe15b3dbf9ceb89165ed090d", "553468730e283620249b5bc3", "6a1b4199e6b414639235ba55", "73b4ab07e073bc3784af906a", "fcbeaa24034342331b33c9af", "76b457e2d250aad8c4b89230", "f0613665571b597af928665f", "de454a962560159fe42ccbe3", "daef51dea1b1f0c6f1ec5394", "28b3b5a64098064018c5dec4", "d5eb9b7ea6a99dbabd822e77", "43e332ebf91dce50f92cd0e2", "6eb821b45cb108cb68030ecb", "f7f1bc61a58001f1647aec6b", "425bfcb5953a9d2711f326b0", "8b8c5df66d86dbe038334221", "4dd1e3e0d4b572b36e7ceb4f", "e69b86d18aae078ee84f70a1", "76e534ec2e7a0e00e642b59c", "ff8b2532797ff3481a453fd9", "7fed0dcd9efc79e9e6866c7b", "ce178e7fb8ae356a5610657c", "a14886fdf45f57bc671e7105", "11c2aa4dd67ca0649a417caa", "b70baeed08d740672b247c03", "ba04c0cfde940d5b8277a304", "5fb6706fe546dab481f9b548", "e61378983f82952348bd4191", "18d29183999b9a630f845434", "73709539f5a8edf7d9f6abf2", "722c4d0171743f951250a02d", "97b7643b765395cc8ea795ce", "37ec7273c5121a977a33fcbc", "ca57fb16b901c39ab42e826e", "2e991fe13afcb49f5c30a90f", "8f241b28793e54d59f5b0217", "9cad851dc33325b03c1bbcab", "5216eef9d8f1f946a1f740a0", "1df80113ce56646d7d546025", "fdbd9ab361034ccb4a638166", "0a1b59cd3c1e68461c277e1d", "b723549390e747f77d964fa6", "140ace55c66eae90760e4a18", "27e71ad4c2377ceeaf4b7f39", "cfad86b7458850cb3d2cc3a3", "584707d304fe51137ed44257", "49c398ca7514e37fef0f3649", "4fc9137d4d66c1a7f7cdd737", "5fda4719a0e4d80f97f1b0fc", "846f42aac1a90c3156440059", "200644357f0721fc6af3d277", "326be04488cf94a3d1daa616", "57fa96cd30a21ade81912620", "60011ae9375242f72110ea87", "7b58b816ddbeb6ea6ed202ef", "e5fff2de95dbad0e7bb17dc7", "f5f130b2723ff56a307a1404", "046340209851a2be19c48f3b", "b6a18af6d7cfa7e8fa8f39ce", "c31b674611432997e339679e", "17ffb2760b67e46616e0a445", "97c8d3d611e628924cf42dd5", "82c1c983d1fa97a6c5cb4ab5", "fec2c12dbd508a7bc3f7134a", "bd9065a21038b1a056dcb0b0", "cdf61f16f62e636af1d7a38e", "118b533fd0a116508a32e70a", "513468ba0791b23385caceea", "04caf8c22cf5787afe429dcd", "500d28b77d7f53ac01d88eeb"], KSALT = 'bu-blockmayhem-v1:', FORM = 'https://api.web3forms.com/submit', W3K = 'c45f617c-f3f2-4caa-93cf-5d49e2cece46', pending = 0;
-  function hasKey() { return !!save.key && KEYS.indexOf(save.key) > -1; }
+  function hasKey() { return !!save.secret || (!!save.key && KEYS.indexOf(save.key) > -1); }
   function knorm(v) { v = String(v || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); if (v.indexOf('BLOCK') !== 0) v = 'BLOCK' + v; return v; }
   function khash(v) { return crypto.subtle.digest('SHA-256', new TextEncoder().encode(KSALT + v)).then(function (d) { return Array.prototype.map.call(new Uint8Array(d), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, 24); }); }
   var gateEl = $('[data-gate]');
@@ -141,18 +142,40 @@
       .then(function () { btn.disabled = false; });
   });
 
-  /* ---------- cheat codes: jump to a level ---------- */
-  var CHEAT = {"924cf26bc1159e5a261e": 1, "97c1800ba1ee4d0fe142": 2, "50b9d02bb2c603aa4ce8": 3, "2913d357e669544727a1": 4, "e63c967fb77dba5aa024": 5, "de792ae936dbcf561f48": 6, "0395fbaf01e01af4fa20": 7, "fd390dde1ab7e8868ff1": 8, "6521d0be6475998bbae7": 9, "0c3450af45e8f39d9265": 10, "bac5626eb785a9b8a2c2": 11, "3c32b462696d41e6eb40": 12, "d86dcd9a1c47914efbb0": 13, "ae91453358aa170003f3": 14, "1fd67bf53f4bde020404": 15, "3220472acbd01985de91": 16, "abbdbaa2c87733dd1b92": 17, "e1e14242e07ab3ac1867": 18, "0a0dc35a686a97d6aed0": 19, "affd1dbb45875fb25fc7": 20, "8e2dad636a6b6c5ff33a": 21, "87ae86de0cf3626a47a3": 22, "331bc7431548dc9f8dc5": 23, "5f2f0196e1cd52b32fa1": 24, "302eba2aab3474033a9d": 25, "3590b22c1d97a5bc121e": 26, "7417f2ba6f5c2ee7b446": 27, "2ab53651e4fb694b7cca": 28, "3399e6ce8a7770612ef6": 29}, CSALT = 'bu-bm-cheat-v1:', cheatEl = $('[data-cheat]');
-  $('[data-cform]').addEventListener('submit', function (e) {
-    e.preventDefault(); var inp = $('[data-cform] input'), msg = $('[data-cmsg]'), v = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); if (!v) return;
-    crypto.subtle.digest('SHA-256', new TextEncoder().encode(CSALT + v)).then(function (d) {
-      var h = Array.prototype.map.call(new Uint8Array(d), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, 20), i = CHEAT[h];
-      if (i == null) { msg.textContent = 'That code doesn’t open anything.'; msg.className = 'gate__msg is-err'; return; }
-      if (i + 1 > save.unlocked) save.unlocked = i + 1; persist();
-      inp.value = ''; msg.textContent = ''; cheatEl.hidden = true; blip(988, .12, .05); setTimeout(function () { blip(1318, .18, .05); }, 90);
-      start(i);
+  /* ---------- the lounge: a hidden door ---------- */
+  (function () {
+    var v = $('[data-vac]'), seq = '', downT = 0, lastUp = 0;
+    v.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+    v.addEventListener('pointerdown', function (e) { e.preventDefault(); downT = performance.now(); if (downT - lastUp > 2200) seq = ''; });
+    v.addEventListener('pointerup', function () {
+      if (save.secret || !downT) return;
+      var now = performance.now(), dur = now - downT; downT = 0; lastUp = now;
+      seq += dur >= 3000 ? 'H' : dur < 450 ? 'T' : 'X'; seq = seq.slice(-7);
+      if (seq === 'TTTTHTT') { seq = ''; showIn(); }
     });
-  });
+    var fm = $('[data-vacin]'), inp = fm.querySelector('input'), hideT = 0;
+    function showIn() { fm.hidden = false; inp.value = ''; setTimeout(function () { inp.focus(); }, 30); clearTimeout(hideT); hideT = setTimeout(function () { fm.hidden = true; }, 30000); }
+    fm.addEventListener('submit', function (e) {
+      e.preventDefault(); var val = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); if (!val) return;
+      crypto.subtle.digest('SHA-256', new TextEncoder().encode('bu-bm-lounge-v1:' + val)).then(function (d) {
+        var h = Array.prototype.map.call(new Uint8Array(d), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, 24);
+        if (h === 'e324823143cf70f91e1ef58d') { fm.hidden = true; inp.blur(); clearTimeout(hideT); openDoor(); }
+        else { inp.value = ''; fm.classList.remove('is-no'); void fm.offsetWidth; fm.classList.add('is-no'); }
+      });
+    });
+    v.addEventListener('pointercancel', function () { downT = 0; seq = ''; });
+    function openDoor() {
+      save.secret = true; persist(); ac();
+      v.classList.add('is-open');
+      [523, 659, 784, 1046].forEach(function (f, i) { setTimeout(function () { blip(f, .3, .045); }, 250 + i * 120); });
+      var r = v.getBoundingClientRect(), fl = document.createElement('div');
+      fl.className = 'doorlight'; fl.style.setProperty('--x', (r.left + r.width / 2) + 'px'); fl.style.setProperty('--y', (r.top + r.height / 2) + 'px');
+      document.body.appendChild(fl);
+      setTimeout(function () { fl.classList.add('is-go'); }, 700);
+      setTimeout(function () { renderLevels(); fl.classList.add('is-out'); }, 1500);
+      setTimeout(function () { fl.remove(); }, 2300);
+    }
+  })();
 
   function start(i) {
     if (i > 0 && !hasKey()) { openGate(i); return; }
@@ -385,9 +408,17 @@
       cx.fillText(dp.t === 'x3' ? '×3' : dp.t === 'p3' ? '+3' : 'W', dp.x, dp.y + .5);
     });
     // trails (few balls only)
-    if (n <= 120) { cx.strokeStyle = 'rgba(255,255,255,.18)'; cx.lineWidth = BR * 1.6; cx.lineCap = 'round'; cx.beginPath(); for (var ti = 0; ti < n; ti++) { cx.moveTo(bx[ti], by[ti]); cx.lineTo(bx[ti] - vx[ti] * .028, by[ti] - vy[ti] * .028); } cx.stroke(); }
+    if (n <= 120 && !save.secret) { cx.strokeStyle = 'rgba(255,255,255,.18)'; cx.lineWidth = BR * 1.6; cx.lineCap = 'round'; cx.beginPath(); for (var ti = 0; ti < n; ti++) { cx.moveTo(bx[ti], by[ti]); cx.lineTo(bx[ti] - vx[ti] * .028, by[ti] - vy[ti] * .028); } cx.stroke(); }
     // balls
-    cx.fillStyle = '#fff';
+    if (save.secret) {
+      if (n <= 260) {
+        cx.strokeStyle = 'rgba(255,110,20,.7)'; cx.lineWidth = BR * 1.7; cx.lineCap = 'round'; cx.beginPath();
+        for (var fi = 0; fi < n; fi++) { cx.moveTo(bx[fi], by[fi]); cx.lineTo(bx[fi] - vx[fi] * .05, by[fi] - vy[fi] * .05); } cx.stroke();
+        cx.fillStyle = 'rgba(255,190,50,.38)'; cx.beginPath();
+        for (var fj = 0; fj < n; fj++) { var fr = BR * (2.3 + Math.random() * .6); cx.moveTo(bx[fj] + fr, by[fj]); cx.arc(bx[fj], by[fj], fr, 0, Math.PI * 2); } cx.fill();
+      }
+      cx.fillStyle = '#ffe07a';
+    } else cx.fillStyle = '#fff';
     if (n > 500) { for (var i = 0; i < n; i++) cx.fillRect(bx[i] - BR, by[i] - BR, BR * 2, BR * 2); }
     else { cx.beginPath(); for (var j = 0; j < n; j++) { cx.moveTo(bx[j] + BR, by[j]); cx.arc(bx[j], by[j], BR, 0, Math.PI * 2); } cx.fill(); }
     // paddle
@@ -400,7 +431,7 @@
     for (var qi = pops.length - 1; qi >= 0; qi--) { var pp = pops[qi]; pp.t -= .02; if (pp.t <= 0) { pops.splice(qi, 1); continue; } cx.globalAlpha = Math.min(1, pp.t * 1.6); cx.fillStyle = pp.s.charAt(0) === '+' && pp.s.indexOf('★') < 0 ? '#fff' : '#ffd23f'; if (pp.big) cx.font = '800 26px "Open Sans",system-ui,sans-serif'; cx.fillText(pp.s, pp.x, pp.y - (1 - Math.min(1, pp.t)) * 26); if (pp.big) cx.font = '800 15px "Open Sans",system-ui,sans-serif'; }
     if (pops.length > 12) pops.splice(0, pops.length - 12);
     cx.globalAlpha = 1;
-    if (held && state === 'play') { cx.fillStyle = '#fff'; cx.beginPath(); cx.arc(px, PY - BR - 1, BR, 0, Math.PI * 2); cx.fill(); }
+    if (held && state === 'play') { cx.fillStyle = save.secret ? '#ffc93a' : '#fff'; cx.beginPath(); cx.arc(px, PY - BR - 1, BR, 0, Math.PI * 2); cx.fill(); }
   }
   function rr(x, y, w, h, r) { cx.beginPath(); cx.moveTo(x + r, y); cx.arcTo(x + w, y, x + w, y + h, r); cx.arcTo(x + w, y + h, x, y + h, r); cx.arcTo(x, y + h, x, y, r); cx.arcTo(x, y, x + w, y, r); cx.closePath(); }
 
@@ -484,8 +515,6 @@
     else if (a === 'help') $('[data-help]').hidden = false;
     else if (a === 'help-close') $('[data-help]').hidden = true;
     else if (a === 'gate-close') closeGate();
-    else if (a === 'cheat') { $('[data-cmsg]').textContent = ''; cheatEl.hidden = false; if (matchMedia('(pointer:fine)').matches) setTimeout(function () { $('[data-cform] input').focus(); }, 40); }
-    else if (a === 'cheat-close') cheatEl.hidden = true;
     else if (a === 'gate-req') gview('req');
     else if (a === 'gate-key') gview('key');
     else if (a === 'mute') { save.muted = !save.muted; persist(); syncMute(); }

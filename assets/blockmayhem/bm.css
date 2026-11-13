@@ -147,6 +147,36 @@ body.is-playing{overflow:hidden;overscroll-behavior:none}
 .gate__alt button{color:#fff;text-decoration:underline;text-underline-offset:3px;font-size:14px}
 .lv{position:relative}
 .lv__k{position:absolute;top:12px;right:12px;width:16px;height:16px;color:var(--tx3)}
-.cheat-link{margin-top:4px;font-size:14px;color:var(--tx2);text-decoration:underline;text-underline-offset:3px}
-.cheat-link:hover{color:#fff}
-.levels .cheat-link{display:block;margin:20px auto 0}
+
+/* the lounge (hidden) */
+.levels{position:relative}
+.vac{display:block;width:44px;height:44px;margin:26px 0 0 auto;padding:13px;color:#2c2c2c;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation;cursor:default}
+.vac:focus-visible{outline:0}
+.vac svg{width:18px;height:18px;display:block}
+.vac__door{display:none!important}
+.vac.is-open .vac__beach{display:none!important}
+.vac.is-open .vac__door{display:block!important;color:#ffd23f}
+.vac__leaf{transform-origin:6px 12px;transform-box:view-box;transition:transform .7s cubic-bezier(.5,0,.2,1)}
+.vac.is-open .vac__leaf{transform:scaleX(.28)}
+.vac__light{opacity:0;transition:opacity .6s .2s}
+.vac.is-open .vac__light{opacity:1}
+.vac__knob{transition:opacity .2s}.vac.is-open .vac__knob{opacity:0}
+.doorlight{position:fixed;inset:0;z-index:200;pointer-events:none;background:radial-gradient(circle at var(--x) var(--y),#fff6d6 0,#ffd23f 18%,#ff9a3c 42%,rgba(255,120,40,0) 70%);clip-path:circle(0 at var(--x) var(--y));transition:clip-path .8s cubic-bezier(.6,0,.2,1),opacity .8s}
+.doorlight.is-go{clip-path:circle(160% at var(--x) var(--y))}
+.doorlight.is-out{opacity:0}
+.scr.is-secret{background:radial-gradient(1px 1px at 12% 18%,rgba(255,255,255,.7),transparent 60%),radial-gradient(1px 1px at 72% 9%,rgba(255,255,255,.6),transparent 60%),radial-gradient(1.5px 1.5px at 40% 30%,rgba(255,255,255,.5),transparent 60%),radial-gradient(1px 1px at 88% 34%,rgba(255,255,255,.55),transparent 60%),radial-gradient(1px 1px at 25% 44%,rgba(255,255,255,.4),transparent 60%),radial-gradient(ellipse 90% 45% at 50% 108%,rgba(255,170,60,.55),transparent 70%),linear-gradient(180deg,#07061a 0%,#141033 38%,#2d1838 66%,#5a2a33 86%,#8a4126 100%);background-attachment:fixed}
+.scr.is-secret .top{border-bottom-color:rgba(255,255,255,.06);background:transparent}
+.scr.is-secret .top__t{color:#ffd23f;letter-spacing:.02em}
+.scr.is-secret .lv{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.scr.is-secret .lv:hover{border-color:rgba(255,210,63,.7)}
+.scr.is-secret .lv__n{color:#ffd23f}
+.scr.is-secret .lv__k{display:none}
+.scr.is-secret .lv.is-locked{opacity:1}
+.vacin{display:flex;gap:6px;width:min(240px,70%);margin:6px 0 0 auto;animation:vfade .4s ease}
+.vacin input{flex:1;min-width:0;height:40px;padding:0 12px;background:#050505;border:1px solid #222;border-radius:2px;color:#fff;font:inherit;font-size:16px;letter-spacing:.1em;text-transform:uppercase}
+.vacin input:focus{outline:0;border-color:#555}
+.vacin button{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border:1px solid #222;border-radius:2px;color:#bbb}
+.vacin button svg{width:18px;height:18px}
+.vacin.is-no{animation:vshake .35s}
+@keyframes vfade{from{opacity:0}}
+@keyframes vshake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
