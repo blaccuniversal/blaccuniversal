@@ -1106,3 +1106,8 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-qa__q--big{font-size:min(11vh,6vw);line-height:1.12;max-width:100%}
 .sc-qa__body.has-img .sc-qa__q{font-size:min(8vh,3.6vw)}
 @media (max-width:700px){.sc-qa__q{font-size:min(7vw,52px)}.sc-qa__q--big{font-size:min(8.6vw,68px)}}
+/* Quests Feud: questions revealed before each team starts */
+.sc-fmq{list-style:none;margin:4vh 0 0;padding:0;width:min(100%,150vh);display:grid;gap:1.6vh;text-align:left}
+.sc-fmq li{display:flex;align-items:center;gap:3vh;padding:2vh 3vh;border:1px solid #222;border-radius:2px;background:#070707;opacity:0;animation:fadeup .5s ease both}
+.sc-fmq b{flex:none;width:5vh;font-size:3.4vh;font-weight:600;color:var(--o2);font-variant-numeric:tabular-nums}
+.sc-fmq span{font-size:min(4.4vh,2.6vw);font-weight:600;line-height:1.25;color:#fff}

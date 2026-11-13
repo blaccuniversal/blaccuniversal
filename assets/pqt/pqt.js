@@ -324,7 +324,7 @@ function pqtMain() {
       fm: function () {
         var f = S.fm; if (!f) return '';
         function tiles(n, show, cls) { var h = '<div class="sc-fmb' + (cls || '') + '">'; for (var i = 0; i < n; i++) { var s = show[i]; h += '<div class="sc-fmb__t' + (s ? ' is-on' + (s.hl ? ' is-hl' : '') : '') + '"><span class="sc-fmb__n">' + (i + 1) + '</span>' + (s ? '<b>' + esc(s.a) + '</b><em>' + s.p + '</em>' + (s.by ? '<small>' + esc(s.by) + '</small>' : '') : '') + '</div>'; } return h + '</div>'; }
-        if (f.phase === 'ready') return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud</p><h2 class="sc-qa__h">' + esc(f.team) + ', you’re up</h2><p class="sc-fm__sub">' + f.n + ' questions against the clock</p></div>';
+        if (f.phase === 'ready') return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud · ' + esc(f.team) + ', you’re up</p><p class="sc-fm__sub">' + f.n + ' questions · 40 seconds</p><ol class="sc-fmq">' + (f.qs || []).map(function (q, i) { return '<li style="animation-delay:' + (0.3 + i * 0.35) + 's"><b>' + (i + 1) + '</b><span>' + esc(q) + '</span></li>'; }).join('') + '</ol></div>';
         if (f.phase === 'answer') {
           var show = {}; if (f.hit) show[f.hit.i] = { a: f.hit.a, p: f.hit.p, hl: 1 };
           var msg = f.msg === 'taken' ? '<div class="sc-fm__msg is-warn">Already given by ' + esc(f.takenBy) + ' · no points</div>' : f.msg === 'miss' ? '<div class="sc-fm__msg is-miss">Not on the board</div>' : f.msg === 'pass' ? '<div class="sc-fm__msg is-miss">Pass</div>' : '';
@@ -704,7 +704,7 @@ function pqtMain() {
     hist = hist.filter(function (r) { return r.id !== rec.id; }); hist.unshift(rec); store('pqt_history', hist.slice(0, 40));
   }
   /* ---- Quests Feud: team by team (hits show live), recap per team, then every answer ---- */
-  var FM_N = 5, FM_TIME = [20000, 25000];
+  var FM_N = 5, FM_TIME = [40000, 40000];
   function fmNew() {
     var n = Math.min(FM_N, BOARDS.length), start = H.feud.qi || 0, qs = [];
     for (var k = 0; k < n; k++) qs.push((start + k) % BOARDS.length);
@@ -729,13 +729,15 @@ function pqtMain() {
     push(); renderAll();
   }
   function fmNextQ() { var f = H.fm; snap(); f.last = null; if (f.qi + 1 < f.qs.length) f.qi++; else { f.phase = 'recap'; f.rc = 0; H.timer.running = false; H.timer.remaining = timerLeft(); } push(); renderAll(); }
+  function fmReveal() { var f = H.fm; snap(); f.shown = f.ti; H.view = 'fm'; push(); renderAll(); fx('ok'); }
   function fmStartTeam() { var f = H.fm; snap(); f.phase = 'answer'; f.qi = 0; f.last = null; H.view = 'fm'; H.timer.total = FM_TIME[Math.min(f.ti, 1)]; H.timer.remaining = H.timer.total; H.timer.running = false; push(); timerStart(); renderAll(); }
   function fmRecapNext() { var f = H.fm; snap(); if (f.rc < f.qs.length) { f.rc++; var a = (f.picks[fmTeam()] || {})[f.rc - 1]; fx(a != null && a >= 0 ? 'ok' : 'buzz'); } push(); renderAll(); }
-  function fmAfterRecap() { var f = H.fm; snap(); if (f.ti + 1 < f.order.length) { f.ti++; f.phase = 'ready'; f.qi = 0; } else { f.phase = 'final'; f.rq = 0; splash('All the answers', GNAME.answers); } push(); renderAll(); }
+  function fmAfterRecap() { var f = H.fm; snap(); if (f.ti + 1 < f.order.length) { f.ti++; f.phase = 'ready'; f.qi = 0; f.shown = f.ti; } else { f.phase = 'final'; f.rq = 0; splash('All the answers', GNAME.answers); } push(); renderAll(); }
   function fmFinalNext() { var f = H.fm; snap(); if (f.rq + 1 < f.qs.length) f.rq++; else f.phase = 'done'; push(); renderAll(); }
   function fmPub() {
     var f = H.fm; if (!f || H.roundType !== 'answers') return null;
     var t = fmTeam(), o = { phase: f.phase, n: f.qs.length, team: H.teams[t] ? H.teams[t].name : '' };
+    if (f.phase === 'ready') o.qs = f.qs.map(function (qq) { var b = BOARDS[qq]; return b ? b.q : ''; });
     if (f.phase === 'answer') {
       var b = fmB(f.qi); o.qi = f.qi; o.q = b ? b.q : ''; o.na = b ? b.a.length : 0;
       if (f.last && f.last.qi === f.qi) { o.msg = f.last.msg; if (f.last.msg === 'hit' && b) o.hit = { i: f.last.a, a: b.a[f.last.a].a, p: b.a[f.last.a].p }; if (f.last.msg === 'taken') o.takenBy = H.teams[f.last.by] ? H.teams[f.last.by].name : ''; }
@@ -827,7 +829,12 @@ function pqtMain() {
   function renderFM() {
     var f = H.fm, t = fmTeam(), tm = H.teams[t] || { name: '' }, out = '';
     var prog = '<div class="fm-prog">' + f.order.map(function (x, k) { return '<span class="' + (k < f.ti || f.phase === 'final' || f.phase === 'done' ? 'is-done' : k === f.ti ? 'is-on' : '') + '">' + esc((H.teams[x] || {}).name || '') + '</span>'; }).join('') + '</div>';
-    if (H.view === 'intro' || f.phase === 'ready') return prog + '<p class="hc-note hc-lead">Every team answers the same ' + f.qs.length + ' questions, one team at a time. Keep the other teams out of earshot.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="start" type="button">Start ' + esc(tm.name) + ' · ' + fmtT(FM_TIME[Math.min(f.ti, 1)]) + 's</button>';
+    if (H.view === 'intro' || f.phase === 'ready') {
+      var shown = H.view === 'fm' && f.shown === f.ti;
+      return prog + (shown
+        ? '<p class="hc-note hc-lead">The ' + f.qs.length + ' questions are on the screen. Give ' + esc(tm.name) + ' a moment to read them, then start the clock.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="start" type="button">Start ' + esc(tm.name) + ' · ' + fmtT(FM_TIME[Math.min(f.ti, 1)]) + 's</button>'
+        : '<p class="hc-note hc-lead">Every team answers the same ' + f.qs.length + ' questions, one team at a time. First, reveal the questions on the screen.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="reveal" type="button">Reveal the ' + f.qs.length + ' questions</button><button class="pbtn pbtn--lg pbtn--block pbtn--ghost" data-fm="start" type="button" style="margin-top:8px">Skip and start ' + esc(tm.name) + ' · ' + fmtT(FM_TIME[Math.min(f.ti, 1)]) + 's</button>');
+    }
     if (f.phase === 'answer') {
       var b = fmB(f.qi), mine = (f.picks[t] || {})[f.qi], last = f.last && f.last.qi === f.qi ? f.last : null;
       out += prog + '<div class="fm-head"><span>' + esc(tm.name) + ' · question ' + (f.qi + 1) + ' of ' + f.qs.length + '</span><b data-tflow>' + fmtT(timerLeft()) + '</b></div><p class="fq">' + esc(b ? b.q : '') + '</p>';
@@ -975,7 +982,7 @@ function pqtMain() {
     else if (d.qnext) qaNext(+d.qnext);
     else if (b.hasAttribute('data-qreveal')) qaReveal();
     else if (d.qclue) qaClue(+d.qclue);
-    else if (d.fm) { var fa = d.fm; if (fa === 'start') fmStartTeam(); else if (fa === 'nextq') fmNextQ(); else if (fa === 'recap') fmRecapNext(); else if (fa === 'afterrecap') fmAfterRecap(); else if (fa === 'finalnext') fmFinalNext(); else if (fa === 'back') { clearTimeout(fmAutoT); snap(); H.fm.last = null; if (H.fm.qi > 0) H.fm.qi--; push(); renderAll(); } }
+    else if (d.fm) { var fa = d.fm; if (fa === 'reveal') fmReveal(); else if (fa === 'start') fmStartTeam(); else if (fa === 'nextq') fmNextQ(); else if (fa === 'recap') fmRecapNext(); else if (fa === 'afterrecap') fmAfterRecap(); else if (fa === 'finalnext') fmFinalNext(); else if (fa === 'back') { clearTimeout(fmAutoT); snap(); H.fm.last = null; if (H.fm.qi > 0) H.fm.qi--; push(); renderAll(); } }
     else if (d.fmp != null) fmPick(+d.fmp);
     else if (d.bd != null) bdAnswer(d.bd === '1');
     else if (d.qok != null) qaMark('ok', +d.qok);
