@@ -386,3 +386,6 @@ body.wr-embed{height:auto;min-height:0}
 .wr-group{grid-template-columns:auto 1fr}
 .wr-group em{min-width:64px}
 @media (max-aspect-ratio:4/5){.wrs .sc-bot span:last-child{display:none}}
+
+.wr-vs--2{grid-template-columns:1fr 1fr}
+.wr-embed .wr-now .hc-now__txt b{font-size:14px}

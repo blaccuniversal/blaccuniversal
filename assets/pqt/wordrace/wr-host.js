@@ -201,7 +201,7 @@
   }
   function renderLive() {
     var tabs = [['play', 'Play'], ['bracket', 'Bracket'], ['log', 'Log'], ['settings', 'Settings']];
-    var h = '<div class="hc-now card wr-now"><span class="hc-now__txt"><b>' + esc(T.name) + '</b><span>' + esc(E.lastStage(T) ? E.lastStage(T).label : '') + (T.paused ? ' · Paused' : '') + (T.status === 'done' ? ' · Finished' : '') + '</span></span>' +
+    var h = '<div class="hc-now card wr-now"><span class="hc-now__txt"><b>' + esc(EMBED ? 'Word Race' : T.name) + '</b><span>' + esc(E.lastStage(T) ? E.lastStage(T).label : '') + (T.paused ? ' · Paused' : '') + (T.status === 'done' ? ' · Finished' : '') + '</span></span>' +
       (T.status !== 'done' ? '<button class="pbtn pbtn--sm" data-pause type="button">' + (T.paused ? 'Resume' : 'Pause') + '</button>' : '') + '<button class="pbtn pbtn--sm pbtn--ghost" data-close type="button">Close</button></div>' +
       '<div class="hc-tabs" role="tablist">' + tabs.map(function (x) { return '<button class="hc-tab' + (tab === x[0] ? ' is-on' : '') + '" data-tab="' + x[0] + '" type="button">' + x[1] + '</button>'; }).join('') + '</div>';
     if (tab === 'play') h += playPane() + screenCard();
@@ -255,7 +255,8 @@
     var r = m.rank.map(function (x) { return E.tname(T, x); });
     if (m.kind === 'duel') return r[0] + ' beat ' + r[1] + ' ' + m.wins[m.rank[0]] + '–' + m.wins[m.rank[1]];
     if (m.kind === 'tb') return r.slice(0, m.slots).join(' and ') + ' through on the tie-break';
-    return r[0] + ' win' + (m.label ? ' ' + m.label : ' the Bangarang') + ' · ' + m.rank.map(function (x) { return E.tname(T, x) + ' ' + m.pts[x]; }).join(', ');
+    var dec = m.pts[m.rank[0]] === m.pts[m.rank[1]];
+    return r[0] + ' win' + (m.label ? ' ' + m.label : ' the Bangarang') + (dec ? ' on a decider' : '') + ' · ' + m.rank.map(function (x) { return E.tname(T, x) + ' ' + m.pts[x]; }).join(', ');
   }
   function vsSide(m, x, active) { return '<div class="wr-vs__t' + (active ? '' : ' is-off') + '">' + tLink(x) + '<b>' + esc(E.tname(T, x)) + '</b><span class="wr-dots">' + [0, 1, 2].map(function (i) { return '<i' + (i < m.wins[x] ? ' class="on"' : '') + '></i>'; }).join('') + '</span><span class="wr-pts">' + pl(m.pts[x], 'pt') + '</span></div>'; }
   function battleLog(m) {
