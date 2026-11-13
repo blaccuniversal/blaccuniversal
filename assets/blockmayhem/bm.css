@@ -130,3 +130,20 @@ body.is-playing{overflow:hidden;overscroll-behavior:none}
   .ptop__mid b{font-size:18px}.ptop__mid>span{font-size:14px}
   .ov__card{max-width:400px}
 }
+
+/* passkey */
+.gate{z-index:60}
+.gate .sheet__card{max-width:440px}
+.gate__p{margin:4px 0 14px;font-size:15px;line-height:1.55;color:#cfcfcf}
+.gate__form{display:flex;flex-direction:column;gap:10px}
+.gate__form input,.gate__form textarea{width:100%;min-height:52px;padding:14px 16px;background:#000;border:1px solid #2a2a2a;border-radius:2px;color:#fff;font:inherit;font-size:16px;resize:vertical}
+.gate__form input:focus,.gate__form textarea:focus{outline:0;border-color:#8c8c8c}
+.gate__code{text-align:center;letter-spacing:.12em;font-weight:600}
+.gate__form .btn:disabled{opacity:.5}
+.gate__hp{position:absolute!important;left:-9999px;width:1px!important;height:1px;opacity:0}
+.gate__msg{margin:0;min-height:20px;font-size:14px;color:var(--tx2)}
+.gate__msg.is-err{color:#ff5a5a}
+.gate__alt{margin:10px 0 0;font-size:14px;color:var(--tx3)}
+.gate__alt button{color:#fff;text-decoration:underline;text-underline-offset:3px;font-size:14px}
+.lv{position:relative}
+.lv__k{position:absolute;top:12px;right:12px;width:16px;height:16px;color:var(--tx3)}

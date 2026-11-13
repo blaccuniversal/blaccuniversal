@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=1">
+<link rel="stylesheet" href="/assets/blockmayhem/bm.css?v=2">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -131,7 +131,37 @@
   </ol>
 </div></div>
 
-<script src="/assets/blockmayhem/levels.js?v=1"></script>
-<script src="/assets/blockmayhem/bm.js?v=1"></script>
+<!-- PASSKEY -->
+<div class="sheet gate" data-gate hidden><div class="sheet__card">
+  <div class="sheet__head"><b>Unlock all levels</b><button class="ic" data-act="gate-close" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div data-gv="key">
+    <p class="gate__p">Level 1 is free. Enter your passkey to play levels 2 to 20.</p>
+    <form class="gate__form" data-gkey>
+      <input type="text" placeholder="BLOCK-XXXX-XXXX" aria-label="Passkey" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" class="gate__code">
+      <button class="btn btn--big btn--full" type="submit">Unlock</button>
+      <p class="gate__msg" data-gkmsg role="status"></p>
+    </form>
+    <p class="gate__alt">No passkey yet? <button type="button" data-act="gate-req">Request one</button></p>
+  </div>
+  <div data-gv="req" hidden>
+    <p class="gate__p">Tell us who you are. We’ll email your passkey once you’re approved.</p>
+    <form class="gate__form" data-greq>
+      <input name="name" type="text" placeholder="Your name" aria-label="Your name" autocomplete="name" maxlength="80" required>
+      <input name="email" type="email" placeholder="Email address" aria-label="Email address" autocomplete="email" maxlength="120" required>
+      <textarea name="note" rows="3" placeholder="Anything you’d like to add (optional)" aria-label="Note" maxlength="500"></textarea>
+      <input name="_honey" type="text" tabindex="-1" autocomplete="off" class="gate__hp" aria-hidden="true">
+      <button class="btn btn--big btn--full" type="submit">Send request</button>
+      <p class="gate__msg" data-grmsg role="status"></p>
+    </form>
+    <p class="gate__alt">Already have one? <button type="button" data-act="gate-key">Enter passkey</button></p>
+  </div>
+  <div data-gv="sent" hidden>
+    <p class="gate__p">Request sent. Keep an eye on your inbox for your passkey.</p>
+    <button class="btn btn--big btn--full" type="button" data-act="gate-key">Enter passkey</button>
+  </div>
+</div></div>
+
+<script src="/assets/blockmayhem/levels.js?v=2"></script>
+<script src="/assets/blockmayhem/bm.js?v=2"></script>
 </body>
 </html>

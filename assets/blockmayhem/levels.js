@@ -12,7 +12,7 @@
   }
 
   var L = [
-    { name: 'Warm Up', orbs: { x3: 1, star: 1 }, build: function (a) { rect(a, 6, 14, 53, 26, 1); } },
+    { name: 'Warm Up', orbs: [{ t: 'x3', c: 18, r: 30 }, { t: 'x3', c: 42, r: 30 }, { t: 'p3', c: 30, r: 34 }, { t: 'star', c: 30, r: 9 }], build: function (a) { rect(a, 6, 14, 53, 26, 1); } },
     { name: 'Pyramid', orbs: { x3: 1, p3: 1, star: 1 }, build: function (a) { for (var i = 0; i < 26; i++) rect(a, 30 - i - 1, 8 + i, 30 + i, 8 + i, i > 18 ? 1 : i > 8 ? 1 : 2); } },
     { name: 'Pillars', orbs: { x3: 1, p3: 1, star: 1 }, build: function (a) {
       [3, 15, 27, 39, 51].forEach(function (c, i) { rect(a, c, 4, c + 5, 40, 1); if (i % 2 === 0) rect(a, c, 41, c + 5, 41, 9); });
