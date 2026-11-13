@@ -1157,3 +1157,6 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .sc-qa--written .sc-qa__q,.sc-qa--rapid .sc-qa__q{font-size:min(8.76vh,4.73vw)}
 .sc-qa--written .q-opts li,.sc-qa--rapid .q-opts li{font-size:5.57vh}
 .sc-qa--written .sc-qa__ans b,.sc-qa--rapid .sc-qa__ans b{font-size:12.5vh}
+/* PQT mark on the screen: a little bigger */
+.sc-top{height:7.4vh}
+.sc-mark{height:6.8vh}
