@@ -8,6 +8,14 @@
   function store() { try { return JSON.parse(localStorage.getItem(LK)) || {}; } catch (e) { return {}; } }
   function save(o) { try { localStorage.setItem(LK, JSON.stringify(o)); } catch (e) {} }
   function device() { var s = store(); if (!s.id) { s.id = Math.random().toString(36).slice(2) + Date.now().toString(36); save(s); } return s.id; }
+  function fingerprint() {
+    var n = navigator, sc = window.screen || {}, parts = [n.userAgent, n.platform, n.language, (n.languages || []).join(','), sc.width + 'x' + sc.height, window.devicePixelRatio, sc.colorDepth, n.hardwareConcurrency, n.deviceMemory, n.maxTouchPoints];
+    try { parts.push(Intl.DateTimeFormat().resolvedOptions().timeZone); } catch (e) {}
+    try { var c = document.createElement('canvas'), x = c.getContext('2d'); c.width = 220; c.height = 40; x.textBaseline = 'top'; x.font = '16px Arial'; x.fillStyle = '#f60'; x.fillRect(100, 1, 60, 20); x.fillStyle = '#069'; x.fillText('PQT feud ✓ 2026', 2, 15); x.fillStyle = 'rgba(102,204,0,.7)'; x.fillText('PQT feud ✓ 2026', 4, 17); parts.push(c.toDataURL()); } catch (e) {}
+    var str = parts.join('|');
+    if (!(window.crypto && crypto.subtle)) return Promise.resolve('');
+    return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (d) { return Array.prototype.map.call(new Uint8Array(d), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('').slice(0, 32); }).catch(function () { return ''; });
+  }
   function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function done(again) {
     show('[data-sv-done]');
@@ -35,8 +43,10 @@
     var okContact = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact) || contact.replace(/\D/g, '').length >= 10;
     if (answers.some(function (a) { return !a; }) || !name || !okContact) { err.textContent = !okContact && name && answers.every(Boolean) ? 'Enter a valid phone number or email.' : 'Please answer all 5 questions and add your name and phone or email.'; err.hidden = false; return; }
     var btn = form.querySelector('button[type=submit]'); btn.disabled = true; btn.textContent = 'Sending…';
-    var body = JSON.stringify({ week: week, name: name, contact: contact, answers: answers, device: device() });
-    fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body })
+    fingerprint().then(function (fp) {
+      var body = JSON.stringify({ week: week, name: name, contact: contact, answers: answers, device: device(), fp: fp });
+      return fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: body });
+    })
       .then(function (r) { return r.json().catch(function () { return { ok: true }; }); })
       .then(function (j) {
         if (j && j.dup) { var s = store(); s['w:' + week] = 1; save(s); return done(true); }
