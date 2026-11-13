@@ -1141,3 +1141,9 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-racepts div{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid #1a1a1a;font-size:14px}
 .hc-racepts b{font-variant-numeric:tabular-nums}
 .hc-racepts i{font-style:normal;color:#7a7a7a;font-size:12px;margin-left:6px}
+
+/* Written + Rapid Fire questions and answers: Myriad Pro Bold Condensed */
+@font-face{font-family:"PQT Cond";src:url("/assets/pqt/fonts/pqt-cond-bold.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+.sc-qa--written .sc-qa__q,.sc-qa--rapid .sc-qa__q,
+.sc-qa--written .q-opts span,.sc-qa--rapid .q-opts span,
+.sc-qa--written .sc-qa__ans b,.sc-qa--rapid .sc-qa__ans b{font-family:"PQT Cond","Open Sans",sans-serif;font-weight:700;letter-spacing:0}
