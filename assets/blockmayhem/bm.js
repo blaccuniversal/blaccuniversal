@@ -50,7 +50,7 @@
       b.className = 'lv' + (locked ? ' is-locked' : '') + (rt ? ' is-done' : '') + (i === cur ? ' is-cur' : '');
       b.disabled = locked;
       var dots = '<span class="lv__r">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= rt ? 'is-on' : '') + '"></i>'; }).join('') + '</span>';
-      var img = view === 'list' ? '' : '<span class="lv__img"><img src="' + thumb(i) + '" alt="" loading="lazy"></span>';
+      var img = view !== 'swipe' ? '' : '<span class="lv__img"><img src="' + thumb(i) + '" alt="" loading="lazy"></span>';
       b.innerHTML = img + '<span class="lv__meta"><span class="lv__n">' + pad(i + 1) + '</span><span class="lv__t">' + l.name + '</span>' + dots + '</span>' + (locked || needKey ? LOCK : '') +
         (view === 'swipe' ? '<span class="lv__play">' + (locked ? 'Locked' : 'Play') + '</span>' : '');
       b.addEventListener('click', function () { start(i); });

@@ -296,3 +296,8 @@ html[data-theme=day] .lv .lv__k{color:#111;filter:none}
 html[data-theme=day] .lv__play{background:#111;color:#fff}
 .lv.is-locked .lv__play{background:transparent;color:var(--tx3);border:1px solid var(--bd2)}
 .lvgrid--swipe .lv.is-locked{opacity:.55}
+.lvgrid--grid .lv__meta{padding:12px 12px 12px;gap:4px}
+.lvgrid--grid .lv__n{font-size:22px;font-weight:300;color:var(--tx);letter-spacing:0}
+.lvgrid--grid .lv__t{font-size:13px}
+.lvgrid--grid .lv__r{margin-top:6px}
+.lvgrid--grid .lv__k{color:var(--tx3);filter:none;top:10px;right:10px}
