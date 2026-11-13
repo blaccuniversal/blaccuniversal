@@ -30,7 +30,7 @@
     $('[data-st-rating]').textContent = best + ' / ' + LV.list.length * 3;
   }
   function renderLevels() {
-    var lvScr = $('[data-scr=levels]'); lvScr.classList.toggle('is-secret', !!save.secret); $('[data-vac]').classList.toggle('is-open', !!save.secret); $('[data-lvtitle]').textContent = save.secret ? 'All access' : 'Levels'; $('[data-shuf]').hidden = !save.secret; if (save.secret && !$('[data-bgfx] i')) applyBg(false);
+    var lvScr = $('[data-scr=levels]'); lvScr.classList.toggle('is-secret', !!save.secret); $('[data-vac]').classList.toggle('is-open', !!save.secret); $('[data-lvtitle]').textContent = save.secret ? 'All access' : 'Levels'; $('[data-shuf]').hidden = !save.secret; syncBurn(); if (save.secret && !$('[data-bgfx] i')) applyBg(false);
     var box = $('[data-lvgrid]'); box.innerHTML = '';
     LV.list.forEach(function (l, i) {
       var b = document.createElement('button'), locked = !save.secret && i + 1 > save.unlocked, rt = save.rate[i] || 0;
@@ -249,9 +249,10 @@
   }
 
   function fireOn() { return !!save.secret || gclock < fireUntil; }
+  function burnOn() { return gclock < fireUntil || (!!save.secret && save.burn !== false); }
   function burn(k) { if (G[k] > 1) G[k] = 1; hit(k); }
   function step(dt) {
-    var fire = fireOn();
+    var fire = burnOn();
     if (!save.secret && fireUntil && gclock >= fireUntil && gclock - dt * 1000 < fireUntil) { pops.push({ x: px, y: PY - 30, s: 'Fire out', t: 1 }); blip(220, .2, .04); }
     var steps = Math.max(1, Math.ceil(SPD * dt / 4)), h = dt / steps, w = pw();
     for (var s = 0; s < steps; s++) {
@@ -573,11 +574,13 @@
     else if (a === 'mute') { save.muted = !save.muted; persist(); syncMute(); }
   });
   $$('[data-boost]').forEach(function (b) { b.addEventListener('click', function () { boost(b.getAttribute('data-boost')); }); });
+  function syncBurn() { $$('[data-burn]').forEach(function (b) { b.hidden = !save.secret; var on = save.burn !== false; b.classList.toggle('is-off', !on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); }
+  $$('[data-burn]').forEach(function (b) { b.addEventListener('click', function () { save.burn = save.burn === false; persist(); syncBurn(); blip(save.burn !== false ? 520 : 260, .1, .04, 'sawtooth'); }); });
   function syncMute() { $$('[data-act=mute]').forEach(function (b) { b.classList.toggle('is-off', !!save.muted); b.setAttribute('aria-label', save.muted ? 'Sound off' : 'Sound on'); }); }
 
   hudEls = { lives: $$('[data-life]'), stars: $('[data-stars]'), balls: $('[data-balls]'), cleared: $('[data-cleared]'), bar: $('[data-bar]'), wide: $('[data-wide]') };
   if (matchMedia('(pointer:coarse)').matches) $('[data-hint]').textContent = 'Drag to move · Tap to launch';
-  syncMute(); show('home'); requestAnimationFrame(loop);
+  syncMute(); syncBurn(); show('home'); requestAnimationFrame(loop);
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('/blockmayhem/sw.js').catch(function () {});
   window.__bm = { start: start, boost: boost, get n() { return n; }, get broken() { return broken; }, get total() { return total; }, launch: launch, setStars: function (s) { save.stars = s; }, timed: function (t, x, y) { spawnTimed(t, x, y); }, get fire() { return fireOn(); }, dropX: function () { var b = null; drops.forEach(function (d) { if (d.y > 700 && (!b || d.y > b.y)) b = d; }); return b ? b.x : null; }, low: function () { var m = -1, x = W / 2; for (var i = 0; i < n; i++) if (vy[i] > 0 && by[i] > m && by[i] < PY) { m = by[i]; x = bx[i]; } return x; } };
 })();
