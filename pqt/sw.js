@@ -1,5 +1,5 @@
 /* PQT offline: keeps the game saved on this device so it opens and plays without internet */
-var CACHE = 'pqt-v74';
+var CACHE = 'pqt-v75';
 var CORE = ['/pqt/', '/pqt/host/', '/pqt/screen/',
   '/assets/pqt/pqt.css', '/assets/pqt/pqt.js', '/assets/pqt/pqt-data.js', '/assets/pqt/pqt-gate.js', '/assets/pqt/pqt-leaderboard.js', '/pqt/leaderboard/', '/pqt/data/season-1.json',
   '/assets/pqt/mqtt.min.js', '/assets/pqt/peerjs.min.js', '/assets/pqt/pqt-logo.png', '/assets/pqt/pqt-mark.png', '/assets/pqt/pqt-icon.png', '/assets/pqt/pqt-apple-touch-icon.png', '/assets/pqt/pqt-icon-192.png',
@@ -15,7 +15,7 @@ self.addEventListener('fetch', function (e) {
   var k = key(req.url);
   e.respondWith(caches.open(CACHE).then(function (c) {
     return c.match(k).then(function (hit) {
-      var net = fetch(req).then(function (r) { if (r && (r.ok || r.type === 'opaque')) c.put(k, r.clone()); else if (r && (r.status === 404 || r.status === 410)) c.delete(k); return r; }); // pages removed from the site drop out of the saved copy
+      var net = fetch(req.mode === 'navigate' ? new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' }) : req).then(function (r) { if (r && (r.ok || r.type === 'opaque')) c.put(k, r.clone()); else if (r && (r.status === 404 || r.status === 410)) c.delete(k); return r; }); // pages removed from the site drop out of the saved copy
       if (hit) { e.waitUntil(net.catch(function () {})); return hit; }   // saved copy straight away, refreshed in the background
       return net.catch(function () { return req.mode === 'navigate' ? c.match(key('/pqt/')) : Response.error(); });
     });
