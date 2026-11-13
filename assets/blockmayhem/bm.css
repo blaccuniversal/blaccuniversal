@@ -218,3 +218,6 @@ body.is-playing{overflow:hidden;overscroll-behavior:none}
 .vac{padding:12px}
 .credit{margin:18px 0 0;font-size:11px;color:var(--tx3)}
 .credit a{color:var(--tx3)}
+.vac{touch-action:none}
+.vac.is-gold{color:#ffd23f!important;transition:color .25s}
+.vac.is-gold .vi--umb{animation-duration:1.2s}

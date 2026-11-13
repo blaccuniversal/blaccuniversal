@@ -310,7 +310,7 @@
     var rec = session.rec;
     if (rec) stopRecorder();
     paintDone();
-    go('done');
+    go('done'); if (window.BUInstall) BUInstall.moment();
   }
   function recordStats(bars, secs, daily) {
     var today = dayKey(), y = new Date(); y.setDate(y.getDate() - 1);

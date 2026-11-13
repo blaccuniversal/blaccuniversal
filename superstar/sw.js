@@ -1,5 +1,5 @@
 /* Superstar offline cache: stale-while-revalidate */
-var CACHE = 'superstar-v18';
+var CACHE = 'superstar-v19';
 var CORE = ['/superstar/', '/assets/superstar/superstar.css', '/assets/superstar/gate.js', '/assets/superstar/beat.js', '/assets/superstar/superstar.js', '/assets/superstar/game.json', '/assets/superstar/dict.json', '/superstar/manifest.webmanifest', '/superstar/icon-192.png', '/superstar/apple-touch-icon.png', '/superstar/logo.webp', '/superstar/wordmark.webp'];
 self.addEventListener('install', function (e) { e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(CORE); }).then(function () { return self.skipWaiting(); })); });
 self.addEventListener('activate', function (e) { e.waitUntil(caches.keys().then(function (ks) { return Promise.all(ks.filter(function (k) { return k.indexOf('superstar-') === 0 && k !== CACHE; }).map(function (k) { return caches.delete(k); })); }).then(function () { return self.clients.claim(); })); });

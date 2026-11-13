@@ -36,7 +36,7 @@
       var b = document.createElement('button'), locked = !save.secret && i + 1 > save.unlocked, rt = save.rate[i] || 0;
       b.className = 'lv' + (locked ? ' is-locked' : '') + (rt ? ' is-done' : '');
       b.disabled = locked;
-      b.innerHTML = (i > 0 && !hasKey() && !locked ? '<svg class="lv__k" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></svg>' : '') + '<span class="lv__n">' + pad(i + 1) + '</span><span class="lv__t">' + l.name + '</span><span class="lv__r">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= rt ? 'is-on' : '') + '"></i>'; }).join('') + '</span>';
+      b.innerHTML = (i > 0 && !hasKey() && !locked && !(save.open && save.open[i]) ? '<svg class="lv__k" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10.5" width="14" height="10" rx="1.5"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></svg>' : '') + '<span class="lv__n">' + pad(i + 1) + '</span><span class="lv__t">' + l.name + '</span><span class="lv__r">' + [1, 2, 3].map(function (k) { return '<i class="' + (k <= rt ? 'is-on' : '') + '"></i>'; }).join('') + '</span>';
       b.addEventListener('click', function () { start(i); });
       box.appendChild(b);
     });
@@ -171,42 +171,63 @@
   $('[data-shuf]').addEventListener('click', function () { save.bg = 1 + Math.floor(Math.random() * 1e9); persist(); applyBg(true); blip(660, .08, .04); });
 
   /* ---------- the lounge: a hidden door ---------- */
+  var LCODES = {"924cf26bc1159e5a261e": 1, "97c1800ba1ee4d0fe142": 2, "50b9d02bb2c603aa4ce8": 3, "2913d357e669544727a1": 4, "e63c967fb77dba5aa024": 5, "de792ae936dbcf561f48": 6, "0395fbaf01e01af4fa20": 7, "fd390dde1ab7e8868ff1": 8, "6521d0be6475998bbae7": 9, "0c3450af45e8f39d9265": 10, "bac5626eb785a9b8a2c2": 11, "3c32b462696d41e6eb40": 12, "d86dcd9a1c47914efbb0": 13, "ae91453358aa170003f3": 14, "1fd67bf53f4bde020404": 15, "3220472acbd01985de91": 16, "abbdbaa2c87733dd1b92": 17, "e1e14242e07ab3ac1867": 18, "0a0dc35a686a97d6aed0": 19, "affd1dbb45875fb25fc7": 20, "8e2dad636a6b6c5ff33a": 21, "87ae86de0cf3626a47a3": 22, "331bc7431548dc9f8dc5": 23, "5f2f0196e1cd52b32fa1": 24, "302eba2aab3474033a9d": 25, "3590b22c1d97a5bc121e": 26, "7417f2ba6f5c2ee7b446": 27, "2ab53651e4fb694b7cca": 28, "3399e6ce8a7770612ef6": 29};
   (function () {
-    var v = $('[data-vac]'), seq = '', downT = 0, lastUp = 0;
+    var v = $('[data-vac]'), taps = 0, lastUp = 0, downT = 0, holdT = 0, armed = false, armT = 0, after = 0;
+    function reset() { taps = 0; after = 0; armed = false; clearTimeout(holdT); clearTimeout(armT); v.classList.remove('is-gold'); }
     v.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-    v.addEventListener('pointerdown', function (e) { e.preventDefault(); downT = performance.now(); if (downT - lastUp > 2200) seq = ''; });
-    v.addEventListener('pointerup', function () {
-      if (save.secret || !downT) return;
-      var now = performance.now(), dur = now - downT; downT = 0; lastUp = now;
-      seq += dur >= 3000 ? 'H' : dur < 450 ? 'T' : 'X'; seq = seq.slice(-7);
-      if (seq === 'TTTTHTT') { seq = ''; showIn(); }
+    v.addEventListener('pointerdown', function (e) {
+      e.preventDefault(); if (save.secret && !fm.hidden) return;
+      var now = performance.now(); downT = now;
+      if (!armed && now - lastUp > 1600) taps = 0;
+      if (!armed && taps >= 4) holdT = setTimeout(function () { armed = true; after = 0; v.classList.add('is-gold'); buzz(15); blip(784, .1, .03); }, 3000);
     });
+    v.addEventListener('pointerup', function () {
+      if (!downT) return;
+      var now = performance.now(), dur = now - downT; downT = 0; clearTimeout(holdT);
+      if (armed) {
+        if (dur < 3000 && v.classList.contains('is-gold') && dur >= 0) {
+          if (dur < 700 && now - lastUp < 3000) { after++; if (after >= 2) { showIn(); } }
+        }
+        lastUp = now;
+        clearTimeout(armT); armT = setTimeout(function () { if (fm.hidden) reset(); }, 6000);
+        return;
+      }
+      if (dur < 700) taps++; else taps = 0;
+      if (taps > 4) taps = 4;
+      lastUp = now;
+    });
+    v.addEventListener('pointercancel', function () { downT = 0; clearTimeout(holdT); });
+    v.addEventListener('pointerleave', function () { if (downT && !armed) { downT = 0; clearTimeout(holdT); } });
     var fm = $('[data-vacin]'), inp = fm.querySelector('input'), hideT = 0;
-    function showIn() { fm.hidden = false; inp.value = ''; setTimeout(function () { inp.focus(); }, 30); clearTimeout(hideT); hideT = setTimeout(function () { fm.hidden = true; }, 30000); }
+    function showIn() { fm.hidden = false; inp.value = ''; setTimeout(function () { inp.focus(); }, 30); clearTimeout(armT); clearTimeout(hideT); hideT = setTimeout(function () { fm.hidden = true; reset(); }, 30000); }
+    function hx(str, n) { return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function (d) { return Array.prototype.map.call(new Uint8Array(d), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, n); }); }
     fm.addEventListener('submit', function (e) {
       e.preventDefault(); var val = inp.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); if (!val) return;
-      crypto.subtle.digest('SHA-256', new TextEncoder().encode('bu-bm-lounge-v1:' + val)).then(function (d) {
-        var h = Array.prototype.map.call(new Uint8Array(d), function (x) { return ('0' + x.toString(16)).slice(-2); }).join('').slice(0, 24);
-        if (h === 'e324823143cf70f91e1ef58d') { fm.hidden = true; inp.blur(); clearTimeout(hideT); openDoor(); }
+      Promise.all([hx('bu-bm-lounge-v1:' + val, 24), hx('bu-bm-cheat-v1:' + val, 20)]).then(function (h) {
+        var lv = LCODES[h[1]];
+        if (h[0] === 'e324823143cf70f91e1ef58d') { done(); openDoor(-1); }
+        else if (lv != null) { done(); openDoor(lv); }
         else { inp.value = ''; fm.classList.remove('is-no'); void fm.offsetWidth; fm.classList.add('is-no'); }
       });
     });
-    v.addEventListener('pointercancel', function () { downT = 0; seq = ''; });
-    function openDoor() {
-      save.secret = true; persist(); ac();
+    function done() { fm.hidden = true; inp.blur(); clearTimeout(hideT); clearTimeout(armT); armed = false; taps = 0; v.classList.remove('is-gold'); }
+    function openDoor(target) {
+      if (target < 0) save.secret = true; else { save.open = save.open || {}; save.open[target] = 1; if (target + 1 > save.unlocked) save.unlocked = target + 1; }
+      persist(); ac();
       v.classList.add('is-open');
       [523, 659, 784, 1046].forEach(function (f, i) { setTimeout(function () { blip(f, .3, .045); }, 250 + i * 120); });
       var r = v.getBoundingClientRect(), fl = document.createElement('div');
       fl.className = 'doorlight'; fl.style.setProperty('--x', (r.left + r.width / 2) + 'px'); fl.style.setProperty('--y', (r.top + r.height / 2) + 'px');
       document.body.appendChild(fl);
       setTimeout(function () { fl.classList.add('is-go'); }, 700);
-      setTimeout(function () { renderLevels(); fl.classList.add('is-out'); }, 1500);
+      setTimeout(function () { if (target < 0) renderLevels(); else { v.classList.remove('is-open'); start(target); } fl.classList.add('is-out'); }, 1500);
       setTimeout(function () { fl.remove(); }, 2300);
     }
   })();
 
   function start(i) {
-    if (i > 0 && !hasKey()) { openGate(i); return; }
+    if (i > 0 && !hasKey() && !(save.open && save.open[i])) { openGate(i); return; }
     lvl = i; var spec = LV.list[i], rnd = rng(1000 + i * 77);
     G = LV.make(i, rnd); total = 0; broken = 0;
     for (var k = 0; k < G.length; k++) if (G[k] && G[k] !== 9) total++;
@@ -359,7 +380,7 @@
     $('[data-win-earned]').textContent = '+' + earned;
     $('[data-next]').hidden = lvl + 1 >= LV.list.length;
     slow = .25; shake = 4; buzz(40); for (var e = 0; e < 40; e++) parts.push({ x: px, y: PY, vx: (Math.random() - .5) * 600, vy: -Math.random() * 700, t: 1.4, c: e % 3 ? '#fff' : '#ffd23f' });
-    setTimeout(function () { openOverlay('win'); }, 900);
+    setTimeout(function () { openOverlay('win'); if (window.BUInstall) BUInstall.moment(); }, 900);
   }
 
   function buzz(p) { try { if (navigator.vibrate && !save.muted) navigator.vibrate(p); } catch (e) {} }
