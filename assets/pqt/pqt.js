@@ -19,6 +19,7 @@ function pqtMain() {
     });
   }
   window.addEventListener('resize', function () { fitQ(); });
+  function tie(t) { t = String(t == null ? '' : t).replace(/\s+$/, ''); var i = t.lastIndexOf(' '); return i > 0 && t.length - i < 16 ? t.slice(0, i) + '\u00a0' + t.slice(i + 1) : t; }
   function pl(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
@@ -93,7 +94,7 @@ function pqtMain() {
     return o;
   }
   function qHtml(s, cls, ans) {
-    var o = qSplit(s), h = '<p class="' + cls + '">' + esc(o.stem) + '</p>', A = String(ans || '').trim();
+    var o = qSplit(s), h = '<p class="' + cls + '">' + esc(tie(o.stem)) + '</p>', A = String(ans || '').trim();
     var letter = (A.match(/^\[?([A-H])\]/) || [])[1], tf = /^true\b/i.test(A) ? 'True' : /^false\b/i.test(A) ? 'False' : '';
     function mark(on) { return A ? (on ? ' class="is-right"' : ' class="is-wrong"') : ''; }
     if (o.opts.length) h += '<ul class="q-opts' + (A ? ' is-marked' : '') + '">' + o.opts.map(function (x) { var right = letter ? x[0] === letter : A.toLowerCase() === x[1].toLowerCase(); return '<li' + mark(right) + '><b>' + x[0] + '</b><span>' + esc(x[1]) + '</span></li>'; }).join('') + '</ul>';
@@ -340,10 +341,10 @@ function pqtMain() {
         if (f.phase === 'answer') {
           var show = {}; if (f.hit) show[f.hit.i] = { a: f.hit.a, p: f.hit.p, hl: 1 };
           var msg = f.msg === 'taken' ? '<div class="sc-fm__msg is-warn">Already given by ' + esc(f.takenBy) + ' · no points</div>' : f.msg === 'miss' ? '<div class="sc-fm__msg is-miss">Not on the board</div>' : f.msg === 'pass' ? '<div class="sc-fm__msg is-miss">Pass</div>' : '';
-          return '<div class="sc-qa"><div class="sc-qa__top"><p class="sc-intro__r">Quests Feud · ' + esc(f.team) + ' · ' + (f.qi + 1) + ' of ' + f.n + '</p><span class="sc-qa__timer" data-ringnum></span></div><p class="sc-qa__q" style="margin-top:2vh">' + esc(f.q) + '</p>' + tiles(f.na, show) + msg + '</div>';
+          return '<div class="sc-qa"><div class="sc-qa__top"><p class="sc-intro__r">Quests Feud · ' + esc(f.team) + ' · ' + (f.qi + 1) + ' of ' + f.n + '</p><span class="sc-qa__timer" data-ringnum></span></div><p class="sc-qa__q" style="margin-top:2vh">' + esc(tie(f.q)) + '</p>' + tiles(f.na, show) + msg + '</div>';
         }
         if (f.phase === 'recap') return '<div class="sc-qa"><p class="sc-intro__r">' + esc(f.team) + '’s answers</p><div class="sc-fmr">' + f.items.map(function (it, i) { return '<div class="sc-fmr__r' + (it ? ' is-on' + (it.miss ? ' is-miss' : '') : '') + '"><span class="sc-fmr__q">' + esc(it ? it.q : f.qs[i]) + '</span><b>' + (it ? (it.taken ? esc(it.tbA) + '<small>' + esc(it.tbBy) + ' said it first · no points</small>' : it.out ? 'Out of time' : it.pass ? 'Passed' : it.miss ? 'Not on the board' : esc(it.a)) : '') + '</b><em>' + (it ? it.p : '') + '</em></div>'; }).join('') + '</div><p class="sc-fmr__tot">Total <b>' + f.total + '</b></p></div>';
-        if (f.phase === 'final') return '<div class="sc-qa"><p class="sc-intro__r">All the answers · ' + (f.rq + 1) + ' of ' + f.n + '</p><p class="sc-qa__q" style="margin-top:2vh">' + esc(f.q) + '</p>' + tiles(f.all.length, f.all, ' sc-fmb--all') + '</div>';
+        if (f.phase === 'final') return '<div class="sc-qa"><p class="sc-intro__r">All the answers · ' + (f.rq + 1) + ' of ' + f.n + '</p><p class="sc-qa__q" style="margin-top:2vh">' + esc(tie(f.q)) + '</p>' + tiles(f.all.length, f.all, ' sc-fmb--all') + '</div>';
         return '<div class="sc-qa"><p class="sc-intro__r">Quests Feud · round totals</p><div class="sc-fm sc-fm--tot" style="margin-top:5vh">' + (f.totals || []).map(function (r, i) { return '<div class="sc-fm__r' + (i === 0 ? ' is-top' : '') + '"><b>' + (i + 1) + '</b><span>' + esc(r.team) + '</span><em>' + r.p + '</em></div>'; }).join('') + '</div></div>';
       },
       star: function () {

@@ -1160,3 +1160,6 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 /* PQT mark on the screen: a little bigger */
 .sc-top{height:7.4vh}
 .sc-mark{height:6.8vh}
+/* questions: a little breathing room at the sides, and no lone last word */
+.sc-qa__q{padding:0 3vw;text-wrap:pretty}
+.sc-qa__qw{max-width:100%}
