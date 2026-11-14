@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '1'
+VER = '2'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -89,6 +89,8 @@ def notify(page, hint):
 def avatar(st, cls):
     if st.get('logo'):
         return '<span class="' + cls + ' mk-logo">' + BLACC + '</span>'
+    if not st.get('avatar'):
+        return '<span class="' + cls + ' mk-mono"><b>' + esc(st['name']) + '</b></span>'
     return '<span class="' + cls + '"><img src="' + esc(st['avatar']) + '" alt="" loading="lazy"></span>'
 
 # ---------- /market/ ----------
@@ -120,14 +122,15 @@ for c in CATS:
         links = ''.join('<a class="icon-btn" href="' + esc(u) + '" target="_blank" rel="noopener" aria-label="' + SOC[k][0] + '" title="' + SOC[k][0] + '">' + SOC[k][1] + '</a>' for k, u in s.get('links', {}).items() if k in SOC)
         cards = ''
         for it in items:
-            inner = ('<span class="shop-card__img"><img src="' + esc(it['img']) + '" alt="" loading="lazy"></span><span class="shop-card__name">' + esc(it['name']) + '</span>'
-                     '<span class="shop-card__meta">' + esc(it.get('meta', '')) + '</span><span class="shop-card__price">' + esc(it.get('price', '')) + '</span>')
+            pic = '<img src="' + esc(it['img']) + '" alt="" loading="lazy">' if it.get('img') else '<span class="mk-cover"><small>' + esc(s['name']) + '</small><b>' + esc(it['name']) + '</b><small>' + esc(it.get('kind', '')) + '</small></span>'
+            inner = ('<span class="shop-card__img">' + pic + '</span><span class="shop-card__name">' + esc(it['name']) + '</span>'
+                     '<span class="shop-card__meta">' + esc(it.get('meta', '')) + '</span><span class="shop-card__price">' + esc(it.get('price', '')) + (' ' + ARROW if it.get('ext') else '') + '</span>')
             if it.get('url'):
-                cards += '<a class="shop-card mk-item" href="' + esc(it['url']) + '">' + inner + '</a>'
+                cards += '<a class="shop-card mk-item" href="' + esc(it['url']) + '"' + (' target="_blank" rel="noopener"' if it.get('ext') else '') + '>' + inner + '</a>'
             else:
                 payload = json.dumps({'store': s['name'], 'name': it['name'], 'price': it.get('price', ''), 'meta': it.get('meta', ''), 'img': it['img'], 'desc': it.get('desc', '')}, ensure_ascii=False)
                 cards += '<button class="shop-card mk-item" type="button" data-mk-item="' + esc(payload) + '">' + inner + '</button>'
-        hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + '">\n    <div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""></div>\n'
+        hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + '">\n' + ('    <div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""></div>\n' if s.get('hero') else '    <div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>\n') +
                 '    <div class="wrap mk-hero__in">\n      <p class="eyebrow"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
                 '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n'
                 '      <p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>\n'

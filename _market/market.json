@@ -34,6 +34,39 @@
  "stores": [
   {
    "cat": "music",
+   "slug": "lyrxx",
+   "name": "LYRXX",
+   "tag": "Singer · Afropop",
+   "bio": "Afropop with roots in Apala, soul, R&B and hip-hop. Debuted in 2025 with “Balenciaga”. Debut EP Mystery Rider is out now.",
+   "items": [
+    {
+     "name": "Mystery Rider",
+     "kind": "EP",
+     "meta": "EP · OAU Fine Girl, Honeymoon in Paris, Safer",
+     "price": "Stream",
+     "ext": true,
+     "url": "https://music.apple.com/ng/search?term=LYRXX%20Mystery%20Rider"
+    },
+    {
+     "name": "Balenciaga",
+     "kind": "Single",
+     "meta": "Single · 2025 · debut",
+     "price": "Stream",
+     "ext": true,
+     "url": "https://music.apple.com/ng/search?term=LYRXX%20Balenciaga"
+    },
+    {
+     "name": "Wajo",
+     "kind": "Single",
+     "meta": "Single · 2025",
+     "price": "Stream",
+     "ext": true,
+     "url": "https://music.apple.com/ng/search?term=LYRXX%20Wajo"
+    }
+   ]
+  },
+  {
+   "cat": "music",
    "slug": "bemshima",
    "name": "Bemshima",
    "tag": "Producer · Ibadan",
