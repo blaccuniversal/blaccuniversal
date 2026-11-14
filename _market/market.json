@@ -149,6 +149,20 @@
       "youtube": "https://www.youtube.com/c/bemshima",
       "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
      }
+    },
+    {
+     "name": "Wave",
+     "kind": "Single",
+     "meta": "Bemshima · Single",
+     "price": "Stream · Buy",
+     "img": "/assets/img/market/bemshima-wave.webp",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/1eI1MeHIkwuWTUC9daVZFS",
+      "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
+      "audiomack": "https://audiomack.com/bemshima",
+      "youtube": "https://www.youtube.com/c/bemshima",
+      "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+     }
     }
    ],
    "heroPos": "50% 30%",
