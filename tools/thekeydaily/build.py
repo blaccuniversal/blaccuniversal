@@ -9,7 +9,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SITE = os.path.join(ROOT, 'thekeydaily')
 BASE = '/thekeydaily'
 ORIGIN = 'https://blaccuniversal.com'
-V = '4'  # asset version
+V = '6'  # asset version
 
 CATS = [
     ('entertainment', 'Entertainment', 'Music, film, TV and the culture around them.'),
@@ -148,10 +148,17 @@ def picks_block(compact=False):
 def top7_block():
     t = feat['top7']
     if t['entries']:
-        rows = ''.join('<li class="t7__r"><span class="t7__n">%02d</span><span class="t7__s"><b>%s</b><small>%s</small></span>%s</li>' % (
-            i + 1, e(x['title']), e(x['artist']), ('<span class="t7__m">%s</span>' % e(x['move'])) if x.get('move') else '') for i, x in enumerate(t['entries'][:7]))
-        head = '<p class="eyebrow eyebrow--gold">%s</p>' % e(t.get('edition') or 'This week')
-        return '<section class="t7" id="top7"><div class="wrap"><div class="t7__head">%s<h2 class="h2">The Top 7</h2></div><ol class="t7__list">%s</ol></div></section>' % (head, rows)
+        ent = t['entries'][:7]
+        rows = ''.join(('<li class="t7__r"><span class="t7__n">%02d</span><span class="t7__s"><b>%s</b><small>%s</small></span>'
+                        '%s</li>') % (i + 1, e(x['title']), e(x['artist']),
+                        ('<a class="t7__play" href="%s" target="_blank" rel="noopener" aria-label="Play %s on Spotify"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg></a>' % (e(x['spotify']), e(x['title']))) if x.get('spotify') else '')
+                       for i, x in enumerate(ent))
+        top = ent[0]
+        lead = ('<p class="lead">Seven songs, counted down every Friday. This week, <b>%s</b> by %s takes the top spot.</p>') % (e(top['title']), e(top['artist']))
+        when = ' · ' + fdate(datetime.date.fromisoformat(t['date'])) if t.get('date') else ''
+        return ('<section class="t7" id="top7"><div class="wrap t7__grid"><div class="t7__head"><p class="eyebrow eyebrow--gold">%s%s</p><h2 class="h2">The Top 7</h2>%s'
+                '<div class="lbtns"><a class="btn" href="%s" target="_blank" rel="noopener">Play No. 1 on Spotify</a><a class="btn btn--ghost" href="#picks">The Key Picks</a></div></div>'
+                '<ol class="t7__list">%s</ol></div></section>') % (e(t.get('edition') or 'This week'), when, lead, e(top.get('spotify', '#')), rows)
     nxt = datetime.date.fromisoformat(t['next'])
     ghosts = ''.join('<li class="t7__r t7__r--ghost"><span class="t7__n">%02d</span><span class="t7__bar"></span></li>' % i for i in range(7, 0, -1))
     return ('<section class="t7" id="top7"><div class="wrap t7__grid"><div class="t7__head"><p class="eyebrow eyebrow--gold">Weekly countdown · Fridays</p><h2 class="h2">The Top 7</h2>'
