@@ -35,7 +35,8 @@
   <section class="card hc-sec">
     <h2>On the screen now</h2>
     <div class="hc-views" style="grid-template-columns:repeat(3,1fr)"><button class="pbtn" data-view="lobby" type="button">Lobby</button><button class="pbtn" data-view="scores" type="button">Scores</button><button class="pbtn" data-view="ranking" type="button">Ranking</button></div>
-    <div class="hc-views" style="margin-top:6px;grid-template-columns:1fr"><button class="pbtn" data-view="game" data-view-game type="button">Game</button></div>
+    <div class="hc-views" data-game-row style="margin-top:6px;grid-template-columns:1fr"><button class="pbtn" data-view="game" data-view-game type="button">Game</button></div>
+    <div class="hc-views" data-race-views hidden style="margin-top:6px;grid-template-columns:repeat(4,1fr)"><button class="pbtn" data-race="scene-rules" type="button">Rules</button><button class="pbtn" data-race="scene-battle" type="button">Battle</button><button class="pbtn" data-race="scene-bracket" type="button">Bracket</button><button class="pbtn" data-race="scene-standings" type="button">Standings</button></div>
   </section>
 
 
@@ -144,7 +145,7 @@
 <script src="/assets/pqt/peerjs.min.js?v=261112171"></script>
 <script src="/assets/pqt/wordrace/wr-engine.js?v=10"></script>
 <script src="/assets/pqt/pqt-data.js?v=261112171"></script>
-<script src="/assets/pqt/pqt.js?v=2611140102"></script>
+<script src="/assets/pqt/pqt.js?v=2611140138"></script>
 <script src="/assets/pqt/pqt-offline.js?v=261112171"></script>
 </body>
 </html>
