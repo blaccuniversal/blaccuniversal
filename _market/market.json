@@ -202,29 +202,6 @@
     }
    ],
    "heroBlur": true
-  },
-  {
-   "cat": "art",
-   "slug": "bemshima",
-   "name": "Bemshima",
-   "tag": "Artist · Ibadan",
-   "avatar": "/assets/img/market/bemshima-av.webp",
-   "hero": "/assets/img/market/bemshima-hero.webp",
-   "bio": "Framed art by Bemshima. Limited editions, shipped from Ibadan.",
-   "links": {
-    "instagram": "https://www.instagram.com/iambemshima",
-    "x": "https://x.com/iambemshima"
-   },
-   "items": [
-    {
-     "name": "El Precio del Diablo",
-     "meta": "Bemshima · 2026 · Framed print",
-     "price": "From ₦200,000",
-     "img": "/assets/img/market/sq-el-precio-del-diablo.webp",
-     "url": "/shop/frames/el-precio-del-diablo/"
-    }
-   ],
-   "heroPos": "50% 30%"
   }
  ]
 }
