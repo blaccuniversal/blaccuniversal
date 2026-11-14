@@ -110,7 +110,11 @@
    "buy": {
     "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
    },
-   "store": "lyrxx"
+   "store": "lyrxx",
+   "show": {
+    "url": "https://tix.africa/discover/afrowakakulture2",
+    "label": "Show tickets on sale"
+   }
   },
   {
    "cat": "music",

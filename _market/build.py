@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '6'
+VER = '7'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -103,10 +103,13 @@ def avatar(st, cls):
 
 def listen(s, c):
     L = s.get('listen') or {}
-    if not L and not s.get('buy') and not s.get('store'): return ''
+    if not L and not s.get('buy') and not s.get('store') and not s.get('show'): return ''
     out = ''
     if L: out += '<div class="mk-ls"><span class="mk-ls__k">Stream</span><div class="mk-ls__b">' + ''.join('<a class="mk-dsp" href="' + esc(u) + '" target="_blank" rel="noopener">' + DSP[k][1] + '<span>' + DSP[k][0] + '</span></a>' for k, u in L.items() if k in DSP) + '</div></div>'
     if s.get('buy'): out += '<div class="mk-ls"><span class="mk-ls__k">Buy</span><div class="mk-ls__b">' + ''.join('<a class="mk-dsp" href="' + esc(u) + '" target="_blank" rel="noopener">' + DSP[k][1] + '<span>' + DSP[k][0] + '</span></a>' for k, u in s['buy'].items() if k in DSP) + '</div></div>'
+    if s.get('show'):
+        sh = s['show']
+        out += '<div class="mk-ls"><span class="mk-ls__k">Live</span><div class="mk-ls__b"><a class="mk-dsp mk-dsp--w mk-dsp--live" href="' + esc(sh['url']) + '" target="_blank" rel="noopener">' + ICON['events'] + '<span>' + esc(sh.get('label', 'Get tickets')) + '</span></a></div></div>'
     if s.get('store'):
         ms = [x for x in STORES if x['cat'] == 'merch' and x['slug'] == s['store']]
         out += '<div class="mk-ls"><span class="mk-ls__k">Store</span><div class="mk-ls__b">' + ('<a class="mk-dsp mk-dsp--w" href="/market/merch/' + ms[0]['slug'] + '/">' + ICON['merch'] + '<span>Shop merch</span></a>' if ms else '<span class="mk-dsp is-off">' + ICON['merch'] + '<span>Merch soon</span></span>') + '</div></div>'
