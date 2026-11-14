@@ -37,8 +37,22 @@
    "slug": "lyrxx",
    "name": "LYRXX",
    "tag": "Singer · Afropop",
-   "bio": "Afropop with roots in Apala, soul, R&B and hip-hop. Debuted in 2025 with “Balenciaga”. Debut EP Mystery Rider is out now.",
+   "bio": "Afropop with roots in Apala, Fuji, soul, R&B and hip-hop. New single Fuji Convoy is out now, following the debut EP Mystery Rider.",
    "items": [
+    {
+     "name": "Fuji Convoy",
+     "kind": "Single",
+     "meta": "Single · New",
+     "price": "Stream or buy",
+     "img": "/assets/img/market/lyrxx-fuji-convoy.webp",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+      "apple": "https://music.apple.com/ng/album/fuji-convoy-single/6805243265",
+      "audiomack": "https://audiomack.com/lyrxx-official/song/fuji-convoy-1625741",
+      "youtube": "https://www.youtube.com/watch?v=VgAIRGGfB4c",
+      "itunes": "https://music.apple.com/ng/album/fuji-convoy-single/6805243265"
+     }
+    },
     {
      "name": "Mystery Rider",
      "kind": "EP",
