@@ -163,6 +163,34 @@
       "youtube": "https://www.youtube.com/c/bemshima",
       "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
      }
+    },
+    {
+     "name": "Maserati Music",
+     "kind": "Single",
+     "meta": "Bemshima · Lauda",
+     "price": "Stream · Buy",
+     "img": "/assets/img/market/bemshima-maserati-music.webp",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/1eI1MeHIkwuWTUC9daVZFS",
+      "apple": "https://music.apple.com/ng/album/maserati-music-single/1637185796",
+      "audiomack": "https://audiomack.com/bemshima",
+      "youtube": "https://www.youtube.com/c/bemshima",
+      "itunes": "https://music.apple.com/ng/album/maserati-music-single/1637185796"
+     }
+    },
+    {
+     "name": "Initiate",
+     "kind": "Single",
+     "meta": "Bemshima · Mic Priest",
+     "price": "Stream · Buy",
+     "img": "/assets/img/market/bemshima-initiate.webp",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/1eI1MeHIkwuWTUC9daVZFS",
+      "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
+      "audiomack": "https://audiomack.com/bemshima",
+      "youtube": "https://www.youtube.com/c/bemshima",
+      "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+     }
     }
    ],
    "heroPos": "50% 30%",
