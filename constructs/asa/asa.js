@@ -70,3 +70,30 @@
     window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
   });
 })();
+
+/* premium pass: sticky reserve bar, menu accordions */
+(function () {
+  'use strict';
+  var bar = document.querySelector('[data-mbar]'), hero = document.querySelector('.hero'), res = document.getElementById('reserve'), ft = document.querySelector('.ft');
+  if (bar && 'IntersectionObserver' in window) {
+    var inHero = true, inRes = false, inFt = false;
+    function upd() { var on = !inHero && !inRes && !inFt; bar.classList.toggle('is-on', on); bar.setAttribute('aria-hidden', !on); [].forEach.call(bar.querySelectorAll('a'), function (a) { a.tabIndex = on ? 0 : -1; }); }
+    new IntersectionObserver(function (es) { inHero = es[0].isIntersecting; upd(); }, { threshold: .15 }).observe(hero);
+    new IntersectionObserver(function (es) { inRes = es[0].isIntersecting; upd(); }, { threshold: 0 }).observe(res);
+    new IntersectionObserver(function (es) { inFt = es[0].isIntersecting; upd(); }, { threshold: 0 }).observe(ft);
+  }
+  var mq = window.matchMedia('(max-width:699px)');
+  function setup() {
+    document.querySelectorAll('[data-panel]').forEach(function (p) {
+      var g = p.querySelectorAll('.mgrp');
+      g.forEach(function (x, i) { x.classList.toggle('is-open', !mq.matches || i === 0); var b = x.querySelector('[data-acc]'); if (b) b.setAttribute('aria-expanded', x.classList.contains('is-open')); });
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-acc]'); if (!b || !mq.matches) return;
+    var g = b.closest('.mgrp'), open = !g.classList.contains('is-open');
+    g.classList.toggle('is-open', open); b.setAttribute('aria-expanded', open);
+  });
+  if (mq.addEventListener) mq.addEventListener('change', setup);
+  setup();
+})();

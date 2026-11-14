@@ -71,22 +71,22 @@ CH_RICE = ('Rice', [('Steamed Rice',8.5),('Veg Fried Rice',8.5),('Egg Fried Rice
 
 def full(title, items, note=None):
     li = ''.join('<li><b>%s</b><i></i><span>%s</span><small>%s</small></li>' % (e(n), N(p), e(d)) for n, p, d in items)
-    return '<div class="mgrp"><h3 class="mgrp__t">%s</h3>%s<ul class="dishes">%s</ul></div>' % (e(title), ('<p class="mgrp__n">%s</p>' % e(note)) if note else '', li)
+    return '<div class="mgrp"><h3 class="mgrp__t"><button type="button" data-acc>%s<em>%d</em></button></h3><div class="mgrp__b"><div class="mgrp__i">%s<ul class="dishes">%s</ul></div></div></div>' % (e(title), len(items), ('<p class="mgrp__n">%s</p>' % e(note)) if note else '', li)
 def compact(title, items):
     li = ''.join('<li><b>%s</b><i></i><span>%s</span></li>' % (e(n), N(p)) for n, p in items)
-    return '<div class="mgrp mgrp--c"><h3 class="mgrp__t">%s</h3><ul class="plain">%s</ul></div>' % (e(title), li)
+    return '<div class="mgrp mgrp--c"><h3 class="mgrp__t"><button type="button" data-acc>%s<em>%d</em></button></h3><div class="mgrp__b"><div class="mgrp__i"><ul class="plain">%s</ul></div></div></div>' % (e(title), len(items), li)
 def groups(title, gs, note):
     out = ''
     for g, vs in gs:
         out += '<div class="var"><b>%s</b><ul>%s</ul></div>' % (e(g), ''.join('<li><span>%s</span><em>%s</em></li>' % (e(v), N(p)) for v, p in vs))
-    return '<div class="mgrp"><h3 class="mgrp__t">%s</h3>%s<div class="vars">%s</div></div>' % (e(title), ('<p class="mgrp__n">%s</p>' % e(note)) if note else '', out)
+    return '<div class="mgrp"><h3 class="mgrp__t"><button type="button" data-acc>%s<em>%d</em></button></h3><div class="mgrp__b"><div class="mgrp__i">%s<div class="vars">%s</div></div></div></div>' % (e(title), len(gs), ('<p class="mgrp__n">%s</p>' % e(note)) if note else '', out)
 
 nig = ''.join(full(*s) for s in NIGERIAN) + '<div class="mrow">' + ''.join(compact(*s) for s in NIG_SMALL) + '</div>'
 W = lambda x: x.replace('mgrp mgrp--c','mgrp mgrp--c mgrp--wide')
 chi = ('<figure class="mban"><img src="/constructs/asa/img/kungpao-held-s.webp" srcset="/constructs/asa/img/kungpao-held-s.webp 720w, /constructs/asa/img/kungpao-held.webp 1200w" sizes="(min-width:900px) 1100px, 92vw" alt="Wok-tossed chicken with peppers, peanuts and carrot on a wooden board" loading="lazy" width="720" height="900"><figcaption>From the wok</figcaption></figure>') + W(compact(*CHINESE[0])) + W(compact(*CHINESE[1])) + ''.join(groups(*g) for g in CH_GROUPS) + W(compact(*CH_RICE))
-more = ('<div class="mgrp"><h3 class="mgrp__t">Coming soon</h3><ul class="dishes">'
+more = ('<div class="mgrp"><h3 class="mgrp__t"><button type="button" data-acc>Coming soon<em>2</em></button></h3><div class="mgrp__b"><div class="mgrp__i"><ul class="dishes">'
         '<li><b>Signature Cocktails</b><i></i><span>Soon</span><small>House creations, wines, champagne and spirits</small></li>'
-        '<li><b>Grill, Continental &amp; Pizza</b><i></i><span>Soon</span><small>The rest of the kitchen, coming to this page</small></li></ul></div>')
+        '<li><b>Grill, Continental &amp; Pizza</b><i></i><span>Soon</span><small>The rest of the kitchen, coming to this page</small></li></ul></div></div></div>')
 
 tabs = ('<div class="tabs reveal" role="tablist" aria-label="Menu sections" data-tabs>'
         '<button role="tab" aria-selected="true" data-tab="naija">Nigerian</button>'
