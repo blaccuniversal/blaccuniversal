@@ -136,6 +136,20 @@
    },
    "items": [
     {
+     "name": "Opus",
+     "kind": "",
+     "meta": "Bemshima · New release",
+     "price": "Stream or buy",
+     "img": "/assets/img/market/bemshima-opus.webp",
+     "links": {
+      "spotify": "https://open.spotify.com/search/Bemshima%20Opus",
+      "apple": "https://music.apple.com/ng/search?term=Bemshima%20Opus",
+      "audiomack": "https://audiomack.com/search?q=Bemshima%20Opus",
+      "youtube": "https://www.youtube.com/c/bemshima",
+      "itunes": "https://music.apple.com/ng/search?term=Bemshima%20Opus"
+     }
+    },
+    {
      "name": "Celestial Rendition",
      "meta": "Free beat tape · 8 instrumentals",
      "price": "Free",
