@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '16'
+VER = '17'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -152,7 +152,8 @@ for c in CATS:
         links = ''.join('<a class="icon-btn" href="' + esc(u) + '" target="_blank" rel="noopener" aria-label="' + SOC[k][0] + '" title="' + SOC[k][0] + '">' + SOC[k][1] + '</a>' for k, u in s.get('links', {}).items() if k in SOC)
         cards = ''
         for it in items:
-            pic = '<img src="' + esc(it['img']) + '" alt="" loading="lazy">' if it.get('img') else '<span class="mk-cover"><small>' + esc(s['name']) + '</small><b>' + esc(it['name']) + '</b><small>' + esc(it.get('kind', '')) + '</small></span>'
+            badge = '<span class="mk-play" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg></span>' if it.get('links') else ''
+            pic = badge + '<img src="' + esc(it['img']) + '" alt="" loading="lazy">' if it.get('img') else '<span class="mk-cover"><small>' + esc(s['name']) + '</small><b>' + esc(it['name']) + '</b><small>' + esc(it.get('kind', '')) + '</small></span>'
             inner = ('<span class="shop-card__img">' + pic + '</span><span class="shop-card__name">' + esc(it['name']) + '</span>'
                      '<span class="shop-card__meta">' + esc(it.get('meta', '')) + '</span><span class="shop-card__price">' + esc(it.get('price', '')) + (' ' + ARROW if it.get('ext') else '') + '</span>')
             if it.get('links'):
@@ -167,7 +168,7 @@ for c in CATS:
         hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + (' mk-hero--dim' if s.get('heroDim') else '') + '">\n    ' + bg + '\n'
                 '    <div class="wrap mk-hero__in">\n      <p class="eyebrow mk-crumbs"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
                 '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div class="mk-hero__txt"><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n    </div>\n  </section>\n'
-                '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l">' + ('<button class="mk-biobtn" type="button" data-mk-bio><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg><span>Read bio</span></button><template data-mk-biotext><p class="eyebrow">' + esc(s.get('tag', '')) + '</p><h3>' + esc(s['name']) + '</h3><div class="mk-bio">' + ''.join('<p class="mk-hero__bio">' + esc(p.strip()) + '</p>' for p in s['bio'].split('\n\n') if p.strip()) + '</div></template>' if s.get('bio') else '') + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div>\n'
+                '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l">' + ('<p class="mk-teaser">' + esc(s['bio'].split('\n\n')[0].strip()) + '</p>' if s.get('bio') else '') + '<div class="mk-idrow">' + ('<button class="mk-biobtn" type="button" data-mk-bio><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg><span>Read bio</span></button><template data-mk-biotext><p class="eyebrow">' + esc(s.get('tag', '')) + '</p><h3>' + esc(s['name']) + '</h3><div class="mk-bio">' + ''.join('<p class="mk-hero__bio">' + esc(p.strip()) + '</p>' for p in s['bio'].split('\n\n') if p.strip()) + '</div></template>' if s.get('bio') else '') + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div></div>\n'
                 '      <div class="mk-info__r">' + listen(s, c) + '</div>\n    </div>\n  </section>\n')
         if not items:
             body = hero + '  <main class="shop gutter mk mk--store" id="top">\n    <div class="wrap">\n      <div class="mk-empty"><span class="mk-empty__icon">' + ICON['music'] + '</span><p>New music is on the way.</p></div>\n    </div>\n  </main>\n'

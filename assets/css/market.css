@@ -203,3 +203,73 @@ a.mk-dsp:hover{background:#fff;border-color:#fff;color:#000}
 @media (max-width:600px){.mk-hero__id{--nf:clamp(39px,11.9vw,53px);--g:13px;--ts:11px}}
 .mk-hero__name{padding-top:0 !important}
 .mk-hero__av{width:calc(var(--nf) * .82 + var(--g) + var(--ts) + 1px) !important;height:calc(var(--nf) * .82 + var(--g) + var(--ts) + 1px) !important}
+
+/* ===================== premium pass ===================== */
+/* home doors: tidy rows on phone */
+@media (max-width:600px){
+  .mk-doors{max-width:none;gap:10px}
+  .mk-door{display:grid !important;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:18px !important;padding:20px 22px !important}
+  .mk-door .shop-door__label{text-align:left}
+  .mk-door__n{margin:0 !important;justify-self:end}
+}
+.mk-door{position:relative}
+.mk-door:hover .mk-door__n{color:#fff}
+
+/* category: store cards */
+.mk-store .shop-card__name{font-size:18px;font-weight:500;letter-spacing:-.01em;margin-top:4px}
+.mk-store .shop-card__price{display:inline-flex;align-items:center;gap:6px;color:#9a9a9a;font-size:13px}
+.mk-store .shop-card__price::after{content:"→";transition:transform .3s}
+.mk-store:hover .shop-card__price{color:#fff}
+.mk-store:hover .shop-card__price::after{transform:translateX(4px)}
+.mk-store .mk-store__img img{filter:grayscale(1) contrast(1.04)}
+.mk-store:hover .mk-store__img img{filter:grayscale(0)}
+
+/* empty category: one divider only */
+.mk-empty+.shop__more{border-top:0;margin-top:0;padding-top:0}
+.mk-empty{border-top:1px solid #1a1a1a;border-bottom:0;margin-bottom:clamp(8px,2vw,16px)}
+
+/* notify: one tidy row */
+.mk .notify form{flex-wrap:nowrap;width:min(100%,420px)}
+.mk .notify input[type=email]{flex:1;width:auto;min-width:0}
+.mk .notify .btn{flex:none}
+
+/* store: identity block */
+.mk-info{padding-top:clamp(18px,2.6vw,30px);padding-bottom:clamp(30px,4vw,56px)}
+.mk-info__l{gap:20px}
+.mk-teaser{margin:0;max-width:34em;font-size:clamp(15px,1.3vw,17px);line-height:1.7;color:#c9c9c9;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.mk-idrow{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px}
+.mk-idrow .mk-hero__soc{margin-left:0;gap:2px}
+.mk-idrow .mk-hero__soc .icon-btn{width:42px;height:42px}
+.mk-biobtn{height:44px}
+.mk-act{gap:10px}
+.mk-act__k{margin-top:14px}
+.mk-live{margin-bottom:4px}
+.mk-live__go{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#000;color:#fff;transition:transform .3s}
+.mk-live:hover .mk-live__go{transform:translateX(3px)}
+.mk-dsp{transition:background .2s,color .2s,border-color .2s,transform .2s}
+a.mk-dsp:active,.mk-live:active,.mk-biobtn:active{transform:scale(.98)}
+
+/* releases: play badge + calmer type */
+.mk-item .shop-card__img{position:relative}
+.mk-play{position:absolute;z-index:2;left:12px;bottom:12px;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,.25);transition:background .25s,color .25s,transform .35s cubic-bezier(.2,.7,.2,1)}
+.mk-play svg{margin-left:2px}
+.mk-item:hover .mk-play{background:#fff;color:#000;transform:scale(1.08)}
+.mk-item .shop-card__name{font-size:17px;font-weight:500;margin-top:4px}
+.mk-item .shop-card__meta{color:#808080}
+.mk-item .shop-card__price{color:#bdbdbd;font-size:13px;letter-spacing:.02em}
+
+/* section rhythm */
+.mk--store .shop-bar{margin-bottom:clamp(16px,2vw,24px)}
+@media (max-width:600px){
+  .mk-info__in{gap:30px}
+  .mk-dsps{gap:8px}
+  .mk-dsp{height:48px}
+  .mk-play{width:36px;height:36px;left:10px;bottom:10px}
+}
+@media (max-width:600px){
+  .mk-door{grid-template-columns:40px minmax(0,1fr) auto !important;padding:18px 20px !important;gap:16px !important}
+  .mk-door .shop-door__icon{width:40px;height:40px;display:grid;place-items:center;margin:0}
+  .mk-door .shop-door__icon svg{width:26px;height:26px}
+  .mk-door .shop-door__label{font-size:12px}
+}
+@media (max-width:600px){.mk-doors{max-width:420px !important;width:100%}}
