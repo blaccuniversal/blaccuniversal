@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '7'
+VER = '9'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -104,16 +104,21 @@ def avatar(st, cls):
 def listen(s, c):
     L = s.get('listen') or {}
     if not L and not s.get('buy') and not s.get('store') and not s.get('show'): return ''
-    out = ''
-    if L: out += '<div class="mk-ls"><span class="mk-ls__k">Stream</span><div class="mk-ls__b">' + ''.join('<a class="mk-dsp" href="' + esc(u) + '" target="_blank" rel="noopener">' + DSP[k][1] + '<span>' + DSP[k][0] + '</span></a>' for k, u in L.items() if k in DSP) + '</div></div>'
-    if s.get('buy'): out += '<div class="mk-ls"><span class="mk-ls__k">Buy</span><div class="mk-ls__b">' + ''.join('<a class="mk-dsp" href="' + esc(u) + '" target="_blank" rel="noopener">' + DSP[k][1] + '<span>' + DSP[k][0] + '</span></a>' for k, u in s['buy'].items() if k in DSP) + '</div></div>'
+    def btn(k, u, cls=''):
+        return '<a class="mk-dsp' + cls + '" href="' + esc(u) + '" target="_blank" rel="noopener">' + DSP[k][1] + '<span>' + DSP[k][0] + '</span></a>'
+    out = '<div class="mk-act">'
     if s.get('show'):
         sh = s['show']
-        out += '<div class="mk-ls"><span class="mk-ls__k">Live</span><div class="mk-ls__b"><a class="mk-dsp mk-dsp--w mk-dsp--live" href="' + esc(sh['url']) + '" target="_blank" rel="noopener">' + ICON['events'] + '<span>' + esc(sh.get('label', 'Get tickets')) + '</span></a></div></div>'
+        out += '<a class="mk-live" href="' + esc(sh['url']) + '" target="_blank" rel="noopener"><span class="mk-live__dot"></span><span class="mk-live__ic">' + ICON['events'] + '</span><span class="mk-live__t"><small>Live show</small><b>' + esc(sh.get('label', 'Get tickets')) + '</b></span><span class="mk-live__go">' + ARROW + '</span></a>'
+    if L:
+        out += '<p class="mk-act__k">Listen</p><div class="mk-dsps">' + ''.join(btn(k, u) for k, u in L.items() if k in DSP) + '</div>'
+    more = ''
+    if s.get('buy'): more += ''.join(btn(k, u) for k, u in s['buy'].items() if k in DSP)
     if s.get('store'):
         ms = [x for x in STORES if x['cat'] == 'merch' and x['slug'] == s['store']]
-        out += '<div class="mk-ls"><span class="mk-ls__k">Store</span><div class="mk-ls__b">' + ('<a class="mk-dsp mk-dsp--w" href="/market/merch/' + ms[0]['slug'] + '/">' + ICON['merch'] + '<span>Shop merch</span></a>' if ms else '<span class="mk-dsp is-off">' + ICON['merch'] + '<span>Merch soon</span></span>') + '</div></div>'
-    return '      <div class="mk-listen">' + out + '</div>\n'
+        more += ('<a class="mk-dsp" href="/market/merch/' + ms[0]['slug'] + '/">' + ICON['merch'] + '<span>Merch</span></a>') if ms else ('<span class="mk-dsp is-off">' + ICON['merch'] + '<span>Merch soon</span></span>')
+    if more: out += '<p class="mk-act__k">Buy</p><div class="mk-dsps">' + more + '</div>'
+    return out + '</div>'
 
 # ---------- /market/ ----------
 for old in ('market',):
@@ -155,12 +160,12 @@ for c in CATS:
             else:
                 payload = json.dumps({'store': s['name'], 'name': it['name'], 'price': it.get('price', ''), 'meta': it.get('meta', ''), 'img': it['img'], 'desc': it.get('desc', '')}, ensure_ascii=False)
                 cards += '<button class="shop-card mk-item" type="button" data-mk-item="' + esc(payload) + '">' + inner + '</button>'
-        hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + (' mk-hero--dim' if s.get('heroDim') else '') + '">\n' + ('    <div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""' + (' style="object-position:' + esc(s['heroPos']) + '"' if s.get('heroPos') else '') + '></div>\n' if s.get('hero') else '    <div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>\n') +
-                '    <div class="wrap mk-hero__in">\n      <p class="eyebrow"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
-                '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n'
-                '      <p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>\n' +
-                listen(s, c) +
-                '      <div class="mk-hero__row">' + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '<span class="mk-hero__n">' + plural(len(items), 'item') + '</span></div>\n    </div>\n  </section>\n')
+        bg = ('<div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""' + (' style="object-position:' + esc(s['heroPos']) + '"' if s.get('heroPos') else '') + '></div>' if s.get('hero') else '<div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>')
+        hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + (' mk-hero--dim' if s.get('heroDim') else '') + '">\n    ' + bg + '\n'
+                '    <div class="wrap mk-hero__in">\n      <p class="eyebrow mk-crumbs"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
+                '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p><h1 class="mk-hero__name">' + esc(s['name']) + '</h1></div></div>\n    </div>\n  </section>\n'
+                '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l"><p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>' + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div>\n'
+                '      <div class="mk-info__r">' + listen(s, c) + '</div>\n    </div>\n  </section>\n')
         body = hero + '  <main class="shop gutter mk mk--store" id="top">\n    <div class="wrap">\n' + bar(len(items), 'item') + '      <div class="shop-cards" data-cards data-view-mode="grid">\n          ' + cards + '\n      </div>\n    </div>\n  </main>\n'
         write('/market/' + c['slug'] + '/' + s['slug'] + '/', shell(s['name'] + ' · ' + c['name'] + ' · Market — BLACC Universal', s.get('bio', ''), '/market/' + c['slug'] + '/' + s['slug'] + '/', body))
 
