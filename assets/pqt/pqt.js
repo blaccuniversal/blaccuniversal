@@ -652,13 +652,14 @@ function pqtMain() {
     var r = H.race; if (!r) return '<p class="hc-note hc-lead">Word Race did not start. Restart the round.</p>';
     var nx = nextPlanned(), out = '<div class="hc-flowbox">' + (H.view === 'race'
       ? '<button class="pbtn pbtn--lg pbtn--block" data-race="intro" type="button">Back to the rules on screen</button>'
-      : '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-race="show" type="button">Show Word Race on the screen</button>') + '</div>';
+      : '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-race="show" type="button">Show Word Race on the screen</button>') + '</div>' +
+      (H.view === 'race' ? '<p class="hc-sub" style="margin-top:14px">On the screen</p><div class="hc-views" style="grid-template-columns:repeat(3,1fr)">' + [['battle', 'Battle'], ['bracket', 'Bracket'], ['standings', 'Standings']].map(function (o) { return '<button class="pbtn' + ((r.scene || 'battle') === o[0] ? ' is-on' : '') + '" data-race="scene-' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div>' : '');
     if (r.result) {
       out += '<div class="hc-turn is-done"><span>Champion</span><b>' + esc(r.result.champion) + '</b></div><p class="hc-sub" style="margin-top:14px">Game points · 3 per matchup won</p><div class="hc-racepts">' +
         r.result.teams.map(function (t) { var w = t.mWon || 0; return '<div><span>' + esc(t.name) + ' <i>' + pl(w, 'matchup') + ' won</i></span><b>' + racePts(t) + '</b></div>'; }).join('') + '</div>' +
         (r.added ? '<p class="hc-note">Added to the game scores.</p>' : '<button class="pbtn pbtn--white pbtn--lg pbtn--block" data-race="add" type="button">Add these to the game scores</button>') +
         '<button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + (nx ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>';
-    } else out += '<p class="hc-note">Teams come from this game. Run the tournament below; the screen follows along once Word Race is showing.</p>';
+    } else out += '<p class="hc-note">Teams come from this game. Run the tournament below.</p>';
     return out;
   }
   function paintRace() {
@@ -671,6 +672,7 @@ function pqtMain() {
   }
   function raceAct(a) {
     var r = H.race; if (!r) return; snap();
+    if (a.indexOf('scene-') === 0) { r.scene = a.slice(6); var fr = document.querySelector('.hc-raceframe'); if (fr && fr.contentWindow) fr.contentWindow.postMessage({ wrHost: 1, t: 'scene', v: r.scene }, location.origin); save(); renderAll(); return; }
     if (a === 'show') { H.view = 'race'; }
     else if (a === 'intro') { H.view = 'intro'; }
     else if (a === 'add' && r.result && !r.added) { r.result.teams.forEach(function (t) { var i = -1; H.teams.forEach(function (x, k) { if (x.name === t.name) i = k; }); var p = racePts(t); if (i > -1 && p > 0) pts(i, p); }); r.added = true; fx('win'); toast('Word Race points added'); }

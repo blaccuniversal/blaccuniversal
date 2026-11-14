@@ -193,7 +193,7 @@
     var inp = app.querySelector('[data-tname]'); if (inp && document.activeElement === document.body) inp.focus();
   }
   function screenCard() {
-    if (EMBED) return '<section class="card hc-sec"><h2>On the PQT screen</h2><div class="wr-seg wr-seg--3" data-scene>' + [['battle', 'Battle'], ['bracket', 'Bracket'], ['standings', 'Standings']].map(function (o) { return '<button class="pbtn' + (scene === o[0] ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div><p class="hc-note">The PQT screen shows this once you tap “Show Word Race on the screen” above.</p></section>';
+    if (EMBED) return ''; // inside PQT, the screen is controlled from PQT's own buttons
     return '<section class="card hc-sec"><h2>Big screen<span class="wr-code">' + esc(T.room || '') + '</span></h2>' +
       '<div class="wr-seg wr-seg--3" data-scene>' + [['battle', 'Battle'], ['bracket', 'Bracket'], ['standings', 'Standings']].map(function (o) { return '<button class="pbtn' + (scene === o[0] ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div>' +
       '<p class="hc-note">On the TV open <b>blaccuniversal.com/pqt/wordrace/screen</b> and type <b>' + esc(T.room) + '</b>. ' + (T.config.answerMode === 'phones' ? 'Teams join at <b>blaccuniversal.com/pqt/wordrace/join</b>.' : '') + '</p>' +
@@ -398,6 +398,7 @@
   render();
   if (window.WRDict) WRDict.load().then(function (d) { dict = d; render(); }).catch(function () { dictErr = true; render(); toast('The dictionary did not load. You can still judge words yourself.', true); });
   window.addEventListener('beforeunload', save);
+  if (EMBED) window.addEventListener('message', function (e) { if (e.origin !== location.origin || !e.data || e.data.wrHost !== 1) return; if (e.data.t === 'scene' && /^(battle|bracket|standings)$/.test(e.data.v)) { scene = e.data.v; broadcast(); } });
   var hcEl = document.querySelector('.wr-hc');
   if (EMBED && window.ResizeObserver && hcEl) new ResizeObserver(function () { toParent({ t: 'h', h: Math.ceil(hcEl.getBoundingClientRect().height) + 4 }); }).observe(hcEl);
 })();
