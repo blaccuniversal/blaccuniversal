@@ -9,20 +9,20 @@
   // Sample showtimes, the same every day, until the cinema sends its real schedule.
   var WEEK = null;
   var FILMS = [
-    { t: 'Agbara Nla: The Return', g: 'Horror', d: '2h 37m', times: ['15:30', '20:30'], c: ['#2a1a03', '#f2c14e'] },
-    { t: 'King Kosoko', g: 'Drama', d: '1h 50m', times: ['13:00', '18:00'], c: ['#1d0b2e', '#b38cff'] },
+    { t: 'Agbara Nla: The Return', g: 'Horror', d: '2h 37m', times: ['15:30', '20:30'], img: 'agbara-nla', c: ['#2a1a03', '#f2c14e'] },
+    { t: 'King Kosoko', g: 'Drama', d: '1h 50m', times: ['13:00', '18:00'], img: 'king-kosoko', c: ['#1d0b2e', '#b38cff'] },
+    { t: 'One Gidi Night', g: 'Action', times: ['18:00'], img: 'one-gidi-night', c: ['#2b0716', '#f06a8c'] },
+    { t: 'Alahun', g: 'Drama', d: '1h 38m', times: ['10:30'], img: 'alahun', c: ['#06202a', '#5fd1d1'] },
+    { t: 'David', g: 'Animation', times: ['10:30'], img: 'david', c: ['#1e1a05', '#ffd25e'] },
     { t: 'Invitation To Kill', g: 'Action', d: '1h 40m', times: ['13:00', '20:30'], c: ['#300808', '#ff5a5a'] },
-    { t: 'Alahun', g: 'Drama', d: '1h 38m', times: ['10:30'], c: ['#06202a', '#5fd1d1'] },
-    { t: 'Nne Mgbafor', g: 'Action · Thriller', times: ['15:30'], c: ['#0b1a33', '#7fb2ff'] },
-    { t: 'One Gidi Night', g: 'Action', times: ['18:00'], c: ['#2b0716', '#f06a8c'] },
-    { t: 'David', g: 'Animation', times: ['10:30'], c: ['#1e1a05', '#ffd25e'] }
+    { t: 'Nne Mgbafor', g: 'Action · Thriller', times: ['15:30'], c: ['#0b1a33', '#7fb2ff'] }
   ];
   var SOON = [];
   function meta(f) { return f.g + (f.d ? ' · ' + f.d : ''); }
 
   function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
   function poster(f, small) {
-    if (f.img) return '<span class="poster"><img src="/constructs/cinema/img/posters/' + f.img + (small ? '-s' : '') + '.webp" alt="' + esc(f.t) + ' poster" width="' + (small ? 300 : 600) + '" height="' + (small ? 450 : 900) + '" loading="lazy" decoding="async"></span>';
+    if (f.img) return '<span class="poster"><img src="/constructs/mcrystal/img/posters/' + f.img + (small ? '-s' : '') + '.webp" alt="' + esc(f.t) + ' poster" width="' + (small ? 300 : 600) + '" height="' + (small ? 450 : 900) + '" loading="lazy" decoding="async"></span>';
     var id = 'p' + hash(f.t + (small ? 's' : '')).toString(36);
     var words = f.t.toUpperCase().split(' ');
     var lines = [], cur = '';
