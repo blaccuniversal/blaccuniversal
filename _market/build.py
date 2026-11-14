@@ -130,7 +130,7 @@ for c in CATS:
             else:
                 payload = json.dumps({'store': s['name'], 'name': it['name'], 'price': it.get('price', ''), 'meta': it.get('meta', ''), 'img': it['img'], 'desc': it.get('desc', '')}, ensure_ascii=False)
                 cards += '<button class="shop-card mk-item" type="button" data-mk-item="' + esc(payload) + '">' + inner + '</button>'
-        hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + '">\n' + ('    <div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""></div>\n' if s.get('hero') else '    <div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>\n') +
+        hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + '">\n' + ('    <div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""' + (' style="object-position:' + esc(s['heroPos']) + '"' if s.get('heroPos') else '') + '></div>\n' if s.get('hero') else '    <div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>\n') +
                 '    <div class="wrap mk-hero__in">\n      <p class="eyebrow"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
                 '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n'
                 '      <p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>\n'

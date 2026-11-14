@@ -70,8 +70,8 @@
    "slug": "bemshima",
    "name": "Bemshima",
    "tag": "Producer · Ibadan",
-   "avatar": "/assets/img/avatar.jpg",
-   "hero": "/assets/img/eyes.jpg",
+   "avatar": "/assets/img/market/bemshima-av.webp",
+   "hero": "/assets/img/market/bemshima-hero.webp",
    "bio": "Producer and multidisciplinary creative. Free beat tapes and instrumentals to lease.",
    "links": {
     "instagram": "https://www.instagram.com/iambemshima",
@@ -107,7 +107,8 @@
      "img": "/assets/img/shop/take-em-to-war.webp",
      "url": "/shop/instrumentals/take-em-to-war/"
     }
-   ]
+   ],
+   "heroPos": "50% 30%"
   },
   {
    "cat": "merch",
@@ -137,8 +138,8 @@
    "slug": "bemshima",
    "name": "Bemshima",
    "tag": "Artist · Ibadan",
-   "avatar": "/assets/img/avatar.jpg",
-   "hero": "/assets/img/shop/og-el-precio-del-diablo.jpg",
+   "avatar": "/assets/img/market/bemshima-av.webp",
+   "hero": "/assets/img/market/bemshima-hero.webp",
    "bio": "Framed art by Bemshima. Limited editions, shipped from Ibadan.",
    "links": {
     "instagram": "https://www.instagram.com/iambemshima",
@@ -152,7 +153,8 @@
      "img": "/assets/img/shop/el-precio-del-diablo.webp",
      "url": "/shop/frames/el-precio-del-diablo/"
     }
-   ]
+   ],
+   "heroPos": "50% 30%"
   }
  ]
 }
