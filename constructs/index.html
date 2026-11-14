@@ -30,8 +30,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css?v=202611131546">
 <style>
-.cx{flex:1;display:flex;flex-direction:column}
-.cx .wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding-top:24px;padding-bottom:clamp(48px,10vh,96px)}
+.cx{flex:1;display:flex;flex-direction:column;padding-top:clamp(96px,11vw,130px)}
+@media (max-width:600px){.cx{padding-top:92px}}
+.cx .wrap{width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding-top:24px;padding-bottom:clamp(48px,10vh,96px)}
 .cx-box{display:grid;place-items:center;width:var(--cxw);aspect-ratio:1;border:1px solid #272727;border-radius:2px;background:radial-gradient(70% 70% at 50% 45%,#0e0e0e,#050505);transition:border-color .3s ease}
 .cx-box:hover{border-color:#3a3a3a}
 :root{--cxw:clamp(220px,22vw,264px)}
@@ -62,13 +63,55 @@
 .cx-form button:focus-visible{outline:none}
 .cx-form button svg{width:18px;height:18px}
 .cx-form.is-ok{border-color:#fff}
-.cx-list{width:var(--cxw);display:flex;flex-direction:column;gap:8px}
-.cx-list.is-in{animation:cxIn .45s cubic-bezier(.2,.7,.2,1) both}
-@keyframes cxIn{from{opacity:0;transform:translateY(6px)}}
-.cx-item{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:50px;padding:0 14px 0 16px;border:1px solid #272727;border-radius:2px;background:#050505;color:#e6e6e6;text-decoration:none;font-size:15px;transition:border-color .2s,color .2s}
-.cx-item:hover{border-color:#fff;color:#fff}
-.cx-item svg{width:18px;height:18px;color:#8a8a8a}
-.cx-empty{margin:0;padding:15px 0;text-align:center;font-size:13px;color:#6b6b6b;border:1px dashed #272727;border-radius:2px}
+.cx.is-open .wrap{justify-content:flex-start;padding-top:8px}
+.cx.is-open .cx-box,.cx.is-open .cx-form{display:none}
+.cx-hub{width:100%;max-width:960px;animation:cxIn .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes cxIn{from{opacity:0;transform:translateY(8px)}}
+.cx-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.cx-count{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:#7a7a7a}
+.cx-views{display:inline-flex;border:1px solid #272727;border-radius:2px;overflow:hidden}
+.cx-views button{display:grid;place-items:center;width:42px;height:38px;border:0;border-left:1px solid #272727;background:none;color:#7a7a7a;cursor:pointer;transition:color .2s,background .2s}
+.cx-views button:first-child{border-left:0}
+.cx-views button svg{width:17px;height:17px}
+.cx-views button[aria-pressed=true]{background:#fff;color:#000}
+.cx-views button:not([aria-pressed=true]):hover{color:#fff}
+.cx-thumb{position:relative;display:block;overflow:hidden;background:#111}
+.cx-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.cx-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.65))}
+.cx-thumb i{position:absolute;z-index:1;left:50%;top:50%;width:46%;aspect-ratio:590/418;transform:translate(-50%,-50%);background:#f2e8d8;-webkit-mask:var(--logo) center/contain no-repeat;mask:var(--logo) center/contain no-repeat}
+/* grid */
+.cx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),260px));justify-content:center;gap:clamp(12px,2.4vw,24px)}
+.cx-tile{display:flex;flex-direction:column;border:1px solid #222;border-radius:2px;color:#bdbdbd;text-decoration:none;transition:border-color .3s,color .3s,transform .3s;animation:cxIn .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d) * .08s)}
+.cx-tile .cx-thumb{aspect-ratio:1}
+@media (max-width:600px){.cx-grid{grid-template-columns:1fr 1fr;gap:10px}.cx-tile b{padding:12px 12px 3px;font-size:14px}.cx-tile small{padding:0 12px 12px;font-size:10px}}
+.cx-tile:hover{border-color:#fff;color:#fff;transform:translateY(-4px)}
+.cx-tile:hover img{transform:scale(1.05)}
+.cx-tile b{padding:16px 16px 4px;font-size:15px;font-weight:500;color:#fff}
+.cx-tile small{padding:0 16px 16px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7a7a7a}
+/* list */
+.cx-rows{display:flex;flex-direction:column;gap:10px;max-width:640px;margin:0 auto}
+.cx-row{display:grid;grid-template-columns:72px 1fr auto;align-items:center;gap:16px;padding:10px 16px 10px 10px;border:1px solid #222;border-radius:2px;color:#e6e6e6;text-decoration:none;transition:border-color .2s}
+.cx-row:hover{border-color:#fff}
+.cx-row .cx-thumb{width:72px;aspect-ratio:1;border-radius:2px}
+.cx-row span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.cx-row b{font-size:15px;font-weight:500}
+.cx-row small{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7a7a7a}
+.cx-row svg{width:18px;height:18px;color:#7a7a7a}
+/* swipe */
+.cx-swipe{display:grid;grid-auto-flow:column;grid-auto-columns:min(78vw,420px);gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px max(16px,calc(50% - min(39vw,210px)));margin:0 calc(-1 * clamp(18px,5vw,32px))}
+.cx-swipe::-webkit-scrollbar{display:none}
+.cx-card{scroll-snap-align:center;display:flex;flex-direction:column;border:1px solid #222;border-radius:2px;color:#fff;text-decoration:none;transition:border-color .3s}
+.cx-card:hover{border-color:#fff}
+.cx-card .cx-thumb{aspect-ratio:4/5}
+.cx-card b{padding:18px 18px 4px;font-size:17px;font-weight:500}
+.cx-card small{padding:0 18px 18px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7a7a7a}
+.cx-dots{display:flex;justify-content:center;gap:6px;margin-top:18px}
+.cx-dots i{width:6px;height:6px;border-radius:50%;background:#333;transition:background .3s,width .3s}
+.cx-dots i.is-on{width:18px;border-radius:3px;background:#fff}
+.cx-hint{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;color:#5e5e5e}
+.cx-hint svg{width:18px;height:18px;animation:cxNudge 1.6s ease-in-out infinite}
+@keyframes cxNudge{0%,100%{transform:translateX(4px)}50%{transform:translateX(-4px)}}
+.cx-empty{margin:0 auto;max-width:420px;padding:22px 0;text-align:center;font-size:13px;color:#6b6b6b;border:1px dashed #272727;border-radius:2px}
 .cx-form.is-no{animation:cxNo .38s;border-color:#5a2a24}
 @keyframes cxNo{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 @media (prefers-reduced-motion:reduce){.cx-icon *{animation:none!important}}
@@ -96,7 +139,7 @@
         <input type="text" data-cx-in aria-label="Code" autocapitalize="characters" autocorrect="off" spellcheck="false" maxlength="60">
         <button type="submit" aria-label="Go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       </form>
-      <div class="cx-list" data-cx-list hidden></div>
+      <div class="cx-hub" data-cx-hub hidden></div>
     </div>
   </main>
   <footer class="footer gutter section--alt">
@@ -188,6 +231,6 @@
   </div>
 </div>
 <script src="/assets/js/main.js?v=202611120150" defer></script>
-<script src="/assets/js/constructs.js?v=4" defer></script>
+<script src="/assets/js/constructs.js?v=5" defer></script>
 </body>
 </html>
