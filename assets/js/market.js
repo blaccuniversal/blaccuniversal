@@ -102,3 +102,59 @@
   });
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && panel && !panel.hidden) close(); });
 })();
+
+/* Get featured: floating button + application pop-up */
+(function () {
+  'use strict';
+  var KEY = 'c45f617c-f3f2-4caa-93cf-5d49e2cece46';
+  var STAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="gf-star" d="M12 3.5l2.3 5.2 5.7.6-4.3 3.8 1.2 5.6L12 15.8l-4.9 2.9 1.2-5.6L4 9.3l5.7-.6z"/><path class="gf-spk gf-spk--a" d="M19.5 2.5v3M18 4h3"/><path class="gf-spk gf-spk--b" d="M4.5 17.5v3M3 19h3"/></svg>';
+  var X = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+  var cat = (location.pathname.split('/')[2] || '').toLowerCase();
+  var CATS = ['Music', 'Merch', 'Art', 'Tech', 'Events'];
+
+  var btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'gf'; btn.setAttribute('aria-haspopup', 'dialog');
+  btn.innerHTML = '<span class="gf__ic">' + STAR + '</span><span class="gf__t">Get featured</span>';
+  document.body.appendChild(btn); document.body.classList.add('has-gf');
+
+  var box = document.createElement('div');
+  box.className = 'mk-rel gf-pop'; box.hidden = true;
+  box.innerHTML = '<div class="mk-rel__c gf-pop__c" role="dialog" aria-modal="true" aria-labelledby="gf-t">' +
+    '<button class="mk-rel__x" type="button" data-gf-close aria-label="Close">' + X + '</button>' +
+    '<form class="gf-f" novalidate>' +
+    '<p class="eyebrow">Market</p><h3 id="gf-t">Get featured.</h3>' +
+    '<p class="gf-lead">Artistes, brands, creators and organisers. Tell us about you and we’ll reach out for the rest.</p>' +
+    '<fieldset class="gf-chips"><legend>I’m bringing</legend>' + CATS.map(function (c) { var on = c.toLowerCase() === cat || (!cat && c === 'Music'); return '<label><input type="radio" name="category" value="' + c + '"' + (on ? ' checked' : '') + '><span>' + c + '</span></label>'; }).join('') + '</fieldset>' +
+    '<div class="field"><label for="gf-n">Name or brand</label><input id="gf-n" name="name" autocomplete="name" required></div>' +
+    '<div class="field-row"><div class="field"><label for="gf-e">Email</label><input id="gf-e" name="email" type="email" autocomplete="email" required></div>' +
+    '<div class="field"><label for="gf-p">Phone / WhatsApp</label><input id="gf-p" name="phone" type="tel" autocomplete="tel" placeholder="+234…" required></div></div>' +
+    '<div class="field"><label for="gf-l">Link <span class="opt">(Instagram, music, website)</span></label><input id="gf-l" name="link" type="text" placeholder="@handle or link"></div>' +
+    '<div class="field"><label for="gf-m">Tell us a little <span class="opt">(optional)</span></label><textarea id="gf-m" name="message" rows="3"></textarea></div>' +
+    '<input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off">' +
+    '<p class="build__error" role="alert" hidden>Please add your name, a valid email and your phone.</p>' +
+    '<button class="btn gf-send" type="submit">Apply to be featured</button>' +
+    '<p class="gf-fine">Free to apply. We review every entry and reach out by email or WhatsApp.</p></form>' +
+    '<div class="gf-done" hidden><span class="build__tick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><h3>You’re in, <span data-gf-first>friend</span>.</h3><p class="gf-lead">We’ll be in touch for the details.</p><button class="btn" type="button" data-gf-close>Close</button></div>' +
+    '</div>';
+  document.body.appendChild(box);
+
+  var last = null, f = box.querySelector('form');
+  function open() { last = document.activeElement; f.hidden = false; box.querySelector('.gf-done').hidden = true; box.hidden = false; document.body.classList.add('build-open'); setTimeout(function () { box.querySelector('#gf-n').focus(); }, 60); }
+  function close() { box.hidden = true; document.body.classList.remove('build-open'); if (last && last.focus) last.focus(); }
+  btn.addEventListener('click', open);
+  box.addEventListener('click', function (e) { if (e.target === box || e.target.closest('[data-gf-close]')) close(); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) close(); });
+  f.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var err = f.querySelector('.build__error');
+    if (!f.name.value.trim() || !f.email.value.trim() || !f.phone.value.trim() || !f.email.checkValidity()) { err.hidden = false; return; }
+    err.hidden = true;
+    var c = (f.querySelector('[name=category]:checked') || {}).value || '';
+    var data = { access_key: KEY, from_name: 'BLACC Universal website', subject: 'Market · Get featured — ' + c + ' · ' + f.name.value.trim(), category: c, name: f.name.value.trim(), email: f.email.value.trim(), phone: f.phone.value.trim(), link: f.link.value.trim() || '—', message: f.message.value.trim() || '—', page: location.href };
+    box.querySelector('[data-gf-first]').textContent = data.name.split(' ')[0];
+    f.hidden = true; box.querySelector('.gf-done').hidden = false;
+    if (f.botcheck.checked) return;
+    fetch('https://api.web3forms.com/submit', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data) }).catch(function () {});
+    f.reset();
+  });
+})();
