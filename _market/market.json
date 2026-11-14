@@ -239,7 +239,9 @@
    "tag": "Artiste · R&B",
    "bio": "S3PHY is a Lagos-based R&B artiste. Debut dual release Back To Mine / Mr Lover is out now.",
    "listen": {
-    "spotify": "https://open.spotify.com/album/4QwuvrU1sRZNCCQ7ysuvso"
+    "spotify": "https://open.spotify.com/album/4QwuvrU1sRZNCCQ7ysuvso",
+    "apple": "https://music.apple.com/ng/artist/s3phy/1848447651",
+    "audiomack": "https://audiomack.com/s3phy"
    },
    "items": [
     {
@@ -248,11 +250,17 @@
      "meta": "Debut · 2025",
      "price": "Stream · Buy",
      "links": {
-      "spotify": "https://open.spotify.com/album/4QwuvrU1sRZNCCQ7ysuvso"
+      "spotify": "https://open.spotify.com/album/4QwuvrU1sRZNCCQ7ysuvso",
+      "apple": "https://music.apple.com/ng/artist/s3phy/1848447651",
+      "audiomack": "https://audiomack.com/s3phy",
+      "itunes": "https://music.apple.com/ng/artist/s3phy/1848447651"
      },
      "img": "/assets/img/market/s3phy-back-to-mine.webp"
     }
-   ]
+   ],
+   "buy": {
+    "itunes": "https://music.apple.com/ng/artist/s3phy/1848447651"
+   }
   },
   {
    "cat": "merch",
