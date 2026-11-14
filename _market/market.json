@@ -185,7 +185,8 @@
       "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
       "apple": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227",
       "itunes": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227"
-     }
+     },
+     "img": "/assets/img/market/ajogu-therapeutic-tape.webp"
     },
     {
      "name": "Thirsty",
@@ -196,7 +197,8 @@
       "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
       "apple": "https://music.apple.com/ng/album/thirsty-single/1881305452",
       "itunes": "https://music.apple.com/ng/album/thirsty-single/1881305452"
-     }
+     },
+     "img": "/assets/img/market/ajogu-thirsty.webp"
     },
     {
      "name": "The Story Of Process",
@@ -207,7 +209,8 @@
       "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
       "apple": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327",
       "itunes": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327"
-     }
+     },
+     "img": "/assets/img/market/ajogu-story-of-process.webp"
     }
    ],
    "listen": {
