@@ -4,7 +4,7 @@
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return [].slice.call((r || document).querySelectorAll(s)); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  var EMAIL = 'cinema@hybridheights.com.ng';
+  var EMAIL = 'cinema@hybridheights.com.ng', PHONE = '+2348138759188';
 
   // This week's schedule, Fri 13 – Thu 19 Nov 2026. One show per film, every day.
   var WEEK = [new Date(2026, 10, 13), new Date(2026, 10, 19)];
@@ -156,7 +156,8 @@
     var ref = 'DH' + (hash(f.name.value + Date.now()) % 900000 + 100000);
     var body = 'Booking request ' + ref + '\n\nFilm: ' + cur.f.t + '\nWhen: ' + cur.day + ', ' + fmt(cur.t) + '\nSeats: ' + picked.join(', ') + '\nName: ' + f.name.value + '\nPhone: ' + f.phone.value + (f.email.value ? '\nEmail: ' + f.email.value : '') + '\n\nI will pay at the cinema.';
     $('[data-ticket]').innerHTML = '<small>Cinema D Hybrid · Admit ' + picked.length + '</small><h4>' + esc(cur.f.t) + '</h4><dl><div><dt>Date</dt><dd>' + days[dayI].toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + '</dd></div><div><dt>Time</dt><dd>' + fmt(cur.t) + '</dd></div><div><dt>Seats</dt><dd>' + picked.join(' ') + '</dd></div></dl><div class="code">' + ref + '</div>';
-    $('[data-send]').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Booking ' + ref + ' — ' + cur.f.t) + '&body=' + encodeURIComponent(body);
+    $('[data-send]').href = 'sms:' + PHONE + '?body=' + encodeURIComponent(body);
+    $('[data-send-mail]').href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Booking ' + ref + ' — ' + cur.f.t) + '&body=' + encodeURIComponent(body);
     step(3);
   });
   function closeAll() { $$('.sheet').forEach(function (s) { s.hidden = true; }); document.body.style.overflow = ''; }

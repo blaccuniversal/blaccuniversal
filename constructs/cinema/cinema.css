@@ -239,3 +239,19 @@ button.s:hover{border-color:var(--gold)}
 .hero__poster img{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(38px) saturate(1.2) brightness(.55);opacity:0;transition:opacity 1.4s ease}
 .hero__poster img.is-on{opacity:.55}
 .hero__poster::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,5,5,.2),rgba(5,5,5,.85) 85%)}
+
+/* prices */
+.prices{padding:clamp(70px,9vw,120px) 0;border-top:1px solid var(--line)}
+.prices__grid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+@media (min-width:800px){.prices__grid{grid-template-columns:1fr 1fr}}
+.pl{padding:28px clamp(22px,3vw,34px) 30px;border:1px solid var(--line);border-radius:2px;background:var(--bg2)}
+.pl h3{display:flex;align-items:center;gap:12px;margin:0 0 18px;font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.pl h3 svg{width:24px;height:24px}
+.pl ul{margin:0;padding:0;list-style:none}
+.pl li{display:flex;align-items:baseline;gap:12px;padding:15px 0;border-bottom:1px solid var(--line);font-size:17px}
+.pl li:last-child{border-bottom:0}
+.pl li span{font-weight:600}
+.pl li i{flex:1;border-bottom:1px dotted var(--line2);transform:translateY(-4px)}
+.pl li b{font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pl__more{margin:14px 0 0;font-size:14px;color:var(--tx2)}
+.pl__more a{color:var(--tx);border-bottom:1px solid var(--gold3)}
