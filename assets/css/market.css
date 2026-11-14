@@ -176,3 +176,7 @@ a.mk-dsp:hover{background:#fff;border-color:#fff;color:#000}
 .mk-hero__name{font-size:clamp(41px,6.3vw,83px)}
 .mk-hero__txt{justify-content:center;gap:clamp(12px,1.3vw,18px)}
 @media (max-width:600px){.mk-hero__name{font-size:clamp(39px,11.9vw,53px)}.mk-hero__txt{gap:13px}}
+.mk-bio{display:flex;flex-direction:column;gap:14px;max-width:36em}
+.mk-bio .mk-hero__bio{font-size:clamp(15px,1.25vw,17px);line-height:1.7}
+.mk-bio .mk-hero__bio:first-child{font-size:clamp(16px,1.45vw,19px);color:#e6e6e6}
+.mk-bio .mk-hero__bio+.mk-hero__bio{color:#a8a8a8}

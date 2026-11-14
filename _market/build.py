@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '13'
+VER = '14'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -167,7 +167,7 @@ for c in CATS:
         hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + (' mk-hero--dim' if s.get('heroDim') else '') + '">\n    ' + bg + '\n'
                 '    <div class="wrap mk-hero__in">\n      <p class="eyebrow mk-crumbs"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
                 '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div class="mk-hero__txt"><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n    </div>\n  </section>\n'
-                '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l"><p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>' + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div>\n'
+                '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l">' + ('<div class="mk-bio">' + ''.join('<p class="mk-hero__bio">' + esc(p.strip()) + '</p>' for p in s['bio'].split('\n\n') if p.strip()) + '</div>' if s.get('bio') else '') + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div>\n'
                 '      <div class="mk-info__r">' + listen(s, c) + '</div>\n    </div>\n  </section>\n')
         if not items:
             body = hero + '  <main class="shop gutter mk mk--store" id="top">\n    <div class="wrap">\n      <div class="mk-empty"><span class="mk-empty__icon">' + ICON['music'] + '</span><p>New music is on the way.</p></div>\n    </div>\n  </main>\n'
