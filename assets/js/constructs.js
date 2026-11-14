@@ -7,8 +7,8 @@
   /* Constructs shown after login: { name: 'Name', path: '/constructs/folder/' } */
   var CONSTRUCTS = [
     { name: 'ÀṢÀ Bar & Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/asa/', img: '/constructs/asa/img/bar-s.webp', logo: '/constructs/asa/img/logo.png' },
-    { name: 'Cinema D Hybrid', tag: 'Cinema · Ibadan', path: '/constructs/cinema/', img: '/constructs/cinema/img/cover.webp' },
-    { name: 'Mcrystal Cinemas', tag: 'Cinema · Lagos', path: '/constructs/mcrystal/', img: '/constructs/mcrystal/img/cover.webp' }
+    { name: 'Cinema D Hybrid', tag: 'Cinema · Ibadan', path: '/constructs/cinema/', img: '/constructs/cinema/img/cover.webp', logo: '/constructs/cinema/img/logo.png', ar: '103/94', lw: '34%' },
+    { name: 'Mcrystal Cinemas', tag: 'Cinema · Lagos', path: '/constructs/mcrystal/', img: '/constructs/mcrystal/img/cover.webp?v=2', logo: '/constructs/mcrystal/img/logo.png', ar: '824/759', lw: '40%' }
   ];
 
   // tool rotation
@@ -38,7 +38,7 @@
   var view = 'grid';
   try { view = localStorage.getItem('cx_view') || 'grid'; } catch (e) {}
   function thumb(c) {
-    return '<span class="cx-thumb"><img src="' + esc(c.img) + '" alt="" loading="lazy">' + (c.logo ? '<i style="--logo:url(' + esc(c.logo) + ')"></i>' : '') + '</span>';
+    return '<span class="cx-thumb"><img src="' + esc(c.img) + '" alt="" loading="lazy">' + (c.logo ? '<i style="--logo:url(' + esc(c.logo) + ');--ar:' + (c.ar || '590/418') + ';--lw:' + (c.lw || '46%') + '"></i>' : '') + '</span>';
   }
   function render() {
     var n = CONSTRUCTS.length, body;

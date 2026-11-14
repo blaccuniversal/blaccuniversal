@@ -78,7 +78,7 @@
 .cx-thumb{position:relative;display:block;overflow:hidden;background:#111}
 .cx-thumb img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
 .cx-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.65))}
-.cx-thumb i{position:absolute;z-index:1;left:50%;top:50%;width:46%;aspect-ratio:590/418;transform:translate(-50%,-50%);background:#f2e8d8;-webkit-mask:var(--logo) center/contain no-repeat;mask:var(--logo) center/contain no-repeat}
+.cx-thumb i{position:absolute;z-index:1;left:50%;top:50%;width:var(--lw,46%);aspect-ratio:var(--ar,590/418);transform:translate(-50%,-50%);background:#f2e8d8;-webkit-mask:var(--logo) center/contain no-repeat;mask:var(--logo) center/contain no-repeat}
 /* grid */
 .cx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),260px));justify-content:center;gap:clamp(12px,2.4vw,24px)}
 .cx-tile{display:flex;flex-direction:column;border:1px solid #222;border-radius:2px;color:#bdbdbd;text-decoration:none;transition:border-color .3s,color .3s,transform .3s;animation:cxIn .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d) * .08s)}
@@ -231,6 +231,6 @@
   </div>
 </div>
 <script src="/assets/js/main.js?v=202611120150" defer></script>
-<script src="/assets/js/constructs.js?v=8" defer></script>
+<script src="/assets/js/constructs.js?v=9" defer></script>
 </body>
 </html>
