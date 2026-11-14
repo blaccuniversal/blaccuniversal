@@ -22,16 +22,15 @@
   '@keyframes hgTop{0%{transform:scaleY(1)}84%,100%{transform:scaleY(.1)}}' +
   '@keyframes hgBot{0%{transform:scaleY(.1)}84%,100%{transform:scaleY(1)}}' +
   '@keyframes hgDrip{to{stroke-dashoffset:-3}}' +
-  '.ofr{position:fixed;inset:0;z-index:70;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:ofrFade .25s ease both}' +
+  '.ofr{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:ofrFade .25s ease both}' +
   '.ofr[hidden]{display:none}' +
-  '.ofr__card{position:relative;width:100%;max-width:520px;max-height:92vh;max-height:92dvh;overflow-y:auto;padding:34px clamp(20px,5vw,40px) calc(28px + env(safe-area-inset-bottom));background:#000;border:1px solid #222;border-bottom:0;border-radius:14px 14px 0 0;color:#fff;font-family:inherit;animation:ofrUp .45s cubic-bezier(.2,.7,.2,1) both}' +
-  '@media (min-width:700px){.ofr{align-items:center;padding:20px}.ofr__card{border-radius:2px;border-bottom:1px solid #222}}' +
-  '.ofr__x{position:absolute;top:10px;right:10px;width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none;color:#8a8a8a;cursor:pointer}' +
+  '.ofr__card{position:relative;width:100%;max-width:520px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;padding:34px clamp(20px,5vw,40px) 28px;background:#000;border:1px solid #222;border-radius:2px;color:#fff;font-family:inherit;animation:ofrUp .45s cubic-bezier(.2,.7,.2,1) both}' +
+    '.ofr__x{position:absolute;top:10px;right:10px;width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none;color:#8a8a8a;cursor:pointer}' +
   '.ofr__x:hover{color:#fff}' +
   '.ofr__eye{display:flex;align-items:center;gap:10px;margin:0 0 14px;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#8a8a8a}' +
   '.ofr__eye svg{width:16px;height:16px;color:#fff}' +
   '.ofr__t{margin:0 0 12px;font-size:clamp(28px,6vw,38px);font-weight:600;line-height:1.08;letter-spacing:-.02em;text-wrap:balance}' +
-  '.ofr__p{margin:0 0 24px;font-size:16px;line-height:1.6;color:#b5b5b5}' +
+  '.ofr__p{text-wrap:pretty;margin:0 0 24px;font-size:16px;line-height:1.6;color:#b5b5b5}' +
   '.ofr__price{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;margin:0 0 26px;padding:18px 0;border-top:1px solid #1f1f1f;border-bottom:1px solid #1f1f1f}' +
   '.ofr__price b{font-size:clamp(36px,8vw,48px);font-weight:600;letter-spacing:-.03em;line-height:1}' +
   '.ofr__price s{font-size:18px;color:#6f6f6f}' +
@@ -46,7 +45,7 @@
   '.ofr__go:hover svg{transform:translateX(3px)}' +
   '.ofr__fine{margin:14px 0 0;font-size:12px;color:#6f6f6f;text-align:center}' +
   '@keyframes ofrFade{from{opacity:0}}' +
-  '@keyframes ofrUp{from{opacity:0;transform:translateY(40px)}}' +
+  '@keyframes ofrUp{from{opacity:0;transform:translateY(16px) scale(.96)}}' +
   '@media (prefers-reduced-motion:reduce){.hg,.hg::before,.hg::after,.hg svg,.hg .sand-t,.hg .sand-b,.hg .drip{animation:none}.hg::before,.hg::after{opacity:.35}}';
   var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
 
@@ -69,7 +68,7 @@
     '<button class="ofr__x" type="button" data-ofr-close aria-label="Close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>' +
     '<p class="ofr__eye">' + GLASS + 'Offer ends 25 November</p>' +
     '<h2 class="ofr__t" id="ofr-t">Your website, built by BLACC.</h2>' +
-    '<p class="ofr__p">We design and build your website, with one year of hosting on your own domain name.</p>' +
+    '<p class="ofr__p">We design and build your website, plus one year of hosting on your own domain.</p>' +
     '<p class="ofr__price"><b>₦123,456</b><s>₦450,000</s><span>One-off price. You save ₦326,544.</span></p>' +
     '<div class="ofr__cd" aria-live="off"><div><b data-cd="d">00</b><small>Days</small></div><div><b data-cd="h">00</b><small>Hours</small></div><div><b data-cd="m">00</b><small>Mins</small></div><div><b data-cd="s">00</b><small>Secs</small></div></div>' +
     '<button class="ofr__go" type="button" data-ofr-claim>Claim this offer' + ARROW + '</button>' +
