@@ -184,6 +184,7 @@
      "links": {
       "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
       "apple": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227",
+      "youtube": "https://www.youtube.com/@TheAjogu",
       "itunes": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227"
      },
      "img": "/assets/img/market/ajogu-therapeutic-tape.webp"
@@ -196,6 +197,7 @@
      "links": {
       "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
       "apple": "https://music.apple.com/ng/album/thirsty-single/1881305452",
+      "youtube": "https://www.youtube.com/@TheAjogu",
       "itunes": "https://music.apple.com/ng/album/thirsty-single/1881305452"
      },
      "img": "/assets/img/market/ajogu-thirsty.webp"
@@ -208,6 +210,7 @@
      "links": {
       "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
       "apple": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327",
+      "youtube": "https://www.youtube.com/@TheAjogu",
       "itunes": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327"
      },
      "img": "/assets/img/market/ajogu-story-of-process.webp"
@@ -215,10 +218,16 @@
    ],
    "listen": {
     "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
-    "apple": "https://music.apple.com/ng/artist/ajogu/1654319853"
+    "apple": "https://music.apple.com/ng/artist/ajogu/1654319853",
+    "youtube": "https://www.youtube.com/@TheAjogu"
    },
    "buy": {
     "itunes": "https://music.apple.com/ng/artist/ajogu/1654319853"
+   },
+   "links": {
+    "instagram": "https://www.instagram.com/theajogu/",
+    "x": "https://x.com/theajogu",
+    "youtube": "https://www.youtube.com/@TheAjogu"
    }
   },
   {
