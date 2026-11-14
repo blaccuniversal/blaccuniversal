@@ -6,25 +6,26 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   var EMAIL = 'cinema@hybridheights.com.ng';
 
-  // Films from the cinema's own Now Showing list. Showtimes below are samples.
+  // This week's schedule, Fri 13 – Thu 19 Nov 2026. One show per film, every day.
+  var WEEK = [new Date(2026, 10, 13), new Date(2026, 10, 19)];
   var FILMS = [
-    { t: 'Issakaba', g: 'Action · Drama', d: '2h 26m', c: ['#3a0d06', '#e8b820'] },
-    { t: 'Phoenix Fury', g: 'Drama', d: '2h 05m', c: ['#3d1203', '#ff7a2f'] },
-    { t: 'Five Figurines', g: 'Drama', d: '2h 00m', c: ['#0d1a2b', '#d9b26a'] },
-    { t: 'Loving Itohan', g: 'Drama', d: '1h 34m', c: ['#2b0716', '#f06a8c'] },
-    { t: 'The Perfect Spec', g: 'Drama', d: '2h 00m', c: ['#0a2420', '#5fd1b0'] },
-    { t: 'Maybe… Maybe Not', g: 'Drama', d: '1h 40m', c: ['#1d0f2e', '#b38cff'] },
-    { t: 'Tele x Zikora', g: 'Drama', d: '2h 00m', c: ['#071d2e', '#4fb3ff'] },
-    { t: 'No Fury', g: 'Drama', d: '1h 59m', c: ['#1a1a1a', '#e9e2d0'] }
+    { t: 'Starlomo', g: 'Nollywood', time: '11:00', img: 'starlomo', c: ['#06142a', '#7fb2ff'] },
+    { t: 'Maybe… Maybe Not', g: 'Drama', d: '1h 40m', time: '11:00', img: 'maybe-maybe-not', c: ['#1d0f2e', '#b38cff'] },
+    { t: 'Issakaba', g: 'Action · Drama', d: '2h 26m', time: '13:00', img: 'issakaba', c: ['#3a0d06', '#e8b820'] },
+    { t: 'Agbara Nla', g: 'Nollywood', time: '13:00', img: 'agbara-nla', c: ['#2a1a03', '#f2c14e'] },
+    { t: 'Tele x Zikora', g: 'Drama', d: '2h 00m', time: '15:45', img: 'tele-x-zikora', c: ['#071d2e', '#4fb3ff'] },
+    { t: 'The Perfect Spec', g: 'Drama', d: '2h 00m', time: '15:45', img: 'the-perfect-spec', c: ['#0a2420', '#5fd1b0'] },
+    { t: 'Loving Itohan', g: 'Drama', d: '1h 34m', time: '17:45', img: 'loving-itohan', c: ['#2b0716', '#f06a8c'] },
+    { t: 'Five Figurines', g: 'Drama', d: '2h 00m', time: '17:45', img: 'five-figurines', c: ['#0d1a2b', '#d9b26a'] },
+    { t: 'Phoenix Fury', g: 'Drama', d: '2h 05m', time: '20:00', img: 'phoenix-fury', c: ['#3d1203', '#ff7a2f'] },
+    { t: 'No Fury', g: 'Drama', d: '1h 59m', time: '20:00', img: 'no-fury', c: ['#1a1a1a', '#e9e2d0'] }
   ];
-  var SOON = [
-    { t: 'Agbara Nla', c: ['#2a1a03', '#f2c14e'] },
-    { t: 'Starlomo', c: ['#06142a', '#7fb2ff'] }
-  ];
-  var SLOTS = ['11:30', '13:15', '14:00', '15:45', '16:30', '18:00', '18:45', '20:15', '21:00', '22:30'];
+  var SOON = [];
+  function meta(f) { return f.g + (f.g === 'Nollywood' ? '' : ' · Nollywood') + (f.d ? ' · ' + f.d : ''); }
 
   function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
   function poster(f, small) {
+    if (f.img) return '<span class="poster"><img src="/constructs/cinema/img/posters/' + f.img + (small ? '-s' : '') + '.webp" alt="' + esc(f.t) + ' poster" width="' + (small ? 300 : 600) + '" height="' + (small ? 450 : 900) + '" loading="lazy" decoding="async"></span>';
     var id = 'p' + hash(f.t + (small ? 's' : '')).toString(36);
     var words = f.t.toUpperCase().split(' ');
     var lines = [], cur = '';
@@ -56,37 +57,42 @@
 
   /* hero rotation */
   var reel = $('[data-reel]'), hi = 0, heroT = $('[data-hero-title]'), heroM = $('[data-hero-meta]'), heroTimer;
-  reel.innerHTML = FILMS.map(function (f, i) { return '<button class="reel' + (i ? '' : ' is-on') + '" type="button" data-reel-i="' + i + '" aria-label="' + esc(f.t) + '">' + poster(f) + '</button>'; }).join('');
+  reel.innerHTML = FILMS.map(function (f, i) { return '<button class="reel' + (i ? '' : ' is-on') + '" type="button" data-reel-i="' + i + '" aria-label="' + esc(f.t) + '">' + poster(f, true) + '</button>'; }).join('');
   function hero(i) {
     hi = (i + FILMS.length) % FILMS.length;
     heroT.classList.add('is-swap');
-    setTimeout(function () { heroT.textContent = FILMS[hi].t; heroM.textContent = FILMS[hi].g + ' · Nollywood · ' + FILMS[hi].d; heroT.classList.remove('is-swap'); }, 300);
+    setTimeout(function () { heroT.textContent = FILMS[hi].t; heroM.textContent = meta(FILMS[hi]); heroT.classList.remove('is-swap'); }, 300);
     $$('.reel', reel).forEach(function (r, k) { r.classList.toggle('is-on', k === hi); });
+    heroBg(hi);
+  }
+  var pbg = $('[data-hero-poster]');
+  function heroBg(i) {
+    if (!pbg || !FILMS[i].img) return;
+    var im = new Image(); im.src = '/constructs/cinema/img/posters/' + FILMS[i].img + '.webp'; im.alt = '';
+    im.onload = function () { pbg.appendChild(im); requestAnimationFrame(function () { im.classList.add('is-on'); }); var old = $$('img', pbg); if (old.length > 2) old[0].remove(); };
   }
   function auto() { clearInterval(heroTimer); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) heroTimer = setInterval(function () { hero(hi + 1); }, 5200); }
   reel.addEventListener('click', function (e) { var b = e.target.closest('[data-reel-i]'); if (b) { hero(+b.getAttribute('data-reel-i')); auto(); } });
-  auto();
+  heroBg(0); auto();
 
   /* days + films */
   var days = [], today = new Date(); today.setHours(0, 0, 0, 0);
-  for (var i = 0; i < 7; i++) { var d = new Date(today); d.setDate(d.getDate() + i); days.push(d); }
+  var start = today < WEEK[0] ? WEEK[0] : today, end = today > WEEK[1] ? new Date(+today + 6 * 864e5) : WEEK[1];
+  for (var d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) days.push(new Date(d));
   var dayI = 0;
-  function dname(d, i) { return i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : d.toLocaleDateString('en-GB', { weekday: 'short' }); }
-  function longDay(i) { var d = days[i]; return (i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : d.toLocaleDateString('en-GB', { weekday: 'long' })) + ', ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
-  function times(f, i) {
-    var h = hash(f.t + days[i].toDateString()), n = 2 + h % 2, out = [];
-    for (var k = 0; k < SLOTS.length && out.length < n; k++) if ((h >> k) & 1 || SLOTS.length - k <= n - out.length) out.push(SLOTS[k]);
-    return out;
-  }
+  function rel(d) { return Math.round((d - today) / 864e5); }
+  function dname(d) { var r = rel(d); return r === 0 ? 'Today' : r === 1 ? 'Tomorrow' : d.toLocaleDateString('en-GB', { weekday: 'short' }); }
+  function longDay(i) { var d = days[i], r = rel(d); return (r === 0 ? 'Today' : r === 1 ? 'Tomorrow' : d.toLocaleDateString('en-GB', { weekday: 'long' })) + ', ' + d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
+  function times(f) { return [f.time]; }
   function fmt(t) { var p = t.split(':'), h = +p[0]; return (h % 12 || 12) + ':' + p[1] + (h < 12 ? ' AM' : ' PM'); }
-  function past(t) { if (dayI) return false; var p = t.split(':'), n = new Date(); return n.getHours() * 60 + n.getMinutes() > +p[0] * 60 + +p[1] - 20; }
+  function past(t) { if (rel(days[dayI]) !== 0) return false; var p = t.split(':'), n = new Date(); return n.getHours() * 60 + n.getMinutes() > +p[0] * 60 + +p[1] - 20; }
   function renderDays() {
     $('[data-days]').innerHTML = days.map(function (d, i) { return '<button class="day" role="tab" type="button" data-day="' + i + '" aria-selected="' + (i === dayI) + '"><small>' + dname(d, i) + '</small><b>' + d.getDate() + '</b></button>'; }).join('');
   }
   function renderFilms() {
     $('[data-films]').innerHTML = FILMS.map(function (f, i) {
       return '<article class="film" style="--i:' + i + '"><div class="film__p">' + poster(f) + '<span class="film__rt">' + f.d + '</span></div><h3>' + esc(f.t) + '</h3><p>' + f.g + '</p><div class="times">' +
-        times(f, dayI).map(function (t) { return '<button class="time" type="button" data-book="' + i + '" data-t="' + t + '"' + (past(t) ? ' disabled aria-label="' + fmt(t) + ', started"' : '') + '>' + fmt(t) + '</button>'; }).join('') + '</div></article>';
+        times(f).map(function (t) { return '<button class="time" type="button" data-book="' + i + '" data-t="' + t + '"' + (past(t) ? ' disabled aria-label="' + fmt(t) + ', started"' : '') + '>' + fmt(t) + '</button>'; }).join('') + '</div></article>';
     }).join('');
   }
   $('[data-days]').addEventListener('click', function (e) { var b = e.target.closest('[data-day]'); if (!b) return; dayI = +b.getAttribute('data-day'); renderDays(); renderFilms(); });
@@ -94,10 +100,12 @@
 
   /* coming soon */
   var bell = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>';
-  $('[data-soon]').innerHTML = SOON.map(function (f) {
+  var soonEl = $('[data-soon]');
+  if (!SOON.length) { var ss = $('#soon'); if (ss) ss.hidden = true; $$('a[href="#soon"]').forEach(function (a) { a.hidden = true; }); }
+  else soonEl.innerHTML = SOON.map(function (f) {
     return '<div class="sn"><div class="sn__p">' + poster(f, true) + '</div><div><b>' + esc(f.t) + '</b><small>Coming soon</small><button type="button" data-notify="' + esc(f.t) + '" aria-pressed="false">' + bell + '<span>Tell me when</span></button></div></div>';
   }).join('');
-  $('[data-soon]').addEventListener('click', function (e) {
+  if (soonEl) soonEl.addEventListener('click', function (e) {
     var b = e.target.closest('[data-notify]'); if (!b) return;
     var t = b.getAttribute('data-notify');
     location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Tell me when ' + t + ' is showing') + '&body=' + encodeURIComponent('Hello Cinema D Hybrid,\n\nPlease let me know when ' + t + ' is showing.\n\nThank you.');
@@ -156,7 +164,7 @@
     var b = e.target.closest('[data-book]');
     if (b && !b.disabled) return openBook(+b.getAttribute('data-book'), b.getAttribute('data-t'));
     if (e.target.closest('[data-book-hero]')) {
-      var f = FILMS[hi], ts = times(f, dayI).filter(function (t) { return !past(t); });
+      var f = FILMS[hi], ts = times(f).filter(function (t) { return !past(t); });
       if (ts.length) return openBook(hi, ts[0]);
       return document.getElementById('now').scrollIntoView();
     }

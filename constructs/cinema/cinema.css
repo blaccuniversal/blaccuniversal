@@ -74,7 +74,8 @@ em{font-style:normal;color:var(--gold)}
 
 /* posters */
 .poster{position:relative;display:block;width:100%;height:100%;overflow:hidden;background:#111}
-.poster svg{display:block;width:100%;height:100%}
+.poster svg,.poster img{display:block;width:100%;height:100%}
+.poster img{object-fit:cover}
 
 /* now showing */
 .now{padding:clamp(80px,10vw,130px) 0}
@@ -232,3 +233,9 @@ button.s:hover{border-color:var(--gold)}
 .private__img::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.75))}
 .private__img figcaption{position:absolute;z-index:1;left:18px;bottom:16px;display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:999px;background:rgba(232,184,32,.92);color:#1a1200;font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .private__img .live{background:#1a1200;box-shadow:none;animation:none}
+
+/* hero poster backdrop */
+.hero__poster{position:absolute;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.hero__poster img{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(38px) saturate(1.2) brightness(.55);opacity:0;transition:opacity 1.4s ease}
+.hero__poster img.is-on{opacity:.55}
+.hero__poster::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,5,5,.2),rgba(5,5,5,.85) 85%)}

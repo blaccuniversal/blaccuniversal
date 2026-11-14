@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/cinema/img/mark.png">
-<link rel="stylesheet" href="/constructs/cinema/cinema.css?v=3">
+<link rel="stylesheet" href="/constructs/cinema/cinema.css?v=4">
 </head>
 <body>
 
@@ -31,12 +31,13 @@
   <!-- HERO -->
   <section class="hero" data-hero>
     <div class="hero__bg" aria-hidden="true"><img src="img/hall.webp" alt="" width="1080" height="721"></div>
+    <div class="hero__poster" data-hero-poster aria-hidden="true"></div>
     <div class="beam" aria-hidden="true"></div>
     <div class="dust" aria-hidden="true"></div>
     <div class="wrap hero__in">
       <p class="eyebrow rise" style="--d:1"><span class="live"></span>Now showing</p>
-      <h1 class="hero__t rise" style="--d:2" data-hero-title>Issakaba</h1>
-      <p class="hero__meta rise" style="--d:3" data-hero-meta>Action · Drama · Nollywood · 2h 26m</p>
+      <h1 class="hero__t rise" style="--d:2" data-hero-title>Starlomo</h1>
+      <p class="hero__meta rise" style="--d:3" data-hero-meta>Nollywood</p>
       <div class="btns rise" style="--d:4"><button class="btn" type="button" data-book-hero>Book tickets</button><a class="btn btn--ghost" href="#now">All films</a></div>
     </div>
     <div class="hero__reel wrap rise" style="--d:5" data-reel aria-label="Featured films"></div>
@@ -47,7 +48,7 @@
     <div class="wrap">
       <div class="sec-head">
         <div><p class="eyebrow">Now showing</p><h2 class="h2">Pick a day.<br>Pick a film.</h2></div>
-        <p class="note">Sample showtimes. Book online, pay at the cinema.</p>
+        <p class="note">This week · Fri 13 – Thu 19 Nov. Book online, pay at the cinema.</p>
       </div>
       <div class="days" role="tablist" aria-label="Choose a day" data-days></div>
       <div class="films" data-films></div>
@@ -172,6 +173,6 @@
   </div>
 </div>
 
-<script src="/constructs/cinema/cinema.js?v=3" defer></script>
+<script src="/constructs/cinema/cinema.js?v=4" defer></script>
 </body>
 </html>
