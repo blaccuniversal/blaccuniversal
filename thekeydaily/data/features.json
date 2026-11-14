@@ -1,0 +1,17 @@
+{
+  "picks": {
+    "spotify": "https://open.spotify.com/playlist/6QYwzLdb15HCQMB1rsi7WA",
+    "spotify_embed": "https://open.spotify.com/embed/playlist/6QYwzLdb15HCQMB1rsi7WA?utm_source=generator&theme=0",
+    "apple": "https://music.apple.com/ng/playlist/the-key-picks/pl.u-WabZ6BGseYRbkKb",
+    "apple_embed": "https://embed.music.apple.com/ng/playlist/the-key-picks/pl.u-WabZ6BGseYRbkKb",
+    "blurb": "A curated blend of new releases from acclaimed superstars and undeniable talents, at home and abroad. Updated every week."
+  },
+  "top7": {
+    "edition": "",
+    "date": "",
+    "next": "2026-11-20",
+    "entries": []
+  },
+  "artist": null,
+  "creative": null
+}
