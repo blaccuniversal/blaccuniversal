@@ -260,7 +260,11 @@
    ],
    "buy": {
     "itunes": "https://music.apple.com/ng/artist/s3phy/1848447651"
-   }
+   },
+   "avatar": "/assets/img/market/s3phy-av.webp",
+   "hero": "/assets/img/market/s3phy-hero.webp",
+   "heroPos": "50% 25%",
+   "heroDim": true
   },
   {
    "cat": "merch",
