@@ -60,7 +60,34 @@
     if (f.botcheck.checked) return;
     fetch('https://api.web3forms.com/submit', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(data) }).catch(function () {});
   }
+  /* release chooser: stream or buy */
+  var IC = {
+    spotify: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.25"/><path d="M7.5 9.5c3-1 6.5-.7 9.2.8M8 12.6c2.5-.7 5.3-.4 7.4.8M8.6 15.4c2-.5 3.9-.3 5.6.6"/></svg>',
+    apple: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17.5V6.5l10-2v11"/><circle cx="6.75" cy="17.5" r="2.25"/><circle cx="16.75" cy="15.5" r="2.25"/></svg>',
+    audiomack: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 14h2l1.5-4 2 8 2-12 2 10 2-6 1.5 4h6"/></svg>',
+    youtube: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10.2 9.2v5.6l4.8-2.8z" fill="currentColor" stroke="none"/></svg>',
+    itunes: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7"/></svg>'
+  };
+  var rel = null, relLast = null;
+  function openRel(it) {
+    relLast = document.activeElement;
+    if (!rel) {
+      rel = document.createElement('div'); rel.className = 'mk-rel'; rel.hidden = true;
+      rel.addEventListener('click', function (e) { if (e.target === rel || e.target.closest('.mk-rel__x')) closeRel(); });
+      document.body.appendChild(rel);
+    }
+    function group(kind, label) {
+      var l = it.links.filter(function (x) { return x[3] === kind; }); if (!l.length) return '';
+      return '<p class="mk-rel__g">' + label + '</p><div class="mk-rel__l">' + l.map(function (x) { return '<a href="' + esc(x[2]) + '" target="_blank" rel="noopener">' + (IC[x[0]] || '') + '<span>' + esc(x[1]) + '</span><i>↗</i></a>'; }).join('') + '</div>';
+    }
+    rel.innerHTML = '<div class="mk-rel__c" role="dialog" aria-modal="true" aria-label="' + esc(it.name) + '"><button class="mk-rel__x" type="button" aria-label="Close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button><p class="eyebrow">' + esc(it.store) + '</p><h3>' + esc(it.name) + '</h3><p>' + esc(it.meta) + '</p>' + group('stream', 'Stream') + group('buy', 'Buy') + '</div>';
+    rel.hidden = false; document.body.classList.add('build-open');
+    setTimeout(function () { var a = rel.querySelector('.mk-rel__l a'); if (a) a.focus(); }, 60);
+  }
+  function closeRel() { if (!rel) return; rel.hidden = true; document.body.classList.remove('build-open'); if (relLast && relLast.focus) relLast.focus(); }
+  addEventListener('keydown', function (e) { if (e.key === 'Escape' && rel && !rel.hidden) closeRel(); });
   document.addEventListener('click', function (e) {
+    var r = e.target.closest('[data-mk-rel]'); if (r) { try { openRel(JSON.parse(r.getAttribute('data-mk-rel'))); } catch (x) {} return; }
     var b = e.target.closest('[data-mk-item]'); if (!b) return;
     try { open(JSON.parse(b.getAttribute('data-mk-item'))); } catch (x) {}
   });

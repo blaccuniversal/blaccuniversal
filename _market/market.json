@@ -43,40 +43,66 @@
      "name": "Mystery Rider",
      "kind": "EP",
      "meta": "EP · OAU Fine Girl, Honeymoon in Paris, Safer",
-     "price": "Stream",
-     "ext": true,
-     "url": "https://music.apple.com/ng/search?term=LYRXX%20Mystery%20Rider"
+     "price": "Stream or buy",
+     "links": {
+      "spotify": "https://open.spotify.com/album/2r207wkanObe4RgWW8ILtf",
+      "apple": "https://music.apple.com/ng/album/mystery-rider/1866612346",
+      "audiomack": "https://audiomack.com/lyrxx-official",
+      "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
+     }
     },
     {
      "name": "Balenciaga",
      "kind": "Single",
      "meta": "Single · 2025 · debut",
-     "price": "Stream",
-     "ext": true,
-     "url": "https://music.apple.com/ng/search?term=LYRXX%20Balenciaga"
+     "price": "Stream or buy",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+      "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
+      "audiomack": "https://audiomack.com/lyrxx-official",
+      "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
+     }
     },
     {
      "name": "Wajo",
      "kind": "Single",
      "meta": "Single · 2025",
-     "price": "Stream",
-     "ext": true,
-     "url": "https://music.apple.com/ng/search?term=LYRXX%20Wajo"
+     "price": "Stream or buy",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+      "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
+      "audiomack": "https://audiomack.com/lyrxx-official",
+      "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
+     }
     }
    ],
    "avatar": "/assets/img/market/lyrxx-av.webp",
    "hero": "/assets/img/market/lyrxx-hero.webp",
    "heroPos": "50% 22%",
-   "heroDim": true
+   "heroDim": true,
+   "links": {
+    "instagram": "https://www.instagram.com/lyrxx.official/",
+    "x": "https://x.com/lyrxx_official",
+    "tiktok": "https://www.tiktok.com/@lyrxx_official"
+   },
+   "listen": {
+    "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+    "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
+    "audiomack": "https://audiomack.com/lyrxx-official"
+   },
+   "buy": {
+    "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
+   },
+   "store": "lyrxx"
   },
   {
    "cat": "music",
    "slug": "bemshima",
    "name": "Bemshima",
-   "tag": "Producer · Ibadan",
+   "tag": "Musician · Nigeria",
    "avatar": "/assets/img/market/bemshima-av.webp",
    "hero": "/assets/img/market/bemshima-hero.webp",
-   "bio": "Producer and multidisciplinary creative. Free beat tapes and instrumentals to lease.",
+   "bio": "Recording Artist, Producer",
    "links": {
     "instagram": "https://www.instagram.com/iambemshima",
     "x": "https://x.com/iambemshima",

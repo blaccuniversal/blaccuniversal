@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '3'
+VER = '5'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -40,6 +40,14 @@ SOC = {
   'spotify': ('Spotify', '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.25"/><path d="M7.5 9.5c3-1 6.5-.7 9.2.8M8 12.6c2.5-.7 5.3-.4 7.4.8M8.6 15.4c2-.5 3.9-.3 5.6.6"/></svg>'),
   'web': ('Website', '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.25"/><path d="M2.75 12h18.5M12 2.75c2.6 2.6 3.8 5.7 3.8 9.25S14.6 18.65 12 21.25C9.4 18.65 8.2 15.55 8.2 12S9.4 5.35 12 2.75z"/></svg>'),
 }
+DSP = {
+  'spotify': ('Spotify', SOC['spotify'][1]),
+  'apple': ('Apple Music', '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17.5V6.5l10-2v11"/><circle cx="6.75" cy="17.5" r="2.25"/><circle cx="16.75" cy="15.5" r="2.25"/></svg>'),
+  'audiomack': ('Audiomack', '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 14h2l1.5-4 2 8 2-12 2 10 2-6 1.5 4h6"/></svg>'),
+  'youtube': ('YouTube', SOC['youtube'][1]),
+  'itunes': ('iTunes', '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8z"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7"/></svg>'),
+}
+BAG = DSP['itunes'][1]
 ARROW = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg>'
 
 # page shell borrowed from the shop
@@ -93,6 +101,17 @@ def avatar(st, cls):
         return '<span class="' + cls + ' mk-mono"><b>' + esc(st['name']) + '</b></span>'
     return '<span class="' + cls + '"><img src="' + esc(st['avatar']) + '" alt="" loading="lazy"></span>'
 
+def listen(s, c):
+    L = s.get('listen') or {}
+    if not L and not s.get('buy') and not s.get('store'): return ''
+    out = ''
+    if L: out += '<div class="mk-ls"><span class="mk-ls__k">Stream</span><div class="mk-ls__b">' + ''.join('<a class="mk-dsp" href="' + esc(u) + '" target="_blank" rel="noopener">' + DSP[k][1] + '<span>' + DSP[k][0] + '</span></a>' for k, u in L.items() if k in DSP) + '</div></div>'
+    if s.get('buy'): out += '<div class="mk-ls"><span class="mk-ls__k">Buy</span><div class="mk-ls__b">' + ''.join('<a class="mk-dsp" href="' + esc(u) + '" target="_blank" rel="noopener">' + DSP[k][1] + '<span>' + DSP[k][0] + '</span></a>' for k, u in s['buy'].items() if k in DSP) + '</div></div>'
+    if s.get('store'):
+        ms = [x for x in STORES if x['cat'] == 'merch' and x['slug'] == s['store']]
+        out += '<div class="mk-ls"><span class="mk-ls__k">Store</span><div class="mk-ls__b">' + ('<a class="mk-dsp mk-dsp--w" href="/market/merch/' + ms[0]['slug'] + '/">' + ICON['merch'] + '<span>Shop merch</span></a>' if ms else '<span class="mk-dsp is-off">' + ICON['merch'] + '<span>Merch soon</span></span>') + '</div></div>'
+    return '      <div class="mk-listen">' + out + '</div>\n'
+
 # ---------- /market/ ----------
 for old in ('market',):
     if os.path.isdir(OUT): shutil.rmtree(OUT)
@@ -125,7 +144,10 @@ for c in CATS:
             pic = '<img src="' + esc(it['img']) + '" alt="" loading="lazy">' if it.get('img') else '<span class="mk-cover"><small>' + esc(s['name']) + '</small><b>' + esc(it['name']) + '</b><small>' + esc(it.get('kind', '')) + '</small></span>'
             inner = ('<span class="shop-card__img">' + pic + '</span><span class="shop-card__name">' + esc(it['name']) + '</span>'
                      '<span class="shop-card__meta">' + esc(it.get('meta', '')) + '</span><span class="shop-card__price">' + esc(it.get('price', '')) + (' ' + ARROW if it.get('ext') else '') + '</span>')
-            if it.get('url'):
+            if it.get('links'):
+                payload = json.dumps({'store': s['name'], 'name': it['name'], 'meta': it.get('meta', ''), 'img': it.get('img', ''), 'links': [[k, DSP[k][0], u, 'buy' if k == 'itunes' else 'stream'] for k, u in it['links'].items() if k in DSP]}, ensure_ascii=False)
+                cards += '<button class="shop-card mk-item" type="button" data-mk-rel="' + esc(payload) + '">' + inner + '</button>'
+            elif it.get('url'):
                 cards += '<a class="shop-card mk-item" href="' + esc(it['url']) + '"' + (' target="_blank" rel="noopener"' if it.get('ext') else '') + '>' + inner + '</a>'
             else:
                 payload = json.dumps({'store': s['name'], 'name': it['name'], 'price': it.get('price', ''), 'meta': it.get('meta', ''), 'img': it['img'], 'desc': it.get('desc', '')}, ensure_ascii=False)
@@ -133,7 +155,8 @@ for c in CATS:
         hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + (' mk-hero--dim' if s.get('heroDim') else '') + '">\n' + ('    <div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""' + (' style="object-position:' + esc(s['heroPos']) + '"' if s.get('heroPos') else '') + '></div>\n' if s.get('hero') else '    <div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>\n') +
                 '    <div class="wrap mk-hero__in">\n      <p class="eyebrow"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
                 '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n'
-                '      <p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>\n'
+                '      <p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>\n' +
+                listen(s, c) +
                 '      <div class="mk-hero__row">' + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '<span class="mk-hero__n">' + plural(len(items), 'item') + '</span></div>\n    </div>\n  </section>\n')
         body = hero + '  <main class="shop gutter mk mk--store" id="top">\n    <div class="wrap">\n' + bar(len(items), 'item') + '      <div class="shop-cards" data-cards data-view-mode="grid">\n          ' + cards + '\n      </div>\n    </div>\n  </main>\n'
         write('/market/' + c['slug'] + '/' + s['slug'] + '/', shell(s['name'] + ' · ' + c['name'] + ' · Market — BLACC Universal', s.get('bio', ''), '/market/' + c['slug'] + '/' + s['slug'] + '/', body))
