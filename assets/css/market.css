@@ -158,3 +158,7 @@ a.mk-dsp:hover{background:#fff;border-color:#fff;color:#000}
 .mk-hero__name{font-size:clamp(48px,7.4vw,98px);line-height:.8;margin:-.02em 0 0}
 .mk-hero__tag{margin:0;line-height:1}
 @media (max-width:600px){.mk-hero__av{width:76px}.mk-hero__name{font-size:clamp(46px,14vw,62px)}}
+.mk-live--soon{background:transparent;color:#fff;border:1px solid #2e2e2e}
+.mk-live--soon:hover{background:transparent}
+.mk-live--soon .mk-live__t small{color:#ff6a5c}
+.mk-live__soon{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#9a9a9a;padding:6px 9px;border:1px solid #333;border-radius:999px;white-space:nowrap}

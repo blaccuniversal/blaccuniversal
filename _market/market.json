@@ -159,6 +159,10 @@
    "store": "blacc-universal",
    "buy": {
     "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+   },
+   "show": {
+    "kicker": "Live show",
+    "label": "The Barstool Experience"
    }
   },
   {

@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '10'
+VER = '11'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -109,7 +109,10 @@ def listen(s, c):
     out = '<div class="mk-act">'
     if s.get('show'):
         sh = s['show']
-        out += '<a class="mk-live" href="' + esc(sh['url']) + '" target="_blank" rel="noopener"><span class="mk-live__dot"></span><span class="mk-live__ic">' + ICON['events'] + '</span><span class="mk-live__t"><small>Live show</small><b>' + esc(sh.get('label', 'Get tickets')) + '</b></span><span class="mk-live__go">' + ARROW + '</span></a>'
+        if sh.get('url'):
+            out += '<a class="mk-live" href="' + esc(sh['url']) + '" target="_blank" rel="noopener"><span class="mk-live__dot"></span><span class="mk-live__ic">' + ICON['events'] + '</span><span class="mk-live__t"><small>' + esc(sh.get('kicker', 'Live show')) + '</small><b>' + esc(sh.get('label', 'Get tickets')) + '</b></span><span class="mk-live__go">' + ARROW + '</span></a>'
+        else:
+            out += '<div class="mk-live mk-live--soon"><span class="mk-live__ic">' + ICON['events'] + '</span><span class="mk-live__t"><small>' + esc(sh.get('kicker', 'Live show')) + '</small><b>' + esc(sh.get('label', '')) + '</b></span><span class="mk-live__soon">Coming soon</span></div>'
     if L:
         out += '<p class="mk-act__k">Listen</p><div class="mk-dsps">' + ''.join(btn(k, u) for k, u in L.items() if k in DSP) + '</div>'
     more = ''
