@@ -9,10 +9,10 @@
   // This week's schedule, Fri 13 – Thu 19 Nov 2026. One show per film, every day.
   var WEEK = [new Date(2026, 10, 13), new Date(2026, 10, 19)];
   var FILMS = [
-    { t: 'Starlomo', g: 'Nollywood', time: '11:00', img: 'starlomo', c: ['#06142a', '#7fb2ff'] },
+    { t: 'Starlomo', g: 'Drama', d: '1h 55m', time: '11:00', img: 'starlomo', c: ['#06142a', '#7fb2ff'] },
     { t: 'Maybe… Maybe Not', g: 'Drama', d: '1h 40m', time: '11:00', img: 'maybe-maybe-not', c: ['#1d0f2e', '#b38cff'] },
     { t: 'Issakaba', g: 'Action · Drama', d: '2h 26m', time: '13:00', img: 'issakaba', c: ['#3a0d06', '#e8b820'] },
-    { t: 'Agbara Nla', g: 'Nollywood', time: '13:00', img: 'agbara-nla', c: ['#2a1a03', '#f2c14e'] },
+    { t: 'Agbara Nla', g: 'Horror', d: '2h 37m', time: '13:00', img: 'agbara-nla', c: ['#2a1a03', '#f2c14e'] },
     { t: 'Tele x Zikora', g: 'Drama', d: '2h 00m', time: '15:45', img: 'tele-x-zikora', c: ['#071d2e', '#4fb3ff'] },
     { t: 'The Perfect Spec', g: 'Drama', d: '2h 00m', time: '15:45', img: 'the-perfect-spec', c: ['#0a2420', '#5fd1b0'] },
     { t: 'Loving Itohan', g: 'Drama', d: '1h 34m', time: '17:45', img: 'loving-itohan', c: ['#2b0716', '#f06a8c'] },
