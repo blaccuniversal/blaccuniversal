@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Bemaamoo · BLACC Universal</title>
+<meta name="description" content="Bemaamoo by BLACC Universal. A word game where every row hides more words. Play solo or pass the phone with up to 8 players.">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="/bemaamoo/manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="/bemaamoo/icon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/bemaamoo/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Bemaamoo">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta property="og:title" content="Bemaamoo · BLACC Universal">
+<meta property="og:description" content="A word game where every row hides more words.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=1">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="blacc" viewBox="0 0 563 418"><g><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/></g><circle cx="12" cy="17.2" r="1" fill="currentColor"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></g></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></g></symbol>
+</svg>
+
+<!-- HOME -->
+<section class="scr" data-scr="home">
+  <header class="top">
+    <a class="top__brand" href="/projects/" aria-label="BLACC Universal projects"><svg><use href="#blacc"/></svg><span>BLACC Universal</span></a>
+    <div class="top__r"><button class="ic" data-act="help" aria-label="How to play"><svg><use href="#i-help"/></svg></button></div>
+  </header>
+  <main class="home wrap">
+    <div class="hero">
+      <div class="mark" aria-hidden="true" data-mark></div>
+      <h1 class="wm">Bemaamoo</h1>
+      <p class="lead">Every word you add can spell another one going down. Play alone or pass the phone with up to 8 players.</p>
+      <div class="hero__btns">
+        <button class="btn btn--big" data-act="continue" data-continue hidden>Continue</button>
+        <button class="btn btn--big" data-act="setup" data-newbtn>New game</button>
+        <button class="btn btn--big btn--ghost" data-act="help">How to play</button>
+      </div>
+      <p class="hero__note" data-contnote hidden></p>
+    </div>
+    <p class="foot">A BLACC Universal project · <a href="/projects/">More projects</a></p>
+  </main>
+</section>
+
+<!-- SETUP -->
+<section class="scr" data-scr="setup" hidden>
+  <header class="top">
+    <button class="back" data-act="home"><svg><use href="#i-back"/></svg><span>Home</span></button>
+    <b class="top__t">New game</b>
+    <span class="top__sp"></span>
+  </header>
+  <main class="wrap setup">
+    <section class="fs">
+      <h2 class="eyebrow">Players</h2>
+      <div class="seg seg--8" role="group" aria-label="Number of players" data-pcount></div>
+      <div class="pnames" data-pnames></div>
+    </section>
+    <section class="fs">
+      <h2 class="eyebrow">Category</h2>
+      <button class="pick" data-act="cats" type="button"><span><small data-catgroup>Names</small><b data-catname>Names (All)</b></span><svg><use href="#i-down"/></svg></button>
+    </section>
+    <section class="fs fs--2">
+      <div>
+        <h2 class="eyebrow">Round timer</h2>
+        <div class="seg" role="group" aria-label="Round timer" data-opt="timer"></div>
+      </div>
+      <div>
+        <h2 class="eyebrow">Words per round</h2>
+        <div class="seg" role="group" aria-label="Words per round" data-opt="limit"></div>
+      </div>
+    </section>
+    <button class="btn btn--big btn--full" data-act="start">Start game</button>
+  </main>
+</section>
+
+<!-- GAME -->
+<section class="scr scr--game" data-scr="game" hidden>
+  <header class="gtop">
+    <button class="ic" data-act="menu" aria-label="Game menu"><svg><use href="#i-back"/></svg></button>
+    <button class="gtop__mid" data-act="info" type="button" aria-label="Round details">
+      <span class="gtop__cat" data-gcat>Names</span>
+      <span class="gtop__sub" data-gsub>Round 1</span>
+    </button>
+    <div class="gtop__r">
+      <button class="clock" data-act="clock" data-clock hidden aria-label="Pause timer"><span data-clocktx>5:00</span><svg><use href="#i-pause"/></svg></button>
+      <button class="ic" data-act="help" aria-label="How to play"><svg><use href="#i-help"/></svg></button>
+    </div>
+  </header>
+
+  <div class="gbody">
+    <div class="gmain">
+      <div class="pstrip" data-pstrip></div>
+      <div class="board" data-board tabindex="-1" aria-label="Board"></div>
+      <div class="dock">
+        <div class="dock__msg" data-msg aria-live="polite"></div>
+        <div class="dock__turn"><i data-turndot></i><span data-turn>Your turn</span><span class="dock__live" data-live></span></div>
+        <form class="entry" data-entry autocomplete="off">
+          <input class="entry__in" data-in type="text" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" maxlength="32" placeholder="Type a word" aria-label="Your word">
+          <button class="btn entry__go" type="submit">Add</button>
+        </form>
+        <div class="dock__acts">
+          <button class="lnk" data-act="skip" type="button">Skip turn</button>
+          <button class="lnk" data-act="undo" type="button">Undo last word</button>
+          <button class="lnk" data-act="end" type="button">End round</button>
+        </div>
+      </div>
+    </div>
+    <aside class="gside">
+      <section class="panel">
+        <h2 class="eyebrow">Scores</h2>
+        <div data-scores></div>
+      </section>
+      <section class="panel">
+        <h2 class="eyebrow">Perks this round</h2>
+        <ol class="feed" data-feed></ol>
+      </section>
+      <section class="panel panel--key">
+        <h2 class="eyebrow">Scoring</h2>
+        <dl class="key">
+          <div><dt>Word</dt><dd>1 + 2 + 3 … one for each letter. 5 letters = 15</dd></div>
+          <div><dt class="c-mav">Maverick</dt><dd>A word reading down a column, 3+ rows</dd></div>
+          <div><dt class="c-con">Concord</dt><dd>5+ words in a row with the same length</dd></div>
+          <div><dt class="c-key">Keystone</dt><dd>+5 when one word sets off both</dd></div>
+        </dl>
+      </section>
+    </aside>
+  </div>
+  <div class="flash" data-flash aria-hidden="true"></div>
+</section>
+
+<!-- SHEETS -->
+<div class="sheet" data-sheet="cats" hidden>
+  <div class="sheet__card sheet__card--tall" role="dialog" aria-modal="true" aria-label="Choose a category">
+    <div class="sheet__head"><b>Choose a category</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+    <label class="search"><svg><use href="#i-search"/></svg><input data-catq type="search" placeholder="Search categories" aria-label="Search categories"></label>
+    <div class="cats" data-cats></div>
+  </div>
+</div>
+
+<div class="sheet" data-sheet="help" hidden>
+  <div class="sheet__card" role="dialog" aria-modal="true" aria-label="How to play">
+    <div class="sheet__head"><b>How to play</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+    <ol class="howto">
+      <li><b>Pick a category.</b> Take turns adding one word from it. Each word goes on its own row, one letter per box.</li>
+      <li><b>Every word scores.</b> 1 point for the first letter, 2 for the second, and so on. 3 letters = 6, 5 letters = 15, 8 letters = 36.</li>
+      <li><b><em class="c-mav">Maverick.</em></b> Read straight down any column from the 2nd letter onwards. If 3 or more rows in a row spell a word from the same category, the player who finished it scores it like a word.</li>
+      <li><b><em class="c-con">Concord.</em></b> 5 or more words in a row with the same length (3+ letters). Each word in the streak scores (length − 1) + (streak − 5), so it grows while the streak lasts.</li>
+      <li><b><em class="c-key">Keystone.</em></b> If one word sets off a Maverick and a Concord at the same time, it earns 5 extra points.</li>
+      <li><b>Checking.</b> Words are checked against the category's word list. If a real word isn't in the list, the table can agree to count it anyway. A word can only be used once per round.</li>
+      <li><b>Rounds.</b> A round ends when the timer runs out, the word limit is reached or you end it. Scores carry over between rounds.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="sheet" data-sheet="menu" hidden>
+  <div class="sheet__card" role="dialog" aria-modal="true" aria-label="Game menu">
+    <div class="sheet__head"><b>Game</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+    <div class="menu">
+      <button class="btn btn--full" data-act="close">Back to the game</button>
+      <button class="btn btn--full btn--ghost" data-act="end">End this round</button>
+      <button class="btn btn--full btn--ghost" data-act="home">Leave (your game is saved)</button>
+      <button class="btn btn--full btn--ghost btn--warn" data-act="quit">Finish game</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" data-ov="ready" hidden>
+  <div class="ov__card">
+    <p class="eyebrow" data-rdround>Round 1</p>
+    <h2 class="ov__t" data-rdcat>Countries</h2>
+    <p class="ov__p" data-rdtx>Ada starts.</p>
+    <button class="btn btn--big btn--full" data-act="go">Start round</button>
+  </div>
+</div>
+
+<div class="ov" data-ov="summary" hidden>
+  <div class="ov__card ov__card--wide">
+    <p class="eyebrow" data-sumround>Round 1 over</p>
+    <h2 class="ov__t" data-sumt>Ada leads</h2>
+    <div class="sum" data-sum></div>
+    <div class="ov__btns" data-sumbtns>
+      <button class="btn btn--big" data-act="next">Next round</button>
+      <button class="btn btn--big btn--ghost" data-act="nextcat">Next round, new category</button>
+      <button class="btn btn--big btn--ghost" data-act="quit">Finish game</button>
+    </div>
+  </div>
+</div>
+
+<div class="ov" data-ov="final" hidden>
+  <div class="ov__card ov__card--wide">
+    <p class="eyebrow" data-finsub>Game over</p>
+    <h2 class="ov__t" data-fint>Ada wins</h2>
+    <div class="sum" data-fin></div>
+    <div class="ov__btns">
+      <button class="btn btn--big" data-act="again">Play again</button>
+      <button class="btn btn--big btn--ghost" data-act="home">Home</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" data-toast hidden></div>
+
+<script src="/assets/bemaamoo/bmo-engine.js?v=1"></script>
+<script src="/assets/bemaamoo/bmo.js?v=1"></script>
+</body>
+</html>
