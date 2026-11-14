@@ -268,3 +268,8 @@ a.pill:hover{background:rgba(255,255,255,.06)}
   .player iframe{height:400px}
 }
 @media (max-width:380px){.util__b span,.util__b{letter-spacing:0}}
+
+/* empty state */
+.soon{padding:clamp(36px,6vw,64px) clamp(22px,4vw,48px);border:1px solid #1d1d1d;border-radius:2px;background:radial-gradient(90% 120% at 100% 0%,rgba(201,165,74,.14),transparent 60%),#050505}
+.soon__t{text-wrap:balance;margin:0 0 14px;font-size:clamp(34px,5vw,60px);font-weight:800;font-stretch:75%;line-height:.95;text-transform:uppercase}
+.soon .lead{margin:0}

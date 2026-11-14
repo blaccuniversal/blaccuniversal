@@ -9,7 +9,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SITE = os.path.join(ROOT, 'thekeydaily')
 BASE = '/thekeydaily'
 ORIGIN = 'https://blaccuniversal.com'
-V = '2'  # asset version
+V = '4'  # asset version
 
 CATS = [
     ('entertainment', 'Entertainment', 'Music, film, TV and the culture around them.'),
@@ -105,8 +105,9 @@ def header(active=''):
             '<nav class="nav" aria-label="Sections">%s</nav>'
             '<button class="menu" type="button" data-menu aria-label="Open menu" aria-expanded="false"><i></i><i></i></button></div>'
             '<nav class="drawer" data-drawer hidden aria-label="Sections">%s</nav></header>'
-            '<div class="tick" aria-label="Latest headlines"><div class="wrap tick__in"><span class="tick__l">Latest</span><div class="tick__m"><div class="tick__r">%s%s</div></div></div></div>') % (
-        today.strftime('%A, ') + fdate(today), BASE, KEY_SVG, nav, nav, tick, tick)
+            '%s') % (
+        today.strftime('%A, ') + fdate(today), BASE, KEY_SVG, nav, nav,
+        ('<div class="tick" aria-label="Latest headlines"><div class="wrap tick__in"><span class="tick__l">Latest</span><div class="tick__m"><div class="tick__r">%s%s</div></div></div></div>' % (tick, tick)) if stories else '')
 
 SPRITE = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="blacc" viewBox="0 0 563 418"><g><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></symbol></svg>'
 
@@ -168,7 +169,18 @@ def week_block():
     return '<section class="week" id="week"><div class="wrap week__grid">%s%s</div></section>' % (one('artist', 'Artist of the Week', feat.get('artist')), one('creative', 'Creative of the Week', feat.get('creative')))
 
 # ---------------- home ----------------
+SOON = ('<div class="soon"><p class="eyebrow eyebrow--gold">%s</p><h2 class="soon__t">Stories are on the way.</h2>'
+        '<p class="lead">Our first reports in entertainment, sports, business, tech and politics land here soon.</p></div>')
+
 def build_home():
+    if not stories:
+        secs = ''.join('<a class="sec" href="%s/%s/"><span class="sec__dot c-bg-%s"></span><span><b>%s</b><small>%s</small></span></a>' % (BASE, k, k, n, d) for k, n, d in CATS)
+        body = ('<section class="mast"><div class="wrap mast__in"><span class="mast__key" aria-hidden="true"></span><h1 class="mast__h">The key to<br><span>what matters</span><br>right now.</h1></div></section>'
+                '<section class="wrap split" id="latest"><div class="split__main">%s</div><aside class="split__side"><section class="side"><p class="eyebrow">Sections</p>%s</section></aside></section>'
+                '%s%s%s') % (SOON % 'Latest', secs, top7_block(), week_block(), picks_block())
+        page(BASE + '/', 'The Key Daily · News, culture and music',
+             'The Key Daily: entertainment, sports, business, tech and politics, plus the Top 7 countdown, Artist and Creative of the Week, and The Key Picks playlist.', body, 'latest')
+        return
     lead = sorted([s for s in stories if s.get('featured')], key=lambda s: s['featured'])[:3]
     slides = ''.join(('<article class="slide%s" data-slide><a href="%s" class="slide__a">%s<span class="slide__shade"></span>'
                       '<span class="slide__b">%s<span class="slide__t">%s</span><span class="slide__d">%s</span>%s</span></a></article>') % (
@@ -201,7 +213,11 @@ def build_home():
 def build_cats():
     for k, n, d in CATS:
         ss = [s for s in stories if s['cat'] == k]
-        if not ss: continue
+        if not ss:
+            body = ('<section class="mast mast--cat"><div class="wrap"><p class="eyebrow c-%s">Section</p><h1 class="mast__h mast__h--cat">%s</h1><p class="lead">%s</p></div></section>'
+                    '<div class="wrap catwrap">%s</div>%s') % (k, n, d, SOON % n, picks_block())
+            page('%s/%s/' % (BASE, k), '%s · The Key Daily' % n, '%s from The Key Daily. %s' % (n, d), body, n.lower())
+            continue
         body = ('<section class="mast mast--cat"><div class="wrap"><p class="eyebrow c-%s">Section</p><h1 class="mast__h mast__h--cat">%s</h1><p class="lead">%s</p></div></section>'
                 '<div class="wrap catwrap"><div class="catlead">%s</div><div class="grid3">%s</div></div>%s') % (
             k, n, d, card(ss[0], 'big'), ''.join(card(s, 'tile') for s in ss[1:]), picks_block())
