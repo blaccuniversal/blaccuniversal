@@ -63,7 +63,11 @@
      "ext": true,
      "url": "https://music.apple.com/ng/search?term=LYRXX%20Wajo"
     }
-   ]
+   ],
+   "avatar": "/assets/img/market/lyrxx-av.webp",
+   "hero": "/assets/img/market/lyrxx-hero.webp",
+   "heroPos": "50% 22%",
+   "heroDim": true
   },
   {
    "cat": "music",

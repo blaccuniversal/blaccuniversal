@@ -72,3 +72,4 @@ button.shop-card{padding:0;background:none;border:0;font:inherit;text-align:left
 .mk-hero__bg--type{display:flex;align-items:center;justify-content:flex-end;overflow:hidden;background:radial-gradient(70% 90% at 80% 30%,#1b1b1b,#000 70%)}
 .mk-hero__bg--type span{margin-right:-2vw;font-size:clamp(120px,24vw,360px);font-weight:200;letter-spacing:-.05em;line-height:.8;color:rgba(255,255,255,.06);white-space:nowrap}
 .shop-card__price svg{vertical-align:-3px;opacity:.7}
+.mk-hero--dim .mk-hero__bg img{opacity:.36}
