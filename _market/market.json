@@ -145,7 +145,7 @@
      "links": {
       "spotify": "https://open.spotify.com/track/5uhf0p9xXbA1gY7bBtf2ai",
       "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
-      "audiomack": "https://audiomack.com/search?q=Bemshima%20Opus",
+      "audiomack": "https://audiomack.com/bemshima",
       "youtube": "https://www.youtube.com/c/bemshima",
       "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
      }
@@ -155,6 +155,7 @@
    "listen": {
     "spotify": "https://open.spotify.com/artist/1eI1MeHIkwuWTUC9daVZFS",
     "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
+    "audiomack": "https://audiomack.com/bemshima",
     "youtube": "https://www.youtube.com/c/bemshima"
    },
    "store": "blacc-universal",
