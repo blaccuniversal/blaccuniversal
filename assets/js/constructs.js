@@ -6,7 +6,8 @@
   var KEY = 'cx_pass', DAYS = 30;
   /* Constructs shown after login: { name: 'Name', path: '/constructs/folder/' } */
   var CONSTRUCTS = [
-    { name: 'ÀṢÀ Bar & Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/asa/', img: '/constructs/asa/img/bar-s.webp', logo: '/constructs/asa/img/logo.png' }
+    { name: 'ÀṢÀ Bar & Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/asa/', img: '/constructs/asa/img/bar-s.webp', logo: '/constructs/asa/img/logo.png' },
+    { name: 'Cinema D Hybrid', tag: 'Cinema', path: '/constructs/cinema/', img: '/constructs/cinema/img/cover.webp' }
   ];
 
   // tool rotation
