@@ -143,10 +143,10 @@
      "img": "/assets/img/market/bemshima-opus.webp",
      "links": {
       "spotify": "https://open.spotify.com/track/5uhf0p9xXbA1gY7bBtf2ai",
-      "apple": "https://music.apple.com/ng/search?term=Bemshima%20Opus",
+      "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
       "audiomack": "https://audiomack.com/search?q=Bemshima%20Opus",
       "youtube": "https://www.youtube.com/c/bemshima",
-      "itunes": "https://music.apple.com/ng/search?term=Bemshima%20Opus"
+      "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
      }
     },
     {
@@ -181,9 +181,13 @@
    "heroPos": "50% 30%",
    "listen": {
     "spotify": "https://open.spotify.com/artist/1eI1MeHIkwuWTUC9daVZFS",
+    "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
     "youtube": "https://www.youtube.com/c/bemshima"
    },
-   "store": "blacc-universal"
+   "store": "blacc-universal",
+   "buy": {
+    "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+   }
   },
   {
    "cat": "merch",
