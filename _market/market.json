@@ -62,6 +62,7 @@
       "spotify": "https://open.spotify.com/album/2r207wkanObe4RgWW8ILtf",
       "apple": "https://music.apple.com/ng/album/mystery-rider/1866612346",
       "audiomack": "https://audiomack.com/lyrxx-official",
+      "youtube": "https://www.youtube.com/@lyrxx.official",
       "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
      },
      "img": "/assets/img/market/lyrxx-mystery-rider.webp"
@@ -75,6 +76,7 @@
       "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
       "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
       "audiomack": "https://audiomack.com/lyrxx-official",
+      "youtube": "https://www.youtube.com/@lyrxx.official",
       "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
      },
      "img": "/assets/img/market/lyrxx-wajo.webp"
@@ -88,6 +90,7 @@
       "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
       "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
       "audiomack": "https://audiomack.com/lyrxx-official",
+      "youtube": "https://www.youtube.com/@lyrxx.official",
       "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
      },
      "img": "/assets/img/market/lyrxx-balenciaga.webp"
@@ -100,12 +103,14 @@
    "links": {
     "instagram": "https://www.instagram.com/lyrxx.official/",
     "x": "https://x.com/lyrxx_official",
-    "tiktok": "https://www.tiktok.com/@lyrxx_official"
+    "tiktok": "https://www.tiktok.com/@lyrxx_official",
+    "youtube": "https://www.youtube.com/@lyrxx.official"
    },
    "listen": {
     "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
     "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
-    "audiomack": "https://audiomack.com/lyrxx-official"
+    "audiomack": "https://audiomack.com/lyrxx-official",
+    "youtube": "https://www.youtube.com/@lyrxx.official"
    },
    "buy": {
     "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
