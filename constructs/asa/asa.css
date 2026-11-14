@@ -334,3 +334,11 @@ body{text-rendering:optimizeLegibility;font-kerning:normal}
 
 /* BLACC constructs dock sits above the reserve bar on phones/tablets */
 @media (max-width:860px){.cxg-dock{bottom:calc(80px + env(safe-area-inset-bottom))!important}.ft{padding-bottom:calc(170px + env(safe-area-inset-bottom))}}
+
+/* social icons: minimal, frameless */
+.soc{display:flex;align-items:center;gap:2px;margin-left:-11px}
+.soc a,.info .soc a{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:0;color:var(--soc,currentColor);opacity:.82;transition:opacity .2s,color .2s,transform .3s}
+.soc a:hover{opacity:1;color:var(--soc-h);transform:translateY(-2px)}
+.ft .soc{margin:0;justify-content:center}
+.soc{--soc-h:var(--brass2)}
+.info dd.soc{margin-left:-11px}
