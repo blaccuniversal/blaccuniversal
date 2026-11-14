@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '14'
+VER = '16'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -99,7 +99,7 @@ def avatar(st, cls):
         return '<span class="' + cls + ' mk-logo">' + BLACC + '</span>'
     if not st.get('avatar'):
         return '<span class="' + cls + ' mk-mono"><b>' + esc(st['name']) + '</b></span>'
-    return '<span class="' + cls + '"><img src="' + esc(st['avatar']) + '" alt="" loading="lazy"></span>'
+    return '<span class="' + cls + '"><img src="' + esc(st['avatar']) + '" alt=""' + ('' if cls.startswith('mk-hero') else ' loading="lazy"') + '></span>'
 
 def listen(s, c):
     L = s.get('listen') or {}
@@ -163,11 +163,11 @@ for c in CATS:
             else:
                 payload = json.dumps({'store': s['name'], 'name': it['name'], 'price': it.get('price', ''), 'meta': it.get('meta', ''), 'img': it['img'], 'desc': it.get('desc', '')}, ensure_ascii=False)
                 cards += '<button class="shop-card mk-item" type="button" data-mk-item="' + esc(payload) + '">' + inner + '</button>'
-        bg = ('<div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""' + (' style="object-position:' + esc(s['heroPos']) + '"' if s.get('heroPos') else '') + '></div>' if s.get('hero') else '<div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>')
+        bg = ('<div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt="" fetchpriority="high" decoding="async"' + (' style="object-position:' + esc(s['heroPos']) + '"' if s.get('heroPos') else '') + '></div>' if s.get('hero') else '<div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>')
         hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + (' mk-hero--dim' if s.get('heroDim') else '') + '">\n    ' + bg + '\n'
                 '    <div class="wrap mk-hero__in">\n      <p class="eyebrow mk-crumbs"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
                 '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div class="mk-hero__txt"><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n    </div>\n  </section>\n'
-                '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l">' + ('<div class="mk-bio">' + ''.join('<p class="mk-hero__bio">' + esc(p.strip()) + '</p>' for p in s['bio'].split('\n\n') if p.strip()) + '</div>' if s.get('bio') else '') + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div>\n'
+                '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l">' + ('<button class="mk-biobtn" type="button" data-mk-bio><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg><span>Read bio</span></button><template data-mk-biotext><p class="eyebrow">' + esc(s.get('tag', '')) + '</p><h3>' + esc(s['name']) + '</h3><div class="mk-bio">' + ''.join('<p class="mk-hero__bio">' + esc(p.strip()) + '</p>' for p in s['bio'].split('\n\n') if p.strip()) + '</div></template>' if s.get('bio') else '') + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div>\n'
                 '      <div class="mk-info__r">' + listen(s, c) + '</div>\n    </div>\n  </section>\n')
         if not items:
             body = hero + '  <main class="shop gutter mk mk--store" id="top">\n    <div class="wrap">\n      <div class="mk-empty"><span class="mk-empty__icon">' + ICON['music'] + '</span><p>New music is on the way.</p></div>\n    </div>\n  </main>\n'

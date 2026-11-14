@@ -180,3 +180,26 @@ a.mk-dsp:hover{background:#fff;border-color:#fff;color:#000}
 .mk-bio .mk-hero__bio{font-size:clamp(15px,1.25vw,17px);line-height:1.7}
 .mk-bio .mk-hero__bio:first-child{font-size:clamp(16px,1.45vw,19px);color:#e6e6e6}
 .mk-bio .mk-hero__bio+.mk-hero__bio{color:#a8a8a8}
+.mk-biobtn{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 18px 0 14px;border:1px solid #2e2e2e;border-radius:2px;background:#0b0b0b;color:#fff;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.mk-biobtn:hover{background:#fff;color:#000;border-color:#fff}
+.mk-rel__c--bio{max-width:560px}
+.mk-rel__c--bio h3{margin:6px 0 18px}
+.mk-rel__c--bio .mk-bio{gap:14px}
+.mk-rel__c--bio .mk-hero__bio{margin:0;font-size:15px;line-height:1.75;color:#bdbdbd}
+.mk-rel__c--bio .mk-hero__bio:first-child{font-size:16px;color:#ececec}
+.mk-info__l{gap:14px}
+/* ---- hero identity: picture always exactly as tall as name + tag ---- */
+.mk-hero__bg{background:radial-gradient(80% 70% at 50% 30%,#1c1c1c,#000 75%)}
+.mk-hero__id{display:flex;align-items:stretch;gap:clamp(14px,2vw,22px)}
+.mk-hero__av{width:auto !important;height:auto;aspect-ratio:1;align-self:stretch;background:#141414}
+.mk-hero__txt{display:flex;flex-direction:column;justify-content:flex-start;gap:0;padding:0}
+.mk-hero__name{margin:0 0 0 -.04em !important;line-height:.82 !important;text-box:none !important;padding-top:.06em}
+.mk-hero__tag{margin:clamp(12px,1.2vw,16px) 0 0 !important;line-height:1 !important;text-box:none !important;padding-bottom:1px}
+/* deterministic sizing: picture = name block height */
+.mk-hero__id{--nf:clamp(41px,6.3vw,83px);--g:clamp(12px,1.2vw,16px);--ts:12px;align-items:flex-start}
+.mk-hero__name{font-size:var(--nf) !important;line-height:.82 !important;padding-top:.06em}
+.mk-hero__tag{font-size:var(--ts) !important;margin-top:var(--g) !important}
+.mk-hero__av{align-self:flex-start !important;aspect-ratio:auto !important;width:calc(var(--nf) * .88 + var(--g) + var(--ts) + 1px) !important;height:calc(var(--nf) * .88 + var(--g) + var(--ts) + 1px) !important;flex:none}
+@media (max-width:600px){.mk-hero__id{--nf:clamp(39px,11.9vw,53px);--g:13px;--ts:11px}}
+.mk-hero__name{padding-top:0 !important}
+.mk-hero__av{width:calc(var(--nf) * .82 + var(--g) + var(--ts) + 1px) !important;height:calc(var(--nf) * .82 + var(--g) + var(--ts) + 1px) !important}

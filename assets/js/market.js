@@ -86,7 +86,16 @@
   }
   function closeRel() { if (!rel) return; rel.hidden = true; document.body.classList.remove('build-open'); if (relLast && relLast.focus) relLast.focus(); }
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && rel && !rel.hidden) closeRel(); });
+  function openBio() {
+    var t = document.querySelector('[data-mk-biotext]'); if (!t) return;
+    relLast = document.activeElement;
+    if (!rel) { rel = document.createElement('div'); rel.className = 'mk-rel'; rel.hidden = true; rel.addEventListener('click', function (e) { if (e.target === rel || e.target.closest('.mk-rel__x')) closeRel(); }); document.body.appendChild(rel); }
+    rel.innerHTML = '<div class="mk-rel__c mk-rel__c--bio" role="dialog" aria-modal="true" aria-label="Bio"><button class="mk-rel__x" type="button" aria-label="Close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>' + t.innerHTML + '</div>';
+    rel.hidden = false; document.body.classList.add('build-open');
+    setTimeout(function () { var x = rel.querySelector('.mk-rel__x'); if (x) x.focus(); }, 60);
+  }
   document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-mk-bio]')) { openBio(); return; }
     var r = e.target.closest('[data-mk-rel]'); if (r) { try { openRel(JSON.parse(r.getAttribute('data-mk-rel'))); } catch (x) {} return; }
     var b = e.target.closest('[data-mk-item]'); if (!b) return;
     try { open(JSON.parse(b.getAttribute('data-mk-item'))); } catch (x) {}
