@@ -9,7 +9,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SITE = os.path.join(ROOT, 'thekeydaily')
 BASE = '/thekeydaily'
 ORIGIN = 'https://blaccuniversal.com'
-V = '1'  # asset version
+V = '2'  # asset version
 
 CATS = [
     ('entertainment', 'Entertainment', 'Music, film, TV and the culture around them.'),
@@ -35,7 +35,7 @@ def sdate(d): return '%d %s' % (d.day, d.strftime('%b'))
 def words(s): return sum(len(p.split()) for p in s['body'])
 def mins(s): return max(1, round(words(s) / 200))
 
-KEY_SVG = '<svg class="kmark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="13" cy="20" r="8.5" fill="none" stroke="currentColor" stroke-width="3.4"/><path d="M21.5 20H37M31 20v6M36 20v4.5" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="square"/></svg>'
+KEY_SVG = '<span class="kmark" aria-hidden="true"></span>'
 
 def h(seed, n):
     return int(hashlib.md5((seed).encode()).hexdigest()[:8], 16) % n
@@ -124,7 +124,7 @@ def page(path, title, desc, body, active='', extra_head='', og_type='website'):
     doc = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
            '<title>%s</title>\n<meta name="description" content="%s">\n<link rel="canonical" href="%s">\n<meta name="theme-color" content="#000000">\n'
            '<meta property="og:site_name" content="The Key Daily"><meta property="og:type" content="%s"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta name="twitter:card" content="summary_large_image">\n'
-           '<link rel="icon" type="image/svg+xml" href="%s/icon.svg">\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+           '<link rel="icon" type="image/png" sizes="64x64" href="%s/icon-64.png">\n<link rel="apple-touch-icon" href="/thekeydaily/apple-touch-icon.png">\n<meta property="og:image" content="https://blaccuniversal.com/thekeydaily/icon-512.png">\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
            '<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&amp;display=swap" rel="stylesheet">\n'
            '<link rel="stylesheet" href="/assets/thekeydaily/tkd.css?v=%s">\n%s</head>\n<body>\n%s\n%s\n<main id="main">\n%s\n</main>\n%s\n<script src="/assets/thekeydaily/tkd.js?v=%s" defer></script>\n</body>\n</html>\n') % (
         e(title), e(desc), full, og_type, e(title), e(desc), full, BASE, V, extra_head, SPRITE, header(active), body, footer(), V)
@@ -186,7 +186,7 @@ def build_home():
         rows += ('<section class="row"><div class="row__head"><h2 class="h3"><span class="c-%s">%s</span></h2><a class="more" href="%s/%s/">All %s</a></div>'
                  '<div class="row__grid">%s<div class="row__side">%s</div></div></section>') % (
             k, n, BASE, k, n.lower(), card(ss[0], 'big'), ''.join(card(s, 'tile') for s in ss[1:4]))
-    body = ('<section class="mast"><div class="wrap"><h1 class="mast__h">The key to<br><span>what matters</span><br>right now.</h1></div></section>'
+    body = ('<section class="mast"><div class="wrap mast__in"><span class="mast__key" aria-hidden="true"></span><h1 class="mast__h">The key to<br><span>what matters</span><br>right now.</h1></div></section>'
             '<section class="hero"><div class="wrap"><div class="slider" data-slider>%s<div class="dots">%s</div></div></div></section>'
             '<section class="wrap split" id="latest"><div class="split__main"><div class="row__head"><h2 class="h3">Latest</h2></div>%s</div>'
             '<aside class="split__side"><section class="side"><p class="eyebrow">Editor’s picks</p><ul class="minis">%s</ul></section>'
@@ -248,5 +248,5 @@ def build_sitemap_entries():
     x = x.replace('\n</urlset>', block + '\n</urlset>')
     open(sm, 'w', encoding='utf-8').write(x)
 
-build_home(); build_cats(); build_stories(); build_icon(); build_sitemap_entries()
+build_home(); build_cats(); build_stories(); build_sitemap_entries()
 print('built', len(stories), 'stories')

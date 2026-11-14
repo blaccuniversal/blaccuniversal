@@ -51,8 +51,8 @@ a.pill:hover{background:rgba(255,255,255,.06)}
 .hdr__in{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:66px}
 .logo{display:flex;align-items:center;gap:10px;flex:none}
 .logo span{font-size:21px;font-weight:800;font-stretch:75%;letter-spacing:.06em;text-transform:uppercase;line-height:1}
-.kmark{width:30px;height:30px;color:var(--gold)}
-.logo--lg span{font-size:clamp(28px,4vw,40px)}.logo--lg .kmark{width:42px;height:42px}
+.kmark{display:block;height:34px;width:12px;background:var(--gold);-webkit-mask:url(/assets/thekeydaily/key.png) center/contain no-repeat;mask:url(/assets/thekeydaily/key.png) center/contain no-repeat}
+.logo--lg span{font-size:clamp(28px,4vw,40px)}.logo--lg .kmark{height:52px;width:18px}
 .nav{display:flex;align-items:center;gap:clamp(12px,1.6vw,26px)}
 .nav a{position:relative;font-size:13px;font-weight:600;color:#cfcfcf;white-space:nowrap;padding:8px 0}
 .nav a:hover,.nav a[aria-current]{color:#fff}
@@ -84,6 +84,9 @@ a.pill:hover{background:rgba(255,255,255,.06)}
 .mast{padding:clamp(40px,8vw,92px) 0 clamp(28px,4vw,44px)}
 .mast__h{margin:0;font-size:clamp(54px,11.5vw,156px);font-weight:800;font-stretch:75%;line-height:.86;letter-spacing:-.015em;text-transform:uppercase}
 .mast__h span{color:var(--gold)}
+.mast__in{position:relative}
+.mast__key{position:absolute;right:clamp(16px,4vw,40px);top:50%;width:clamp(90px,13vw,170px);aspect-ratio:216/613;transform:translateY(-50%) rotate(14deg);background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,#7a6125);-webkit-mask:url(/assets/thekeydaily/key.png) center/contain no-repeat;mask:url(/assets/thekeydaily/key.png) center/contain no-repeat;opacity:.9;pointer-events:none}
+@media (max-width:1180px){.mast__key{display:none}}
 .mast--cat{padding-bottom:28px;border-bottom:1px solid var(--ln);margin-bottom:36px}
 .mast__h--cat{margin-bottom:14px}
 
@@ -260,7 +263,7 @@ a.pill:hover{background:rgba(255,255,255,.06)}
   .util__b{font-size:11px}
   .hdr__in{min-height:58px}
   .logo span{font-size:19px}
-  .kmark{width:26px;height:26px}
+  .kmark{height:30px;width:11px}
   .crow__d{-webkit-line-clamp:2}
   .player iframe{height:400px}
 }
