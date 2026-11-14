@@ -27,7 +27,7 @@
 
   function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
   function poster(f, small) {
-    if (f.img) return '<span class="poster"><img src="/constructs/mcrystal/img/posters/' + f.img + (small ? '-s' : '') + '.webp" alt="' + esc(f.t) + ' poster" width="' + (small ? 300 : 600) + '" height="' + (small ? 450 : 900) + '" loading="lazy" decoding="async"></span>';
+    if (f.img) return '<span class="poster"><img src="/constructs/mcrystal/img/posters/' + f.img + (small ? '-s' : '') + '.webp?v=2" alt="' + esc(f.t) + ' poster" width="' + (small ? 300 : 600) + '" height="' + (small ? 450 : 900) + '" loading="lazy" decoding="async"></span>';
     var id = 'p' + hash(f.t + (small ? 's' : '')).toString(36);
     var words = f.t.toUpperCase().split(' ');
     var lines = [], cur = '';
@@ -86,7 +86,7 @@
   var pbg = $('[data-hero-poster]');
   function heroBg(i) {
     if (!pbg || !FILMS[i].img) return;
-    var im = new Image(); im.src = '/constructs/mcrystal/img/posters/' + FILMS[i].img + '.webp'; im.alt = '';
+    var im = new Image(); im.src = '/constructs/mcrystal/img/posters/' + FILMS[i].img + '.webp?v=2'; im.alt = '';
     im.onload = function () { pbg.appendChild(im); requestAnimationFrame(function () { im.classList.add('is-on'); }); var old = $$('img', pbg); if (old.length > 2) old[0].remove(); };
   }
   function auto() { clearInterval(heroTimer); if (!calm) heroTimer = setInterval(function () { hero(hi + 1); }, 5200); }
