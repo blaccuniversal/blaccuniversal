@@ -166,6 +166,18 @@
    }
   },
   {
+   "cat": "music",
+   "slug": "ajogu",
+   "name": "Ajogu",
+   "tag": "Artiste",
+   "avatar": "/assets/img/market/ajogu-av.webp",
+   "hero": "/assets/img/market/ajogu-hero.webp",
+   "heroPos": "50% 18%",
+   "heroDim": true,
+   "bio": "",
+   "items": []
+  },
+  {
    "cat": "merch",
    "slug": "blacc-universal",
    "name": "BLACC Universal",

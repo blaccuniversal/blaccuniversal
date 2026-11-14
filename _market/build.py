@@ -169,6 +169,10 @@ for c in CATS:
                 '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div class="mk-hero__txt"><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n    </div>\n  </section>\n'
                 '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l"><p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>' + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div>\n'
                 '      <div class="mk-info__r">' + listen(s, c) + '</div>\n    </div>\n  </section>\n')
+        if not items:
+            body = hero + '  <main class="shop gutter mk mk--store" id="top">\n    <div class="wrap">\n      <div class="mk-empty"><span class="mk-empty__icon">' + ICON['music'] + '</span><p>New music is on the way.</p></div>\n    </div>\n  </main>\n'
+            write('/market/' + c['slug'] + '/' + s['slug'] + '/', shell(s['name'] + ' · ' + c['name'] + ' · Market — BLACC Universal', s.get('bio', '') or s['name'], '/market/' + c['slug'] + '/' + s['slug'] + '/', body))
+            continue
         body = hero + '  <main class="shop gutter mk mk--store" id="top">\n    <div class="wrap">\n' + bar(len(items), 'item') + '      <div class="shop-cards" data-cards data-view-mode="grid">\n          ' + cards + '\n      </div>\n    </div>\n  </main>\n'
         write('/market/' + c['slug'] + '/' + s['slug'] + '/', shell(s['name'] + ' · ' + c['name'] + ' · Market — BLACC Universal', s.get('bio', ''), '/market/' + c['slug'] + '/' + s['slug'] + '/', body))
 
