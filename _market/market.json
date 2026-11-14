@@ -148,34 +148,6 @@
       "youtube": "https://www.youtube.com/c/bemshima",
       "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
      }
-    },
-    {
-     "name": "Celestial Rendition",
-     "meta": "Free beat tape · 8 instrumentals",
-     "price": "Free",
-     "img": "/assets/img/market/sq-celestial-rendition.webp",
-     "url": "/shop/instrumentals/celestial-rendition/"
-    },
-    {
-     "name": "The Unsung Piper",
-     "meta": "Free beat tape · 5 instrumentals",
-     "price": "Free",
-     "img": "/assets/img/shop/the-unsung-piper.webp",
-     "url": "/shop/instrumentals/the-unsung-piper/"
-    },
-    {
-     "name": "Midas",
-     "meta": "Free beat tape · 10 instrumentals",
-     "price": "Free",
-     "img": "/assets/img/shop/midas.webp",
-     "url": "/shop/instrumentals/midas/"
-    },
-    {
-     "name": "Take ’Em to War",
-     "meta": "Hip-Hop · 85 BPM",
-     "price": "From $25",
-     "img": "/assets/img/shop/take-em-to-war.webp",
-     "url": "/shop/instrumentals/take-em-to-war/"
     }
    ],
    "heroPos": "50% 30%",
