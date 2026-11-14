@@ -257,3 +257,17 @@ svg{display:block}
   .entry__in,.entry__go{height:46px;min-height:46px}
   .dock__acts{display:none}
 }
+
+/* passkey gate */
+body[data-locked] .scr,body[data-locked] .sheet,body[data-locked] .ov{display:none!important}
+.gate{min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:24px clamp(18px,5vw,32px) calc(24px + env(safe-area-inset-bottom))}
+.gate__card{width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.gate__t{margin:2px 0 8px;font-size:clamp(40px,10vw,56px);font-weight:800;letter-spacing:-.04em;line-height:1}
+.gate__p{margin:0 0 22px;font-size:15px;color:var(--tx2)}
+.gate__in{width:100%;height:54px;margin-bottom:12px;padding:0 14px;border:1px solid #3a3a3a;border-radius:2px;background:#0b0b0b;color:#fff;font:inherit;font-size:18px;font-weight:700;letter-spacing:.18em;text-align:center;text-transform:uppercase;outline:none}
+.gate__in::placeholder{letter-spacing:0;font-weight:400;text-transform:none;color:#6b6b6b}
+.gate__in:focus{border-color:#8a8a8a}
+.gate__err{margin:0 0 12px;font-size:14px;color:#ffb3a7}
+.gate__note{margin:14px 0 0;font-size:13px;color:var(--tx3)}
+.gate__back{margin-top:22px;font-size:14px;color:var(--tx2);text-decoration:none}
+.gate__back:hover{color:#fff}
