@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '11'
+VER = '12'
 
 def esc(s): return html.escape(str(s), quote=True)
 
