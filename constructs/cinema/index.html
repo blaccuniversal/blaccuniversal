@@ -13,7 +13,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/cinema/img/mark.png">
-<link rel="stylesheet" href="/constructs/cinema/cinema.css?v=6">
+<link rel="preload" as="image" href="/constructs/cinema/img/posters/starlomo.webp" fetchpriority="high">
+<link rel="stylesheet" href="/constructs/cinema/cinema.css?v=7">
 </head>
 <body>
 
@@ -34,13 +35,14 @@
     <div class="hero__poster" data-hero-poster aria-hidden="true"></div>
     <div class="beam" aria-hidden="true"></div>
     <div class="dust" aria-hidden="true"></div>
+    <div class="hero__show rise" style="--d:1" data-show aria-label="Now showing"></div>
     <div class="wrap hero__in">
-      <p class="eyebrow rise" style="--d:1"><span class="live"></span>Now showing</p>
-      <h1 class="hero__t rise" style="--d:2" data-hero-title>Starlomo</h1>
-      <p class="hero__meta rise" style="--d:3" data-hero-meta>Drama · Nollywood · 1h 55m</p>
-      <div class="btns rise" style="--d:4"><button class="btn" type="button" data-book-hero>Book tickets</button><a class="btn btn--ghost" href="#now">All films</a></div>
+      <p class="eyebrow rise" style="--d:2"><span class="live"></span>Now showing</p>
+      <h1 class="hero__t rise" style="--d:3" data-hero-title>Starlomo</h1>
+      <p class="hero__meta rise" style="--d:4" data-hero-meta>Drama · Nollywood · 1h 55m</p>
+      <div class="btns rise" style="--d:5"><button class="btn" type="button" data-book-hero>Book tickets</button><a class="btn btn--ghost" href="#now">All films</a></div>
+      <div class="hero__bars rise" style="--d:6" data-bars></div>
     </div>
-    <div class="hero__reel wrap rise" style="--d:5" data-reel aria-label="Featured films"></div>
   </section>
 
   <!-- NOW SHOWING -->
@@ -193,6 +195,6 @@
   </div>
 </div>
 
-<script src="/constructs/cinema/cinema.js?v=7" defer></script>
+<script src="/constructs/cinema/cinema.js?v=8" defer></script>
 </body>
 </html>

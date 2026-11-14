@@ -299,3 +299,26 @@ button.s:hover{border-color:var(--gold)}
 @media (max-width:560px){.info div{grid-template-columns:1fr;gap:6px;padding:16px 0}.info dt{padding-top:0}}
 [data-pv-form] .bar .btn{flex:1}
 .f input{width:100%;min-width:0}.f2>*{min-width:0}
+
+/* hero poster slideshow */
+.hero{justify-content:center;padding-top:clamp(84px,11vh,112px)}
+.hero__in{padding-top:0}
+.hero__show{position:relative;width:100%;height:clamp(250px,44vh,460px);margin:0 auto clamp(18px,3.4vh,34px);touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.slide{position:absolute;top:0;left:50%;height:100%;aspect-ratio:2/3;border-radius:2px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#111;transform-origin:50% 60%;transition:transform .9s var(--ease),opacity .9s var(--ease),box-shadow .9s,border-color .9s;box-shadow:0 20px 50px rgba(0,0,0,.6);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.slide img{pointer-events:none;-webkit-user-drag:none}
+.slide.is-on{border-color:rgba(232,184,32,.55);box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 70px rgba(232,184,32,.18)}
+.slide:not(.is-on)::after{content:"";position:absolute;inset:0;background:rgba(5,5,5,.35)}
+.slide.is-on .poster{animation:kb 5.2s linear both}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.045)}}
+.is-calm .slide,.is-calm .slide.is-on .poster{transition:none;animation:none}
+.hero__t{--len:8;font-size:min(clamp(46px,8.4vw,124px),calc(min(92vw,1200px) / var(--len) / .7));white-space:nowrap;margin:4px 0 12px}
+.hero__meta{margin-bottom:24px}
+.hero__bars{display:flex;gap:6px;width:min(100%,360px);margin-top:clamp(22px,4vh,40px)}
+.hero__bars button{flex:1;height:16px;display:flex;align-items:center;cursor:pointer}
+.hero__bars i{position:relative;display:block;width:100%;height:2px;border-radius:2px;background:rgba(255,255,255,.18);overflow:hidden}
+.hero__bars i::after{content:"";position:absolute;inset:0;background:var(--gold);transform:scaleX(0);transform-origin:left}
+.hero__bars .is-done i::after{transform:none}
+.hero__bars .is-on i::after{animation:bar 5.2s linear forwards}
+@keyframes bar{to{transform:none}}
+@media (prefers-reduced-motion:reduce){.hero__bars .is-on i::after{animation:none;transform:none}}
+@media (max-width:640px){.hero__show{height:clamp(240px,42vh,380px)}.hero__meta{font-size:11px;margin-bottom:20px}}
