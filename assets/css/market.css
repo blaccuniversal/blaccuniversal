@@ -1,0 +1,62 @@
+/* BLACC Universal · Market */
+.mk-doors{grid-template-columns:repeat(5,minmax(0,190px))}
+.mk-door{gap:14px}
+.mk-door__n{margin-top:-6px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#4d4d4d;transition:color .3s ease}
+.mk-door:hover .mk-door__n{color:#9a9a9a}
+@media (max-width:1000px){.mk-doors{grid-template-columns:repeat(3,minmax(0,200px))}}
+@media (max-width:600px){.mk-doors{grid-template-columns:1fr}.mk-door__n{margin:0 0 0 auto}}
+
+/* category icon motion */
+.mk-ani-note{transform-origin:12px 12px;animation:mkNote 2.4s ease-in-out infinite}
+@keyframes mkNote{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-1.2px) rotate(-6deg)}50%{transform:translateY(0) rotate(0)}75%{transform:translateY(-1.2px) rotate(6deg)}}
+.mk-ani-core{animation:mkCore 1.6s ease-in-out infinite}
+@keyframes mkCore{0%,100%{opacity:1}50%{opacity:.15}}
+.mk-ani-ticket{transform-origin:12px 12px;animation:mkTicket 2.8s ease-in-out infinite}
+@keyframes mkTicket{0%,60%,100%{transform:none}70%{transform:rotate(-8deg)}80%{transform:rotate(6deg)}90%{transform:rotate(-3deg)}}
+@media (prefers-reduced-motion:reduce){.mk-ani-note,.mk-ani-core,.mk-ani-ticket{animation:none}}
+
+/* category page */
+.mk-desc{margin:2px 0 0;max-width:36em;font-size:15px;line-height:1.6;color:#8a8a8a}
+.mk-store__img{position:relative;overflow:hidden}
+.mk-store__img img{transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .6s ease;filter:grayscale(.15)}
+.mk-store:hover .mk-store__img img{transform:scale(1.04);filter:none}
+.mk-logo{display:grid;place-items:center;background:#0b0b0b}
+.mk-logo svg{width:38%;height:auto}
+.mk-empty{display:flex;flex-direction:column;align-items:center;gap:18px;padding:clamp(48px,8vw,96px) 0;border-top:1px solid #1c1c1c;text-align:center}
+.mk-empty__icon{display:grid;place-items:center;width:72px;height:72px;border:1px solid #2a2a2a;border-radius:2px;color:#bdbdbd}
+.mk-empty__icon svg{width:30px;height:30px}
+.mk-empty p{margin:0;font-size:16px;color:#8a8a8a}
+
+/* store page */
+.mk-hero{position:relative;overflow:hidden;min-height:clamp(420px,62vh,640px);display:flex;align-items:flex-end;padding-top:120px;padding-bottom:clamp(30px,5vw,56px);isolation:isolate}
+.mk-hero__bg{position:absolute;inset:0;z-index:-1}
+.mk-hero__bg img{width:100%;height:100%;object-fit:cover;opacity:.62;animation:mkZoom 14s ease-out both}
+.mk-hero__bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.15) 35%,rgba(0,0,0,.75) 75%,#000 100%)}
+@keyframes mkZoom{from{transform:scale(1.08)}to{transform:none}}
+.mk-hero__in{position:relative;width:100%;display:flex;flex-direction:column;gap:16px}
+.mk-hero__in .eyebrow{display:flex;gap:8px;align-items:center}
+.mk-sep{color:#4d4d4d}
+.mk-hero__id{display:flex;align-items:center;gap:clamp(16px,2.4vw,26px);margin-top:4px}
+.mk-hero__av{flex:none;width:clamp(76px,9vw,112px);aspect-ratio:1;overflow:hidden;border-radius:2px;border:1px solid rgba(255,255,255,.25);box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.mk-hero__av img{width:100%;height:100%;object-fit:cover}
+.mk-hero__name{margin:0;font-size:clamp(38px,6.4vw,84px);font-weight:300;letter-spacing:-.035em;line-height:.98}
+.mk-hero__tag{margin:8px 0 0;font-size:12px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#9a9a9a}
+.mk-hero__bio{margin:0;max-width:34em;font-size:clamp(15px,1.4vw,17px);line-height:1.65;color:#cfcfcf;text-wrap:pretty}
+.mk-hero__row{display:flex;align-items:center;flex-wrap:wrap;gap:8px 18px}
+.mk-hero__soc{display:flex;align-items:center;margin-left:-10px}
+.mk-hero__soc .icon-btn{opacity:.85;transition:opacity .2s,transform .3s}
+.mk-hero__soc .icon-btn:hover{opacity:1;transform:translateY(-2px)}
+.mk-hero__n{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#7a7a7a}
+.mk--store{padding-top:clamp(20px,3vw,36px)}
+button.shop-card{padding:0;background:none;border:0;font:inherit;text-align:left;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.mk-hero__bg img{animation:none}}
+
+/* order request panel */
+.mk-order__item{display:grid;grid-template-columns:clamp(88px,22vw,120px) minmax(0,1fr);gap:20px;align-items:center;margin-bottom:22px}
+.mk-order__item img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:2px;background:#111}
+.mk-order__item .build__title{margin:6px 0 4px}
+.mk-order__meta{margin:0;font-size:14px;color:#8a8a8a}
+.mk-order__price{margin:8px 0 0;font-size:18px;font-weight:600}
+.mk-order__desc{margin:0 0 22px;font-size:15px;line-height:1.65;color:#bdbdbd}
+.mk-order__fine{margin:14px 0 0;font-size:13px;color:#6f6f6f}
+.mk-hero--blur .mk-hero__bg img{filter:blur(28px) saturate(.6);transform:scale(1.15);animation:none;opacity:.7}
