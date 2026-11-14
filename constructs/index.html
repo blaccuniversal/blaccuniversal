@@ -30,11 +30,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css?v=202611131546">
 <style>
-.cx{display:flex;flex-direction:column}
-.cx .wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(20px,3vh,28px);min-height:calc(100vh - 300px);min-height:calc(100svh - 300px)}
-.cx-box{display:grid;place-items:center;width:clamp(160px,16vw,200px);aspect-ratio:1;border:1px solid #2e2e2e;border-radius:2px;background:#060606;transition:border-color .3s ease}
-.cx-box:hover{border-color:#fff}
-.cx-icon{position:relative;width:40%;aspect-ratio:1;color:#e9e9e9}
+.cx{flex:1;display:flex;flex-direction:column}
+.cx .wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding-top:24px;padding-bottom:clamp(48px,10vh,96px)}
+.cx-box{display:grid;place-items:center;width:var(--cxw);aspect-ratio:1;border:1px solid #272727;border-radius:2px;background:radial-gradient(70% 70% at 50% 45%,#0e0e0e,#050505);transition:border-color .3s ease}
+.cx-box:hover{border-color:#3a3a3a}
+:root{--cxw:clamp(220px,22vw,264px)}
+.cx-icon{position:relative;width:34%;aspect-ratio:1;color:#e9e9e9}
 .cx-icon svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;opacity:0;transform:scale(.86) rotate(-8deg);transition:opacity .45s ease,transform .55s cubic-bezier(.2,.8,.2,1)}
 .cx-icon svg.is-on{opacity:1;transform:none}
 .cx-icon svg.is-off{opacity:0;transform:scale(.86) rotate(8deg)}
@@ -53,12 +54,13 @@
 @keyframes cxRoll{0%,100%{transform:translateY(-1.6px)}50%{transform:translateY(1.6px)}}
 .t-shovel{transform-origin:4px 20px;animation:cxDig 1.6s ease-in-out infinite}
 @keyframes cxDig{0%,100%{transform:rotate(0) translate(0,0)}45%{transform:rotate(10deg) translate(.6px,.8px)}70%{transform:rotate(-6deg)}}
-.cx-form{display:flex;width:min(340px,100%);border:1px solid #2e2e2e;border-radius:2px;background:#060606;transition:border-color .25s}
-.cx-form:focus-within{border-color:#8a8a8a}
-.cx-form input{flex:1;min-width:0;height:52px;padding:0 16px;border:0;background:none;color:#fff;font:inherit;font-size:16px;letter-spacing:.04em;outline:none}
-.cx-form button{flex:none;width:52px;height:52px;display:grid;place-items:center;border:0;border-left:1px solid #2e2e2e;background:none;color:#cfcfcf;cursor:pointer;transition:color .2s,background .2s}
-.cx-form button:hover,.cx-form button:focus-visible{color:#000;background:#fff}
-.cx-form button svg{width:20px;height:20px}
+.cx-form{position:relative;display:flex;align-items:center;width:var(--cxw);border:1px solid #272727;border-radius:2px;background:#050505;transition:border-color .25s}
+.cx-form:focus-within{border-color:#6b6b6b}
+.cx-form input{flex:1;min-width:0;height:50px;padding:0 4px 0 16px;border:0;background:none;color:#fff;font:inherit;font-size:16px;letter-spacing:.06em;outline:none}
+.cx-form button{flex:none;width:46px;height:50px;display:grid;place-items:center;border:0;background:none;color:#8a8a8a;cursor:pointer;transition:color .2s,transform .2s}
+.cx-form button:hover,.cx-form button:focus-visible{color:#fff;transform:translateX(2px)}
+.cx-form button:focus-visible{outline:none}
+.cx-form button svg{width:18px;height:18px}
 .cx-form.is-no{animation:cxNo .38s;border-color:#5a2a24}
 @keyframes cxNo{20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
 @media (prefers-reduced-motion:reduce){.cx-icon *{animation:none!important}}
