@@ -83,7 +83,7 @@ def groups(title, gs, note):
 
 nig = ''.join(full(*s) for s in NIGERIAN) + '<div class="mrow">' + ''.join(compact(*s) for s in NIG_SMALL) + '</div>'
 W = lambda x: x.replace('mgrp mgrp--c','mgrp mgrp--c mgrp--wide')
-chi = W(compact(*CHINESE[0])) + W(compact(*CHINESE[1])) + ''.join(groups(*g) for g in CH_GROUPS) + W(compact(*CH_RICE))
+chi = ('<figure class="mban"><img src="/constructs/asa/img/kungpao-1-s.webp" srcset="/constructs/asa/img/kungpao-held-s.webp 720w, /constructs/asa/img/kungpao-held.webp 1200w" sizes="(min-width:900px) 1100px, 92vw" alt="Wok-tossed chicken with peppers, peanuts and carrot on a wooden board" loading="lazy" width="720" height="900"><figcaption>From the wok</figcaption></figure>') + W(compact(*CHINESE[0])) + W(compact(*CHINESE[1])) + ''.join(groups(*g) for g in CH_GROUPS) + W(compact(*CH_RICE))
 more = ('<div class="mgrp"><h3 class="mgrp__t">Coming soon</h3><ul class="dishes">'
         '<li><b>Signature Cocktails</b><i></i><span>Soon</span><small>House creations, wines, champagne and spirits</small></li>'
         '<li><b>Grill, Continental &amp; Pizza</b><i></i><span>Soon</span><small>The rest of the kitchen, coming to this page</small></li></ul></div>')

@@ -210,6 +210,17 @@ em{font-style:italic;color:var(--brass2)}
 .form__err{margin:0;font-size:14px;color:#e8a593}
 .form .btn{margin-top:8px}
 
+/* reserve with photo */
+.res{display:grid;grid-template-columns:minmax(0,1fr);gap:48px;align-items:start}
+@media (min-width:980px){.res{grid-template-columns:minmax(0,.7fr) minmax(0,1.3fr);gap:72px}.res .form{max-width:none}}
+.res__img{aspect-ratio:3/3.7}
+@media (max-width:979px){.res__img{display:none}}
+/* chinese banner */
+.mban{position:relative;margin:0 0 44px;aspect-ratio:21/9;overflow:hidden;border-radius:2px;background:var(--bg3)}
+.mban img{width:100%;height:100%;object-fit:cover;object-position:50% 82%}
+.mban figcaption{position:absolute;left:20px;bottom:18px;font-family:var(--serif);font-style:italic;font-size:24px;color:var(--cream);text-shadow:0 2px 14px rgba(0,0,0,.6)}
+@media (max-width:700px){.mban{aspect-ratio:4/3}}
+
 /* visit */
 .visit{padding:clamp(80px,10vw,130px) 0;border-top:1px solid var(--line);background:var(--bg2)}
 .visit__in{display:grid;grid-template-columns:minmax(0,1fr);gap:48px;align-items:center}
