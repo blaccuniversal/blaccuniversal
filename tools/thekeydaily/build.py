@@ -9,14 +9,14 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SITE = os.path.join(ROOT, 'thekeydaily')
 BASE = '/thekeydaily'
 ORIGIN = 'https://blaccuniversal.com'
-V = '6'  # asset version
+V = '9'  # asset version
 
 CATS = [
-    ('entertainment', 'Entertainment', 'Music, film, TV and the culture around them.'),
-    ('sports', 'Sports', 'Football, F1 and the scores that matter.'),
-    ('business', 'Business', 'Markets, money and the companies moving them.'),
-    ('tech', 'Tech', 'AI, gadgets, space and the platforms we live on.'),
-    ('politics', 'Politics', 'Power, policy and elections at home and abroad.'),
+    ('entertainment', 'Entertainment', 'Music, film, TV and culture.'),
+    ('sports', 'Sports', 'Football, F1 and the big results.'),
+    ('business', 'Business', 'Markets, money and big moves.'),
+    ('tech', 'Tech', 'AI, gadgets, space and the web.'),
+    ('politics', 'Politics', 'Power, policy and elections.'),
 ]
 CAT = {k: (n, d) for k, n, d in CATS}
 COL = {'entertainment': '#c2185b', 'sports': '#12a26b', 'business': '#c9a54a', 'tech': '#3b82f6', 'politics': '#d64545'}
@@ -126,7 +126,7 @@ def page(path, title, desc, body, active='', extra_head='', og_type='website'):
            '<title>%s</title>\n<meta name="description" content="%s">\n<link rel="canonical" href="%s">\n<meta name="theme-color" content="#000000">\n'
            '<meta property="og:site_name" content="The Key Daily"><meta property="og:type" content="%s"><meta property="og:title" content="%s"><meta property="og:description" content="%s"><meta property="og:url" content="%s"><meta name="twitter:card" content="summary_large_image">\n'
            '<link rel="icon" type="image/png" sizes="64x64" href="%s/icon-64.png">\n<link rel="apple-touch-icon" href="/thekeydaily/apple-touch-icon.png">\n<meta property="og:image" content="https://blaccuniversal.com/thekeydaily/icon-512.png">\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-           '<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&amp;display=swap" rel="stylesheet">\n'
+           '<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,400..800&amp;display=swap" rel="stylesheet">\n'
            '<link rel="stylesheet" href="/assets/thekeydaily/tkd.css?v=%s">\n%s</head>\n<body>\n%s\n%s\n<main id="main">\n%s\n</main>\n%s\n<script src="/assets/thekeydaily/tkd.js?v=%s" defer></script>\n</body>\n</html>\n') % (
         e(title), e(desc), full, og_type, e(title), e(desc), full, BASE, V, extra_head, SPRITE, header(active), body, footer(), V)
     out = os.path.join(ROOT, path.strip('/'), 'index.html')
@@ -177,14 +177,14 @@ def week_block():
 
 # ---------------- home ----------------
 SOON = ('<div class="soon"><p class="eyebrow eyebrow--gold">%s</p><h2 class="soon__t">Stories are on the way.</h2>'
-        '<p class="lead">Our first reports in entertainment, sports, business, tech and politics land here soon.</p></div>')
+        '<p class="lead">%s</p></div>')
 
 def build_home():
     if not stories:
         secs = ''.join('<a class="sec" href="%s/%s/"><span class="sec__dot c-bg-%s"></span><span><b>%s</b><small>%s</small></span></a>' % (BASE, k, k, n, d) for k, n, d in CATS)
         body = ('<section class="mast"><div class="wrap mast__in"><span class="mast__key" aria-hidden="true"></span><h1 class="mast__h">The key to<br><span>what matters</span><br>right now.</h1></div></section>'
                 '<section class="wrap split" id="latest"><div class="split__main">%s</div><aside class="split__side"><section class="side"><p class="eyebrow">Sections</p>%s</section></aside></section>'
-                '%s%s%s') % (SOON % 'Latest', secs, top7_block(), week_block(), picks_block())
+                '%s%s%s') % (SOON % ('Latest', 'Our first reports in entertainment, sports, business, tech and politics land here soon.'), secs, top7_block(), week_block(), picks_block())
         page(BASE + '/', 'The Key Daily · News, culture and music',
              'The Key Daily: entertainment, sports, business, tech and politics, plus the Top 7 countdown, Artist and Creative of the Week, and The Key Picks playlist.', body, 'latest')
         return
@@ -222,7 +222,7 @@ def build_cats():
         ss = [s for s in stories if s['cat'] == k]
         if not ss:
             body = ('<section class="mast mast--cat"><div class="wrap"><p class="eyebrow c-%s">Section</p><h1 class="mast__h mast__h--cat">%s</h1><p class="lead">%s</p></div></section>'
-                    '<div class="wrap catwrap">%s</div>%s') % (k, n, d, SOON % n, picks_block())
+                    '<div class="wrap catwrap">%s</div>%s') % (k, n, d, SOON % (n, 'Our first %s stories land here soon.' % n.lower()), picks_block())
             page('%s/%s/' % (BASE, k), '%s · The Key Daily' % n, '%s from The Key Daily. %s' % (n, d), body, n.lower())
             continue
         body = ('<section class="mast mast--cat"><div class="wrap"><p class="eyebrow c-%s">Section</p><h1 class="mast__h mast__h--cat">%s</h1><p class="lead">%s</p></div></section>'
