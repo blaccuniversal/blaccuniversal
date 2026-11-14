@@ -49,19 +49,8 @@
       "apple": "https://music.apple.com/ng/album/mystery-rider/1866612346",
       "audiomack": "https://audiomack.com/lyrxx-official",
       "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
-     }
-    },
-    {
-     "name": "Balenciaga",
-     "kind": "Single",
-     "meta": "Single · 2025 · debut",
-     "price": "Stream or buy",
-     "links": {
-      "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
-      "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
-      "audiomack": "https://audiomack.com/lyrxx-official",
-      "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
-     }
+     },
+     "img": "/assets/img/market/lyrxx-mystery-rider.webp"
     },
     {
      "name": "Wajo",
@@ -73,7 +62,21 @@
       "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
       "audiomack": "https://audiomack.com/lyrxx-official",
       "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
-     }
+     },
+     "img": "/assets/img/market/lyrxx-wajo.webp"
+    },
+    {
+     "name": "Balenciaga",
+     "kind": "Single",
+     "meta": "Single · 2025 · debut",
+     "price": "Stream or buy",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+      "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
+      "audiomack": "https://audiomack.com/lyrxx-official",
+      "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
+     },
+     "img": "/assets/img/market/lyrxx-balenciaga.webp"
     }
    ],
    "avatar": "/assets/img/market/lyrxx-av.webp",
@@ -113,7 +116,7 @@
      "name": "Celestial Rendition",
      "meta": "Free beat tape · 8 instrumentals",
      "price": "Free",
-     "img": "/assets/img/shop/celestial-rendition.webp",
+     "img": "/assets/img/market/sq-celestial-rendition.webp",
      "url": "/shop/instrumentals/celestial-rendition/"
     },
     {
@@ -157,7 +160,7 @@
      "name": "Alhamdulillah Tee",
      "meta": "Limited edition tee",
      "price": "₦30,000",
-     "img": "/assets/img/shop/alhamdulillah-front.webp",
+     "img": "/assets/img/market/sq-alhamdulillah-front.webp",
      "url": "/shop/merch/alhamdulillah-tee/"
     }
    ],
@@ -180,7 +183,7 @@
      "name": "El Precio del Diablo",
      "meta": "Bemshima · 2026 · Framed print",
      "price": "From ₦200,000",
-     "img": "/assets/img/shop/el-precio-del-diablo.webp",
+     "img": "/assets/img/market/sq-el-precio-del-diablo.webp",
      "url": "/shop/frames/el-precio-del-diablo/"
     }
    ],
