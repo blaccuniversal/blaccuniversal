@@ -4,21 +4,26 @@
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return [].slice.call((r || document).querySelectorAll(s)); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  var EMAIL = 'mcrystalcinemas@gmail.com', PHONE = '+2348151066234';
+  var EMAIL = 'mcrystalcinemas@gmail.com', PHONE = '+2347038199363';
 
-  // Sample showtimes, the same every day, until the cinema sends its real schedule.
-  var WEEK = null;
+  // This week's schedule, Fri 13 – Thu 19 Nov 2026, the same every day.
+  var WEEK = [new Date(2026, 10, 13), new Date(2026, 10, 19)];
   var FILMS = [
-    { t: 'Agbara Nla: The Return', g: 'Horror', d: '2h 37m', times: ['15:30', '20:30'], img: 'agbara-nla', c: ['#2a1a03', '#f2c14e'] },
-    { t: 'King Kosoko', g: 'Drama', d: '1h 50m', times: ['13:00', '18:00'], img: 'king-kosoko', c: ['#1d0b2e', '#b38cff'] },
-    { t: 'One Gidi Night', g: 'Action', times: ['18:00'], img: 'one-gidi-night', c: ['#2b0716', '#f06a8c'] },
-    { t: 'Alahun', g: 'Drama', d: '1h 38m', times: ['10:30'], img: 'alahun', c: ['#06202a', '#5fd1d1'] },
-    { t: 'David', g: 'Animation', times: ['10:30'], img: 'david', c: ['#1e1a05', '#ffd25e'] },
-    { t: 'Invitation To Kill', g: 'Action', d: '1h 40m', times: ['13:00', '20:30'], c: ['#300808', '#ff5a5a'] },
-    { t: 'Nne Mgbafor', g: 'Action · Thriller', times: ['15:30'], c: ['#0b1a33', '#7fb2ff'] }
+    { t: 'Issakaba Returns', d: '1h 59m', n: 1, times: ['15:40'], img: 'issakaba' },
+    { t: 'Five Figurines', d: '2h 15m', n: 1, times: ['15:30'], img: 'five-figurines' },
+    { t: 'Dear Ajayi', d: '1h 55m', n: 1, times: ['17:40'], img: 'dear-ajayi' },
+    { t: 'Agbara Nla: The Return', d: '2h 37m', times: ['17:40', '20:20'], img: 'agbara-nla' },
+    { t: 'The Cleaner', d: '2h 00m', times: ['18:00'], img: 'the-cleaner' },
+    { t: 'Wire Transfer', d: '1h 51m', times: ['14:00'], img: 'wire-transfer' },
+    { t: 'The Beacon Man', d: '1h 46m', times: ['12:00'], img: 'the-beacon-man' },
+    { t: 'Phoenix Fury', d: '2h 05m', times: ['13:20'], img: 'phoenix-fury' },
+    { t: 'Loving Itohan', d: '1h 45m', times: ['13:20'], img: 'loving-itohan' },
+    { t: 'The Perfect Spec', d: '1h 41m', times: ['15:30'], img: 'the-perfect-spec' },
+    { t: 'Tele x Zikora', d: '1h 45m', times: ['11:30'], img: 'tele-x-zikora' },
+    { t: 'Maybe… Maybe Not', d: '1h 37m', times: ['10:00'], img: 'maybe-maybe-not' }
   ];
   var SOON = [];
-  function meta(f) { return f.g + (f.d ? ' · ' + f.d : ''); }
+  function meta(f) { return [f.n ? 'New' : '', f.g, f.d].filter(Boolean).join(' · '); }
 
   function hash(s) { var h = 2166136261; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
   function poster(f, small) {
@@ -125,12 +130,12 @@
     $('[data-films]').innerHTML = slots.map(function (s, si) {
       var gone = past(s.t), next = !gone && !nextSet && rel(days[dayI]) === 0; if (next) nextSet = true;
       var p = fmt(s.t).split(' ');
-      return '<section class="slot' + (gone ? ' is-past' : '') + (next ? ' is-next' : '') + '" style="--i:' + si + '"><header class="slot__h"><b>' + p[0] + '</b><span>' + p[1] + '</span>' +
+      return '<section class="slot' + (gone ? ' is-past' : '') + (next ? ' is-next' : '') + (s.f.length === 1 ? ' is-solo' : '') + '" style="--i:' + si + '"><header class="slot__h"><b>' + p[0] + '</b><span>' + p[1] + '</span>' +
         (next ? '<em>Up next</em>' : gone ? '<em>Started</em>' : '') + '</header><div class="slot__films">' +
         s.f.map(function (i) {
           var f = FILMS[i], dis = gone ? ' disabled' : '';
-          return '<article class="film"><button class="film__p" type="button" data-book="' + i + '" data-t="' + s.t + '"' + dis + ' aria-label="Book ' + esc(f.t) + ', ' + fmt(s.t) + '">' + poster(f) + (f.d ? '<span class="film__rt">' + f.d + '</span>' : '') + '</button>' +
-            '<div class="film__b"><h3>' + esc(f.t) + '</h3><p>' + f.g + '</p><button class="btn btn--sm film__bk" type="button" data-book="' + i + '" data-t="' + s.t + '"' + dis + '>' + (gone ? 'Started' : 'Book seats') + '</button></div></article>';
+          return '<article class="film"><button class="film__p" type="button" data-book="' + i + '" data-t="' + s.t + '"' + dis + ' aria-label="Book ' + esc(f.t) + ', ' + fmt(s.t) + '">' + poster(f) + (f.d ? '<span class="film__rt">' + f.d + '</span>' : '') + (f.n ? '<span class="film__new">New</span>' : '') + '</button>' +
+            '<div class="film__b"><h3>' + esc(f.t) + '</h3><p>' + (f.g || (f.n ? 'New this week' : 'Now showing')) + '</p><button class="btn btn--sm film__bk" type="button" data-book="' + i + '" data-t="' + s.t + '"' + dis + '>' + (gone ? 'Started' : 'Book seats') + '</button></div></article>';
         }).join('') + '</div></section>';
     }).join('');
   }
