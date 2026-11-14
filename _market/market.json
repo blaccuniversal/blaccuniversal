@@ -178,7 +178,12 @@
      "url": "/shop/instrumentals/take-em-to-war/"
     }
    ],
-   "heroPos": "50% 30%"
+   "heroPos": "50% 30%",
+   "listen": {
+    "spotify": "https://open.spotify.com/artist/1eI1MeHIkwuWTUC9daVZFS",
+    "youtube": "https://www.youtube.com/c/bemshima"
+   },
+   "store": "blacc-universal"
   },
   {
    "cat": "merch",
