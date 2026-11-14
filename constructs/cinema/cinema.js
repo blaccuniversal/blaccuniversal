@@ -90,9 +90,18 @@
     $('[data-days]').innerHTML = days.map(function (d, i) { return '<button class="day" role="tab" type="button" data-day="' + i + '" aria-selected="' + (i === dayI) + '"><small>' + dname(d, i) + '</small><b>' + d.getDate() + '</b></button>'; }).join('');
   }
   function renderFilms() {
-    $('[data-films]').innerHTML = FILMS.map(function (f, i) {
-      return '<article class="film" style="--i:' + i + '"><div class="film__p">' + poster(f) + '<span class="film__rt">' + f.d + '</span></div><h3>' + esc(f.t) + '</h3><p>' + f.g + '</p><div class="times">' +
-        times(f).map(function (t) { return '<button class="time" type="button" data-book="' + i + '" data-t="' + t + '"' + (past(t) ? ' disabled aria-label="' + fmt(t) + ', started"' : '') + '>' + fmt(t) + '</button>'; }).join('') + '</div></article>';
+    var slots = [], nextSet = false;
+    FILMS.forEach(function (f, i) { var s = slots.filter(function (x) { return x.t === f.time; })[0]; if (!s) { s = { t: f.time, f: [] }; slots.push(s); } s.f.push(i); });
+    $('[data-films]').innerHTML = slots.map(function (s, si) {
+      var gone = past(s.t), next = !gone && !nextSet && rel(days[dayI]) === 0; if (next) nextSet = true;
+      var p = fmt(s.t).split(' ');
+      return '<section class="slot' + (gone ? ' is-past' : '') + (next ? ' is-next' : '') + '" style="--i:' + si + '"><header class="slot__h"><b>' + p[0] + '</b><span>' + p[1] + '</span>' +
+        (next ? '<em>Up next</em>' : gone ? '<em>Started</em>' : '') + '</header><div class="slot__films">' +
+        s.f.map(function (i) {
+          var f = FILMS[i], dis = gone ? ' disabled' : '';
+          return '<article class="film"><button class="film__p" type="button" data-book="' + i + '" data-t="' + s.t + '"' + dis + ' aria-label="Book ' + esc(f.t) + ', ' + fmt(s.t) + '">' + poster(f) + (f.d ? '<span class="film__rt">' + f.d + '</span>' : '') + '</button>' +
+            '<div class="film__b"><h3>' + esc(f.t) + '</h3><p>' + f.g + '</p><button class="btn btn--sm film__bk" type="button" data-book="' + i + '" data-t="' + s.t + '"' + dis + '>' + (gone ? 'Started' : 'Book seats') + '</button></div></article>';
+        }).join('') + '</div></section>';
     }).join('');
   }
   $('[data-days]').addEventListener('click', function (e) { var b = e.target.closest('[data-day]'); if (!b) return; dayI = +b.getAttribute('data-day'); renderDays(); renderFilms(); });
@@ -184,6 +193,7 @@
     err.hidden = true;
     var occ = (pv.querySelector('[name=occasion]:checked') || {}).value || '';
     var body = 'Private screening request\n\nOccasion: ' + occ + '\nDate: ' + pv.date.value + '\nGuests: ' + pv.guests.value + '\nName: ' + pv.name.value + '\nPhone: ' + pv.phone.value + (pv.note.value ? '\nNotes: ' + pv.note.value : '');
-    location.href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Private screening — ' + occ) + '&body=' + encodeURIComponent(body);
+    var how = e.submitter && e.submitter.value;
+    location.href = how === 'mail' ? 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Private screening — ' + occ) + '&body=' + encodeURIComponent(body) : 'sms:' + PHONE + '?body=' + encodeURIComponent(body);
   });
 })();
