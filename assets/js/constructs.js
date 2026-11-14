@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   /* Login code is stored only as SHA-256 of "blacccx:" + CODE (upper case). */
-  var PASS = 'e1d2c5390a18a8ee75489947a1fdf18d6dd718ffad67fb204519edbecfc8e3a6';
+  var PASS = '9c0a61f29b5d6857b8356e871ffc52e90cd7fc122ef124b57df4739610759ef8';
   var KEY = 'cx_pass', DAYS = 30;
   /* Constructs shown after login: { name: 'Name', path: '/constructs/folder/' } */
   var CONSTRUCTS = [];
