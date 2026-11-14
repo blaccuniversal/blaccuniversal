@@ -172,3 +172,7 @@ a.mk-dsp:hover{background:#fff;border-color:#fff;color:#000}
 @supports not (text-box: trim-both cap alphabetic){
   .mk-hero__name{line-height:.74;margin-top:-.01em}
 }
+/* smaller name (−15%), tighter gap to the tag; picture unchanged */
+.mk-hero__name{font-size:clamp(41px,6.3vw,83px)}
+.mk-hero__txt{justify-content:center;gap:clamp(12px,1.3vw,18px)}
+@media (max-width:600px){.mk-hero__name{font-size:clamp(39px,11.9vw,53px)}.mk-hero__txt{gap:13px}}
