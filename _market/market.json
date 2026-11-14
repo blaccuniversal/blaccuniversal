@@ -264,7 +264,11 @@
    "avatar": "/assets/img/market/s3phy-av.webp",
    "hero": "/assets/img/market/s3phy-hero.webp",
    "heroPos": "50% 25%",
-   "heroDim": true
+   "heroDim": true,
+   "links": {
+    "instagram": "https://www.instagram.com/callme__sephy",
+    "x": "https://x.com/call_me_sephy"
+   }
   },
   {
    "cat": "merch",
