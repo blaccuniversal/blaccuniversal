@@ -18,7 +18,7 @@ OUT = os.path.join(ROOT, 'market')
 data = json.load(open(os.path.join(SRC, 'market.json'), encoding='utf-8'))
 CATS = data['categories']
 STORES = data['stores']
-VER = '9'
+VER = '10'
 
 def esc(s): return html.escape(str(s), quote=True)
 
@@ -163,7 +163,7 @@ for c in CATS:
         bg = ('<div class="mk-hero__bg" aria-hidden="true"><img src="' + esc(s['hero']) + '" alt=""' + (' style="object-position:' + esc(s['heroPos']) + '"' if s.get('heroPos') else '') + '></div>' if s.get('hero') else '<div class="mk-hero__bg mk-hero__bg--type" aria-hidden="true"><span>' + esc(s['name']) + '</span></div>')
         hero = ('  <section class="mk-hero gutter' + (' mk-hero--blur' if s.get('heroBlur') else '') + (' mk-hero--dim' if s.get('heroDim') else '') + '">\n    ' + bg + '\n'
                 '    <div class="wrap mk-hero__in">\n      <p class="eyebrow mk-crumbs"><a class="crumb" href="/market/">Market</a> <span class="mk-sep">/</span> <a class="crumb" href="/market/' + c['slug'] + '/">' + c['name'] + '</a></p>\n'
-                '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p><h1 class="mk-hero__name">' + esc(s['name']) + '</h1></div></div>\n    </div>\n  </section>\n'
+                '      <div class="mk-hero__id">' + avatar(s, 'mk-hero__av') + '<div class="mk-hero__txt"><h1 class="mk-hero__name">' + esc(s['name']) + '</h1><p class="mk-hero__tag">' + esc(s.get('tag', '')) + '</p></div></div>\n    </div>\n  </section>\n'
                 '  <section class="mk-info gutter">\n    <div class="wrap mk-info__in">\n      <div class="mk-info__l"><p class="mk-hero__bio">' + esc(s.get('bio', '')) + '</p>' + ('<div class="mk-hero__soc">' + links + '</div>' if links else '') + '</div>\n'
                 '      <div class="mk-info__r">' + listen(s, c) + '</div>\n    </div>\n  </section>\n')
         body = hero + '  <main class="shop gutter mk mk--store" id="top">\n    <div class="wrap">\n' + bar(len(items), 'item') + '      <div class="shop-cards" data-cards data-view-mode="grid">\n          ' + cards + '\n      </div>\n    </div>\n  </main>\n'

@@ -151,3 +151,10 @@ a.mk-dsp:hover{background:#fff;border-color:#fff;color:#000}
 .mk-hero__bg::after{background:linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.25) 26%,rgba(0,0,0,0) 48%,rgba(0,0,0,.85) 88%,#000 100%)}
 .mk-crumbs,.mk-crumbs .crumb{color:#e6e6e6;text-shadow:0 1px 12px rgba(0,0,0,.6)}
 .mk-crumbs .mk-sep{color:#9a9a9a}
+/* name + tag sit beside the picture, top and bottom aligned */
+.mk-hero__id{align-items:stretch;gap:clamp(14px,2vw,24px)}
+.mk-hero__av{width:clamp(72px,8.5vw,116px);align-self:center}
+.mk-hero__txt{display:flex;flex-direction:column;justify-content:space-between;min-width:0;padding:2px 0}
+.mk-hero__name{font-size:clamp(48px,7.4vw,98px);line-height:.8;margin:-.02em 0 0}
+.mk-hero__tag{margin:0;line-height:1}
+@media (max-width:600px){.mk-hero__av{width:76px}.mk-hero__name{font-size:clamp(46px,14vw,62px)}}
