@@ -5,7 +5,7 @@
   var PASS = '9c0a61f29b5d6857b8356e871ffc52e90cd7fc122ef124b57df4739610759ef8';
   var KEY = 'cx_pass', DAYS = 30;
   /* Constructs shown after login: { name: 'Name', path: '/constructs/folder/' } */
-  var CONSTRUCTS = [];
+  var CONSTRUCTS = [{ name: 'ÀṢÀ Bar & Kitchen', path: '/constructs/asa/' }];
 
   // tool rotation
   var box = document.querySelector('[data-cx-icon]');
