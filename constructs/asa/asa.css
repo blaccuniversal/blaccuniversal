@@ -331,3 +331,6 @@ body{text-rendering:optimizeLegibility;font-kerning:normal}
   .dishes b{font-size:20px}
   .mban{margin-bottom:24px}
 }
+
+/* BLACC constructs dock sits above the reserve bar on phones/tablets */
+@media (max-width:860px){.cxg-dock{bottom:calc(80px + env(safe-area-inset-bottom))!important}.ft{padding-bottom:calc(170px + env(safe-area-inset-bottom))}}
