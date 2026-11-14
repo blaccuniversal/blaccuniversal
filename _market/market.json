@@ -169,13 +169,54 @@
    "cat": "music",
    "slug": "ajogu",
    "name": "Ajogu",
-   "tag": "Artiste",
+   "tag": "Artiste · Hip-Hop",
    "avatar": "/assets/img/market/ajogu-av.webp",
    "hero": "/assets/img/market/ajogu-hero.webp",
    "heroPos": "50% 18%",
    "heroDim": true,
-   "bio": "",
-   "items": []
+   "bio": "Hip-hop artiste. Latest project: The Therapeutic Tape.",
+   "items": [
+    {
+     "name": "The Therapeutic Tape",
+     "kind": "Album",
+     "meta": "Album · 2023",
+     "price": "Stream or buy",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
+      "apple": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227",
+      "itunes": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227"
+     }
+    },
+    {
+     "name": "Thirsty",
+     "kind": "Single",
+     "meta": "Single · 2023",
+     "price": "Stream or buy",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
+      "apple": "https://music.apple.com/ng/album/thirsty-single/1881305452",
+      "itunes": "https://music.apple.com/ng/album/thirsty-single/1881305452"
+     }
+    },
+    {
+     "name": "The Story Of Process",
+     "kind": "Single",
+     "meta": "Single · 2022",
+     "price": "Stream or buy",
+     "links": {
+      "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
+      "apple": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327",
+      "itunes": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327"
+     }
+    }
+   ],
+   "listen": {
+    "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
+    "apple": "https://music.apple.com/ng/artist/ajogu/1654319853"
+   },
+   "buy": {
+    "itunes": "https://music.apple.com/ng/artist/ajogu/1654319853"
+   }
   },
   {
    "cat": "merch",
