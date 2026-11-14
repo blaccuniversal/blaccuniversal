@@ -161,7 +161,7 @@ function pqtMain() {
     }
     function onMsg(m) {
       if (!m || typeof m !== 'object') return;
-      if (m.t === 'state') { if (m.seq && m.seq < lastSeq) return; if (m.seq) lastSeq = m.seq; apply(m.s); reply({ t: 'ack' }); }
+      if (m.t === 'state') { if (m.seq && m.seq <= lastSeq) { if (m.seq === lastSeq) reply({ t: 'ack' }); return; } if (m.seq) lastSeq = m.seq; apply(m.s); reply({ t: 'ack' }); }
       else if (m.t === 'fx') {
         if (m.id) { if (seenFx.indexOf(m.id) > -1) return; seenFx.push(m.id); if (seenFx.length > 60) seenFx.shift(); } if (m.fx === 'splash') { showSplash(m.text, m.sub); FX.ding(); return; } if (FX[m.fx]) FX[m.fx](); if (m.fx === 'buzz' && m.bigX) bigX(); }
       else if (m.t === 'ping') reply({ t: 'ack' });
@@ -366,7 +366,7 @@ function pqtMain() {
         if (p.phase === 'count') return '<div class="pw"><div class="pw-head"><p class="sc-intro__r">Password · question ' + p.no + '</p>' + tm + '</div><div class="pw-count"><span>3</span><span>2</span><span>1</span><span class="is-go">Begin</span></div></div>';
         var tiles = p.tiles.map(function (t, i) {
           var cls = t.s === 'cur' ? ' is-cur' : t.s === 'ok' ? ' is-ok' : t.s === 'miss' ? ' is-miss' : t.s === 'wait' ? ' is-wait' : '';
-          return '<div class="pw-t' + cls + '"><b>' + esc(t.l || '') + '</b>' + (t.w ? '<span>' + esc(t.w) + '</span>' : '') + (t.s === 'cur' ? '<em class="pw-bar"><i data-pwbar></i></em>' : '') + '</div>';
+          return '<div class="pw-t' + cls + '"><b>' + esc(t.l || '') + '</b>' + (t.w ? '<span>' + esc(t.w) + '</span>' : '') + (t.s === 'cur' ? '<em class="pw-bar"><i style="--from:' + (timerTotal ? Math.max(0, Math.min(1, (timerRun ? timerEnd - Date.now() : timerLeft) / timerTotal)) : 1).toFixed(3) + ';--d:' + Math.max(0, timerRun ? timerEnd - Date.now() : 0) + 'ms' + (timerRun ? '' : ';animation-play-state:paused') + '"></i></em>' : '') + '</div>';
         }).join('');
         var foot = p.phase === 'done' ? '<p class="pw-score"><b>+' + p.got + '</b><span>' + (p.got === 1 ? 'point' : 'points') + ' · ' + esc(p.team) + '</span></p>' : '<p class="pw-score pw-score--live"><b>' + p.got + '</b><span>correct</span></p>';
         return '<div class="pw' + (p.phase === 'up' ? ' is-up' : '') + '"><div class="pw-head"><p class="sc-intro__r">Password · question ' + p.no + '</p>' + tm + (p.phase === 'play' ? '<span class="sc-qa__timer pw-clock" data-ringnum></span>' : '') + '</div><div class="pw-grid' + (p.n > 5 ? ' is-two' : '') + '" style="--n:' + Math.min(5, p.n) + '">' + tiles + '</div>' + foot + (p.phase === 'up' ? '<div class="pw-up"><span>Time up</span></div>' : '') + '</div>';
@@ -435,7 +435,6 @@ function pqtMain() {
       clock.classList.toggle('is-low', timerRun && left <= 10000);
       var rn = $('[data-ringnum]', main), ring = $('[data-ring]', main);
       if (rn) { rn.textContent = fmtT(left); rn.classList.toggle('is-low', left <= 10000 && timerTotal > 0); }
-      var pb = $('[data-pwbar]', main); if (pb) pb.style.transform = 'scaleX(' + (timerTotal ? Math.max(0, left / timerTotal) : 0).toFixed(3) + ')';
       if (ring) { var C = 2 * Math.PI * 46; ring.setAttribute('stroke-dashoffset', (timerTotal ? C * (1 - left / timerTotal) : 0).toFixed(1)); }
       var sec = Math.ceil(left / 1000);
       if (timerRun && sec !== lastSec && sec <= 5 && sec > 0 && !force) FX.tick();
