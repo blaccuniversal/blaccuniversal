@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css?v=202611131546">
-<link rel="stylesheet" href="/blog/blog.css?v=8">
+<link rel="stylesheet" href="/blog/blog.css?v=10">
 <link rel="alternate" type="application/rss+xml" title="BLACC Universal Blog" href="/blog/feed.xml">
 <meta property="article:published_time" content="2026-11-15">
 <meta name="author" content="Redd Penn">
@@ -42,11 +42,36 @@
   </nav>
 
 
-  <div class="bl-progress" aria-hidden="true"><i data-progress></i></div>
-  <main class="bl bl--post gutter" id="top">
-    <article class="bl-art">
+  <main class="bl bl--index gutter" id="top">
+    <header class="bl-hero">
+      <p class="eyebrow">Blog</p>
+      <h1 class="bl-hero__t">Conversation and opinions of the world around us.</h1>
+    </header>
+    <div class="bl-bar">
+      <p class="bl-bar__n">1 post</p>
+      <div class="bl-views" role="group" aria-label="Layout"><button type="button" data-view="list" aria-pressed="false" aria-label="List view"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.4"/></svg><span>List</span></button><button type="button" data-view="grid" aria-pressed="false" aria-label="Grid view"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/></svg><span>Grid</span></button><button type="button" data-view="swipe" aria-pressed="false" aria-label="Swipe view"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="4" width="10" height="16" rx="1.5"/><path d="M4 7v10M20 7v10"/></svg><span>Swipe</span></button></div>
+    </div>
+    <section class="bl-feed" data-feed data-view="grid" aria-label="Posts">
+      <ul class="bl-items" data-track>
+        <li class="bl-item"><a class="bl-card" href="/blog/item7go-and-the-creeping-struggle/">
+          <span class="bl-card__img"><img src="/blog/img/item7go-sm.webp" alt="" loading="lazy" decoding="async"></span>
+          <span class="bl-card__txt">
+            <span class="eyebrow">Opinion</span>
+            <span class="bl-card__t">Item7Go and the Creeping Struggle to Retain What Makes It Unique and Hotly Demanded</span>
+            <span class="bl-card__x">There are businesses that sell products, and there are businesses that become part of people’s everyday lives. Item7Go has, for a while, managed to do both.</span>
+            <span class="bl-meta"><span>Redd Penn</span><span aria-hidden="true">·</span><time datetime="2026-11-15">15 November 2026</time><span aria-hidden="true">·</span><span>3 min read</span></span>
+          </span>
+        </a></li>
+      </ul>
+      <div class="bl-nav" aria-hidden="true"><button type="button" data-swipe="-1" tabindex="-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button><button type="button" data-swipe="1" tabindex="-1"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+    </section>
+  </main>
+  <div class="bl-pop is-in" data-pop-static>
+    <div class="bl-pop__card" tabindex="-1" role="dialog" aria-modal="true" aria-label="Blog post">
+      <div class="bl-pop__bar"><b>Blog</b><a class="bl-pop__x" href="/blog/" data-pop-close aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></a><div class="bl-progress bl-progress--pop" aria-hidden="true"><i data-progress></i></div></div>
+      <div class="bl-pop__scroll" data-pop-scroll><div class="bl-pop__body" data-pop-body>
+      <article class="bl-art">
       <header class="bl-art__head">
-        <a class="bl-back" href="/blog/"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg> Blog</a>
         <p class="eyebrow">Opinion</p>
         <h1 class="bl-art__title">Item7Go and the Creeping Struggle to Retain What Makes It Unique and Hotly Demanded</h1>
         <p class="bl-meta"><span>Redd Penn</span><span aria-hidden="true">·</span><time datetime="2026-11-15">15 November 2026</time><span aria-hidden="true">·</span><span>3 min read</span></p>
@@ -81,7 +106,9 @@
       </footer>
       
     </article>
-  </main>
+      </div></div>
+    </div>
+  </div>
   <footer class="footer gutter section--alt">
     <div class="wrap footer__inner">
       <span>© 2026 BLACC Universal. All rights reserved. <a class="footer__privacy" href="/privacy/">Privacy</a></span>
@@ -170,7 +197,7 @@
     </nav>
   </div>
 </div>
-<script src="/blog/blog.js?v=8" defer></script>
+<script src="/blog/blog.js?v=10" defer></script>
 <script src="/assets/js/main.js?v=202611120150" defer></script>
 </body>
 </html>

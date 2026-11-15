@@ -60,70 +60,75 @@
   addEventListener('resize', nav);
 })();
 
-/* index: open posts in a full-screen pop-up, like the rest of the site */
+/* posts open in a centred pop-up over the blog; a post's own URL opens the same way */
 (function () {
-  var feed = document.querySelector('[data-feed]'); if (!feed || !window.fetch || !window.DOMParser) return;
-  var brand = document.querySelector('.topbar .brand');
-  var pop = document.createElement('div');
-  pop.className = 'bl-pop'; pop.hidden = true;
-  pop.innerHTML = '<div class="bl-pop__card" role="dialog" aria-modal="true" aria-label="Blog post">' +
-    '<div class="bl-pop__bar"><b>Blog</b><a class="bl-pop__full" href="#" data-pop-full>Open full page</a>' +
-    '<button type="button" data-pop-close aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>' +
-    '<div class="bl-progress bl-progress--pop" aria-hidden="true"><i data-progress></i></div></div>' +
-    '<div class="bl-pop__scroll" data-pop-scroll><div class="bl-pop__body" data-pop-body></div></div></div>';
-  document.body.appendChild(pop);
+  var feed = document.querySelector('[data-feed]'); if (!feed) return;
+  var pop = document.querySelector('.bl-pop'), isStatic = !!pop;
+  if (!pop) {
+    pop = document.createElement('div'); pop.className = 'bl-pop'; pop.hidden = true;
+    pop.innerHTML = '<div class="bl-pop__card" tabindex="-1" role="dialog" aria-modal="true" aria-label="Blog post">' +
+      '<div class="bl-pop__bar"><b>Blog</b><a class="bl-pop__x" href="/blog/" data-pop-close aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></a>' +
+      '<div class="bl-progress bl-progress--pop" aria-hidden="true"><i data-progress></i></div></div>' +
+      '<div class="bl-pop__scroll" data-pop-scroll><div class="bl-pop__body" data-pop-body></div></div></div>';
+    document.body.appendChild(pop);
+  }
   var host = pop.querySelector('[data-pop-body]'), pbar = pop.querySelector('[data-progress]'), scroller = pop.querySelector('[data-pop-scroll]');
-  var cache = {}, lastFocus = null, pushed = false, baseTitle = document.title, bound = false;
-
+  var cache = {}, lastFocus = null, pushed = false, BASE = 'Blog · BLACC Universal';
+  if (window.BL) BL.progress(scroller, host, pbar);
+  if (isStatic) {
+    document.body.classList.add('build-open');
+    cache[location.pathname] = { html: host.innerHTML, title: document.title };
+    history.replaceState({ blPop: location.pathname }, '', location.pathname);
+    pushed = false;
+    setTimeout(function () { pop.querySelector('.bl-pop__card').focus({ preventScroll: true }); }, 60);
+  }
   function load(href) {
     if (cache[href]) return Promise.resolve(cache[href]);
     return fetch(href, { credentials: 'same-origin' }).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (t) {
-      var d = new DOMParser().parseFromString(t, 'text/html'), art = d.querySelector('.bl-art');
-      if (!art) throw 0;
-      var back = art.querySelector('.bl-back'); if (back) back.remove();
-      var nx = art.querySelector('.bl-next'); if (nx) nx.setAttribute('data-pop-link', '');
-      return (cache[href] = { html: art.outerHTML, title: d.title });
+      var d = new DOMParser().parseFromString(t, 'text/html'), b = d.querySelector('[data-pop-body]');
+      if (!b) throw 0;
+      return (cache[href] = { html: b.innerHTML, title: d.title });
     });
   }
-  function show(href, data) {
+  function show(data) {
     host.innerHTML = data.html;
-    host.querySelectorAll('img').forEach(function (i) { i.removeAttribute('loading'); });
     window.BL && BL.bindCopy(host);
-    if (!bound) { window.BL && BL.progress(scroller, host, pbar); bound = true; }
-    pop.querySelector('[data-pop-full]').setAttribute('href', href);
     document.title = data.title;
     if (pop.hidden) { lastFocus = document.activeElement; pop.hidden = false; document.body.classList.add('build-open'); }
     scroller.scrollTop = 0; scroller.dispatchEvent(new Event('scroll'));
     pop.classList.remove('is-in'); void pop.offsetWidth; pop.classList.add('is-in');
-    setTimeout(function () { pop.querySelector('[data-pop-close]').focus({ preventScroll: true }); }, 60);
+    setTimeout(function () { pop.querySelector('.bl-pop__card').focus({ preventScroll: true }); }, 60);
   }
-  function open(href, push) {
+  function open(href, how) {
     return load(href).then(function (data) {
-      show(href, data);
-      if (push) { history.pushState({ blPop: href }, '', href); pushed = true; }
+      show(data);
+      if (how === 'push') { history.pushState({ blPop: href }, '', href); pushed = true; }
+      else if (how === 'replace') history.replaceState({ blPop: href }, '', href);
     }).catch(function () { location.href = href; });
   }
   function hide() {
     pop.hidden = true; document.body.classList.remove('build-open');
-    document.title = baseTitle;
+    document.title = BASE;
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
-  function close() { if (pushed && history.state && history.state.blPop) history.back(); else hide(); }
-
+  function close() {
+    if (pushed && history.state && history.state.blPop) { history.back(); return; }
+    hide(); history.replaceState(null, '', '/blog/');
+  }
   feed.addEventListener('click', function (e) {
     var a = e.target.closest('a.bl-card'); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
-    e.preventDefault(); open(a.getAttribute('href'), true);
+    e.preventDefault(); open(a.getAttribute('href'), 'push');
   });
   feed.addEventListener('pointerenter', function (e) { var a = e.target.closest && e.target.closest('a.bl-card'); if (a) load(a.getAttribute('href')).catch(function () {}); }, true);
   pop.addEventListener('click', function (e) {
-    if (e.target === pop || e.target.closest('[data-pop-close]')) return close();
-    var nx = e.target.closest('[data-pop-link]');
-    if (nx) { e.preventDefault(); var h = nx.getAttribute('href'); load(h).then(function (d) { show(h, d); history.replaceState({ blPop: h }, '', h); }).catch(function () { location.href = h; }); }
+    if (e.target === pop || e.target.closest('[data-pop-close]')) { e.preventDefault(); return close(); }
+    var nx = e.target.closest('.bl-next');
+    if (nx) { e.preventDefault(); open(nx.getAttribute('href'), 'replace'); }
   });
   addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pop.hidden) close(); });
   addEventListener('popstate', function (e) {
     var st = e.state;
-    if (st && st.blPop) open(st.blPop, false);
+    if (st && st.blPop) open(st.blPop, null);
     else if (!pop.hidden) { pushed = false; hide(); }
   });
 })();

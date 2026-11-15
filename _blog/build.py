@@ -2,7 +2,7 @@
 """Builds /blog/ from _blog/posts/*.md (front matter, then paragraphs; '> ' = pull quote, '## ' = heading)."""
 import os, re, glob, html, datetime, json
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '8'
+VER = '10'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 e = lambda s: html.escape(s, quote=True)
@@ -69,6 +69,16 @@ def meta(m):
     return '<span>%s</span><span aria-hidden="true">·</span><time datetime="%s">%s</time><span aria-hidden="true">·</span><span>%d min read</span>' % (e(m['author']), m['date'].isoformat(), nice(m['date']), m['mins'])
 
 # posts
+POSTPAGES = []
+POP = '''
+  <div class="bl-pop is-in" data-pop-static>
+    <div class="bl-pop__card" tabindex="-1" role="dialog" aria-modal="true" aria-label="Blog post">
+      <div class="bl-pop__bar"><b>Blog</b><a class="bl-pop__x" href="/blog/" data-pop-close aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></a><div class="bl-progress bl-progress--pop" aria-hidden="true"><i data-progress></i></div></div>
+      <div class="bl-pop__scroll" data-pop-scroll><div class="bl-pop__body" data-pop-body>
+      %s
+      </div></div>
+    </div>
+  </div>'''
 for i, m in enumerate(posts):
     url = '%s/blog/%s/' % (SITE, m['slug'])
     nxt = posts[i + 1] if i + 1 < len(posts) else None
@@ -95,8 +105,10 @@ for i, m in enumerate(posts):
       %s
     </article>
   </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), cov, render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), share(url, m['title']), more)
-    page('blog/%s/index.html' % m['slug'], m['title'] + ' · BLACC Universal', m['excerpt'], url, main, 'article',
-         FEED + '\n<meta property="article:published_time" content="%s">\n<meta name="author" content="%s">\n<script type="application/ld+json">%s</script>' % (m['date'].isoformat(), e(m['author']), ld.replace('</', '<\\/')), JS, (SITE + '/blog/img/%s-og.jpg' % m['cover']) if m.get('cover') else None)
+    art = main[main.index('<article'):main.index('</article>') + 10]
+    art = re.sub(r'\s*<a class="bl-back"[^>]*>.*?</a>', '', art, flags=re.S)
+    POSTPAGES.append(lambda idx, m=m, url=url, art=art, ld=ld: page('blog/%s/index.html' % m['slug'], m['title'] + ' · BLACC Universal', m['excerpt'], url, idx + POP % art, 'article',
+         FEED + '\n<meta property="article:published_time" content="%s">\n<meta name="author" content="%s">\n<script type="application/ld+json">%s</script>' % (m['date'].isoformat(), e(m['author']), ld.replace('</', '<\\/')), JS, (SITE + '/blog/img/%s-og.jpg' % m['cover']) if m.get('cover') else None))
 
 # index
 VIEWS = [('list', 'List', '<path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.4"/>'),
@@ -130,6 +142,7 @@ main = '''  <main class="bl bl--index gutter" id="top">
       <div class="bl-nav" aria-hidden="true"><button type="button" data-swipe="-1" tabindex="-1">%s</button><button type="button" data-swipe="1" tabindex="-1">%s</button></div>
     </section>
   </main>''' % (len(posts), 'post' if len(posts) == 1 else 'posts', seg, '\n        '.join(card(m) for m in posts), BACK, ARROW)
+for f in POSTPAGES: f(main)
 page('blog/index.html', 'Blog · BLACC Universal', 'Conversation and opinions of the world around us, from BLACC Universal.', SITE + '/blog/', main, 'website', FEED, JS, (SITE + '/blog/img/%s-og.jpg' % posts[0]['cover']) if posts and posts[0].get('cover') else None)
 
 # feed

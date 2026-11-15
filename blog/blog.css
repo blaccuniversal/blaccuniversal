@@ -122,10 +122,8 @@
 .bl-pop.is-in .bl-pop__card{animation:blUp .45s cubic-bezier(.2,.7,.2,1) both}
 .bl-pop__bar{position:relative;flex:none;display:flex;align-items:center;gap:16px;padding:6px 6px 6px 22px;border-bottom:1px solid #1f1f1f}
 .bl-pop__bar b{font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#cfcfcf}
-.bl-pop__full{margin-left:auto;font-size:13px;color:#8a8a8a;text-decoration:underline;text-underline-offset:3px}
-.bl-pop__full:hover{color:#fff}
-.bl-pop__bar button{width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none;color:#8a8a8a;cursor:pointer}
-.bl-pop__bar button:hover{color:#fff}
+.bl-pop__x{margin-left:auto;width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none;color:#8a8a8a;cursor:pointer}
+.bl-pop__x:hover{color:#fff}
 .bl-progress--pop{position:absolute;top:auto;bottom:-1px;left:0;right:0;height:1px;z-index:1}
 .bl-pop__scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .bl-pop__body{padding:clamp(28px,4vw,48px) clamp(20px,5vw,50px) clamp(48px,6vw,72px)}
@@ -136,3 +134,4 @@
 @keyframes blUp{from{opacity:0;transform:translateY(16px) scale(.97)}}
 @media (max-width:600px){.bl-pop{padding:8px}.bl-pop__card{height:calc(100dvh - 16px)}.bl-pop__body{padding-left:18px;padding-right:18px}.bl-pop .bl-cover{margin-left:-18px;margin-right:-18px}}
 @media (prefers-reduced-motion:reduce){.bl-pop,.bl-pop.is-in .bl-pop__card{animation:none}}
+.bl-pop__card:focus{outline:none}
