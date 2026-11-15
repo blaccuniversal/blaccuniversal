@@ -15,7 +15,7 @@
   function toParent(msg) { if (EMBED && window.parent !== window) try { window.parent.postMessage(Object.assign({ wr: 1 }, msg), location.origin); } catch (e) {} }
 
   /* ---------- storage ---------- */
-  function ls(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+  function ls(k, v) { if (window.PQT_KEY) k = window.PQT_KEY(k); try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
   function index() { return ls('wr_index') || []; }
   function save() {
     if (!T) return;

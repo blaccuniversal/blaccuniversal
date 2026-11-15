@@ -23,7 +23,7 @@ function pqtMain() {
   function tie(t) { t = String(t == null ? '' : t).replace(/\s+$/, ''); var i = t.lastIndexOf(' '); return i > 0 && t.length - i < 16 ? t.slice(0, i) + '\u00a0' + t.slice(i + 1) : t; }
   function pl(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
+  function store(k, v) { if (window.PQT_KEY) k = window.PQT_KEY(k); try { if (v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); } catch (e) { return null; } }
   function sstore(k, v) { try { if (v === undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k, v); } catch (e) { return null; } }
   function newCode() { var c = ''; for (var i = 0; i < 4; i++) c += ALPHA[Math.floor(Math.random() * ALPHA.length)]; return c; }
   function cleanCode(c) { return String(c || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); }
@@ -1180,7 +1180,9 @@ function pqtMain() {
     else if (b.hasAttribute('data-setup-edit')) openSetup(H.ended || H.round === 0);
     else if (b.hasAttribute('data-opensc')) { var w = window.open('/pqt/screen/', 'pqtscreen'); if (!w) location.href = '/pqt/screen/'; }
     else if (b.hasAttribute('data-savecards')) { H.wordsTxt = $('[data-wtxt]').value; H.boardsTxt = $('[data-btxt]').value; ['names', 'spell', 'written', 'rapid', 'talk', 'alpha', 'pw'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el) H[k + 'Txt'] = el.value; }); loadQA(); reloadBanks(); b.textContent = 'Saved'; setTimeout(function () { b.textContent = 'Save cards'; }, 1500); }
-    else if (b.hasAttribute('data-samples')) { if (confirmTwice(b)) { H.wordsTxt = window.PQT_SAMPLE_WORDS; H.boardsTxt = window.PQT_SAMPLE_BOARDS; H.namesTxt = window.PQT_SAMPLE_NAMES; H.spellTxt = window.PQT_SAMPLE_SPELL; H.writtenTxt = window.PQT_SAMPLE_WRITTEN; H.rapidTxt = window.PQT_SAMPLE_RAPID; H.talkTxt = window.PQT_SAMPLE_TALK; H.pwTxt = window.PQT_SAMPLE_PW || ''; loadQA(); reloadBanks(); renderTab(); } }
+    else if (b.hasAttribute('data-samples')) { if (confirmTwice(b)) { setBank(window.PQT_BANK || {}); toast('Your saved bank is back.'); } }
+    else if (b.hasAttribute('data-bank-export')) exportBank();
+    else if (b.hasAttribute('data-bank-import')) { var fi = $('[data-bank-file]'); if (fi) { fi.value = ''; fi.click(); } }
   });
   function closeSheets() { $$('.hc-sheet').forEach(function (s) { s.hidden = true; }); }
   function menuAct(m, b) {
@@ -1245,6 +1247,30 @@ function pqtMain() {
     $('[data-end-list]').innerHTML = rows.map(function (t, i) { var rp = roundPts(H.teams.indexOf(t)); return '<li><span>' + (i + 1) + '</span><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '<small>' + rp.rounds.map(function (v, r) { return 'R' + (r + 1) + ' ' + (v == null ? '–' : v); }).join(' · ') + (rp.pen ? ' · Penalty ' + rp.pen : '') + '</small></b><em>' + t.score + '</em></li>'; }).join('');
     $('[data-endsheet]').hidden = false;
   }
+  /* ---- question bank: private to this host code ---- */
+  var BANKF = { WORDS: 'wordsTxt', BOARDS: 'boardsTxt', NAMES: 'namesTxt', SPELL: 'spellTxt', WRITTEN: 'writtenTxt', RAPID: 'rapidTxt', TALK: 'talkTxt', ALPHA: 'alphaTxt', PW: 'pwTxt' };
+  function setBank(o) { Object.keys(BANKF).forEach(function (k) { H[BANKF[k]] = o[k] || ''; }); save(); loadQA(); reloadBanks(); renderTab(); }
+  function exportBank() {
+    if (!window.PQT_CRYPT) return toast('Unlock with your host code first.');
+    var o = {}; Object.keys(BANKF).forEach(function (k) { o[k] = H[BANKF[k]] || ''; });
+    window.PQT_CRYPT.seal(o).then(function (txt) {
+      var a = document.createElement('a'), d = new Date();
+      a.href = URL.createObjectURL(new Blob([txt], { type: 'application/json' }));
+      a.download = 'PQT-bank-' + d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2) + '.pqtbank';
+      document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      toast('Bank saved. Only your code can open it.');
+    }).catch(function () { toast('Couldn’t save the bank. Try again.'); });
+  }
+  (function () {
+    var fi = $('[data-bank-file]'); if (!fi) return;
+    fi.addEventListener('change', function () {
+      var f = fi.files && fi.files[0]; if (!f) return;
+      f.text().then(function (t) { return window.PQT_CRYPT.open(t); })
+        .then(function (o) { setBank(o); toast('Bank loaded.'); })
+        .catch(function () { toast('That file isn’t a bank saved with your code.'); });
+    });
+    var rs = $('[data-samples]'); if (rs) rs.hidden = !window.PQT_BANK;
+  })();
   function confirmTwice(b) {
     if (b.dataset.armed) { delete b.dataset.armed; b.textContent = b.dataset.label; return true; }
     b.dataset.label = b.textContent; b.dataset.armed = '1'; b.textContent = 'Tap again to confirm';
@@ -1283,4 +1309,4 @@ function pqtMain() {
   if (H.code) { $('[data-codein]').value = H.code; connect(H.code); }
   renderAll();
 }
-if (document.body.hasAttribute('data-locked')) document.addEventListener('pqt:unlock', pqtMain, { once: true }); else pqtMain();
+if (window.PQT_READY) pqtMain(); else document.addEventListener('pqt:ready', pqtMain, { once: true });

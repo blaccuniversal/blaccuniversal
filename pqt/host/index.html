@@ -57,7 +57,7 @@
   <section class="card hc-sec" data-pane="quiz" hidden><h2>Games</h2><div data-qpane></div><div data-racebox hidden></div></section>
   <section class="card hc-sec" data-pane="cards" hidden>
     <h2>Cards &amp; questions</h2>
-    <p class="hc-note hc-lead">Tap a game to edit its cards. Everything is saved on this device.</p>
+    <p class="hc-note hc-lead">Tap a game to edit its cards. They’re saved on this device, in your own space: other host codes can’t see them.</p>
     <details class="hc-cset"><summary><b>All Except These Ones</b><span data-cc="words"></span></summary><p class="hc-note">One per line: <b>WORD: banned, banned, banned</b></p><textarea class="hc-input" data-wtxt spellcheck="false"></textarea></details>
     <details class="hc-cset"><summary><b>Quests Feud</b><span data-cc="boards"></span></summary><p class="hc-note">The question on one line, then each answer with its points (<b>Answer, 30</b>). Leave an empty line between questions. The samples are made up: replace them with your own survey results.</p><textarea class="hc-input" data-btxt spellcheck="false"></textarea></details>
     <details class="hc-cset"><summary><b>Hi, My Name Is…</b><span data-cc="names"></span></summary><p class="hc-note">The answer on the first line, then one clue per line. Several clues? They show one at a time and earn fewer points as more are shown. Empty line between people.</p><textarea class="hc-input" data-qtxt="names" spellcheck="false"></textarea></details>
@@ -67,7 +67,8 @@
     <details class="hc-cset"><summary><b>AlphaSum</b><span data-cc="alpha"></span></summary><p class="hc-note">One per line: <b>ANSWER | clue</b>. Add <b>| hard</b> to hide the word length. The numbers (A = 1 … Z = 26) are worked out for you.</p><textarea class="hc-input" data-qtxt="alpha" spellcheck="false" rows="10"></textarea></details>
     <details class="hc-cset"><summary><b>Password</b><span data-cc="pw"></span></summary><p class="hc-note">One word per line, up to 10 per question. Empty line between questions. The letters are taken from the first letter of each word and sorted A to Z for you.</p><textarea class="hc-input" data-qtxt="pw" spellcheck="false" rows="10"></textarea></details>
     <details class="hc-cset"><summary><b>Discussion</b><span data-cc="talk"></span></summary><p class="hc-note">One topic per line.</p><textarea class="hc-input" data-qtxt="talk" spellcheck="false"></textarea></details>
-    <div class="hc-row" style="margin-top:16px"><button class="pbtn pbtn--white" data-savecards type="button">Save cards</button><button class="pbtn pbtn--ghost pbtn--sm" data-samples type="button">Restore samples</button></div>
+    <div class="hc-row" style="margin-top:16px"><button class="pbtn pbtn--white" data-savecards type="button">Save cards</button><button class="pbtn pbtn--ghost pbtn--sm" data-samples type="button" hidden>Restore my bank</button><button class="pbtn pbtn--ghost pbtn--sm" data-bank-export type="button">Export bank</button><button class="pbtn pbtn--ghost pbtn--sm" data-bank-import type="button">Import bank</button><input type="file" accept=".pqtbank,application/json" data-bank-file hidden></div>
+    <p class="hc-note">Your questions are private to your host code. Export a copy to back them up or move them to another device; only your code can open it.</p>
     <span data-ccount hidden></span>
   </section>
 
@@ -82,7 +83,7 @@
       <button class="hc-mi" data-m="end" type="button"><b>End game</b><span>Final scores, winner on screen, saved to the leaderboard.</span></button>
       <p class="hc-sheet__sub">Setup</p>
       <button class="hc-mi" data-m="newgame" type="button"><b>New game</b><span>Name it, pick teams and rounds, then start fresh.</span></button>
-      <button class="hc-mi hc-mi--quiet" data-m="lock" type="button"><b>Lock this device</b><span>Asks for the pass again next time.</span></button>
+      <button class="hc-mi hc-mi--quiet" data-m="lock" type="button"><b>Switch host code</b><span>Locks this device. The next code opens its own questions.</span></button>
     </div>
   </div>
   <div class="hc-sheet" data-pick hidden role="dialog" aria-modal="true" aria-label="Next round">
@@ -142,12 +143,11 @@
   </div>
   <div class="hc-toast" data-toast hidden></div>
 </div>
-<script src="/assets/pqt/pqt-gate.js?v=261112171"></script>
+<script src="/assets/pqt/pqt-gate.js?v=2611151800"></script>
 <script src="/assets/pqt/mqtt.min.js?v=5104"></script>
 <script src="/assets/pqt/peerjs.min.js?v=261112171"></script>
 <script src="/assets/pqt/wordrace/wr-engine.js?v=10"></script>
-<script src="/assets/pqt/pqt-data.js?v=2611141900"></script>
-<script src="/assets/pqt/pqt.js?v=2611141915"></script>
+<script src="/assets/pqt/pqt.js?v=2611151800"></script>
 <script src="/assets/pqt/pqt-offline.js?v=261112171"></script>
 </body>
 </html>
