@@ -2,7 +2,7 @@
 """Builds /blog/ from _blog/posts/*.md (front matter, then paragraphs; '> ' = pull quote, '## ' = heading)."""
 import os, re, glob, html, datetime, json
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '6'
+VER = '8'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 e = lambda s: html.escape(s, quote=True)

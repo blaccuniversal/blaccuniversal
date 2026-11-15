@@ -65,15 +65,14 @@
   var feed = document.querySelector('[data-feed]'); if (!feed || !window.fetch || !window.DOMParser) return;
   var brand = document.querySelector('.topbar .brand');
   var pop = document.createElement('div');
-  pop.className = 'build bl-pop'; pop.hidden = true;
-  pop.setAttribute('role', 'dialog'); pop.setAttribute('aria-modal', 'true'); pop.setAttribute('aria-label', 'Blog post');
-  pop.innerHTML = '<div class="bl-pop__bar gutter"><span class="bl-pop__brand"></span>' +
-    '<button class="icon-btn menu-btn" type="button" data-pop-close aria-label="Close"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>' +
+  pop.className = 'bl-pop'; pop.hidden = true;
+  pop.innerHTML = '<div class="bl-pop__card" role="dialog" aria-modal="true" aria-label="Blog post">' +
+    '<div class="bl-pop__bar"><b>Blog</b><a class="bl-pop__full" href="#" data-pop-full>Open full page</a>' +
+    '<button type="button" data-pop-close aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>' +
     '<div class="bl-progress bl-progress--pop" aria-hidden="true"><i data-progress></i></div></div>' +
-    '<div class="bl-pop__body gutter" data-pop-body></div>';
-  if (brand) { var bc = brand.cloneNode(true); bc.removeAttribute('href'); pop.querySelector('.bl-pop__brand').appendChild(bc.querySelector('svg') || bc); }
+    '<div class="bl-pop__scroll" data-pop-scroll><div class="bl-pop__body" data-pop-body></div></div></div>';
   document.body.appendChild(pop);
-  var host = pop.querySelector('[data-pop-body]'), pbar = pop.querySelector('[data-progress]');
+  var host = pop.querySelector('[data-pop-body]'), pbar = pop.querySelector('[data-progress]'), scroller = pop.querySelector('[data-pop-scroll]');
   var cache = {}, lastFocus = null, pushed = false, baseTitle = document.title, bound = false;
 
   function load(href) {
@@ -90,10 +89,11 @@
     host.innerHTML = data.html;
     host.querySelectorAll('img').forEach(function (i) { i.removeAttribute('loading'); });
     window.BL && BL.bindCopy(host);
-    if (!bound) { window.BL && BL.progress(pop, host, pbar); bound = true; }
+    if (!bound) { window.BL && BL.progress(scroller, host, pbar); bound = true; }
+    pop.querySelector('[data-pop-full]').setAttribute('href', href);
     document.title = data.title;
     if (pop.hidden) { lastFocus = document.activeElement; pop.hidden = false; document.body.classList.add('build-open'); }
-    pop.scrollTop = 0; pop.dispatchEvent(new Event('scroll'));
+    scroller.scrollTop = 0; scroller.dispatchEvent(new Event('scroll'));
     pop.classList.remove('is-in'); void pop.offsetWidth; pop.classList.add('is-in');
     setTimeout(function () { pop.querySelector('[data-pop-close]').focus({ preventScroll: true }); }, 60);
   }
@@ -116,7 +116,7 @@
   });
   feed.addEventListener('pointerenter', function (e) { var a = e.target.closest && e.target.closest('a.bl-card'); if (a) load(a.getAttribute('href')).catch(function () {}); }, true);
   pop.addEventListener('click', function (e) {
-    if (e.target.closest('[data-pop-close]')) return close();
+    if (e.target === pop || e.target.closest('[data-pop-close]')) return close();
     var nx = e.target.closest('[data-pop-link]');
     if (nx) { e.preventDefault(); var h = nx.getAttribute('href'); load(h).then(function (d) { show(h, d); history.replaceState({ blPop: h }, '', h); }).catch(function () { location.href = h; }); }
   });
