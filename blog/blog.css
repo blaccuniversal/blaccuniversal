@@ -138,7 +138,6 @@
 /* comments */
 .bl-cm{margin-top:clamp(40px,6vw,64px)}
 .bl-cm__h{display:flex;align-items:baseline;gap:10px;margin:0 0 20px;font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#cfcfcf}
-.bl-cm__h span{font-size:12px;color:#7a7a7a;letter-spacing:.1em}
 .bl-cm__form{display:flex;flex-direction:column;gap:10px;padding:16px;border:1px solid #1f1f1f;border-radius:2px;transition:border-color .2s}
 .bl-cm__form:focus-within{border-color:#3a3a3a}
 .bl-cm__in{width:100%;padding:12px 14px;border:1px solid #222;border-radius:2px;background:#050505;color:#fff;font:inherit;font-size:16px;outline:0;transition:border-color .2s}

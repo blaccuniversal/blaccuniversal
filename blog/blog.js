@@ -158,7 +158,7 @@
     var count = box.querySelector('[data-cm-count]'), form = box.querySelector('[data-cm-form]'), note = box.querySelector('[data-cm-note]');
     var name = form.elements.name, body = form.elements.body, btn = form.querySelector('button'), mod = ls('bl_mod'), n = 0;
     name.value = ls('bl_name') || '';
-    function setCount() { count.textContent = n ? n : ''; empty.hidden = n > 0; }
+    function setCount() { count.textContent = !n ? 'Comments' : n + (n === 1 ? ' Comment' : ' Comments'); empty.hidden = n > 0; }
     function item(c, fresh) {
       var li = document.createElement('li'); li.className = 'bl-cm__i' + (fresh ? ' is-new' : '');
       var hd = document.createElement('p'); hd.className = 'bl-cm__by';

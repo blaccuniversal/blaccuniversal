@@ -2,7 +2,7 @@
 """Builds /blog/ from _blog/posts/*.md (front matter, then paragraphs; '> ' = pull quote, '## ' = heading)."""
 import os, re, glob, html, datetime, json
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '11'
+VER = '12'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 e = lambda s: html.escape(s, quote=True)
@@ -103,7 +103,7 @@ for i, m in enumerate(posts):
         %s
       </footer>
       <section class="bl-cm" data-comments data-post="%s" aria-labelledby="cm-%s">
-        <h2 class="bl-cm__h" id="cm-%s">Comments <span data-cm-count></span></h2>
+        <h2 class="bl-cm__h" id="cm-%s"><span data-cm-count>Comments</span></h2>
         <form class="bl-cm__form" data-cm-form novalidate>
           <input class="bl-cm__in" name="name" maxlength="40" autocomplete="nickname" placeholder="Your name" aria-label="Your name" required>
           <textarea class="bl-cm__in bl-cm__ta" name="body" maxlength="1000" rows="3" placeholder="Join the conversation" aria-label="Your comment" required></textarea>
