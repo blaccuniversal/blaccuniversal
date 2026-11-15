@@ -306,7 +306,7 @@ function pqtMain() {
           race: ['Two letters spin, then stop: one to start the word, one to end it.', 'First team to call a real word that fits wins the battle.', 'Three battles, 3 points for each one won. Most points wins.'],
           pw: ['Ten letters light up, one at a time. Each one starts a hidden word.', 'The describer gives a one-word clue. The guesser names the word.', 'Each letter lasts 10 seconds. Every word guessed is a point.']
         };
-        if (S.roundType === 'lyrics') return '<div class="sc-intro sc-intro--hold"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + ' · Finish The Lyrics</p><h1 class="sc-intro__t">Use Presentation</h1><p class="sc-intro__sub">Interface is getting curated.</p></div>';
+        if (S.roundType === 'lyrics') return '<div class="sc-intro sc-intro--hold"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + ' · Finish The Lyrics</p><h1 class="sc-intro__t">Use Presentation</h1><p class="sc-intro__sub">Interface is getting curated.</p>' + (S.lyr ? '<div class="sc-chips" style="margin-top:5vh"><span class="sc-chip"><i style="background:' + S.lyr.color + '"></i>' + esc(S.lyr.team) + ' · you’re up</span></div>' : '') + '</div>';
         if (QR[S.roundType]) {
           var NM = { names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion', alpha: 'AlphaSum', star: 'Superstar', race: 'Word Race', pw: 'Password' };
           return '<div class="sc-intro"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + '</p><h1 class="sc-intro__t">' + NM[S.roundType] + '</h1>' +
@@ -492,7 +492,7 @@ function pqtMain() {
       teams: H.teams.map(function (x, i) { var rp = roundPts(i); return { name: x.name, color: x.color, score: x.score, rounds: rp.rounds, pen: rp.pen, strikes: x.strikes || 0 }; }),
       timer: { total: t.total, remaining: left, running: t.running },
       words: { team: w.team, correct: w.correct, skipped: w.skipped, buzzed: w.buzzed, stream: w.stream.slice(-14), pts: w.correct - (w.buzzCost ? w.buzzed : 0) },
-      qa: qaPub(), star: starPub(), pw: pwPub(), race: H.race && H.roundType === 'race' ? { room: H.race.room } : null,
+      lyr: H.roundType === 'lyrics' && H.lyr && H.teams[H.lyr.team] ? { team: tn(H.lyr.team), color: H.teams[H.lyr.team].color } : null, qa: qaPub(), star: starPub(), pw: pwPub(), race: H.race && H.roundType === 'race' ? { room: H.race.room } : null,
       fm: fmPub(),
       feud: b ? { key: H.feud.qi + ':' + b.q, q: b.q, n: b.a.length, out: out, strikes: f.strikes, bank: f.awardedTo != null ? 0 : bank, awardedTo: f.awardedTo, awardedPts: f.awardedPts } : null
     };
@@ -612,6 +612,7 @@ function pqtMain() {
     if (type === 'star') starReset();
     if (type === 'race') raceNew();
     if (type === 'pw') pwReset();
+    if (type === 'lyrics') H.lyr = { team: 0, val: (H.lyr && H.lyr.val) || 1, log: [] };
     if (QA_TYPES[type]) H.qa = { wr: {}, type: type, mode: QA_BOARD[type] ? 'board' : 'q', idx: (H.qaPos[type] || 0) % Math.max(1, (QA[type] || []).length), clue: 1, revealed: false, mark: '', phase: 'ask' };
     if (H.round > H.plan.length) H.plan.push(type); else H.plan[H.round - 1] = type;
     H.view = 'intro'; H.tab = 'quiz'; push(); renderAll(); toast('Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[type]);
@@ -1026,8 +1027,33 @@ function pqtMain() {
     if (H.round > 0 && !H.ended && H.roundType) html += '<button class="hc-skip" type="button" data-m="skip">' + (nextPlanned() ? 'Skip this round · go to round ' + (H.round + 1) : 'Skip this round · finish game') + '</button>';
     return html;
   }
+  function renderLyrics() {
+    var L = H.lyr = H.lyr || { team: 0, val: 1, log: [] }, nl = nextPlanned();
+    if (L.team >= H.teams.length) L.team = 0;
+    var out = '<div class="hc-turn"><span>Finish The Lyrics</span><b>Use Presentation</b></div><p class="hc-note hc-lead">Interface is getting curated. Play the lyrics from your presentation and mark each team here.</p>';
+    if (!H.teams.length) return out + '<p class="mute">Add teams first.</p>';
+    out += '<p class="hc-sub" style="margin-top:18px">Team answering</p><div class="hc-lyr__teams">' + H.teams.map(function (t, i) {
+      return '<button type="button" class="hc-lyr__t' + (i === L.team ? ' is-on' : '') + '" data-lyr-team="' + i + '" style="--c:' + t.color + '"><i></i><span>' + esc(t.name) + '</span><b>' + t.score + '</b></button>';
+    }).join('') + '</div>';
+    out += '<div class="hc-lyr__val"><span>Points for a correct answer</span><div class="hc-row"><button class="pbtn" type="button" data-lyr-val="-1" aria-label="Fewer points">−</button><b>' + L.val + '</b><button class="pbtn" type="button" data-lyr-val="1" aria-label="More points">+</button></div></div>';
+    out += '<div class="hc-lyr__acts"><button class="pbtn pbtn--lg pbtn--white" type="button" data-lyr="ok">Correct · +' + L.val + '</button><button class="pbtn pbtn--lg" type="button" data-lyr="no">Wrong</button><button class="pbtn pbtn--lg" type="button" data-lyr="bonus">Bonus · +1</button></div>';
+    out += '<p class="hc-note">Correct or Wrong passes the turn to the next team. Bonus goes to the team selected and keeps the turn.</p>';
+    if (L.log.length) out += '<ol class="hc-lyr__log">' + L.log.slice(-6).reverse().map(function (x) { return '<li><span>' + esc(x[0]) + '</span><b>' + esc(x[1]) + '</b></li>'; }).join('') + '</ol>';
+    out += '<button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + (nl ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>';
+    return out;
+  }
+  function lyrAct(d) {
+    var L = H.lyr = H.lyr || { team: 0, val: 1, log: [] };
+    if (d.lyrTeam != null) { L.team = +d.lyrTeam; push(); renderAll(); return; }
+    if (d.lyrVal != null) { L.val = Math.max(1, Math.min(10, L.val + +d.lyrVal)); save(); renderAll(); return; }
+    var i = L.team, nm = tn(i); snap();
+    if (d.lyr === 'ok') { pts(i, L.val); L.log.push([nm, 'Correct · +' + L.val]); fx('ok'); toast(nm + ' +' + L.val); L.team = (i + 1) % H.teams.length; }
+    else if (d.lyr === 'no') { L.log.push([nm, 'Wrong']); fx('buzz'); toast(nm + ' · wrong'); L.team = (i + 1) % H.teams.length; }
+    else if (d.lyr === 'bonus') { pts(i, 1); L.log.push([nm, 'Bonus · +1']); fx('ding'); toast(nm + ' bonus +1'); }
+    push(); renderAll();
+  }
   function renderQuizInner() {
-    if (H.roundType === 'lyrics' && !H.ended) { var nl = nextPlanned(); return '<div class="hc-turn"><span>Finish The Lyrics</span><b>Use Presentation</b></div><p class="hc-note hc-lead">Interface is getting curated. Run this round from your presentation, then add points with the team buttons.</p><button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + (nl ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>'; }
+    if (H.roundType === 'lyrics' && !H.ended) return renderLyrics();
     if (H.ended) return '<p class="hc-note hc-lead">This game is over. Use “Set up the next game” above to keep playing.</p>';
     if (H.roundType === 'star') return renderStar();
     if (H.roundType === 'race') return renderRace();
@@ -1123,6 +1149,7 @@ function pqtMain() {
     var b = e.target.closest('button,[data-tab],[data-menu-close],[data-pick-close]'); if (!b) return;
     var d = b.dataset;
     if (d.tab) { H.tab = d.tab; save(); renderTabs(); renderTab(); }
+    else if (d.lyr != null || d.lyrTeam != null || d.lyrVal != null) lyrAct(d);
     else if (d.view === 'game') { var gv = H.roundType === 'words' ? 'words' : H.roundType === 'answers' ? 'fm' : H.roundType === 'star' ? 'star' : H.roundType === 'race' ? 'race' : H.roundType === 'pw' ? 'pw' : H.roundType === 'lyrics' ? 'intro' : QA_TYPES[H.roundType] ? 'qa' : ''; if (!gv) toast('No round yet. Start one from the Game tab.'); else { setView(gv); H.tab = 'quiz'; save(); renderTabs(); renderTab(); } }
     else if (d.view) setView(d.view);
     else if (d.sc) { var p = d.sc.split(':'); addScore(+p[0], +p[1]); }

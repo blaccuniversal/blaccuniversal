@@ -1279,3 +1279,19 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-skip:hover{border-color:#fff;color:#fff}
 .sc-intro__sub{margin:2.4vh 0 0;font-size:clamp(18px,2.4vw,40px);color:#9a9a9a;animation:scFadeUp .6s .3s both}
 @keyframes scFadeUp{from{opacity:0;transform:translateY(12px)}}
+
+/* Finish The Lyrics scoring */
+.hc-lyr__teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:10px}
+.hc-lyr__t{display:flex;align-items:center;gap:10px;min-height:52px;padding:0 14px;border:1px solid #262626;border-radius:2px;background:#0a0a0a;color:#cfcfcf;font:inherit;font-size:15px;text-align:left;cursor:pointer;transition:border-color .2s,background .2s,color .2s}
+.hc-lyr__t i{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c)}
+.hc-lyr__t span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hc-lyr__t b{font-variant-numeric:tabular-nums;color:#8a8a8a}
+.hc-lyr__t.is-on{border-color:var(--c);background:#141414;color:#fff;box-shadow:inset 0 0 0 1px var(--c)}
+.hc-lyr__t.is-on b{color:#fff}
+.hc-lyr__val{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding:12px 0;border-top:1px solid #1f1f1f;border-bottom:1px solid #1f1f1f;font-size:14px;color:#8a8a8a}
+.hc-lyr__val b{min-width:28px;text-align:center;font-size:18px;color:#fff}
+.hc-lyr__acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}
+.hc-lyr__acts [data-lyr="ok"]{grid-column:1/-1}
+.hc-lyr__log{margin:16px 0 0;padding:0;list-style:none;border-top:1px solid #1a1a1a}
+.hc-lyr__log li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #1a1a1a;font-size:14px;color:#cfcfcf}
+.hc-lyr__log b{font-weight:600;color:#8a8a8a}
