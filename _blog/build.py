@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Builds /blog/ from _blog/posts/*.md (front matter, then paragraphs; '> ' = pull quote, '## ' = heading)."""
 import os, re, glob, html, datetime, json
+from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '13'
+VER = '14'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 e = lambda s: html.escape(s, quote=True)
@@ -17,6 +18,8 @@ def parse(p):
     m['mins'] = max(1, round(m['words'] / 230))
     return m
 
+def dims(cover):
+    with Image.open(os.path.join(ROOT, 'blog/img/%s-lg.webp' % cover)) as im: return im.size
 def nice(d): return d.strftime('%-d %B %Y')
 def inline(s):
     s = e(s)
@@ -85,8 +88,10 @@ for i, m in enumerate(posts):
     more = ('<a class="bl-next" href="/blog/%s/"><span class="eyebrow">Next read</span><b>%s</b>%s</a>' % (nxt['slug'], e(nxt['title']), ARROW)) if nxt else ''
     ld = json.dumps({'@context': 'https://schema.org', '@type': 'BlogPosting', 'headline': m['title'], 'datePublished': m['date'].isoformat(),
                      'author': {'@type': 'Person', 'name': m['author']}, 'publisher': {'@type': 'Organization', 'name': 'BLACC Universal'}, 'mainEntityOfPage': url}, ensure_ascii=False)
-    fit = m.get('coverFit') == 'contain'
-    cov = ('<figure class="bl-cover%s">%s<img src="/blog/img/%s-lg.webp" srcset="/blog/img/%s-sm.webp 800w, /blog/img/%s-lg.webp 1200w" sizes="(max-width:1000px) 100vw, 1000px" alt="%s" fetchpriority="high"></figure>\n      ' % (' bl-cover--fit' if fit else '', ('<img class="bl-cover__bg" src="/blog/img/%s-sm.webp" alt="" aria-hidden="true">' % m['cover']) if fit else '', m['cover'], m['cover'], m['cover'], e(m.get('coverAlt', '')))) if m.get('cover') else ''
+    if m.get('cover'):
+        cw, ch = dims(m['cover'])
+        cov = '<figure class="bl-cover" style="aspect-ratio:%d/%d"><img src="/blog/img/%s-lg.webp" srcset="/blog/img/%s-sm.webp 800w, /blog/img/%s-lg.webp %dw" sizes="(max-width:1000px) 100vw, 1000px" width="%d" height="%d" alt="%s" fetchpriority="high"></figure>\n      ' % (cw, ch, m['cover'], m['cover'], m['cover'], cw, cw, ch, e(m.get('coverAlt', '')))
+    else: cov = ''
     main = '''  <div class="bl-progress" aria-hidden="true"><i data-progress></i></div>
   <main class="bl bl--post gutter" id="top">
     <article class="bl-art">
@@ -127,7 +132,10 @@ VIEWS = [('list', 'List', '<path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M
          ('grid', 'Grid', '<rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>'),
          ('swipe', 'Swipe', '<rect x="7" y="4" width="10" height="16" rx="1.5"/><path d="M4 7v10M20 7v10"/>')]
 def card(m):
-    img = ('<span class="bl-card__img%s">%s<img src="/blog/img/%s-sm.webp" alt="" loading="lazy" decoding="async"></span>' % (' bl-card__img--fit' if m.get('coverFit') == 'contain' else '', ('<img class="bl-card__bg" src="/blog/img/%s-sm.webp" alt="" loading="lazy">' % m['cover']) if m.get('coverFit') == 'contain' else '', m['cover'])) if m.get('cover') else '<span class="bl-card__img bl-card__img--none" aria-hidden="true"><b>%s</b></span>' % e(m['category'])
+    if m.get('cover'):
+        cw, ch = dims(m['cover'])
+        img = '<span class="bl-card__img" style="aspect-ratio:%d/%d"><img src="/blog/img/%s-sm.webp" width="%d" height="%d" alt="" loading="lazy" decoding="async"></span>' % (cw, ch, m['cover'], cw, ch)
+    else: img = '<span class="bl-card__img bl-card__img--none" aria-hidden="true"><b>%s</b></span>' % e(m['category'])
     return '''<li class="bl-item"><a class="bl-card" href="/blog/%s/">
           %s
           <span class="bl-card__txt">
