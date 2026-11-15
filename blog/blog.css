@@ -67,12 +67,13 @@
 .bl-progress{position:fixed;top:0;left:0;right:0;z-index:60;height:2px;pointer-events:none}
 .bl-progress i{display:block;height:100%;background:#fff;transform:scaleX(0);transform-origin:0 50%}
 .bl-art{max-width:720px;margin:0 auto}
+@media (min-width:1000px){.bl-art__title{margin-right:-220px}}
 .bl-art__head{padding-bottom:clamp(32px,4vw,48px);border-bottom:1px solid #1f1f1f}
 .bl-back{display:inline-flex;align-items:center;gap:10px;margin:0 0 clamp(28px,4vw,44px);font-size:14px;color:#8a8a8a;text-decoration:none;transition:color .2s}
 .bl-back:hover{color:#fff}
 .bl-back svg{transition:transform .25s}
 .bl-back:hover svg{transform:translateX(-3px)}
-.bl-art__title{margin:16px 0 24px;font-size:clamp(32px,5.2vw,58px);font-weight:600;line-height:1.06;letter-spacing:-.03em;text-wrap:balance}
+.bl-art__title{margin:14px 0 20px;font-size:clamp(23px,2.5vw,34px);font-weight:600;line-height:1.2;letter-spacing:-.02em;text-wrap:pretty}
 .bl-body{padding-top:clamp(32px,4vw,48px);font-size:clamp(17px,1.5vw,19px);line-height:1.8;color:#cfcfcf}
 .bl-body p{margin:0 0 1.5em;text-wrap:pretty}
 .bl-body .bl-lede{font-size:clamp(20px,2vw,24px);line-height:1.55;color:#fff;font-weight:400;letter-spacing:-.005em}
@@ -113,3 +114,15 @@
   .bl-views button{padding:0 12px}
   .bl-cover{margin-left:-20px;margin-right:-20px;border-radius:0}
 }
+
+/* post pop-up (index) */
+.bl-pop{z-index:65;display:block;overscroll-behavior:contain}
+.bl-pop[hidden]{display:none}
+.bl-pop.is-in .bl-pop__body{animation:blUp .5s cubic-bezier(.2,.7,.2,1) both}
+.bl-pop__bar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;padding-top:20px;padding-bottom:16px;background:rgba(0,0,0,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.bl-pop__brand svg{display:block;width:34px;height:25px}
+.bl-progress--pop{position:absolute;top:auto;bottom:0;left:0;right:0;height:1px;background:#161616}
+.bl-pop__body{padding-top:clamp(16px,3vw,40px);padding-bottom:clamp(56px,8vw,112px)}
+.bl-pop .bl-art__head{padding-top:0}
+@keyframes blUp{from{opacity:0;transform:translateY(24px)}}
+@media (prefers-reduced-motion:reduce){.bl-pop.is-in .bl-pop__body{animation:none}}
