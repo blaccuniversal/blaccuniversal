@@ -3,7 +3,7 @@
 import os, re, glob, html, datetime, json
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '15'
+VER = '16'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 AUTH = json.load(open(os.path.join(ROOT, '_blog/authors.json')))
