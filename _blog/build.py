@@ -69,7 +69,10 @@ JS = '<script src="/blog/blog.js?v=%s" defer></script>\n' % VER
 FEED = '\n<link rel="alternate" type="application/rss+xml" title="BLACC Universal Blog" href="/blog/feed.xml">'
 
 def meta(m):
-    return '<span>%s</span><span aria-hidden="true">·</span><time datetime="%s">%s</time><span aria-hidden="true">·</span><span>%d min read</span>' % (e(m['author']), m['date'].isoformat(), nice(m['date']), m['mins'])
+    t = m.get('time'); hm = ''
+    if t:
+        h, mi = map(int, t.split(':')); hm = ', %d:%02d %s' % ((h % 12) or 12, mi, 'AM' if h < 12 else 'PM')
+    return '<span>%s</span><span aria-hidden="true">·</span><time datetime="%s%s">%s%s</time><span aria-hidden="true">·</span><span>%d min read</span>' % (e(m['author']), m['date'].isoformat(), ('T' + t + '+01:00') if t else '', nice(m['date']), hm, m['mins'])
 
 # posts
 POSTPAGES = []
@@ -167,6 +170,6 @@ page('blog/index.html', 'Blog · BLACC Universal', 'Conversation and opinions of
 
 # feed
 items = ''.join('<item><title>%s</title><link>%s/blog/%s/</link><guid>%s/blog/%s/</guid><pubDate>%s</pubDate><dc:creator>%s</dc:creator><description>%s</description></item>' % (
-    e(m['title']), SITE, m['slug'], SITE, m['slug'], m['date'].strftime('%a, %d %b %Y 09:00:00 +0100'), e(m['author']), e(m['excerpt'])) for m in posts)
+    e(m['title']), SITE, m['slug'], SITE, m['slug'], m['date'].strftime('%a, %d %b %Y ') + m.get('time', '09:00') + ':00 +0100', e(m['author']), e(m['excerpt'])) for m in posts)
 open(os.path.join(ROOT, 'blog/feed.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>BLACC Universal Blog</title><link>%s/blog/</link><description>Conversation and opinions of the world around us.</description><language>en</language>%s</channel></rss>\n' % (SITE, items))
 print('built', len(posts), 'posts')
