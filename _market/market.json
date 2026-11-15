@@ -314,6 +314,32 @@
    }
   },
   {
+   "cat": "music",
+   "slug": "tafa-truth",
+   "name": "Tafa Truth",
+   "tag": "Artiste",
+   "avatar": "/assets/img/market/tafa-truth-av.webp",
+   "hero": "/assets/img/market/tafa-truth-hero.webp",
+   "heroPos": "50% 20%",
+   "heroDim": true,
+   "items": [
+    {
+     "name": "Opus",
+     "kind": "",
+     "meta": "Single · with Bemshima",
+     "price": "Stream · Buy",
+     "img": "/assets/img/market/bemshima-opus.webp",
+     "links": {
+      "spotify": "https://open.spotify.com/track/5uhf0p9xXbA1gY7bBtf2ai",
+      "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
+      "audiomack": "https://audiomack.com/bemshima",
+      "youtube": "https://www.youtube.com/c/bemshima",
+      "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+     }
+    }
+   ]
+  },
+  {
    "cat": "merch",
    "slug": "blacc-universal",
    "name": "BLACC Universal",
