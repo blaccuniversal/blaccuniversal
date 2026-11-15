@@ -161,3 +161,12 @@
 .bl-cm__del{margin-left:auto;padding:0;border:0;background:none;color:#e8a0a0;font:inherit;font-size:12px;cursor:pointer}
 .bl-cm__t{margin:0;font-size:16px;line-height:1.65;color:#cfcfcf;white-space:pre-wrap;overflow-wrap:anywhere}
 .bl-cm__empty{margin:20px 0 0;font-size:14px;color:#7a7a7a}
+
+/* square art shown whole on a blurred fill */
+.bl-cover--fit,.bl-card__img--fit{position:relative}
+.bl-cover--fit img:not(.bl-cover__bg),.bl-card__img--fit img:not(.bl-card__bg){position:relative;z-index:1;object-fit:contain}
+.bl-cover__bg,.bl-card__bg{position:absolute !important;inset:-8%;width:116% !important;height:116% !important;object-fit:cover;filter:blur(28px) brightness(.45) saturate(1.1) !important;transform:none !important}
+.bl-card__img--fit img:not(.bl-card__bg){filter:none}
+.bl-art__foot{align-items:flex-start}
+.bl-bio{flex-basis:100%;order:2;margin:-4px 0 0;max-width:60ch;font-size:14px;line-height:1.65;color:#9a9a9a}
+.bl-art__foot .bl-share{order:3}

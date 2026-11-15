@@ -2,7 +2,7 @@
 """Builds /blog/ from _blog/posts/*.md (front matter, then paragraphs; '> ' = pull quote, '## ' = heading)."""
 import os, re, glob, html, datetime, json
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '12'
+VER = '13'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 e = lambda s: html.escape(s, quote=True)
@@ -61,7 +61,7 @@ def page(path, title, desc, url, main, ogtype='website', headx='', scripts='', o
     full = os.path.join(ROOT, path); os.makedirs(os.path.dirname(full), exist_ok=True)
     open(full, 'w').write(s)
 
-posts = sorted((parse(p) for p in glob.glob(os.path.join(ROOT, '_blog/posts/*.md'))), key=lambda m: m['date'], reverse=True)
+posts = sorted((parse(p) for p in glob.glob(os.path.join(ROOT, '_blog/posts/*.md'))), key=lambda m: (m['date'], m.get('time', '00:00')), reverse=True)
 JS = '<script src="/blog/blog.js?v=%s" defer></script>\n' % VER
 FEED = '\n<link rel="alternate" type="application/rss+xml" title="BLACC Universal Blog" href="/blog/feed.xml">'
 
@@ -85,7 +85,8 @@ for i, m in enumerate(posts):
     more = ('<a class="bl-next" href="/blog/%s/"><span class="eyebrow">Next read</span><b>%s</b>%s</a>' % (nxt['slug'], e(nxt['title']), ARROW)) if nxt else ''
     ld = json.dumps({'@context': 'https://schema.org', '@type': 'BlogPosting', 'headline': m['title'], 'datePublished': m['date'].isoformat(),
                      'author': {'@type': 'Person', 'name': m['author']}, 'publisher': {'@type': 'Organization', 'name': 'BLACC Universal'}, 'mainEntityOfPage': url}, ensure_ascii=False)
-    cov = ('<figure class="bl-cover"><img src="/blog/img/%s-lg.webp" srcset="/blog/img/%s-sm.webp 800w, /blog/img/%s-lg.webp 1200w" sizes="(max-width:1000px) 100vw, 1000px" alt="%s" fetchpriority="high"></figure>\n      ' % (m['cover'], m['cover'], m['cover'], e(m.get('coverAlt', '')))) if m.get('cover') else ''
+    fit = m.get('coverFit') == 'contain'
+    cov = ('<figure class="bl-cover%s">%s<img src="/blog/img/%s-lg.webp" srcset="/blog/img/%s-sm.webp 800w, /blog/img/%s-lg.webp 1200w" sizes="(max-width:1000px) 100vw, 1000px" alt="%s" fetchpriority="high"></figure>\n      ' % (' bl-cover--fit' if fit else '', ('<img class="bl-cover__bg" src="/blog/img/%s-sm.webp" alt="" aria-hidden="true">' % m['cover']) if fit else '', m['cover'], m['cover'], m['cover'], e(m.get('coverAlt', '')))) if m.get('cover') else ''
     main = '''  <div class="bl-progress" aria-hidden="true"><i data-progress></i></div>
   <main class="bl bl--post gutter" id="top">
     <article class="bl-art">
@@ -99,7 +100,7 @@ for i, m in enumerate(posts):
         %s
       </div>
       <footer class="bl-art__foot">
-        <div class="bl-by"><span class="bl-by__av" aria-hidden="true">%s</span><span><small>Written by</small><b>%s</b></span></div>
+        <div class="bl-by"><span class="bl-by__av" aria-hidden="true">%s</span><span><small>Written by</small><b>%s</b></span></div>%s
         %s
       </footer>
       <section class="bl-cm" data-comments data-post="%s" aria-labelledby="cm-%s">
@@ -115,7 +116,7 @@ for i, m in enumerate(posts):
       </section>
       %s
     </article>
-  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), cov, render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), share(url, m['title']), m['slug'], m['slug'], m['slug'], more)
+  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), cov, render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), ('<p class="bl-bio">%s</p>' % inline(m['bio'])) if m.get('bio') else '', share(url, m['title']), m['slug'], m['slug'], m['slug'], more)
     art = main[main.index('<article'):main.index('</article>') + 10]
     art = re.sub(r'\s*<a class="bl-back"[^>]*>.*?</a>', '', art, flags=re.S)
     POSTPAGES.append(lambda idx, m=m, url=url, art=art, ld=ld: page('blog/%s/index.html' % m['slug'], m['title'] + ' · BLACC Universal', m['excerpt'], url, idx + POP % art, 'article',
@@ -126,7 +127,7 @@ VIEWS = [('list', 'List', '<path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M
          ('grid', 'Grid', '<rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>'),
          ('swipe', 'Swipe', '<rect x="7" y="4" width="10" height="16" rx="1.5"/><path d="M4 7v10M20 7v10"/>')]
 def card(m):
-    img = ('<span class="bl-card__img"><img src="/blog/img/%s-sm.webp" alt="" loading="lazy" decoding="async"></span>' % m['cover']) if m.get('cover') else '<span class="bl-card__img bl-card__img--none" aria-hidden="true"><b>%s</b></span>' % e(m['category'])
+    img = ('<span class="bl-card__img%s">%s<img src="/blog/img/%s-sm.webp" alt="" loading="lazy" decoding="async"></span>' % (' bl-card__img--fit' if m.get('coverFit') == 'contain' else '', ('<img class="bl-card__bg" src="/blog/img/%s-sm.webp" alt="" loading="lazy">' % m['cover']) if m.get('coverFit') == 'contain' else '', m['cover'])) if m.get('cover') else '<span class="bl-card__img bl-card__img--none" aria-hidden="true"><b>%s</b></span>' % e(m['category'])
     return '''<li class="bl-item"><a class="bl-card" href="/blog/%s/">
           %s
           <span class="bl-card__txt">
