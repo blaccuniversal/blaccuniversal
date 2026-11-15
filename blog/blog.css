@@ -3,8 +3,8 @@
 .bl .eyebrow{margin:0}
 
 /* index */
-.bl-hero{max-width:1200px;margin:0 auto clamp(36px,5vw,64px)}
-.bl-hero__t{margin:18px 0 0;max-width:17ch;font-size:clamp(38px,6vw,80px);font-weight:600;line-height:1.03;letter-spacing:-.035em;text-wrap:balance}
+.bl-hero{max-width:1200px;margin:0 auto clamp(28px,4vw,48px)}
+.bl-hero__t{margin:14px 0 0;font-size:clamp(24px,3.2vw,42px);font-weight:600;line-height:1.15;letter-spacing:-.025em;text-wrap:balance}
 .bl-bar{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:1px solid #1f1f1f}
 .bl-bar__n{margin:0;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#7a7a7a}
 .bl-views{display:flex;border:1px solid #2a2a2a;border-radius:2px}
