@@ -3,9 +3,23 @@
 import os, re, glob, html, datetime, json
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '14'
+VER = '15'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
+AUTH = json.load(open(os.path.join(ROOT, '_blog/authors.json')))
+_mk = open(os.path.join(ROOT, '_market/build.py')).read()
+SOC = eval(_mk[_mk.index('SOC = {') + 6:_mk.index('\n}', _mk.index('SOC = {')) + 2])
+def initials(n): return ''.join(w[0] for w in n.split()[:2]).upper()
+def avatar(name, cls):
+    a = AUTH.get(name, {})
+    if a.get('photo'): return '<span class="%s"><img src="/blog/img/authors/%s.webp" alt="" width="96" height="96"></span>' % (cls, a['photo'])
+    return '<span class="%s">%s</span>' % (cls, e(initials(name)))
+def authors_json():
+    out = {}
+    for n, a in AUTH.items():
+        out[n] = {'name': n, 'photo': ('/blog/img/authors/%s.webp' % a['photo']) if a.get('photo') else '', 'ini': initials(n), 'bio': a.get('bio', ''),
+                  'links': [[k, SOC[k][0], u, SOC[k][1]] for k, u in a.get('links', {}).items() if k in SOC]}
+    return '<script type="application/json" id="bl-authors">%s</script>' % json.dumps(out, ensure_ascii=False).replace('</', '<\\/')
 e = lambda s: html.escape(s, quote=True)
 
 def parse(p):
@@ -65,14 +79,14 @@ def page(path, title, desc, url, main, ogtype='website', headx='', scripts='', o
     open(full, 'w').write(s)
 
 posts = sorted((parse(p) for p in glob.glob(os.path.join(ROOT, '_blog/posts/*.md'))), key=lambda m: (m['date'], m.get('time', '00:00')), reverse=True)
-JS = '<script src="/blog/blog.js?v=%s" defer></script>\n' % VER
+JS = authors_json() + '\n<script src="/blog/blog.js?v=%s" defer></script>\n' % VER
 FEED = '\n<link rel="alternate" type="application/rss+xml" title="BLACC Universal Blog" href="/blog/feed.xml">'
 
 def meta(m):
     t = m.get('time'); hm = ''
     if t:
         h, mi = map(int, t.split(':')); hm = ', %d:%02d %s' % ((h % 12) or 12, mi, 'AM' if h < 12 else 'PM')
-    return '<span>%s</span><span aria-hidden="true">·</span><time datetime="%s%s">%s%s</time><span aria-hidden="true">·</span><span>%d min read</span>' % (e(m['author']), m['date'].isoformat(), ('T' + t + '+01:00') if t else '', nice(m['date']), hm, m['mins'])
+    return '<span class="bl-au" role="button" tabindex="0" data-author="%s">%s</span><span aria-hidden="true">·</span><time datetime="%s%s">%s%s</time><span aria-hidden="true">·</span><span>%d min read</span>' % (e(m['author']), e(m['author']), m['date'].isoformat(), ('T' + t + '+01:00') if t else '', nice(m['date']), hm, m['mins'])
 
 # posts
 POSTPAGES = []
@@ -108,7 +122,7 @@ for i, m in enumerate(posts):
         %s
       </div>
       <footer class="bl-art__foot">
-        <div class="bl-by"><span class="bl-by__av" aria-hidden="true">%s</span><span><small>Written by</small><b>%s</b></span></div>%s
+        <button class="bl-by" type="button" data-author="%s">%s<span><small>Written by</small><b>%s</b></span></button>
         %s
       </footer>
       <section class="bl-cm" data-comments data-post="%s" aria-labelledby="cm-%s">
@@ -124,7 +138,7 @@ for i, m in enumerate(posts):
       </section>
       %s
     </article>
-  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), cov, render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), ('<p class="bl-bio">%s</p>' % inline(m['bio'])) if m.get('bio') else '', share(url, m['title']), m['slug'], m['slug'], m['slug'], more)
+  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), cov, render_body(m['blocks']), e(m['author']), avatar(m['author'], 'bl-by__av'), e(m['author']), share(url, m['title']), m['slug'], m['slug'], m['slug'], more)
     art = main[main.index('<article'):main.index('</article>') + 10]
     art = re.sub(r'\s*<a class="bl-back"[^>]*>.*?</a>', '', art, flags=re.S)
     POSTPAGES.append(lambda idx, m=m, url=url, art=art, ld=ld: page('blog/%s/index.html' % m['slug'], m['title'] + ' · BLACC Universal', m['excerpt'], url, idx + POP % art, 'article',

@@ -7,7 +7,6 @@ cover: ajogu-therapeutic-tape
 coverAlt: Cover art for Ajogu’s The Therapeutic Tape: the artist in a dark hoodie seated at a café table, seen through a reflective window
 excerpt: On the 9th record of Ajogu’s “The Therapeutic Tape” is a song titled “The Story Of Process.” On this record, which also doubled as the lead single of the album, the artist does something almost absurd: he talks to beans.
 time: 23:10
-bio: David Ojo is a creative, who plays multiple musical instruments, a music critic, a music industry invigilator, and a tech enthusiast. Based in Lagos-Nigeria, You can find him in Computer Village, or on social media @Ojosticks
 ---
 On the 9th record of Ajogu’s “The Therapeutic Tape” is a song titled “The Story Of Process.” On this record, which also doubled as the lead single of the album, the artist does something almost absurd: he talks to beans.
 

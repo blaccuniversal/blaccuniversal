@@ -207,3 +207,48 @@
   window.BL = window.BL || {}; window.BL.comments = init;
   init(document);
 })();
+
+/* writer cards */
+(function () {
+  var src = document.getElementById('bl-authors'); if (!src) return;
+  var A = {}; try { A = JSON.parse(src.textContent); } catch (e) { return; }
+  var box = document.createElement('div'); box.className = 'bl-auth'; box.hidden = true;
+  box.innerHTML = '<div class="bl-auth__card" role="dialog" aria-modal="true" aria-labelledby="bl-auth-n" tabindex="-1">' +
+    '<button class="bl-auth__x" type="button" data-auth-x aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>' +
+    '<div class="bl-auth__av" data-auth-av></div><p class="bl-auth__k">Writer</p><h2 class="bl-auth__n" id="bl-auth-n" data-auth-n></h2>' +
+    '<p class="bl-auth__bio" data-auth-bio></p><div class="bl-auth__soc" data-auth-soc></div></div>';
+  document.body.appendChild(box);
+  var last = null;
+  function open(name) {
+    var a = A[name]; if (!a) return;
+    last = document.activeElement;
+    var av = box.querySelector('[data-auth-av]'); av.innerHTML = '';
+    if (a.photo) { var img = document.createElement('img'); img.src = a.photo; img.alt = a.name; av.appendChild(img); } else av.textContent = a.ini;
+    box.querySelector('[data-auth-n]').textContent = a.name;
+    var bio = box.querySelector('[data-auth-bio]'); bio.textContent = a.bio || ''; bio.hidden = !a.bio;
+    var soc = box.querySelector('[data-auth-soc]'); soc.innerHTML = '';
+    (a.links || []).forEach(function (l) {
+      var x = document.createElement('a'); x.href = l[2]; x.target = '_blank'; x.rel = 'noopener'; x.className = 'bl-auth__s';
+      x.setAttribute('aria-label', a.name + ' on ' + l[1]); x.innerHTML = l[3]; soc.appendChild(x);
+    });
+    soc.hidden = !(a.links || []).length;
+    box.hidden = false; box.classList.remove('is-in'); void box.offsetWidth; box.classList.add('is-in');
+    document.body.classList.add('build-open');
+    setTimeout(function () { box.querySelector('.bl-auth__card').focus({ preventScroll: true }); }, 40);
+  }
+  function close() {
+    box.hidden = true;
+    var pop = document.querySelector('.bl-pop'); if (!pop || pop.hidden) document.body.classList.remove('build-open');
+    if (last && last.focus) last.focus({ preventScroll: true });
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-author]');
+    if (t && !t.closest('.bl-auth')) { e.preventDefault(); e.stopPropagation(); open(t.getAttribute('data-author')); return; }
+    if (!box.hidden && (e.target === box || e.target.closest('[data-auth-x]'))) close();
+  }, true);
+  document.addEventListener('keydown', function (e) {
+    if (!box.hidden && e.key === 'Escape') { e.stopImmediatePropagation(); close(); return; }
+    var t = e.target.closest && e.target.closest('span[data-author]');
+    if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.stopPropagation(); open(t.getAttribute('data-author')); }
+  }, true);
+})();

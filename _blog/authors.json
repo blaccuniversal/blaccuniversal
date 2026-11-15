@@ -1,0 +1,18 @@
+{
+  "Redd Penn": {
+    "slug": "redd-penn",
+    "photo": "redd-penn",
+    "bio": "You don’t know me. You never will.\nI don’t know you. I really don’t care too.\nLove you regardless.",
+    "links": {}
+  },
+  "David Ojo": {
+    "slug": "david-ojo",
+    "photo": "",
+    "bio": "David Ojo is a creative, who plays multiple musical instruments, a music critic, a music industry invigilator, and a tech enthusiast. Based in Lagos-Nigeria, You can find him in Computer Village, or on social media @Ojosticks",
+    "links": {
+      "instagram": "https://www.instagram.com/ojosticks",
+      "x": "https://x.com/ojosticks",
+      "tiktok": "https://www.tiktok.com/@ojosticks"
+    }
+  }
+}
