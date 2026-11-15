@@ -1267,3 +1267,15 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .pq-tix.is-loaded .pq-tix__load{opacity:0;pointer-events:none}
 @keyframes pqTixF{from{opacity:0}}
 @keyframes pqTixU{from{opacity:0;transform:translateY(14px) scale(.97)}}
+
+/* gameweek docs, skip, presentation-only rounds */
+.hc-doc{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:18px 0 6px;padding:16px;border:1px dashed #333;border-radius:2px}
+.hc-doc b{display:block;font-size:15px;font-weight:600;color:#fff}
+.hc-doc span{display:block;margin-top:4px;font-size:13px;line-height:1.5;color:#8a8a8a}
+.hc-doc .pbtn{flex:none}
+.hc-docnote{margin:10px 0 0;color:#cfcfcf}
+@media (max-width:560px){.hc-doc{flex-direction:column;align-items:stretch}}
+.hc-skip{display:block;width:100%;margin-top:22px;padding:14px;border:1px solid #262626;border-radius:2px;background:none;color:#8a8a8a;font:inherit;font-size:14px;cursor:pointer;transition:border-color .2s,color .2s}
+.hc-skip:hover{border-color:#fff;color:#fff}
+.sc-intro__sub{margin:2.4vh 0 0;font-size:clamp(18px,2.4vw,40px);color:#9a9a9a;animation:scFadeUp .6s .3s both}
+@keyframes scFadeUp{from{opacity:0;transform:translateY(12px)}}
