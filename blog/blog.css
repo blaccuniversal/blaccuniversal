@@ -135,3 +135,30 @@
 @media (max-width:600px){.bl-pop{padding:8px}.bl-pop__card{height:calc(100dvh - 16px)}.bl-pop__body{padding-left:18px;padding-right:18px}.bl-pop .bl-cover{margin-left:-18px;margin-right:-18px}}
 @media (prefers-reduced-motion:reduce){.bl-pop,.bl-pop.is-in .bl-pop__card{animation:none}}
 .bl-pop__card:focus{outline:none}
+/* comments */
+.bl-cm{margin-top:clamp(40px,6vw,64px)}
+.bl-cm__h{display:flex;align-items:baseline;gap:10px;margin:0 0 20px;font-size:12px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#cfcfcf}
+.bl-cm__h span{font-size:12px;color:#7a7a7a;letter-spacing:.1em}
+.bl-cm__form{display:flex;flex-direction:column;gap:10px;padding:16px;border:1px solid #1f1f1f;border-radius:2px;transition:border-color .2s}
+.bl-cm__form:focus-within{border-color:#3a3a3a}
+.bl-cm__in{width:100%;padding:12px 14px;border:1px solid #222;border-radius:2px;background:#050505;color:#fff;font:inherit;font-size:16px;outline:0;transition:border-color .2s}
+.bl-cm__in:focus{border-color:#fff}
+.bl-cm__in::placeholder{color:#6a6a6a}
+.bl-cm__ta{min-height:52px;resize:vertical;line-height:1.55;transition:min-height .25s,border-color .2s}
+.bl-cm__form.is-open .bl-cm__ta{min-height:110px}
+.bl-cm__hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.bl-cm__row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.bl-cm__note{font-size:13px;color:#7a7a7a}
+.bl-cm__note.is-bad{color:#e8a0a0}
+.bl-cm__go{flex:none;height:42px;padding:0 22px;border:0;border-radius:2px;background:#fff;color:#000;font:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+.bl-cm__go:hover{background:#e6e6e6}
+.bl-cm__go:disabled{opacity:.6;cursor:default}
+.bl-cm__list{margin:20px 0 0;padding:0;list-style:none}
+.bl-cm__i{padding:18px 0;border-bottom:1px solid #161616}
+.bl-cm__i.is-new{animation:blUp .45s cubic-bezier(.2,.7,.2,1) both}
+.bl-cm__by{display:flex;align-items:baseline;gap:10px;margin:0 0 6px;font-size:14px}
+.bl-cm__by b{font-weight:600;color:#fff}
+.bl-cm__by time{font-size:12px;color:#6f6f6f}
+.bl-cm__del{margin-left:auto;padding:0;border:0;background:none;color:#e8a0a0;font:inherit;font-size:12px;cursor:pointer}
+.bl-cm__t{margin:0;font-size:16px;line-height:1.65;color:#cfcfcf;white-space:pre-wrap;overflow-wrap:anywhere}
+.bl-cm__empty{margin:20px 0 0;font-size:14px;color:#7a7a7a}

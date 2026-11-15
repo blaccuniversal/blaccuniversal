@@ -2,7 +2,7 @@
 """Builds /blog/ from _blog/posts/*.md (front matter, then paragraphs; '> ' = pull quote, '## ' = heading)."""
 import os, re, glob, html, datetime, json
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '10'
+VER = '11'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 e = lambda s: html.escape(s, quote=True)
@@ -102,9 +102,20 @@ for i, m in enumerate(posts):
         <div class="bl-by"><span class="bl-by__av" aria-hidden="true">%s</span><span><small>Written by</small><b>%s</b></span></div>
         %s
       </footer>
+      <section class="bl-cm" data-comments data-post="%s" aria-labelledby="cm-%s">
+        <h2 class="bl-cm__h" id="cm-%s">Comments <span data-cm-count></span></h2>
+        <form class="bl-cm__form" data-cm-form novalidate>
+          <input class="bl-cm__in" name="name" maxlength="40" autocomplete="nickname" placeholder="Your name" aria-label="Your name" required>
+          <textarea class="bl-cm__in bl-cm__ta" name="body" maxlength="1000" rows="3" placeholder="Join the conversation" aria-label="Your comment" required></textarea>
+          <input class="bl-cm__hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div class="bl-cm__row"><span class="bl-cm__note" data-cm-note>Be kind. No links.</span><button class="bl-cm__go" type="submit">Post</button></div>
+        </form>
+        <ol class="bl-cm__list" data-cm-list></ol>
+        <p class="bl-cm__empty" data-cm-empty hidden>No comments yet. Start the conversation.</p>
+      </section>
       %s
     </article>
-  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), cov, render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), share(url, m['title']), more)
+  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), cov, render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), share(url, m['title']), m['slug'], m['slug'], m['slug'], more)
     art = main[main.index('<article'):main.index('</article>') + 10]
     art = re.sub(r'\s*<a class="bl-back"[^>]*>.*?</a>', '', art, flags=re.S)
     POSTPAGES.append(lambda idx, m=m, url=url, art=art, ld=ld: page('blog/%s/index.html' % m['slug'], m['title'] + ' · BLACC Universal', m['excerpt'], url, idx + POP % art, 'article',

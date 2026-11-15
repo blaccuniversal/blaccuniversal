@@ -93,6 +93,7 @@
   function show(data) {
     host.innerHTML = data.html;
     window.BL && BL.bindCopy(host);
+    window.BL && BL.comments && BL.comments(host);
     document.title = data.title;
     if (pop.hidden) { lastFocus = document.activeElement; pop.hidden = false; document.body.classList.add('build-open'); }
     scroller.scrollTop = 0; scroller.dispatchEvent(new Event('scroll'));
@@ -131,4 +132,78 @@
     if (st && st.blPop) open(st.blPop, null);
     else if (!pop.hidden) { pushed = false; hide(); }
   });
+})();
+
+/* comments (Supabase) */
+(function () {
+  var API = 'https://zpdwbajmwmiafosdbttp.supabase.co/rest/v1/', KEY = 'sb_publishable_6Dk87prusQ4Trx6TRlI6Zw_40OLN61A';
+  var H = { apikey: KEY, 'Content-Type': 'application/json' };
+  var MSG = { too_fast: 'Easy. Wait a few seconds before posting again.', links_not_allowed: 'Links aren’t allowed in comments.', not_allowed: 'That comment can’t be posted.' };
+  function ls(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} return null; }
+  function ago(iso) {
+    var s = (Date.now() - Date.parse(iso)) / 1000;
+    if (s < 60) return 'Just now';
+    if (s < 3600) return Math.floor(s / 60) + 'm ago';
+    if (s < 86400) return Math.floor(s / 3600) + 'h ago';
+    if (s < 604800) return Math.floor(s / 86400) + 'd ago';
+    return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  if (/[?&]moderate\b/.test(location.search)) {
+    var c = prompt('Owner code'); if (c) ls('bl_mod', c.trim().toUpperCase());
+    history.replaceState(history.state, '', location.pathname);
+  }
+  function init(root) {
+    var box = root.querySelector('[data-comments]'); if (!box || box._on) return; box._on = true;
+    var post = box.getAttribute('data-post'), list = box.querySelector('[data-cm-list]'), empty = box.querySelector('[data-cm-empty]');
+    var count = box.querySelector('[data-cm-count]'), form = box.querySelector('[data-cm-form]'), note = box.querySelector('[data-cm-note]');
+    var name = form.elements.name, body = form.elements.body, btn = form.querySelector('button'), mod = ls('bl_mod'), n = 0;
+    name.value = ls('bl_name') || '';
+    function setCount() { count.textContent = n ? n : ''; empty.hidden = n > 0; }
+    function item(c, fresh) {
+      var li = document.createElement('li'); li.className = 'bl-cm__i' + (fresh ? ' is-new' : '');
+      var hd = document.createElement('p'); hd.className = 'bl-cm__by';
+      var b = document.createElement('b'); b.textContent = c.name; hd.appendChild(b);
+      var t = document.createElement('time'); t.dateTime = c.created_at; t.textContent = ago(c.created_at); hd.appendChild(t);
+      if (mod) {
+        var del = document.createElement('button'); del.type = 'button'; del.className = 'bl-cm__del'; del.textContent = 'Delete';
+        del.addEventListener('click', function () {
+          if (!confirm('Delete this comment?')) return;
+          fetch(API + 'rpc/delete_comment', { method: 'POST', headers: H, body: JSON.stringify({ comment_id: c.id, code: mod }) })
+            .then(function (r) { return r.json(); }).then(function (ok) {
+              if (ok === true) { li.remove(); n--; setCount(); } else { ls('bl_mod', null); alert('Wrong owner code.'); }
+            });
+        });
+        hd.appendChild(del);
+      }
+      var p = document.createElement('p'); p.className = 'bl-cm__t'; p.textContent = c.body;
+      li.appendChild(hd); li.appendChild(p); return li;
+    }
+    fetch(API + 'comments?post=eq.' + encodeURIComponent(post) + '&select=id,name,body,created_at&order=created_at.desc&limit=200', { headers: H })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (rows) { n = rows.length; rows.forEach(function (c) { list.appendChild(item(c)); }); setCount(); })
+      .catch(function () { empty.hidden = false; empty.textContent = 'Comments couldn’t load right now.'; });
+    function say(t, bad) { note.textContent = t; note.classList.toggle('is-bad', !!bad); }
+    body.addEventListener('focus', function () { form.classList.add('is-open'); });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (form.elements.website.value) return;
+      var nm = name.value.trim(), tx = body.value.trim();
+      if (!nm) { say('Add your name.', true); name.focus(); return; }
+      if (tx.length < 2) { say('Write a comment first.', true); body.focus(); return; }
+      if (/(https?:\/\/|www\.)/i.test(tx)) { say(MSG.links_not_allowed, true); return; }
+      btn.disabled = true; btn.textContent = 'Posting…'; ls('bl_name', nm);
+      fetch(API + 'comments?select=id,name,body,created_at', { method: 'POST', headers: Object.assign({ Prefer: 'return=representation' }, H), body: JSON.stringify({ post: post, name: nm, body: tx }) })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (!res.ok) throw new Error((res.j && res.j.message) || 'x');
+          var c = Array.isArray(res.j) ? res.j[0] : res.j;
+          list.insertBefore(item(c, true), list.firstChild); n++; setCount();
+          body.value = ''; say('Posted. Thanks for joining in.');
+        })
+        .catch(function (err) { say(MSG[err.message] || 'Couldn’t post that. Try again.', true); })
+        .then(function () { btn.disabled = false; btn.textContent = 'Post'; });
+    });
+  }
+  window.BL = window.BL || {}; window.BL.comments = init;
+  init(document);
 })();
