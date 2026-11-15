@@ -1247,7 +1247,11 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 /* tickets */
 .pq-tixlink .pq-lblink__t b{color:#fff}
 .pq-tixlink svg.pq-tixlink__ic{flex:none;margin-right:-2px;color:#fff}
-.pq-tixlink{border-color:#3a3a3a}
+.pq-tixlink{border-color:#FC6435;box-shadow:0 0 0 1px rgba(252,100,53,.35),0 0 18px rgba(252,100,53,.35),inset 0 0 12px rgba(252,100,53,.08);animation:pqTixGlow 2.8s ease-in-out infinite}
+.pq-tixlink:hover{border-color:#FC6435}
+.pq-tixlink svg.pq-tixlink__ic{color:#FC6435}
+@keyframes pqTixGlow{50%{box-shadow:0 0 0 1px rgba(252,100,53,.55),0 0 30px rgba(252,100,53,.55),inset 0 0 16px rgba(252,100,53,.12)}}
+@media (prefers-reduced-motion:reduce){.pq-tixlink{animation:none}}
 .pq-tix{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:pqTixF .25s ease both}
 .pq-tix[hidden]{display:none}
 .pq-tix__card{display:flex;flex-direction:column;width:100%;max-width:560px;height:min(760px,calc(100dvh - 32px));background:#000;border:1px solid #2a2a2a;border-radius:2px;overflow:hidden;animation:pqTixU .4s cubic-bezier(.2,.7,.2,1) both}
