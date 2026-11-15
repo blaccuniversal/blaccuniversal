@@ -2,7 +2,7 @@
 """Builds /blog/ from _blog/posts/*.md (front matter, then paragraphs; '> ' = pull quote, '## ' = heading)."""
 import os, re, glob, html, datetime, json
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '1'
+VER = '2'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 e = lambda s: html.escape(s, quote=True)
@@ -53,8 +53,9 @@ def share(url, title):
         else: out.append('<a class="bl-share__b" href="%s" target="_blank" rel="noopener" aria-label="%s">%s</a>' % (e(href[k]), lab, svg))
     return '<div class="bl-share" aria-label="Share">' + ''.join(out) + '<span class="bl-share__ok" role="status" hidden>Link copied</span></div>'
 
-def page(path, title, desc, url, main, ogtype='website', headx='', scripts=''):
+def page(path, title, desc, url, main, ogtype='website', headx='', scripts='', og=None):
     s = SHELL
+    if og: s = s.replace('https://blaccuniversal.com/assets/img/og.jpg', og)
     for k, v in {'{{TITLE}}': e(title), '{{DESC}}': e(desc), '{{URL}}': url, '{{OGTYPE}}': ogtype, '{{VER}}': VER, '{{HEADX}}': headx, '{{MAIN}}': main, '{{SCRIPTS}}': scripts}.items():
         s = s.replace(k, v)
     full = os.path.join(ROOT, path); os.makedirs(os.path.dirname(full), exist_ok=True)
@@ -74,6 +75,7 @@ for i, m in enumerate(posts):
     more = ('<a class="bl-next" href="/blog/%s/"><span class="eyebrow">Next read</span><b>%s</b>%s</a>' % (nxt['slug'], e(nxt['title']), ARROW)) if nxt else ''
     ld = json.dumps({'@context': 'https://schema.org', '@type': 'BlogPosting', 'headline': m['title'], 'datePublished': m['date'].isoformat(),
                      'author': {'@type': 'Person', 'name': m['author']}, 'publisher': {'@type': 'Organization', 'name': 'BLACC Universal'}, 'mainEntityOfPage': url}, ensure_ascii=False)
+    cov = ('<figure class="bl-cover"><img src="/blog/img/%s-lg.webp" srcset="/blog/img/%s-sm.webp 800w, /blog/img/%s-lg.webp 1200w" sizes="(max-width:1000px) 100vw, 1000px" alt="%s" fetchpriority="high"></figure>\n      ' % (m['cover'], m['cover'], m['cover'], e(m.get('coverAlt', '')))) if m.get('cover') else ''
     main = '''  <div class="bl-progress" aria-hidden="true"><i data-progress></i></div>
   <main class="bl bl--post gutter" id="top">
     <article class="bl-art">
@@ -83,7 +85,7 @@ for i, m in enumerate(posts):
         <h1 class="bl-art__title">%s</h1>
         <p class="bl-meta">%s</p>
       </header>
-      <div class="bl-body" data-body>
+      %s<div class="bl-body" data-body>
         %s
       </div>
       <footer class="bl-art__foot">
@@ -92,35 +94,46 @@ for i, m in enumerate(posts):
       </footer>
       %s
     </article>
-  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), share(url, m['title']), more)
+  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), cov, render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), share(url, m['title']), more)
     page('blog/%s/index.html' % m['slug'], m['title'] + ' · BLACC Universal', m['excerpt'], url, main, 'article',
-         FEED + '\n<meta property="article:published_time" content="%s">\n<meta name="author" content="%s">\n<script type="application/ld+json">%s</script>' % (m['date'].isoformat(), e(m['author']), ld.replace('</', '<\\/')), JS)
+         FEED + '\n<meta property="article:published_time" content="%s">\n<meta name="author" content="%s">\n<script type="application/ld+json">%s</script>' % (m['date'].isoformat(), e(m['author']), ld.replace('</', '<\\/')), JS, (SITE + '/blog/img/%s-og.jpg' % m['cover']) if m.get('cover') else None)
 
 # index
-def card(m, big=False):
-    return '''<a class="bl-card%s" href="/blog/%s/">
-          <p class="eyebrow">%s</p>
-          <h2 class="bl-card__t">%s</h2>
-          <p class="bl-card__x">%s</p>
-          <p class="bl-meta">%s</p>
-          <span class="bl-card__go">Read%s</span>
-        </a>''' % (' bl-card--lead' if big else '', m['slug'], e(m['category']), e(m['title']), e(m['excerpt']), meta(m), ARROW)
-lead = card(posts[0], True) if posts else ''
-rest = ''.join(card(m) for m in posts[1:])
+VIEWS = [('list', 'List', '<path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.4"/>'),
+         ('grid', 'Grid', '<rect x="4" y="4" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1"/>'),
+         ('swipe', 'Swipe', '<rect x="7" y="4" width="10" height="16" rx="1.5"/><path d="M4 7v10M20 7v10"/>')]
+def card(m):
+    img = ('<span class="bl-card__img"><img src="/blog/img/%s-sm.webp" alt="" loading="lazy" decoding="async"></span>' % m['cover']) if m.get('cover') else '<span class="bl-card__img bl-card__img--none" aria-hidden="true"><b>%s</b></span>' % e(m['category'])
+    return '''<li class="bl-item"><a class="bl-card" href="/blog/%s/">
+          %s
+          <span class="bl-card__txt">
+            <span class="eyebrow">%s</span>
+            <span class="bl-card__t">%s</span>
+            <span class="bl-card__x">%s</span>
+            <span class="bl-meta">%s</span>
+          </span>
+        </a></li>''' % (m['slug'], img, e(m['category']), e(m['title']), e(m['excerpt']), meta(m))
+seg = ''.join('<button type="button" data-view="%s" aria-pressed="false" aria-label="%s view"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg><span>%s</span></button>' % (k, l, ic, l) for k, l, ic in VIEWS)
 main = '''  <main class="bl bl--index gutter" id="top">
     <header class="bl-hero">
       <p class="eyebrow">Blog</p>
-      <h1 class="bl-hero__t">Ideas, opinions and the culture around us.</h1>
+      <h1 class="bl-hero__t">Conversation and opinions of the world around us.</h1>
     </header>
-    <section class="bl-list" aria-label="Posts">
+    <div class="bl-bar">
+      <p class="bl-bar__n">%d %s</p>
+      <div class="bl-views" role="group" aria-label="Layout">%s</div>
+    </div>
+    <section class="bl-feed" data-feed data-view="grid" aria-label="Posts">
+      <ul class="bl-items" data-track>
         %s
-        %s
+      </ul>
+      <div class="bl-nav" aria-hidden="true"><button type="button" data-swipe="-1" tabindex="-1">%s</button><button type="button" data-swipe="1" tabindex="-1">%s</button></div>
     </section>
-  </main>''' % (lead, ('<div class="bl-grid">' + rest + '</div>') if rest else '')
-page('blog/index.html', 'Blog · BLACC Universal', 'Ideas, opinions and the culture around us, from BLACC Universal.', SITE + '/blog/', main, 'website', FEED, '')
+  </main>''' % (len(posts), 'post' if len(posts) == 1 else 'posts', seg, '\n        '.join(card(m) for m in posts), BACK, ARROW)
+page('blog/index.html', 'Blog · BLACC Universal', 'Conversation and opinions of the world around us, from BLACC Universal.', SITE + '/blog/', main, 'website', FEED, JS, (SITE + '/blog/img/%s-og.jpg' % posts[0]['cover']) if posts and posts[0].get('cover') else None)
 
 # feed
 items = ''.join('<item><title>%s</title><link>%s/blog/%s/</link><guid>%s/blog/%s/</guid><pubDate>%s</pubDate><dc:creator>%s</dc:creator><description>%s</description></item>' % (
     e(m['title']), SITE, m['slug'], SITE, m['slug'], m['date'].strftime('%a, %d %b %Y 09:00:00 +0100'), e(m['author']), e(m['excerpt'])) for m in posts)
-open(os.path.join(ROOT, 'blog/feed.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>BLACC Universal Blog</title><link>%s/blog/</link><description>Ideas, opinions and the culture around us.</description><language>en</language>%s</channel></rss>\n' % (SITE, items))
+open(os.path.join(ROOT, 'blog/feed.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>BLACC Universal Blog</title><link>%s/blog/</link><description>Conversation and opinions of the world around us.</description><language>en</language>%s</channel></rss>\n' % (SITE, items))
 print('built', len(posts), 'posts')

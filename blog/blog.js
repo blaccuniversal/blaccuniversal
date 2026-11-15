@@ -21,3 +21,32 @@
     });
   });
 })();
+/* index: list / grid / swipe */
+(function () {
+  var feed = document.querySelector('[data-feed]'); if (!feed) return;
+  var track = feed.querySelector('[data-track]'), btns = document.querySelectorAll('[data-view]');
+  var KEY = 'bl_view';
+  function set(v) {
+    feed.setAttribute('data-view', v);
+    btns.forEach(function (b) { if (b !== feed) b.setAttribute('aria-pressed', String(b.getAttribute('data-view') === v)); });
+    try { localStorage.setItem(KEY, v); } catch (e) {}
+    track.scrollLeft = 0; nav();
+  }
+  var saved = null; try { saved = localStorage.getItem(KEY); } catch (e) {}
+  set(/^(list|grid|swipe)$/.test(saved || '') ? saved : 'grid');
+  btns.forEach(function (b) { if (b !== feed) b.addEventListener('click', function () { set(b.getAttribute('data-view')); }); });
+  var prev = feed.querySelector('[data-swipe="-1"]'), next = feed.querySelector('[data-swipe="1"]');
+  function nav() {
+    if (!prev) return;
+    var max = track.scrollWidth - track.clientWidth - 2;
+    prev.disabled = track.scrollLeft <= 2; next.disabled = track.scrollLeft >= max;
+  }
+  [prev, next].forEach(function (b) {
+    b && b.addEventListener('click', function () {
+      var item = track.querySelector('.bl-item'); var step = item ? item.getBoundingClientRect().width + 20 : track.clientWidth * .8;
+      track.scrollBy({ left: step * +b.getAttribute('data-swipe'), behavior: 'smooth' });
+    });
+  });
+  track.addEventListener('scroll', function () { requestAnimationFrame(nav); }, { passive: true });
+  addEventListener('resize', nav);
+})();

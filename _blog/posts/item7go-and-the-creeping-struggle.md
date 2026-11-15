@@ -3,6 +3,8 @@ slug: item7go-and-the-creeping-struggle
 author: Redd Penn
 date: 2026-11-15
 category: Opinion
+cover: item7go
+coverAlt: Item7Go storefront with its red, yellow and white sign and "Party Rice, Shawarma" lettering
 excerpt: There are businesses that sell products, and there are businesses that become part of people’s everyday lives. Item7Go has, for a while, managed to do both.
 ---
 There are businesses that sell products, and there are businesses that become part of people’s everyday lives. Item7Go has, for a while, managed to do both.
