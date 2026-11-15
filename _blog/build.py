@@ -1,0 +1,126 @@
+#!/usr/bin/env python3
+"""Builds /blog/ from _blog/posts/*.md (front matter, then paragraphs; '> ' = pull quote, '## ' = heading)."""
+import os, re, glob, html, datetime, json
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VER = '1'
+SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
+SITE = 'https://blaccuniversal.com'
+e = lambda s: html.escape(s, quote=True)
+
+def parse(p):
+    raw = open(p).read()
+    fm, body = raw.split('\n---\n', 1)
+    m = dict(l.split(': ', 1) for l in fm.strip().split('\n'))
+    m['date'] = datetime.date.fromisoformat(m['date'])
+    m['blocks'] = [b.strip() for b in re.split(r'\n\s*\n', body.strip()) if b.strip()]
+    m['words'] = len(re.findall(r"\S+", body))
+    m['mins'] = max(1, round(m['words'] / 230))
+    return m
+
+def nice(d): return d.strftime('%-d %B %Y')
+def inline(s):
+    s = e(s)
+    s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
+    s = re.sub(r'(?<!\*)\*(?!\*)(.+?)\*', r'<em>\1</em>', s)
+    return s
+
+def render_body(blocks):
+    out = []
+    for i, b in enumerate(blocks):
+        if b.startswith('> '): out.append('<blockquote class="bl-quote"><p>%s</p></blockquote>' % inline(b[2:]))
+        elif b.startswith('## '): out.append('<h2>%s</h2>' % inline(b[3:]))
+        else: out.append('<p%s>%s</p>' % (' class="bl-lede"' if i == 0 else '', inline(b).replace('\n', '<br>')))
+    return '\n        '.join(out)
+
+ARROW = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
+BACK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>'
+SH = {
+ 'x': ('Share on X', '<path fill="currentColor" stroke="none" transform="translate(2.4 2.4) scale(.8)" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>'),
+ 'whatsapp': ('Share on WhatsApp', '<path d="M3.5 20.5l1.2-4.1a8.6 8.6 0 1 1 3.3 3.1z"/><path d="M9.2 8.6c.2 2.9 2.6 5.3 5.5 5.6l1.1-1.2-1.8-1-.8.7a4.4 4.4 0 0 1-2.4-2.4l.7-.8-1-1.8z"/>'),
+ 'facebook': ('Share on Facebook', '<path d="M14.5 21v-7.5h2.7l.4-3.2h-3.1V8.4c0-.9.3-1.6 1.6-1.6h1.7V4a21 21 0 0 0-2.5-.1c-2.5 0-4.1 1.5-4.1 4.2v2.3H8.4v3.2h2.8V21"/>'),
+ 'linkedin': ('Share on LinkedIn', '<rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M8 10.5V16M8 7.6v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.3-2.6s2.2.9 2.2 2.6V16"/>'),
+ 'copy': ('Copy link', '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>'),
+}
+def share(url, title):
+    from urllib.parse import quote
+    u, t = quote(url, safe=''), quote(title, safe='')
+    href = {'x': 'https://x.com/intent/post?text=%s&url=%s' % (t, u), 'whatsapp': 'https://wa.me/?text=%s%%20%s' % (t, u),
+            'facebook': 'https://www.facebook.com/sharer/sharer.php?u=%s' % u, 'linkedin': 'https://www.linkedin.com/sharing/share-offsite/?url=%s' % u}
+    out = []
+    for k, (lab, path) in SH.items():
+        svg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">%s</svg>' % path
+        if k == 'copy': out.append('<button class="bl-share__b" type="button" data-copy="%s" aria-label="%s">%s</button>' % (e(url), lab, svg))
+        else: out.append('<a class="bl-share__b" href="%s" target="_blank" rel="noopener" aria-label="%s">%s</a>' % (e(href[k]), lab, svg))
+    return '<div class="bl-share" aria-label="Share">' + ''.join(out) + '<span class="bl-share__ok" role="status" hidden>Link copied</span></div>'
+
+def page(path, title, desc, url, main, ogtype='website', headx='', scripts=''):
+    s = SHELL
+    for k, v in {'{{TITLE}}': e(title), '{{DESC}}': e(desc), '{{URL}}': url, '{{OGTYPE}}': ogtype, '{{VER}}': VER, '{{HEADX}}': headx, '{{MAIN}}': main, '{{SCRIPTS}}': scripts}.items():
+        s = s.replace(k, v)
+    full = os.path.join(ROOT, path); os.makedirs(os.path.dirname(full), exist_ok=True)
+    open(full, 'w').write(s)
+
+posts = sorted((parse(p) for p in glob.glob(os.path.join(ROOT, '_blog/posts/*.md'))), key=lambda m: m['date'], reverse=True)
+JS = '<script src="/blog/blog.js?v=%s" defer></script>\n' % VER
+FEED = '\n<link rel="alternate" type="application/rss+xml" title="BLACC Universal Blog" href="/blog/feed.xml">'
+
+def meta(m):
+    return '<span>%s</span><span aria-hidden="true">·</span><time datetime="%s">%s</time><span aria-hidden="true">·</span><span>%d min read</span>' % (e(m['author']), m['date'].isoformat(), nice(m['date']), m['mins'])
+
+# posts
+for i, m in enumerate(posts):
+    url = '%s/blog/%s/' % (SITE, m['slug'])
+    nxt = posts[i + 1] if i + 1 < len(posts) else None
+    more = ('<a class="bl-next" href="/blog/%s/"><span class="eyebrow">Next read</span><b>%s</b>%s</a>' % (nxt['slug'], e(nxt['title']), ARROW)) if nxt else ''
+    ld = json.dumps({'@context': 'https://schema.org', '@type': 'BlogPosting', 'headline': m['title'], 'datePublished': m['date'].isoformat(),
+                     'author': {'@type': 'Person', 'name': m['author']}, 'publisher': {'@type': 'Organization', 'name': 'BLACC Universal'}, 'mainEntityOfPage': url}, ensure_ascii=False)
+    main = '''  <div class="bl-progress" aria-hidden="true"><i data-progress></i></div>
+  <main class="bl bl--post gutter" id="top">
+    <article class="bl-art">
+      <header class="bl-art__head">
+        <a class="bl-back" href="/blog/">%s Blog</a>
+        <p class="eyebrow">%s</p>
+        <h1 class="bl-art__title">%s</h1>
+        <p class="bl-meta">%s</p>
+      </header>
+      <div class="bl-body" data-body>
+        %s
+      </div>
+      <footer class="bl-art__foot">
+        <div class="bl-by"><span class="bl-by__av" aria-hidden="true">%s</span><span><small>Written by</small><b>%s</b></span></div>
+        %s
+      </footer>
+      %s
+    </article>
+  </main>''' % (BACK, e(m['category']), e(m['title']), meta(m), render_body(m['blocks']), e(''.join(w[0] for w in m['author'].split()[:2]).upper()), e(m['author']), share(url, m['title']), more)
+    page('blog/%s/index.html' % m['slug'], m['title'] + ' · BLACC Universal', m['excerpt'], url, main, 'article',
+         FEED + '\n<meta property="article:published_time" content="%s">\n<meta name="author" content="%s">\n<script type="application/ld+json">%s</script>' % (m['date'].isoformat(), e(m['author']), ld.replace('</', '<\\/')), JS)
+
+# index
+def card(m, big=False):
+    return '''<a class="bl-card%s" href="/blog/%s/">
+          <p class="eyebrow">%s</p>
+          <h2 class="bl-card__t">%s</h2>
+          <p class="bl-card__x">%s</p>
+          <p class="bl-meta">%s</p>
+          <span class="bl-card__go">Read%s</span>
+        </a>''' % (' bl-card--lead' if big else '', m['slug'], e(m['category']), e(m['title']), e(m['excerpt']), meta(m), ARROW)
+lead = card(posts[0], True) if posts else ''
+rest = ''.join(card(m) for m in posts[1:])
+main = '''  <main class="bl bl--index gutter" id="top">
+    <header class="bl-hero">
+      <p class="eyebrow">Blog</p>
+      <h1 class="bl-hero__t">Ideas, opinions and the culture around us.</h1>
+    </header>
+    <section class="bl-list" aria-label="Posts">
+        %s
+        %s
+    </section>
+  </main>''' % (lead, ('<div class="bl-grid">' + rest + '</div>') if rest else '')
+page('blog/index.html', 'Blog · BLACC Universal', 'Ideas, opinions and the culture around us, from BLACC Universal.', SITE + '/blog/', main, 'website', FEED, '')
+
+# feed
+items = ''.join('<item><title>%s</title><link>%s/blog/%s/</link><guid>%s/blog/%s/</guid><pubDate>%s</pubDate><dc:creator>%s</dc:creator><description>%s</description></item>' % (
+    e(m['title']), SITE, m['slug'], SITE, m['slug'], m['date'].strftime('%a, %d %b %Y 09:00:00 +0100'), e(m['author']), e(m['excerpt'])) for m in posts)
+open(os.path.join(ROOT, 'blog/feed.xml'), 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>BLACC Universal Blog</title><link>%s/blog/</link><description>Ideas, opinions and the culture around us.</description><language>en</language>%s</channel></rss>\n' % (SITE, items))
+print('built', len(posts), 'posts')
