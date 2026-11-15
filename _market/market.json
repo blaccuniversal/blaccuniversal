@@ -1,372 +1,373 @@
 {
- "categories": [
-  {
-   "slug": "merch",
-   "name": "Merch",
-   "desc": "Clothing and goods from brands and creatives.",
-   "empty": "Merch stores are opening soon."
-  },
-  {
-   "slug": "music",
-   "name": "Music",
-   "desc": "Artists, producers and their music.",
-   "empty": "Artists are joining soon."
-  },
-  {
-   "slug": "art",
-   "name": "Art",
-   "desc": "Prints, paintings and originals from artists.",
-   "empty": "Artists are joining soon."
-  },
-  {
-   "slug": "tech",
-   "name": "Tech",
-   "desc": "Gadgets, apps and digital tools.",
-   "empty": "Tech stores are opening soon."
-  },
-  {
-   "slug": "events",
-   "name": "Events",
-   "desc": "Tickets to shows, parties and experiences.",
-   "empty": "Events are coming soon."
-  }
- ],
- "stores": [
-  {
-   "cat": "music",
-   "slug": "lyrxx",
-   "name": "LYRXX",
-   "tag": "Artiste · Afro-Waka",
-   "bio": "LYRXX is a Nigerian Afrobeats, Afro-fusion, and R&B artist and songwriter from Ibadan, Nigeria. Known for his genre-blending sound, which he describes as “Afro-Waka,” he brings together diverse musical influences to create a distinctive sonic identity.\n\nWith an emerging presence in Nigeria’s music scene, LYRXX continues to build his audience through original releases, live performances, and digital platforms. His growing catalogue includes tracks such as “Balenciaga,” “OAU Fine Girl,” and “Mystery Rider.” He has also expanded his reach through media platforms such as AKtivated TV, steadily establishing himself as an artist to watch.",
-   "items": [
+  "categories": [
     {
-     "name": "Fuji Convoy",
-     "kind": "Single",
-     "meta": "Single · New",
-     "price": "Stream · Buy",
-     "img": "/assets/img/market/lyrxx-fuji-convoy.webp",
-     "links": {
-      "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
-      "apple": "https://music.apple.com/ng/album/fuji-convoy-single/6805243265",
-      "audiomack": "https://audiomack.com/lyrxx-official/song/fuji-convoy-1625741",
-      "youtube": "https://www.youtube.com/watch?v=VgAIRGGfB4c",
-      "itunes": "https://music.apple.com/ng/album/fuji-convoy-single/6805243265"
-     }
+      "slug": "merch",
+      "name": "Merch",
+      "desc": "Clothing and goods from brands and creatives.",
+      "empty": "Merch stores are opening soon."
     },
     {
-     "name": "Mystery Rider",
-     "kind": "EP",
-     "meta": "EP · OAU Fine Girl, Honeymoon in Paris, Safer",
-     "price": "Stream · Buy",
-     "links": {
-      "spotify": "https://open.spotify.com/album/2r207wkanObe4RgWW8ILtf",
-      "apple": "https://music.apple.com/ng/album/mystery-rider/1866612346",
-      "audiomack": "https://audiomack.com/lyrxx-official",
-      "youtube": "https://www.youtube.com/@lyrxx.official",
-      "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
-     },
-     "img": "/assets/img/market/lyrxx-mystery-rider.webp"
+      "slug": "music",
+      "name": "Music",
+      "desc": "Artists, producers and their music.",
+      "empty": "Artists are joining soon."
     },
     {
-     "name": "Wajo",
-     "kind": "Single",
-     "meta": "Single · 2025",
-     "price": "Stream · Buy",
-     "links": {
-      "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
-      "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
-      "audiomack": "https://audiomack.com/lyrxx-official",
-      "youtube": "https://www.youtube.com/@lyrxx.official",
-      "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
-     },
-     "img": "/assets/img/market/lyrxx-wajo.webp"
+      "slug": "art",
+      "name": "Art",
+      "desc": "Prints, paintings and originals from artists.",
+      "empty": "Artists are joining soon."
     },
     {
-     "name": "Balenciaga",
-     "kind": "Single",
-     "meta": "Single · 2025 · debut",
-     "price": "Stream · Buy",
-     "links": {
-      "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
-      "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
-      "audiomack": "https://audiomack.com/lyrxx-official",
-      "youtube": "https://www.youtube.com/@lyrxx.official",
-      "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
-     },
-     "img": "/assets/img/market/lyrxx-balenciaga.webp"
+      "slug": "tech",
+      "name": "Tech",
+      "desc": "Gadgets, apps and digital tools.",
+      "empty": "Tech stores are opening soon."
+    },
+    {
+      "slug": "events",
+      "name": "Events",
+      "desc": "Tickets to shows, parties and experiences.",
+      "empty": "Events are coming soon."
     }
-   ],
-   "avatar": "/assets/img/market/lyrxx-av.webp",
-   "hero": "/assets/img/market/lyrxx-hero.webp",
-   "heroPos": "50% 22%",
-   "heroDim": true,
-   "links": {
-    "instagram": "https://www.instagram.com/lyrxx.official/",
-    "x": "https://x.com/lyrxx_official",
-    "tiktok": "https://www.tiktok.com/@lyrxx_official",
-    "youtube": "https://www.youtube.com/@lyrxx.official"
-   },
-   "listen": {
-    "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
-    "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
-    "audiomack": "https://audiomack.com/lyrxx-official",
-    "youtube": "https://www.youtube.com/@lyrxx.official"
-   },
-   "buy": {
-    "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
-   },
-   "store": "lyrxx",
-   "show": {
-    "url": "https://tix.africa/discover/afrowakakulture2",
-    "label": "Show tickets on sale"
-   }
-  },
-  {
-   "cat": "music",
-   "slug": "bemshima",
-   "name": "Bemshima",
-   "tag": "Artiste · Hip-Hop",
-   "avatar": "/assets/img/market/bemshima-av.webp",
-   "hero": "/assets/img/market/bemshima-hero.webp",
-   "bio": "Bemshima Loho, professionally known as Bemshima, is a Nigerian music producer, rapper, and singer. Born and raised in Abuja, Nigeria, he developed an interest in music at an early age, experimenting with melodies, songwriting, and recordings before pursuing music professionally.\n\nHis work as an artist and producer has earned him recognition for his versatility, distinctive production, and approach to songwriting. With an evolving sound and a creative approach to music, Bemshima continues to explore the intersection of hip-hop, contemporary sounds, and personal expression.\n\nBeyond music, Bemshima is a creative entrepreneur working across design, media, and technology through BLACC Universal, where he explores the intersection of creativity, innovation, and problem-solving.",
-   "links": {
-    "instagram": "https://www.instagram.com/iambemshima",
-    "x": "https://x.com/iambemshima",
-    "tiktok": "https://www.tiktok.com/@bemshima",
-    "youtube": "https://youtube.com/c/bemshima"
-   },
-   "items": [
+  ],
+  "stores": [
     {
-     "name": "Opus",
-     "kind": "",
-     "meta": "The Last Ones · Bemshima · Tafa Truth",
-     "price": "Stream · Buy",
-     "img": "/assets/img/market/bemshima-opus.webp",
-     "links": {
-      "spotify": "https://open.spotify.com/track/5uhf0p9xXbA1gY7bBtf2ai",
-      "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
-      "audiomack": "https://audiomack.com/bemshima",
-      "youtube": "https://www.youtube.com/c/bemshima",
-      "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
-     }
+      "cat": "music",
+      "slug": "lyrxx",
+      "name": "LYRXX",
+      "tag": "Artiste · Afro-Waka",
+      "bio": "LYRXX is a Nigerian Afrobeats, Afro-fusion, and R&B artist and songwriter from Ibadan, Nigeria. Known for his genre-blending sound, which he describes as “Afro-Waka,” he brings together diverse musical influences to create a distinctive sonic identity.\n\nWith an emerging presence in Nigeria’s music scene, LYRXX continues to build his audience through original releases, live performances, and digital platforms. His growing catalogue includes tracks such as “Balenciaga,” “OAU Fine Girl,” and “Mystery Rider.” He has also expanded his reach through media platforms such as AKtivated TV, steadily establishing himself as an artist to watch.",
+      "items": [
+        {
+          "name": "Fuji Convoy",
+          "kind": "Single",
+          "meta": "Single · New",
+          "price": "Stream · Buy",
+          "img": "/assets/img/market/lyrxx-fuji-convoy.webp",
+          "links": {
+            "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+            "apple": "https://music.apple.com/ng/album/fuji-convoy-single/6805243265",
+            "audiomack": "https://audiomack.com/lyrxx-official/song/fuji-convoy-1625741",
+            "youtube": "https://www.youtube.com/watch?v=VgAIRGGfB4c",
+            "itunes": "https://music.apple.com/ng/album/fuji-convoy-single/6805243265"
+          }
+        },
+        {
+          "name": "Mystery Rider",
+          "kind": "EP",
+          "meta": "EP · OAU Fine Girl, Honeymoon in Paris, Safer",
+          "price": "Stream · Buy",
+          "links": {
+            "spotify": "https://open.spotify.com/album/2r207wkanObe4RgWW8ILtf",
+            "apple": "https://music.apple.com/ng/album/mystery-rider/1866612346",
+            "audiomack": "https://audiomack.com/lyrxx-official",
+            "youtube": "https://www.youtube.com/@lyrxx.official",
+            "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
+          },
+          "img": "/assets/img/market/lyrxx-mystery-rider.webp"
+        },
+        {
+          "name": "Wajo",
+          "kind": "Single",
+          "meta": "Single · 2025",
+          "price": "Stream · Buy",
+          "links": {
+            "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+            "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
+            "audiomack": "https://audiomack.com/lyrxx-official",
+            "youtube": "https://www.youtube.com/@lyrxx.official",
+            "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
+          },
+          "img": "/assets/img/market/lyrxx-wajo.webp"
+        },
+        {
+          "name": "Balenciaga",
+          "kind": "Single",
+          "meta": "Single · 2025 · debut",
+          "price": "Stream · Buy",
+          "links": {
+            "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+            "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
+            "audiomack": "https://audiomack.com/lyrxx-official",
+            "youtube": "https://www.youtube.com/@lyrxx.official",
+            "itunes": "https://music.apple.com/ng/artist/lyrxx/1719202298"
+          },
+          "img": "/assets/img/market/lyrxx-balenciaga.webp"
+        }
+      ],
+      "avatar": "/assets/img/market/lyrxx-av.webp",
+      "hero": "/assets/img/market/lyrxx-hero.webp",
+      "heroPos": "50% 22%",
+      "heroDim": true,
+      "links": {
+        "instagram": "https://www.instagram.com/lyrxx.official/",
+        "x": "https://x.com/lyrxx_official",
+        "tiktok": "https://www.tiktok.com/@lyrxx_official",
+        "youtube": "https://www.youtube.com/@lyrxx.official"
+      },
+      "listen": {
+        "spotify": "https://open.spotify.com/artist/6IP3yCr9AOjbbB3CdXq06G",
+        "apple": "https://music.apple.com/ng/artist/lyrxx/1719202298",
+        "audiomack": "https://audiomack.com/lyrxx-official",
+        "youtube": "https://www.youtube.com/@lyrxx.official"
+      },
+      "buy": {
+        "itunes": "https://music.apple.com/ng/album/mystery-rider/1866612346"
+      },
+      "store": "lyrxx",
+      "show": {
+        "url": "https://tix.africa/discover/afrowakakulture2",
+        "label": "Show tickets on sale"
+      }
     },
     {
-     "name": "Wave",
-     "kind": "Single",
-     "meta": "Bemshima · Single",
-     "price": "Stream · Buy",
-     "img": "/assets/img/market/bemshima-wave.webp?v=2",
-     "links": {
-      "spotify": "https://open.spotify.com/track/7s3NvBCPbf2cU4P4FqrBtC",
-      "apple": "https://music.apple.com/ng/album/wave/1505408467?i=1505408468",
-      "audiomack": "https://audiomack.com/bemshima",
-      "youtube": "https://www.youtube.com/c/bemshima",
-      "itunes": "https://music.apple.com/ng/album/wave/1505408467?i=1505408468"
-     }
+      "cat": "music",
+      "slug": "bemshima",
+      "name": "Bemshima",
+      "tag": "Artiste · Hip-Hop",
+      "avatar": "/assets/img/market/bemshima-av.webp",
+      "hero": "/assets/img/market/bemshima-hero.webp",
+      "bio": "Bemshima Loho, professionally known as Bemshima, is a Nigerian music producer, rapper, and singer. Born and raised in Abuja, Nigeria, he developed an interest in music at an early age, experimenting with melodies, songwriting, and recordings before pursuing music professionally.\n\nHis work as an artist and producer has earned him recognition for his versatility, distinctive production, and approach to songwriting. With an evolving sound and a creative approach to music, Bemshima continues to explore the intersection of hip-hop, contemporary sounds, and personal expression.\n\nBeyond music, Bemshima is a creative entrepreneur working across design, media, and technology through BLACC Universal, where he explores the intersection of creativity, innovation, and problem-solving.",
+      "links": {
+        "instagram": "https://www.instagram.com/iambemshima",
+        "x": "https://x.com/iambemshima",
+        "tiktok": "https://www.tiktok.com/@bemshima",
+        "youtube": "https://youtube.com/c/bemshima",
+        "facebook": "https://www.facebook.com/bemshima"
+      },
+      "items": [
+        {
+          "name": "Opus",
+          "kind": "",
+          "meta": "The Last Ones · Bemshima · Tafa Truth",
+          "price": "Stream · Buy",
+          "img": "/assets/img/market/bemshima-opus.webp",
+          "links": {
+            "spotify": "https://open.spotify.com/track/5uhf0p9xXbA1gY7bBtf2ai",
+            "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
+            "audiomack": "https://audiomack.com/bemshima",
+            "youtube": "https://www.youtube.com/c/bemshima",
+            "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+          }
+        },
+        {
+          "name": "Wave",
+          "kind": "Single",
+          "meta": "Bemshima · Single",
+          "price": "Stream · Buy",
+          "img": "/assets/img/market/bemshima-wave.webp?v=2",
+          "links": {
+            "spotify": "https://open.spotify.com/track/7s3NvBCPbf2cU4P4FqrBtC",
+            "apple": "https://music.apple.com/ng/album/wave/1505408467?i=1505408468",
+            "audiomack": "https://audiomack.com/bemshima",
+            "youtube": "https://www.youtube.com/c/bemshima",
+            "itunes": "https://music.apple.com/ng/album/wave/1505408467?i=1505408468"
+          }
+        },
+        {
+          "name": "Maserati Music",
+          "kind": "Single",
+          "meta": "Bemshima · Lauda",
+          "price": "Stream · Buy",
+          "img": "/assets/img/market/bemshima-maserati-music.webp",
+          "links": {
+            "spotify": "https://open.spotify.com/track/2Y2wjCmQ4UWoTo6jhhtYXO",
+            "apple": "https://music.apple.com/ng/album/maserati-music/1637185796?i=1637185797",
+            "audiomack": "https://audiomack.com/bemshima",
+            "youtube": "https://www.youtube.com/c/bemshima",
+            "itunes": "https://music.apple.com/ng/album/maserati-music/1637185796?i=1637185797"
+          }
+        },
+        {
+          "name": "Initiate",
+          "kind": "Single",
+          "meta": "Bemshima · Mic Priest",
+          "price": "Stream · Buy",
+          "img": "/assets/img/market/bemshima-initiate.webp",
+          "links": {
+            "spotify": "https://open.spotify.com/track/2RmtLyTP7W7jfjn96YyxT8",
+            "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
+            "audiomack": "https://audiomack.com/bemshima",
+            "youtube": "https://www.youtube.com/c/bemshima",
+            "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+          }
+        }
+      ],
+      "heroPos": "50% 30%",
+      "listen": {
+        "spotify": "https://open.spotify.com/artist/1eI1MeHIkwuWTUC9daVZFS",
+        "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
+        "audiomack": "https://audiomack.com/bemshima",
+        "youtube": "https://www.youtube.com/c/bemshima"
+      },
+      "store": "blacc-universal",
+      "buy": {
+        "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+      },
+      "show": {
+        "kicker": "Live show",
+        "label": "The Barstool Experience"
+      }
     },
     {
-     "name": "Maserati Music",
-     "kind": "Single",
-     "meta": "Bemshima · Lauda",
-     "price": "Stream · Buy",
-     "img": "/assets/img/market/bemshima-maserati-music.webp",
-     "links": {
-      "spotify": "https://open.spotify.com/track/2Y2wjCmQ4UWoTo6jhhtYXO",
-      "apple": "https://music.apple.com/ng/album/maserati-music/1637185796?i=1637185797",
-      "audiomack": "https://audiomack.com/bemshima",
-      "youtube": "https://www.youtube.com/c/bemshima",
-      "itunes": "https://music.apple.com/ng/album/maserati-music/1637185796?i=1637185797"
-     }
+      "cat": "music",
+      "slug": "ajogu",
+      "name": "Ajogu",
+      "tag": "Artiste · Hip-Hop",
+      "avatar": "/assets/img/market/ajogu-av.webp",
+      "hero": "/assets/img/market/ajogu-hero.webp",
+      "heroPos": "50% 18%",
+      "heroDim": true,
+      "bio": "Ajogu, born Ajogu Zekeri, is a Nigerian hip-hop and rap recording artist from Lagos State. Beginning his professional music journey in 2011 as Jay’ Major, he took a hiatus in 2018 before returning with a renewed identity and artistic direction as Ajogu.\n\nHis music blends reflective lyricism, faith, and contemporary hip-hop with Afro-influenced rhythms, exploring themes of process, pain, purpose, and emotional healing. Through his music, he tells deeply personal stories that connect with listeners on a human and spiritual level.\n\nHis body of work includes The Therapeutic Tape, featuring introspective records such as “Ọ́lẹlẹ (The Process Story)” and “Fela, Are You Proud of Me?”\n\nBeyond music, Ajogu leads the REVIVE Movement, a community-focused initiative creating spaces for live music, connection, and spiritual renewal through revival concerts across cities including Abuja.",
+      "items": [
+        {
+          "name": "The Therapeutic Tape",
+          "kind": "Album",
+          "meta": "Album · 2023",
+          "price": "Stream · Buy",
+          "links": {
+            "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
+            "apple": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227",
+            "youtube": "https://www.youtube.com/@TheAjogu",
+            "itunes": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227"
+          },
+          "img": "/assets/img/market/ajogu-therapeutic-tape.webp"
+        },
+        {
+          "name": "Thirsty",
+          "kind": "Single",
+          "meta": "Single · 2023",
+          "price": "Stream · Buy",
+          "links": {
+            "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
+            "apple": "https://music.apple.com/ng/album/thirsty-single/1881305452",
+            "youtube": "https://www.youtube.com/@TheAjogu",
+            "itunes": "https://music.apple.com/ng/album/thirsty-single/1881305452"
+          },
+          "img": "/assets/img/market/ajogu-thirsty.webp"
+        },
+        {
+          "name": "The Story Of Process",
+          "kind": "Single",
+          "meta": "Single · 2022",
+          "price": "Stream · Buy",
+          "links": {
+            "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
+            "apple": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327",
+            "youtube": "https://www.youtube.com/@TheAjogu",
+            "itunes": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327"
+          },
+          "img": "/assets/img/market/ajogu-story-of-process.webp"
+        }
+      ],
+      "listen": {
+        "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
+        "apple": "https://music.apple.com/ng/artist/ajogu/1654319853",
+        "youtube": "https://www.youtube.com/@TheAjogu"
+      },
+      "buy": {
+        "itunes": "https://music.apple.com/ng/artist/ajogu/1654319853"
+      },
+      "links": {
+        "instagram": "https://www.instagram.com/theajogu/",
+        "x": "https://x.com/theajogu",
+        "tiktok": "https://www.tiktok.com/@theajogu",
+        "youtube": "https://www.youtube.com/@TheAjogu"
+      }
     },
     {
-     "name": "Initiate",
-     "kind": "Single",
-     "meta": "Bemshima · Mic Priest",
-     "price": "Stream · Buy",
-     "img": "/assets/img/market/bemshima-initiate.webp",
-     "links": {
-      "spotify": "https://open.spotify.com/track/2RmtLyTP7W7jfjn96YyxT8",
-      "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
-      "audiomack": "https://audiomack.com/bemshima",
-      "youtube": "https://www.youtube.com/c/bemshima",
-      "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
-     }
-    }
-   ],
-   "heroPos": "50% 30%",
-   "listen": {
-    "spotify": "https://open.spotify.com/artist/1eI1MeHIkwuWTUC9daVZFS",
-    "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
-    "audiomack": "https://audiomack.com/bemshima",
-    "youtube": "https://www.youtube.com/c/bemshima"
-   },
-   "store": "blacc-universal",
-   "buy": {
-    "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
-   },
-   "show": {
-    "kicker": "Live show",
-    "label": "The Barstool Experience"
-   }
-  },
-  {
-   "cat": "music",
-   "slug": "ajogu",
-   "name": "Ajogu",
-   "tag": "Artiste · Hip-Hop",
-   "avatar": "/assets/img/market/ajogu-av.webp",
-   "hero": "/assets/img/market/ajogu-hero.webp",
-   "heroPos": "50% 18%",
-   "heroDim": true,
-   "bio": "Ajogu, born Ajogu Zekeri, is a Nigerian hip-hop and rap recording artist from Lagos State. Beginning his professional music journey in 2011 as Jay’ Major, he took a hiatus in 2018 before returning with a renewed identity and artistic direction as Ajogu.\n\nHis music blends reflective lyricism, faith, and contemporary hip-hop with Afro-influenced rhythms, exploring themes of process, pain, purpose, and emotional healing. Through his music, he tells deeply personal stories that connect with listeners on a human and spiritual level.\n\nHis body of work includes The Therapeutic Tape, featuring introspective records such as “Ọ́lẹlẹ (The Process Story)” and “Fela, Are You Proud of Me?”\n\nBeyond music, Ajogu leads the REVIVE Movement, a community-focused initiative creating spaces for live music, connection, and spiritual renewal through revival concerts across cities including Abuja.",
-   "items": [
-    {
-     "name": "The Therapeutic Tape",
-     "kind": "Album",
-     "meta": "Album · 2023",
-     "price": "Stream · Buy",
-     "links": {
-      "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
-      "apple": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227",
-      "youtube": "https://www.youtube.com/@TheAjogu",
-      "itunes": "https://music.apple.com/ng/album/the-therapeutic-tape/1889713227"
-     },
-     "img": "/assets/img/market/ajogu-therapeutic-tape.webp"
+      "cat": "music",
+      "slug": "s3phy",
+      "name": "S3PHY",
+      "tag": "Artiste · R&B/Soul",
+      "bio": "S3PHY is an emerging Nigerian R&B/Soul artist known for her introspective songwriting, emotive vocals, and expressive musical style. Her sound explores themes of love, relationships, vulnerability, and personal experiences, blending warm, reflective production with contemporary R&B influences.\n\nShe began gaining recognition with her debut releases, establishing an artistic identity that balances soulful expression with a confident and sensual edge. Her music is available across major streaming platforms, including Spotify, Apple Music, Audiomack, and YouTube.\n\nBeyond music, S3PHY is a creative designer with a particular interest in fashion, bringing her creative sensibilities into both her music and visual expression.",
+      "listen": {
+        "spotify": "https://open.spotify.com/album/4QwuvrU1sRZNCCQ7ysuvso",
+        "apple": "https://music.apple.com/ng/artist/s3phy/1848447651",
+        "audiomack": "https://audiomack.com/s3phy"
+      },
+      "items": [
+        {
+          "name": "Back To Mine / Mr Lover",
+          "kind": "Double single",
+          "meta": "Debut · 2025",
+          "price": "Stream · Buy",
+          "links": {
+            "spotify": "https://open.spotify.com/album/4QwuvrU1sRZNCCQ7ysuvso",
+            "apple": "https://music.apple.com/ng/artist/s3phy/1848447651",
+            "audiomack": "https://audiomack.com/s3phy",
+            "itunes": "https://music.apple.com/ng/artist/s3phy/1848447651"
+          },
+          "img": "/assets/img/market/s3phy-back-to-mine.webp"
+        }
+      ],
+      "buy": {
+        "itunes": "https://music.apple.com/ng/artist/s3phy/1848447651"
+      },
+      "avatar": "/assets/img/market/s3phy-av.webp",
+      "hero": "/assets/img/market/s3phy-hero.webp",
+      "heroPos": "50% 25%",
+      "heroDim": true,
+      "links": {
+        "instagram": "https://www.instagram.com/callme__sephy",
+        "x": "https://x.com/call_me_sephy"
+      }
     },
     {
-     "name": "Thirsty",
-     "kind": "Single",
-     "meta": "Single · 2023",
-     "price": "Stream · Buy",
-     "links": {
-      "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
-      "apple": "https://music.apple.com/ng/album/thirsty-single/1881305452",
-      "youtube": "https://www.youtube.com/@TheAjogu",
-      "itunes": "https://music.apple.com/ng/album/thirsty-single/1881305452"
-     },
-     "img": "/assets/img/market/ajogu-thirsty.webp"
+      "cat": "music",
+      "slug": "tafa-truth",
+      "name": "Tafa Truth",
+      "tag": "Artiste · Hip-Hop",
+      "avatar": "/assets/img/market/tafa-truth-av.webp",
+      "hero": "/assets/img/market/tafa-truth-hero.webp",
+      "heroPos": "50% 20%",
+      "heroDim": true,
+      "items": [
+        {
+          "name": "Opus",
+          "kind": "",
+          "meta": "Single · with Bemshima",
+          "price": "Stream · Buy",
+          "img": "/assets/img/market/bemshima-opus.webp",
+          "links": {
+            "spotify": "https://open.spotify.com/track/5uhf0p9xXbA1gY7bBtf2ai",
+            "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
+            "audiomack": "https://audiomack.com/bemshima",
+            "youtube": "https://www.youtube.com/c/bemshima",
+            "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
+          }
+        }
+      ],
+      "bio": "Tafa Truth, born Mustafa Ayoola Alawusa, is a Nigerian conscious rapper, hip-hop purist, and lyricist from Mushin, Lagos. Known for his uncompromising approach to lyricism and introspective storytelling, he represents a style of hip-hop that prioritises substance, authenticity, and thoughtful expression over fleeting mainstream trends.\n\nHis musical influences span generations and genres, drawing inspiration from American hip-hop acts such as DMX and Nigerian highlife legend Ebenezer Obey. His acclaimed project, Mushin’s Intellectual Tout (M.I.T), reflects his commitment to meaningful storytelling and culturally grounded expression.\n\nBeyond his solo career, Tafa Truth is the co-founder of Shxxp Bxforx and the founder of Lair 45 Studio. He has also contributed to collaborative hip-hop projects, including “Relentless” on Lyricist Lounge Nigeria Vol. 1 (2025) and The Last Ones’ 2026 single, “Opus”.",
+      "links": {
+        "instagram": "https://www.instagram.com/tafatruth__",
+        "x": "https://x.com/tafatruth_show",
+        "tiktok": "https://www.tiktok.com/@tafa.truth"
+      }
     },
     {
-     "name": "The Story Of Process",
-     "kind": "Single",
-     "meta": "Single · 2022",
-     "price": "Stream · Buy",
-     "links": {
-      "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
-      "apple": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327",
-      "youtube": "https://www.youtube.com/@TheAjogu",
-      "itunes": "https://music.apple.com/ng/album/the-story-of-process-single/1869158327"
-     },
-     "img": "/assets/img/market/ajogu-story-of-process.webp"
+      "cat": "merch",
+      "slug": "blacc-universal",
+      "name": "BLACC Universal",
+      "tag": "Merch · Ibadan",
+      "logo": true,
+      "hero": "/assets/img/shop/alhamdulillah-front.webp",
+      "bio": "Beyond Limits And Conventional Constraints. Limited drops, shipped from Ibadan.",
+      "links": {
+        "instagram": "https://www.instagram.com/blaccuniversal",
+        "x": "https://x.com/blvccuniversal"
+      },
+      "items": [
+        {
+          "name": "Alhamdulillah Tee",
+          "meta": "Limited edition tee",
+          "price": "₦30,000",
+          "img": "/assets/img/market/sq-alhamdulillah-front.webp",
+          "url": "/shop/merch/alhamdulillah-tee/"
+        }
+      ],
+      "heroBlur": true
     }
-   ],
-   "listen": {
-    "spotify": "https://open.spotify.com/artist/49wEMHFGnd20qgKHtG05QQ",
-    "apple": "https://music.apple.com/ng/artist/ajogu/1654319853",
-    "youtube": "https://www.youtube.com/@TheAjogu"
-   },
-   "buy": {
-    "itunes": "https://music.apple.com/ng/artist/ajogu/1654319853"
-   },
-   "links": {
-    "instagram": "https://www.instagram.com/theajogu/",
-    "x": "https://x.com/theajogu",
-    "tiktok": "https://www.tiktok.com/@theajogu",
-    "youtube": "https://www.youtube.com/@TheAjogu"
-   }
-  },
-  {
-   "cat": "music",
-   "slug": "s3phy",
-   "name": "S3PHY",
-   "tag": "Artiste · R&B/Soul",
-   "bio": "S3PHY is an emerging Nigerian R&B/Soul artist known for her introspective songwriting, emotive vocals, and expressive musical style. Her sound explores themes of love, relationships, vulnerability, and personal experiences, blending warm, reflective production with contemporary R&B influences.\n\nShe began gaining recognition with her debut releases, establishing an artistic identity that balances soulful expression with a confident and sensual edge. Her music is available across major streaming platforms, including Spotify, Apple Music, Audiomack, and YouTube.\n\nBeyond music, S3PHY is a creative designer with a particular interest in fashion, bringing her creative sensibilities into both her music and visual expression.",
-   "listen": {
-    "spotify": "https://open.spotify.com/album/4QwuvrU1sRZNCCQ7ysuvso",
-    "apple": "https://music.apple.com/ng/artist/s3phy/1848447651",
-    "audiomack": "https://audiomack.com/s3phy"
-   },
-   "items": [
-    {
-     "name": "Back To Mine / Mr Lover",
-     "kind": "Double single",
-     "meta": "Debut · 2025",
-     "price": "Stream · Buy",
-     "links": {
-      "spotify": "https://open.spotify.com/album/4QwuvrU1sRZNCCQ7ysuvso",
-      "apple": "https://music.apple.com/ng/artist/s3phy/1848447651",
-      "audiomack": "https://audiomack.com/s3phy",
-      "itunes": "https://music.apple.com/ng/artist/s3phy/1848447651"
-     },
-     "img": "/assets/img/market/s3phy-back-to-mine.webp"
-    }
-   ],
-   "buy": {
-    "itunes": "https://music.apple.com/ng/artist/s3phy/1848447651"
-   },
-   "avatar": "/assets/img/market/s3phy-av.webp",
-   "hero": "/assets/img/market/s3phy-hero.webp",
-   "heroPos": "50% 25%",
-   "heroDim": true,
-   "links": {
-    "instagram": "https://www.instagram.com/callme__sephy",
-    "x": "https://x.com/call_me_sephy"
-   }
-  },
-  {
-   "cat": "music",
-   "slug": "tafa-truth",
-   "name": "Tafa Truth",
-   "tag": "Artiste · Hip-Hop",
-   "avatar": "/assets/img/market/tafa-truth-av.webp",
-   "hero": "/assets/img/market/tafa-truth-hero.webp",
-   "heroPos": "50% 20%",
-   "heroDim": true,
-   "items": [
-    {
-     "name": "Opus",
-     "kind": "",
-     "meta": "Single · with Bemshima",
-     "price": "Stream · Buy",
-     "img": "/assets/img/market/bemshima-opus.webp",
-     "links": {
-      "spotify": "https://open.spotify.com/track/5uhf0p9xXbA1gY7bBtf2ai",
-      "apple": "https://music.apple.com/ng/artist/bemshima/1505406735",
-      "audiomack": "https://audiomack.com/bemshima",
-      "youtube": "https://www.youtube.com/c/bemshima",
-      "itunes": "https://music.apple.com/ng/artist/bemshima/1505406735"
-     }
-    }
-   ],
-   "bio": "Tafa Truth, born Mustafa Ayoola Alawusa, is a Nigerian conscious rapper, hip-hop purist, and lyricist from Mushin, Lagos. Known for his uncompromising approach to lyricism and introspective storytelling, he represents a style of hip-hop that prioritises substance, authenticity, and thoughtful expression over fleeting mainstream trends.\n\nHis musical influences span generations and genres, drawing inspiration from American hip-hop acts such as DMX and Nigerian highlife legend Ebenezer Obey. His acclaimed project, Mushin’s Intellectual Tout (M.I.T), reflects his commitment to meaningful storytelling and culturally grounded expression.\n\nBeyond his solo career, Tafa Truth is the co-founder of Shxxp Bxforx and the founder of Lair 45 Studio. He has also contributed to collaborative hip-hop projects, including “Relentless” on Lyricist Lounge Nigeria Vol. 1 (2025) and The Last Ones’ 2026 single, “Opus”.",
-   "links": {
-    "instagram": "https://www.instagram.com/tafatruth__",
-    "x": "https://x.com/tafatruth_show",
-    "tiktok": "https://www.tiktok.com/@tafa.truth"
-   }
-  },
-  {
-   "cat": "merch",
-   "slug": "blacc-universal",
-   "name": "BLACC Universal",
-   "tag": "Merch · Ibadan",
-   "logo": true,
-   "hero": "/assets/img/shop/alhamdulillah-front.webp",
-   "bio": "Beyond Limits And Conventional Constraints. Limited drops, shipped from Ibadan.",
-   "links": {
-    "instagram": "https://www.instagram.com/blaccuniversal",
-    "x": "https://x.com/blvccuniversal"
-   },
-   "items": [
-    {
-     "name": "Alhamdulillah Tee",
-     "meta": "Limited edition tee",
-     "price": "₦30,000",
-     "img": "/assets/img/market/sq-alhamdulillah-front.webp",
-     "url": "/shop/merch/alhamdulillah-tee/"
-    }
-   ],
-   "heroBlur": true
-  }
- ]
+  ]
 }
