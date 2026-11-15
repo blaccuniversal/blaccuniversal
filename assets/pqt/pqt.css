@@ -1244,3 +1244,22 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .pw-hlist .is-miss span{color:var(--mute)}
 .pw-hlist .is-miss em{color:var(--bad)}
 .pw-head .sc-intro__r{white-space:nowrap;font-size:min(2.2vh,3.2vw);letter-spacing:min(.4em,1.4vw)}
+/* tickets */
+.pq-tixlink .pq-lblink__t b{color:#fff}
+.pq-tixlink svg.pq-tixlink__ic{flex:none;margin-right:-2px;color:#fff}
+.pq-tixlink{border-color:#3a3a3a}
+.pq-tix{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:pqTixF .25s ease both}
+.pq-tix[hidden]{display:none}
+.pq-tix__card{display:flex;flex-direction:column;width:100%;max-width:560px;height:min(760px,calc(100dvh - 32px));background:#000;border:1px solid #2a2a2a;border-radius:2px;overflow:hidden;animation:pqTixU .4s cubic-bezier(.2,.7,.2,1) both}
+.pq-tix__head{display:flex;align-items:center;gap:16px;padding:6px 6px 6px 20px;border-bottom:1px solid #1f1f1f}
+.pq-tix__head b{font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:#cfcfcf}
+.pq-tix__head a{margin-left:auto;font-size:13px;color:#8a8a8a;text-decoration:underline;text-underline-offset:3px}
+.pq-tix__head a:hover{color:#fff}
+.pq-tix__head button{width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none;color:#8a8a8a;cursor:pointer}
+.pq-tix__head button:hover{color:#fff}
+.pq-tix__body{position:relative;flex:1;background:#fff}
+.pq-tix__body iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.pq-tix__load{position:absolute;inset:0;display:grid;place-items:center;margin:0;background:#000;color:#7a7a7a;font-size:13px;letter-spacing:.06em;transition:opacity .3s}
+.pq-tix.is-loaded .pq-tix__load{opacity:0;pointer-events:none}
+@keyframes pqTixF{from{opacity:0}}
+@keyframes pqTixU{from{opacity:0;transform:translateY(14px) scale(.97)}}
