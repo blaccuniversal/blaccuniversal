@@ -111,7 +111,7 @@ function pqtMain() {
   var QA_BOARD = { spell: 1, rapid: 1 };
   var SEQ = { written: 1, alpha: 1 }, SEQ_N = 10;
   function sq0() { return H.qa.start || 0; }
-  function sqN() { return H.qa.cnt || (QA[H.qa.type] || []).length; }   // everyone answers every question, then an answer reveal
+  function sqN() { var ln = (QA[H.qa.type] || []).length, st = H.qa.start || 0; return Math.max(0, Math.min(H.qa.cnt || SEQ_N, SEQ_N, ln - st)); }   // everyone answers every question, then an answer reveal
 
   /* =====================================================================
      SCREEN
@@ -649,8 +649,7 @@ function pqtMain() {
       var tid = H.devs[m.dev]; if (tid == null || !H.teams[tid] || m.rk !== rkey() || !phOn() || H.qa.phase === 'reveal') return;
       var P = phState(), i = +m.i; if (!(i >= 0) || i >= sqN() || i > Math.max(P.seen, H.qa.idx - sq0())) return;
       if (H.roundType === 'alpha') {
-        if (i !== H.qa.idx - sq0() || H.view !== 'qa') return;
-        if (!H.timer.running && !(H.timer.remaining <= 0 && Date.now() - (H.qa.tEnd || 0) < 2500)) return;
+        if (i > H.qa.idx - sq0()) return;   // phones lock answers when time runs out; a late-arriving answer for an earlier puzzle still counts
         if (P.ans[tid] && P.ans[tid][i]) return;   // first answer is final
       }
       (P.ans[tid] = P.ans[tid] || {})[i] = String(m.a == null ? '' : m.a).slice(0, 80);
@@ -783,7 +782,7 @@ function pqtMain() {
     if (H.roundType === 'race') raceNew();
     if (H.roundType === 'pw') pwReset();
     if (SEQ[H.roundType]) H.ph = null;
-    if (QA_TYPES[H.roundType]) { H.qaUsed[H.roundType] = []; H.qa = { type: H.roundType, mode: QA_BOARD[H.roundType] ? 'board' : 'q', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; }
+    if (QA_TYPES[H.roundType]) { H.qaUsed[H.roundType] = []; var oq = H.qa || {}; H.qa = { type: H.roundType, mode: QA_BOARD[H.roundType] ? 'board' : 'q', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; if (SEQ[H.roundType]) { H.qa.start = oq.type === H.roundType ? oq.start || 0 : 0; H.qa.cnt = Math.min(SEQ_N, (QA[H.roundType] || []).length - H.qa.start); H.qa.idx = H.qa.start; } }
     H.view = 'intro'; push(); renderAll(); splash('Round ' + H.round, 'Restarted'); toast('Round ' + H.round + ' restarted');
   }
   function newGame() {
