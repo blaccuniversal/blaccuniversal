@@ -1371,8 +1371,6 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .pp-timer.is-low{border-color:#ff6a2b;color:#ff6a2b}
 .pp-q{margin:16px 0 0;font-size:clamp(20px,5.6vw,26px);font-weight:500;line-height:1.35;text-wrap:pretty}
 .pp-q--clue{font-size:18px;color:#cfcfcf}
-.pp-asf{display:flex;align-items:center;gap:10px;margin-top:18px;font-size:clamp(28px,9vw,40px);font-weight:700;font-variant-numeric:tabular-nums}
-.pp-asf span{color:#555;font-weight:400}
 .pp-ans{display:flex;gap:8px;margin-top:20px}
 .pp-ans .hc-input{flex:1;min-width:0;font-size:17px}
 .pp-ans .pbtn{flex:none}
@@ -1391,3 +1389,41 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .pp-rev i{grid-column:2;grid-row:1/4;align-self:center;font-style:normal;font-size:22px}
 .pp-rev .is-ok i{color:#5ad18f}
 .pp-rev .is-no i{color:#ff7a6a}
+
+/* AlphaSum on phones */
+.pp-asc{padding:18px 18px 20px;border:1px solid #222;border-radius:4px;background:#0a0a0a}
+.pp-asc__top{display:flex;align-items:center;gap:10px}
+.pp-pill{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 10px;border:1px solid rgba(62,207,142,.35);border-radius:3px;background:rgba(62,207,142,.08);color:#3ecf8e;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+.pp-pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.pp-pill.is-hard{border-color:rgba(255,106,43,.4);background:rgba(255,106,43,.08);color:#ff7a3d}
+.pp-asc__cat{flex:1;min-width:0;font-size:14px;color:#8a8a8a}
+.pp-asc__no{font-size:14px;color:#8a8a8a;font-variant-numeric:tabular-nums}
+.pp-asc .pp-timer{height:28px;min-width:44px;font-size:13px}
+.pp-asf{display:flex;align-items:center;gap:8px;margin-top:18px;font-variant-numeric:tabular-nums;font-weight:700;line-height:1}
+.pp-asf__c{min-width:58px;padding:12px 10px;border-radius:4px;font-size:30px;text-align:center}
+.pp-asf__c--f{background:rgba(62,207,142,.1);border:1px solid rgba(62,207,142,.35);color:#3ecf8e}
+.pp-asf__c--l{background:rgba(255,106,43,.1);border:1px solid rgba(255,106,43,.35);color:#ff7a3d}
+.pp-asf__b{font-size:36px;font-weight:300;color:#3a3a3a}
+.pp-asf__t{font-size:34px;color:#d4b25a}
+.pp-asf__d{font-size:18px;color:#4a4a4a}
+.pp-asf__n{font-size:30px;color:#c8b820}
+.pp-asf__rule{height:1px;margin:18px 0 16px;background:#222}
+.pp-asf__k{margin:0;font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#7a7a7a}
+.pp-asf__q{margin-top:8px;font-size:clamp(19px,5.4vw,24px);font-weight:600;line-height:1.3}
+.pp-asb{margin-top:10px;padding:18px;border:1px solid #222;border-radius:4px;background:#0a0a0a}
+.pp-bl{display:flex;gap:6px;min-height:44px;align-items:flex-end}
+.pp-bl i{flex:1 1 0;max-width:30px;min-width:0;height:38px;display:grid;place-items:end center;padding-bottom:4px;border-bottom:3px solid #3a3a3a;font-style:normal;font-size:22px;font-weight:700;color:#fff;transition:border-color .15s}
+.pp-bl i.is-on{border-bottom-color:#d4b25a}
+.pp-bl.is-over i{border-bottom-color:#ff7a3d}
+.pp-bl--free span{font-size:22px;font-weight:700;letter-spacing:.12em;color:#fff}
+.pp-bl--free.is-empty span{font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#6a6a6a}
+.pp-ans--as{margin-top:16px}
+.pp-ans--as .hc-input{font-size:17px;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.pp-ans--as .hc-input::placeholder{letter-spacing:.14em;color:#5a5a5a}
+.pp-keys{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+.pp-key{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:48px;padding:0;border:1px solid #262626;border-radius:4px;background:#111;color:#fff;font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:background .1s,border-color .1s}
+.pp-key b{font-size:16px;font-weight:700;line-height:1}
+.pp-key span{font-size:11px;color:#d4b25a;font-variant-numeric:tabular-nums;line-height:1}
+.pp-key:active{background:#222;border-color:#555}
+.pp-key--w{grid-column:span 2;font-size:20px;color:#cfcfcf}
+.pp-key--sp{grid-column:1/-1;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#cfcfcf}

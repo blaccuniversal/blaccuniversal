@@ -646,7 +646,7 @@ function pqtMain() {
   }
   function phItem(type, it) {
     if (!it) return null;
-    if (type === 'alpha') return { f: it.f, t: it.t, n: it.hard ? '' : it.n, l: it.l, c: it.q };
+    if (type === 'alpha') return { f: it.f, t: it.t, n: it.hard ? '' : it.n, l: it.l, c: it.q, h: it.hard ? 1 : 0 };
     return { q: it.q + (it.opts && it.opts.length ? '' : '') };
   }
   function playState() {
