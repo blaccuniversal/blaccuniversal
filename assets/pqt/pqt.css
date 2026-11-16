@@ -1355,7 +1355,8 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .pp-sub{margin:12px 0 0;font-size:16px;line-height:1.55;color:#9a9a9a}
 .pp-lab{display:block;margin-top:20px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#8a8a8a}
 .pp-lab .hc-input{margin-top:8px;width:100%;font-size:18px;letter-spacing:normal;text-transform:none}
-.pp-code{font-size:28px !important;font-weight:700;letter-spacing:.3em !important;text-transform:uppercase !important}
+.pp-lab .pp-code{height:64px;color:#fff;font-family:var(--dot);font-size:30px !important;font-weight:900;letter-spacing:.3em !important;text-transform:uppercase !important;text-align:center}
+.pp-lab .pp-code::placeholder{font-family:var(--dot);color:#3a3a3a}
 .pp-join .pbtn{margin-top:22px}
 .pp-err{margin:14px 0 0;font-size:14px;color:#ff8a7a}
 .pp-spin{display:block;width:26px;height:26px;margin-top:28px;border:2px solid #333;border-top-color:#fff;border-radius:50%;animation:ppSpin 1s linear infinite}

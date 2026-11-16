@@ -18,7 +18,7 @@
   function viewJoin(err) {
     root.innerHTML = '<form class="pp-card pp-join" novalidate>' + MARK +
       '<p class="eyebrow">Play on your phone</p><h1 class="pp-h">Join the game.</h1>' +
-      '<label class="pp-lab">Code on the screen<input class="hc-input pp-code" name="code" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD" value="' + esc(me.code) + '" required></label>' +
+      '<label class="pp-lab">Code on the screen<input class="hc-input hc-code pp-code" name="code" inputmode="text" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD" value="' + esc(me.code) + '" required></label>' +
       '<label class="pp-lab">Team name<input class="hc-input" name="name" maxlength="24" autocomplete="off" placeholder="Your team’s name" value="' + esc(me.name) + '" required></label>' +
       '<p class="pp-err" role="alert"' + (err ? '' : ' hidden') + '>' + esc(err || '') + '</p>' +
       '<button class="pbtn pbtn--o pbtn--lg pbtn--block" type="submit">Join</button>' +
