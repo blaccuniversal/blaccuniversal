@@ -1474,3 +1474,10 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-su__ph.is-na{min-width:0;padding:0;border:0;cursor:default}
 .hc-su__ph:disabled{cursor:default}
 .hc-su__round .hc-su__ph span{font-size:12px;letter-spacing:.02em;color:inherit}
+
+/* game tab: rounds as a compact grid */
+.hc-qstart{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hc-qstart .hc-mi{margin:0;min-height:72px;padding:12px 14px}
+.hc-qstart .hc-mi b{font-size:15px;line-height:1.25}
+.hc-qstart .hc-mi span{font-size:12px}
+.pq-joinbtn{border-style:dashed}

@@ -301,7 +301,7 @@ function pqtMain() {
         var QR = {
           names: ['A vague description of a famous person or thing appears.', 'Respond with “Hi, my name is…” and the answer.', 'Give as many answers as you can within 10 seconds.'],
           spell: ['Pick a number. Delegate a player to spell.', 'You’ll hear the word, its meaning and an example.', 'You get only one shot at spelling.'],
-          written: ['Ten questions: science, art, business, tech, geography and more.', 'Each question gets 10 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
+          written: ['Ten questions: science, art, business, tech, geography and more.', 'Each question gets 10 seconds. Write your answers down.', 'Answers are revealed at the end of the round.'],
           rapid: ['Pick a number. The question behind it is read to you.', 'Answer within 5 seconds.', 'Try as many times as you can within your time.'],
           talk: ['A topic goes up on the screen.', 'Share your thoughts. Hear each other out.', 'No points, just good conversation.'],
           alpha: ['Every team answers every puzzle: first letter, total, length and last letter, plus a clue. A = 1 … Z = 26.', 'Each puzzle gets 15 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
@@ -614,7 +614,8 @@ function pqtMain() {
   function splash(text, sub) { fx('splash', { text: text, sub: sub || '' }); }
   function resetTally() { var w = H.words; w.correct = w.skipped = w.buzzed = 0; w.stream = []; }
   /* ---------- phones: teams join with the screen code and answer Written Round / AlphaSum ---------- */
-  function phOn() { return !!(SEQ[H.roundType] && H.round > 0 && (H.planPh || [])[H.round - 1]); }
+  var PHONE_OK = { alpha: 1 };   // rounds teams can answer on their phones
+  function phOn() { return !!(PHONE_OK[H.roundType] && H.round > 0 && (H.planPh || [])[H.round - 1]); }
   function rkey() { return (H.gameId || 'g') + ':' + H.round; }
   function phNorm(x) { return String(x == null ? '' : x).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\b(the|a|an)\b/g, ' ').replace(/\s+/g, ' ').trim(); }
   function phAuto(ans, correct) {
@@ -722,6 +723,7 @@ function pqtMain() {
   function nextPlanned() { return H.round < H.plan.length ? H.plan[H.round] : null; }
   function goNext() { var n = nextPlanned(); if (n) startRound(n); else openEnd(); }
   var PHONE_IC = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2"/><path d="M11 18.5h2"/></svg>';
+  var PAPER_IC = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2.5H7a1.5 1.5 0 0 0-1.5 1.5v16A1.5 1.5 0 0 0 7 21.5h10a1.5 1.5 0 0 0 1.5-1.5V7z"/><path d="M14 2.5V7h4.5M9 12h6M9 15.5h6M9 9h2"/></svg>';
   function renderPlan() {
     var lists = $$('[data-plan-list]'); if (!lists.length) return;
     $$('[data-plan-count]').forEach(function (c) { c.textContent = H.plan.length; });
@@ -729,7 +731,7 @@ function pqtMain() {
       var done = i < H.round, cur = i === H.round - 1;
       var ph = !!(H.planPh || [])[i];
       return '<li class="hc-plan__li"><button class="hc-plan__r' + (done ? ' is-done' : '') + (cur ? ' is-cur' : '') + '" type="button" data-plan-i="' + i + '"' + (done ? ' disabled' : '') + '><span>Round ' + (i + 1) + (cur ? ' · now' : done ? ' · played' : '') + '</span><b>' + GNAME[g] + '</b></button>' +
-        (SEQ[g] ? '<button type="button" class="hc-plan__ph' + (ph ? ' is-on' : '') + '" data-plan-ph="' + i + '"' + (done ? ' disabled' : '') + ' aria-pressed="' + ph + '" title="Answer on phones">' + PHONE_IC + '<span>' + (ph ? 'Phones' : 'Paper') + '</span></button>' : '') + '</li>';
+        (PHONE_OK[g] ? '<button type="button" class="hc-plan__ph' + (ph ? ' is-on' : '') + '" data-plan-ph="' + i + '"' + (done ? ' disabled' : '') + ' aria-pressed="' + ph + '" title="Answer on phones">' + (ph ? PHONE_IC : PAPER_IC) + '<span>' + (ph ? 'Phones' : 'Paper') + '</span></button>' : '') + '</li>';
     }).join('');
     lists.forEach(function (l) { l.innerHTML = html; });
   }
@@ -1130,7 +1132,7 @@ function pqtMain() {
   }
   function renderQuiz() {
     var html = renderQuizInner();
-    if (SEQ[H.roundType] && H.round > 0 && !H.ended) html = '<div class="hc-phsw"><span><b>Answer on phones</b><em>' + (phOn() ? 'Teams answer this round on their phones.' : 'This round is on paper.') + '</em></span><button type="button" class="hc-sw' + (phOn() ? ' is-on' : '') + '" data-phsw role="switch" aria-checked="' + phOn() + '" aria-label="Answer on phones"><i></i></button></div>' + html;
+    if (PHONE_OK[H.roundType] && H.round > 0 && !H.ended) html = '<div class="hc-phsw"><span><b>Answer on phones</b><em>' + (phOn() ? 'Teams answer this round on their phones.' : 'This round is on paper.') + '</em></span><button type="button" class="hc-sw' + (phOn() ? ' is-on' : '') + '" data-phsw role="switch" aria-checked="' + phOn() + '" aria-label="Answer on phones"><i></i></button></div>' + html;
     if (H.round > 0 && !H.ended && H.roundType) html += '<button class="hc-skip" type="button" data-m="skip">' + (nextPlanned() ? 'Skip this round · go to round ' + (H.round + 1) : 'Skip this round · finish game') + '</button>';
     return html;
   }
@@ -1187,7 +1189,7 @@ function pqtMain() {
     if (H.roundType === 'race') return renderRace();
     if (H.roundType === 'pw') return renderPw();
     var q = H.qa, type = QA_TYPES[H.roundType] ? H.roundType : '';
-    if (!type) return '<p class="hc-note hc-lead">Start one of these rounds:</p><div class="hc-qstart">' + GORDER.map(function (t) { var n = t === 'words' ? WORDS.length : t === 'answers' ? BOARDS.length : t === 'pw' ? PW.length : (QA[t] || []).length; return '<button class="hc-mi" data-round="' + t + '" type="button"><b>' + GNAME[t] + '</b><span>' + (t === 'star' ? STAR_BEATS.length + ' built-in beats' : t === 'lyrics' ? 'Use presentation' : n + ' in your cards') + '</span></button>'; }).join('') + '</div>';
+    if (!type) return '<p class="hc-note hc-lead">Start one of these rounds:</p><div class="hc-qstart">' + GORDER.map(function (t) { var n = t === 'words' ? WORDS.length : t === 'answers' ? BOARDS.length : t === 'pw' ? PW.length : (QA[t] || []).length; return '<button class="hc-mi" data-round="' + t + '" type="button"><b>' + GNAME[t] + '</b><span>' + (t === 'star' ? STAR_BEATS.length + ' built-in beats' : t === 'lyrics' ? 'Use presentation' : t === 'race' ? 'Live tournament' : n + ' in your cards') + '</span></button>'; }).join('') + '</div>';
     var list = QA[type] || [], it = list[q.idx], out = '';
     var last = SEQ[type] ? q.idx + 1 >= sq0() + sqN() : q.idx + 1 >= list.length, rel = SEQ[type] ? q.idx - sq0() : q.idx, tot = SEQ[type] ? sqN() : list.length, finLbl = nextPlanned() ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner', fin = '<button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + finLbl + '</button>';
     if (!list.length) return '<p class="mute">No ' + GNAME[type] + ' content yet. Add some in the Cards tab.</p>';
@@ -1395,7 +1397,7 @@ function pqtMain() {
     $('[data-su-add]').disabled = SU.teams.length >= MAXT;
     $('[data-su-count]').textContent = SU.plan.length;
     var opts = GORDER;
-    $('[data-su-rounds]').innerHTML = SU.plan.map(function (g, i) { var locked = !SU.fresh && i < H.round, ph = !!SU.ph[i]; return '<div class="hc-su__round' + (locked ? ' is-locked' : '') + '"><b class="hc-su__no">' + ('0' + (i + 1)).slice(-2) + '</b><select class="hc-sel" data-su-r="' + i + '"' + (locked ? ' disabled' : '') + ' aria-label="Round ' + (i + 1) + '">' + opts.map(function (o) { return '<option value="' + o + '"' + (o === g ? ' selected' : '') + '>' + GNAME[o] + '</option>'; }).join('') + '</select>' + (SEQ[g] ? '<button type="button" class="hc-su__ph' + (ph ? ' is-on' : '') + '" data-su-ph="' + i + '"' + (locked ? ' disabled' : '') + ' aria-pressed="' + ph + '" aria-label="Answer on phones">' + PHONE_IC + '<span>' + (ph ? 'Phones' : 'Paper') + '</span></button>' : '<span class="hc-su__ph is-na" aria-hidden="true"></span>') + '</div>'; }).join('');
+    $('[data-su-rounds]').innerHTML = SU.plan.map(function (g, i) { var locked = !SU.fresh && i < H.round, ph = !!SU.ph[i]; return '<div class="hc-su__round' + (locked ? ' is-locked' : '') + '"><b class="hc-su__no">' + ('0' + (i + 1)).slice(-2) + '</b><select class="hc-sel" data-su-r="' + i + '"' + (locked ? ' disabled' : '') + ' aria-label="Round ' + (i + 1) + '">' + opts.map(function (o) { return '<option value="' + o + '"' + (o === g ? ' selected' : '') + '>' + GNAME[o] + '</option>'; }).join('') + '</select>' + (PHONE_OK[g] ? '<button type="button" class="hc-su__ph' + (ph ? ' is-on' : '') + '" data-su-ph="' + i + '"' + (locked ? ' disabled' : '') + ' aria-pressed="' + ph + '" aria-label="Answer on phones">' + (ph ? PHONE_IC : PAPER_IC) + '<span>' + (ph ? 'Phones' : 'Paper') + '</span></button>' : '<span class="hc-su__ph is-na" aria-hidden="true"></span>') + '</div>'; }).join('');
   }
   function applySetup() {
     var fresh = SU.fresh || H.round === 0;
