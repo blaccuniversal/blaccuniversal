@@ -76,7 +76,10 @@
     var t = team();
     if (!t) { viewWait('Joining as ' + me.name + '…', 'Waiting for the host. Keep this page open.'); return; }
     if (!S.on) {
-      root.innerHTML = '<div class="pp-card pp-wait">' + head(t) + MARK + '<p class="eyebrow">You’re in</p><h1 class="pp-h">Hold tight, ' + esc(t.name) + '.</h1><p class="pp-sub">Questions show up here in Written Round and AlphaSum. Keep this page open.</p></div>';
+      var sc = (S.scores || []).map(function (v, i) { return { i: i, v: v, t: S.teams[i] }; }).filter(function (x) { return x.t; }).sort(function (a, b) { return b.v - a.v; });
+      var board = sc.length ? '<p class="eyebrow pp-k" style="margin-top:30px">Scores</p><ol class="pp-scores">' + sc.map(function (x) { return '<li class="' + (x.i === t.i ? 'is-me' : '') + '" style="--c:' + x.t.color + '"><i></i><span>' + esc(x.t.name) + '</span><b>' + x.v + '</b></li>'; }).join('') + '</ol>' : '';
+      var msg = S.over ? ['Game over', 'Thanks for playing, ' + t.name + '.'] : S.now ? ['Round ' + S.now.round + ' of ' + S.now.rounds + (S.now.name ? ' · ' + S.now.name : ''), 'This round is played in the room. Questions show up here when a phone round starts.'] : ['You’re in', 'Hold tight, ' + t.name + '. Questions show up here when a phone round starts.'];
+      root.innerHTML = '<div class="pp-card pp-game">' + head(t) + '<p class="eyebrow pp-k">' + esc(msg[0]) + '</p><h1 class="pp-h">' + (S.over ? 'That’s a wrap.' : S.now ? 'Eyes on the screen.' : 'You’re in.') + '</h1><p class="pp-sub">' + esc(msg[1]) + '</p>' + board + '</div>';
       return;
     }
     if (S.rk !== rk) { rk = S.rk; try { ans = JSON.parse(ls('pqt_play_ans:' + rk) || '{}'); } catch (e) { ans = {}; } }
@@ -163,7 +166,7 @@
         var nMine = Object.keys(ans).filter(function (k) { return ans[k]; }).length;
         if ((S.count && S.count[t.i] || 0) < nMine) Object.keys(ans).forEach(function (k) { if (ans[k] && Date.now() - (sentT[k] || 0) > 3000) sendAns(k); });
       }
-      var h = JSON.stringify([S.on, S.rk, S.phase, S.cur, S.type === 'alpha' && timeUp(), (S.qs || []).length, (S.rev || []).length, S.res && t ? S.res[t.i] : 0, t && t.name, t && t.color]);
+      var h = JSON.stringify([S.on, S.rk, S.phase, S.cur, S.type === 'alpha' && timeUp(), S.on ? 0 : [S.scores, S.now, S.over], (S.qs || []).length, (S.rev || []).length, S.res && t ? S.res[t.i] : 0, t && t.name, t && t.color]);
       if (h !== lastHash) { lastHash = h; render(); } else paintTimer();
   }
   function start() {
