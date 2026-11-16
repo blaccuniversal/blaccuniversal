@@ -106,7 +106,7 @@ function pqtMain() {
   }
 
   var QA_TYPES = { names: 1, spell: 1, written: 1, rapid: 1, talk: 1, alpha: 1 };
-  var QA_TIME = { names: 10000, written: 10000, rapid: 5000, spell: 30000, alpha: 15000 };
+  var QA_TIME = { names: 10000, written: 10000, rapid: 5000, spell: 30000, alpha: 20000 };
   var QA_BOARD = { spell: 1, rapid: 1 };
   var SEQ = { written: 1, alpha: 1 }, SEQ_N = 10;
   function sq0() { return H.qa.start || 0; }
@@ -304,7 +304,7 @@ function pqtMain() {
           written: ['Ten questions: science, art, business, tech, geography and more.', 'Each question gets 10 seconds. Write your answers down.', 'Answers are revealed at the end of the round.'],
           rapid: ['Pick a number. The question behind it is read to you.', 'Answer within 5 seconds.', 'Try as many times as you can within your time.'],
           talk: ['A topic goes up on the screen.', 'Share your thoughts. Hear each other out.', 'No points, just good conversation.'],
-          alpha: ['Every team answers every puzzle: first letter, total, length and last letter, plus a clue. A = 1 … Z = 26.', 'Each puzzle gets 15 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
+          alpha: ['Every team answers every puzzle: first letter, total, length and last letter, plus a clue. A = 1 … Z = 26.', 'Each puzzle gets 20 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
           star: ['One rapper per team, one turn each.', 'Follow the ball. Land the rhyme on the fourth beat of every bar.', 'The judges score every turn.'],
           race: ['Two letters spin, then stop: one to start the word, one to end it.', 'First team to call a real word that fits wins the battle.', 'Three battles, 3 points for each one won. Most points wins.'],
           pw: ['Ten letters light up, one at a time. Each one starts a hidden word.', 'The describer gives a one-word clue. The guesser names the word.', 'Each letter lasts 10 seconds. Every word guessed is a point.']
@@ -721,7 +721,16 @@ function pqtMain() {
   var GNAME = { lyrics: 'Finish The Lyrics', pw: 'Password', race: 'Word Race', words: 'All Except These Ones', answers: 'Quests Feud', names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion', alpha: 'AlphaSum', star: 'Superstar' };
   var GORDER = Object.keys(GNAME).sort(function (a, b) { return GNAME[a].localeCompare(GNAME[b]); });
   function nextPlanned() { return H.round < H.plan.length ? H.plan[H.round] : null; }
-  function goNext() { var n = nextPlanned(); if (n) startRound(n); else openEnd(); }
+  // Written Round / AlphaSum: counts set on the score sheet (and phone results) are added when the round is left, even if "Add" wasn't tapped
+  function addPending() {
+    if (!SEQ[H.roundType] || !H.qa) return;
+    if (phOn()) phFill();
+    var wd = H.qa.wd || {}, msg = [];
+    H.teams.forEach(function (t, i) { var v = wd[i] || 0; if (v) { pts(i, v); msg.push(t.name + ' +' + v); } });
+    H.qa.wd = {}; if (H.ph) H.ph.added = true;
+    if (msg.length) { save(); toast('Added · ' + msg.join(' · ')); }
+  }
+  function goNext() { addPending(); var n = nextPlanned(); if (n) startRound(n); else openEnd(); }
   var PHONE_IC = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2"/><path d="M11 18.5h2"/></svg>';
   var PAPER_IC = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2.5H7a1.5 1.5 0 0 0-1.5 1.5v16A1.5 1.5 0 0 0 7 21.5h10a1.5 1.5 0 0 0 1.5-1.5V7z"/><path d="M14 2.5V7h4.5M9 12h6M9 15.5h6M9 9h2"/></svg>';
   function renderPlan() {
@@ -1486,6 +1495,7 @@ function pqtMain() {
     return behind.length ? { max: mx, behind: behind } : null;
   }
   function openEnd() {
+    addPending(); renderTeams();
     var g = pickGap(), wb = $('[data-end-warn]');
     if (wb) { wb.hidden = !g; if (g) wb.innerHTML = '<b>Not everyone has had the same number of picks</b><span>' + g.behind.map(function (x) { return esc(x.name) + (x.n ? ' has picked ' + x.n : ' hasn’t picked yet'); }).join(' · ') + '. Others have picked ' + g.max + '.</span><button class="pbtn pbtn--white" data-end-back type="button">Back to the board · ' + esc(g.behind[0].name) + ' picks</button>'; }
     $('[data-end-go]').textContent = g ? 'End anyway' : 'End game · show winner';
