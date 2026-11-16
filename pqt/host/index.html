@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611161235">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611161300">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -87,6 +87,10 @@
         <button class="hc-mt" data-m="end" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2 4 2 4H6"/></svg><b>End game</b></button>
       </div>
       <p class="hc-sheet__sub">Setup</p>
+      <div class="hc-mgrid" style="margin-bottom:8px">
+        <button class="hc-mt" data-m="save" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg><b>Save game</b></button>
+        <button class="hc-mt" data-m="saves" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg><b>Saved games</b></button>
+      </div>
       <button class="hc-mrow" data-m="newgame" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span><b>New game</b><em>Name, teams and rounds.</em></span></button>
       <p class="hc-sheet__sub">Account</p>
       <div class="hc-mgrid">
@@ -121,10 +125,19 @@
       <p class="hc-note">Tap a round to switch its game. Played rounds are locked. The screen shows “Round 2 of 5” so everyone knows how far along you are.</p>
     </div>
   </div>
+  <div class="hc-sheet" data-saves hidden role="dialog" aria-modal="true" aria-label="Saved games">
+    <div class="hc-sheet__bg" data-menu-close></div>
+    <div class="hc-sheet__panel card">
+      <div class="hc-sheet__head"><span class="eyebrow">Saved games</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Close</button></div>
+      <ol class="hc-svl" data-saves-list></ol>
+      <p class="hc-note">Resume picks up where you stopped. Reuse setup starts a new game with the same name, teams and rounds. Games are saved on this device, under your host code.</p>
+    </div>
+  </div>
   <div class="hc-sheet" data-setup hidden role="dialog" aria-modal="true" aria-label="Set up a game">
     <div class="hc-sheet__bg" data-menu-close></div>
     <div class="hc-sheet__panel card hc-setup">
       <div class="hc-sheet__head"><span class="eyebrow">Set up a game</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Close</button></div>
+      <button class="hc-su__resume" type="button" data-m="saves" data-su-resume hidden><b>Continue a saved game</b><span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
       <div class="hc-su">
         <p class="hc-su__h"><span>01</span>Teams <em data-su-tn></em></p>
         <div data-su-teams></div>
@@ -158,7 +171,7 @@
 <script src="/assets/pqt/peerjs.min.js?v=261112171"></script>
 <script src="/assets/pqt/wordrace/wr-engine.js?v=10"></script>
 <script src="/assets/pqt/pqt-import.js?v=1"></script>
-<script src="/assets/pqt/pqt.js?v=2611160255"></script>
+<script src="/assets/pqt/pqt.js?v=2611161305"></script>
 <script src="/assets/pqt/pqt-offline.js?v=261112171"></script>
 </body>
 </html>

@@ -531,7 +531,7 @@ function pqtMain() {
       onState: function () { paintLink(); }
     });
   }
-  function push() { save(); send({ t: 'state', s: pub() }); if (hmq && H.code) hmq.pub(TOPIC + H.code + '/play', playState(), true); if (typeof renderTeams === 'function' && root) renderTeams(); }
+  function push() { save(); if (hasGame() && !push._t) push._t = setTimeout(function () { push._t = 0; if (hasGame()) { var mine = saves().filter(function (g) { return g.id === H.gameId; })[0]; saveGame(mine && !mine.auto ? mine.name : H.title, !(mine && !mine.auto)); } }, 4000); send({ t: 'state', s: pub() }); if (hmq && H.code) hmq.pub(TOPIC + H.code + '/play', playState(), true); if (typeof renderTeams === 'function' && root) renderTeams(); }
   function fx(name, extra) { var m = { t: 'fx', fx: name }; if (extra) for (var k in extra) m[k] = extra[k]; send(m); }
   function onHostMsg(m, via) {
     if (!m) return;
@@ -1304,6 +1304,9 @@ function pqtMain() {
     else if (d.m) menuAct(d.m, b);
     else if (d.planN) { var n = Math.max(Math.max(1, H.round), Math.min(12, H.plan.length + +d.planN)); var cyc = ['words', 'answers', 'names', 'spell', 'written', 'rapid']; while (H.plan.length < n) H.plan.push(cyc[H.plan.length % cyc.length]); H.plan.length = n; push(); renderPlan(); paintMenu(); paintNow(); }
     else if (d.suPh != null) { e.preventDefault(); SU.ph = SU.ph || []; SU.ph[+d.suPh] = !SU.ph[+d.suPh]; paintSetup(); }
+    else if (d.svGo) { resumeGame(d.svGo); }
+    else if (d.svReuse) { reuseGame(d.svReuse); }
+    else if (d.svDel) { if (!confirmTwice(b)) return; store('pqt_saves', saves().filter(function (g) { return g.id !== d.svDel; })); renderSaves(); toast('Deleted'); }
     else if (d.planPh != null) { var pi = +d.planPh; if (pi >= H.round - 1) { snap(); H.planPh = H.planPh || []; H.planPh[pi] = !H.planPh[pi]; push(); renderAll(); } }
     else if (b.hasAttribute('data-phsw')) { snap(); H.planPh = H.planPh || []; H.planPh[H.round - 1] = !H.planPh[H.round - 1]; push(); renderAll(); toast(phOn() ? 'Phones on for this round' : 'This round is on paper'); }
     else if (d.planI != null) { var k = +d.planI; if (k >= H.round) { var order = GORDER; H.plan[k] = order[(order.indexOf(H.plan[k]) + 1) % order.length]; push(); renderPlan(); paintMenu(); } }
@@ -1356,6 +1359,14 @@ function pqtMain() {
   });
   function closeSheets() { $$('.hc-sheet').forEach(function (s) { s.hidden = true; }); }
   function menuAct(m, b) {
+    if (m === 'save') {
+      closeSheets();
+      var nm = prompt('Name this game', H.title || ('PQT · ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })));
+      if (nm == null) return; nm = nm.trim(); if (!nm) return;
+      if (!H.title) { H.title = nm; var tt = $('[data-title]'); if (tt) tt.value = nm; push(); }
+      saveGame(nm, false); toast('Game saved · ' + nm); return;
+    }
+    if (m === 'saves') { openSaves(); return; }
     if (m === 'skip') {
       if (H.ended) { toast('This game is over.'); return; }
       if (!confirmTwice(b.querySelector('b') || b)) return;
@@ -1381,6 +1392,57 @@ function pqtMain() {
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheets(); });
   /* ---- setup + end sheets ---- */
   var SU = null;
+  /* ---------- saved games: every visit starts fresh; games can be saved, resumed or reused ---------- */
+  var KEEP = { code: 1, tab: 1, qaPos: 1, wordsTxt: 1, boardsTxt: 1, namesTxt: 1, spellTxt: 1, writtenTxt: 1, rapidTxt: 1, talkTxt: 1, alphaTxt: 1, pwTxt: 1 };
+  function gameSnap() { var o = {}; Object.keys(H).forEach(function (k) { if (!KEEP[k]) o[k] = H[k]; }); return JSON.parse(JSON.stringify(o)); }
+  function hasGame(h) { h = h || H; return !!(h.round > 0 || (h.teams || []).some(function (t) { return t.score; })); }
+  function saves() { return store('pqt_saves') || []; }
+  function saveGame(name, auto) {
+    if (!H.gameId) H.gameId = Date.now().toString(36);
+    var all = saves(), prev = all.filter(function (g) { return g.id === H.gameId; })[0];
+    if (prev && !prev.auto) { name = auto ? prev.name : name; auto = false; }   // a named save keeps its name
+    var list = all.filter(function (g) { return g.id !== H.gameId; });
+    var rec = { id: H.gameId, name: (name || H.title || 'PQT game').slice(0, 60), at: Date.now(), auto: !!auto, round: H.round, rounds: H.plan.length, ended: !!H.ended,
+      teams: H.teams.map(function (t) { return { name: t.name, color: t.color, score: t.score }; }), game: gameSnap() };
+    list.unshift(rec); store('pqt_saves', list.slice(0, 30)); return rec;
+  }
+  function freshGame() {
+    var keep = {}; Object.keys(KEEP).forEach(function (k) { if (H[k] !== undefined) keep[k] = H[k]; });
+    var d = JSON.parse(JSON.stringify(DEF));
+    Object.keys(H).forEach(function (k) { delete H[k]; });
+    Object.keys(d).forEach(function (k) { H[k] = d[k]; });
+    Object.keys(keep).forEach(function (k) { H[k] = keep[k]; });
+    H.gameId = Date.now().toString(36); H.ended = false; H.byRound = {}; H.planPh = []; H.devs = {}; H.ph = null;
+  }
+  function resumeGame(id) {
+    var g = saves().filter(function (x) { return x.id === id; })[0]; if (!g) return;
+    if (hasGame() && H.gameId !== id) saveGame(H.title, true);
+    var keep = {}; Object.keys(KEEP).forEach(function (k) { if (H[k] !== undefined) keep[k] = H[k]; });
+    Object.keys(H).forEach(function (k) { delete H[k]; });
+    var d = JSON.parse(JSON.stringify(DEF)); Object.keys(d).forEach(function (k) { H[k] = d[k]; });
+    var gm = JSON.parse(JSON.stringify(g.game)); Object.keys(gm).forEach(function (k) { H[k] = gm[k]; });
+    Object.keys(keep).forEach(function (k) { H[k] = keep[k]; });
+    H.timer.running = false; closeSheets(); push(); renderAll(); splash('Game resumed', H.title || g.name); toast('Resumed · ' + g.name);
+  }
+  function reuseGame(id) {
+    var g = saves().filter(function (x) { return x.id === id; })[0]; if (!g) return;
+    closeSheets(); openSetup(true);
+    SU.title = g.game.title || ''; SU.teams = (g.game.teams || []).map(function (t) { return { name: t.name, color: t.color }; }); SU.plan = (g.game.plan || []).slice(); SU.ph = (g.game.planPh || []).slice();
+    var stEl = $('[data-su-title]'); if (stEl) stEl.value = SU.title; paintSetup();
+  }
+  function ago(t) { var m = Math.round((Date.now() - t) / 60000); if (m < 1) return 'just now'; if (m < 60) return m + ' min ago'; var h = Math.round(m / 60); if (h < 24) return h + ' hr' + (h > 1 ? 's' : '') + ' ago'; return new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
+  function renderSaves() {
+    var list = saves(), box = $('[data-saves-list]'); if (!box) return;
+    box.innerHTML = list.length ? list.map(function (g) {
+      var lead = g.teams.slice().sort(function (a, b) { return b.score - a.score; })[0];
+      var st = g.ended ? 'Finished' : g.round ? 'Round ' + g.round + ' of ' + g.rounds : 'Not started';
+      return '<li class="hc-sv"><div class="hc-sv__t"><b>' + esc(g.name) + '</b><span>' + (g.auto ? 'Autosaved · ' : '') + st + ' · ' + g.teams.length + ' teams · ' + ago(g.at) + '</span>' +
+        (lead && lead.score ? '<em><i style="background:' + lead.color + '"></i>' + esc(lead.name) + ' leads with ' + lead.score + '</em>' : '') + '</div>' +
+        '<div class="hc-sv__a">' + (g.ended ? '' : '<button class="pbtn pbtn--white pbtn--sm" type="button" data-sv-go="' + g.id + '">Resume</button>') +
+        '<button class="pbtn pbtn--sm" type="button" data-sv-reuse="' + g.id + '">Reuse setup</button><button class="pbtn pbtn--sm pbtn--ghost hc-sv__x" type="button" data-sv-del="' + g.id + '" aria-label="Delete">Delete</button></div></li>';
+    }).join('') : '<li class="hc-sv__empty">No saved games yet. Use “Save game” in the menu to keep one for later.</li>';
+  }
+  function openSaves() { closeSheets(); renderSaves(); $('[data-saves]').hidden = false; }
   function inPlay() { return H.round > 0 && !H.ended && H.teams.some(function (t) { return t.score; }); }
   function openSetup(fresh) {
     SU = { fresh: !!fresh, title: H.title || '', teams: H.teams.map(function (t) { return { name: t.name, color: t.color }; }), plan: H.plan.slice(), ph: (H.planPh || []).slice() };
@@ -1509,10 +1571,15 @@ function pqtMain() {
   });
   root.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.hasAttribute('data-codein')) $('[data-connect]').click(); });
 
+  // every visit starts fresh: a game in progress is autosaved and can be resumed from Saved games
+  if (hasGame()) saveGame(H.title, true);
+  freshGame(); save();
   var t0 = $('[data-title]'); if (t0) t0.value = H.title;
   var qc = cleanCode(new URLSearchParams(location.search).get('code'));
   if (qc.length === 4) H.code = qc;
   if (H.code) { $('[data-codein]').value = H.code; connect(H.code); }
   renderAll();
+  openSetup(true);
+  var sl = $('[data-su-resume]'); if (sl) { var last = saves()[0]; sl.hidden = !last; if (last) sl.querySelector('span').textContent = last.name + ' · ' + (last.ended ? 'finished' : last.round ? 'round ' + last.round + ' of ' + last.rounds : 'not started') + ' · ' + ago(last.at); }
 }
 if (window.PQT_READY) pqtMain(); else document.addEventListener('pqt:ready', pqtMain, { once: true });
