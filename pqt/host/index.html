@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611161250">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611161320">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -154,6 +154,15 @@
       <p class="hc-note" data-su-note>Scores go back to 0. Your cards and questions stay.</p>
     </div>
   </div>
+  <div class="hc-sheet" data-unscored hidden role="dialog" aria-modal="true" aria-label="Round not scored">
+    <div class="hc-sheet__bg" data-menu-close></div>
+    <div class="hc-sheet__panel card">
+      <div class="hc-sheet__head"><span class="eyebrow">Before you move on</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Close</button></div>
+      <div class="hc-us" data-us-msg></div>
+      <p class="hc-note">Count each team’s correct answers on the score sheet, then add them. Moving on without scoring keeps their points for this round at 0.</p>
+      <div class="hc-us__btns"><button class="pbtn pbtn--white pbtn--lg pbtn--block" type="button" data-us-score>Score this round</button><button class="pbtn pbtn--lg pbtn--block" type="button" data-us-go>Move on anyway</button></div>
+    </div>
+  </div>
   <div class="hc-sheet" data-endsheet hidden role="dialog" aria-modal="true" aria-label="End game">
     <div class="hc-sheet__bg" data-menu-close></div>
     <div class="hc-sheet__panel card">
@@ -172,7 +181,7 @@
 <script src="/assets/pqt/peerjs.min.js?v=261112171"></script>
 <script src="/assets/pqt/wordrace/wr-engine.js?v=10"></script>
 <script src="/assets/pqt/pqt-import.js?v=1"></script>
-<script src="/assets/pqt/pqt.js?v=2611161305"></script>
+<script src="/assets/pqt/pqt.js?v=2611161320"></script>
 <script src="/assets/pqt/pqt-offline.js?v=261112171"></script>
 </body>
 </html>

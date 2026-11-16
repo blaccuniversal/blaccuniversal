@@ -730,7 +730,23 @@ function pqtMain() {
     H.qa.wd = {}; if (H.ph) H.ph.added = true;
     if (msg.length) { save(); toast('Added · ' + msg.join(' · ')); }
   }
-  function goNext() { addPending(); var n = nextPlanned(); if (n) startRound(n); else openEnd(); }
+  // Rounds scored by the host (Written Round, AlphaSum): warn before moving on if some teams have no points from this round
+  function unscored() {
+    if (!SEQ[H.roundType] || !H.round || H.ended) return [];
+    var wd = (H.qa && H.qa.wd) || {}, br = (H.byRound || {})[String(H.round)] || {};
+    if (phOn() && H.ph && !H.ph.added) { var tmp = {}; phTeams().forEach(function (t) { var c = 0, n = sqN(); for (var i = 0; i < n; i++) if (phMark(t, i)) c++; tmp[t] = c; }); Object.keys(tmp).forEach(function (k) { if (tmp[k]) wd[k] = wd[k] || tmp[k]; }); }
+    return H.teams.map(function (t, i) { return { i: i, name: t.name, color: t.color }; }).filter(function (x) { return !br[x.i] && !wd[x.i]; });
+  }
+  function goNext(force) {
+    var miss = force ? [] : unscored();
+    if (miss.length) {
+      var box = $('[data-unscored]'), all = miss.length === H.teams.length;
+      box.querySelector('[data-us-msg]').innerHTML = '<b>' + (all ? 'No points added for ' + esc(GNAME[H.roundType]) + ' yet' : 'Some teams have no points from ' + esc(GNAME[H.roundType])) + '</b><span>' +
+        miss.map(function (x) { return '<i style="background:' + x.color + '"></i>' + esc(x.name); }).join('') + '</span>';
+      closeSheets(); box.hidden = false; return;
+    }
+    addPending(); var n = nextPlanned(); if (n) startRound(n); else openEnd();
+  }
   var PHONE_IC = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2"/><path d="M11 18.5h2"/></svg>';
   var PAPER_IC = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2.5H7a1.5 1.5 0 0 0-1.5 1.5v16A1.5 1.5 0 0 0 7 21.5h10a1.5 1.5 0 0 0 1.5-1.5V7z"/><path d="M14 2.5V7h4.5M9 12h6M9 15.5h6M9 9h2"/></svg>';
   function renderPlan() {
@@ -1323,6 +1339,8 @@ function pqtMain() {
     else if (b.hasAttribute('data-phsw')) { snap(); H.planPh = H.planPh || []; H.planPh[H.round - 1] = !H.planPh[H.round - 1]; push(); renderAll(); toast(phOn() ? 'Phones on for this round' : 'This round is on paper'); }
     else if (d.planI != null) { var k = +d.planI; if (k >= H.round) { var order = GORDER; H.plan[k] = order[(order.indexOf(H.plan[k]) + 1) % order.length]; push(); renderPlan(); paintMenu(); } }
     else if (b.hasAttribute('data-gonext')) goNext();
+    else if (b.hasAttribute('data-us-score')) { closeSheets(); if (SEQ[H.roundType] && H.qa.phase !== 'reveal') { H.view = 'qa'; qaPhase('reveal'); } H.tab = 'quiz'; save(); renderTabs(); renderTab(); setTimeout(function () { var w = $('.hc-wd') || $('[data-wd-go]'); if (w) w.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80); }
+    else if (b.hasAttribute('data-us-go')) { closeSheets(); goNext(true); }
     else if (d.star) starAct(d.star);
     else if (d.race) raceAct(d.race);
     else if (d.pw) pwAct(d.pw);
@@ -1383,7 +1401,7 @@ function pqtMain() {
       if (H.ended) { toast('This game is over.'); return; }
       if (!confirmTwice(b.querySelector('b') || b)) return;
       closeSheets();
-      if (H.round > 0) { var was = H.round; goNext(); toast('Round ' + was + ' skipped'); }
+      if (H.round > 0) { var was = H.round; goNext(true); toast('Round ' + was + ' skipped'); }
       else if (H.plan.length > 1) { snap(); var gone = H.plan.shift(); if (H.planPh) H.planPh.shift(); push(); renderAll(); toast(GNAME[gone] + ' skipped'); }
       else toast('Nothing to skip yet');
       return;

@@ -1514,3 +1514,10 @@ select option{background:#111;color:#fff}
 .hc-fresh{display:flex;flex-direction:column;gap:6px;padding:8px 0}
 .hc-fresh b{font-size:17px;font-weight:600;color:#fff}
 .hc-fresh span{margin-bottom:14px;font-size:14px;color:#8a8a8a}
+
+/* round not scored warning */
+.hc-us{margin:4px 0 12px;padding:14px 16px;border:1px solid rgba(255,106,43,.45);border-radius:2px;background:rgba(255,106,43,.06)}
+.hc-us b{display:block;font-size:16px;font-weight:600;color:#fff}
+.hc-us span{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:14px;color:#cfcfcf}
+.hc-us i{display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;vertical-align:1px}
+.hc-us__btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
