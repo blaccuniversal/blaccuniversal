@@ -1133,7 +1133,7 @@ function pqtMain() {
     return prog + '<p class="hc-note hc-lead">Quests Feud is done. The round totals are on the screen.</p><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-gonext type="button">' + (nx ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>';
   }
   function renderQuiz() {
-    if (isFresh()) return '<div class="hc-fresh"><b>Set up the game first</b><span>Add your teams and rounds, then start round 1 from here.</span><button class="pbtn pbtn--white pbtn--lg pbtn--block" type="button" data-setup-open>Set up a game</button></div>';
+    if (isFresh()) return '<div class="hc-fresh"><b>No rounds yet</b><span>Tap “Set up a game” above. Your rounds show up here once the game is set up.</span></div>';
     var html = renderQuizInner();
     if (PHONE_OK[H.roundType] && H.round > 0 && !H.ended) html = '<div class="hc-phsw"><span><b>Answer on phones</b><em>' + (phOn() ? 'Teams answer this round on their phones.' : 'This round is on paper.') + '</em></span><button type="button" class="hc-sw' + (phOn() ? ' is-on' : '') + '" data-phsw role="switch" aria-checked="' + phOn() + '" aria-label="Answer on phones"><i></i></button></div>' + html;
     if (H.round > 0 && !H.ended && H.roundType) html += '<button class="hc-skip" type="button" data-m="skip">' + (nextPlanned() ? 'Skip this round · go to round ' + (H.round + 1) : 'Skip this round · finish game') + '</button>';
