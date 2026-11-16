@@ -49,20 +49,22 @@
       '<div class="pp-asf__rule"></div><p class="pp-asf__k">Clue</p><p class="pp-q pp-asf__q">' + esc(q.c) + '</p>';
     return '<p class="pp-q">' + esc(q.q) + '</p>';
   }
-  var AZ = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  function blanks(n, v) {
-    var letters = String(v || '').toUpperCase().replace(/[^A-Z]/g, '');
-    if (!n) return '<div class="pp-bl pp-bl--free' + (letters ? '' : ' is-empty') + '"><span>' + (letters ? esc(letters) : 'Hard puzzle · length hidden') + '</span></div>';
-    var out = ''; for (var i = 0; i < n; i++) out += '<i class="' + (letters[i] ? 'is-on' : '') + '">' + (letters[i] || '') + '</i>';
-    return '<div class="pp-bl' + (letters.length > n ? ' is-over' : '') + '">' + out + '</div>';
+  /* AlphaSum answer card: same as the AlphaSum game. Letter tiles with their values, then 1ST / SUM / LEN / LAST checks. */
+  function val(c) { return c.charCodeAt(0) - 64; }
+  function asLive(q, v) {
+    var g = String(v || '').toUpperCase().replace(/[^A-Z]/g, '').split('').filter(Boolean);
+    var tiles = g.length ? g.map(function (c) { return '<div class="pp-lbox"><b>' + c + '</b><span>' + val(c) + '</span></div>'; }).join('') : '<span class="pp-lbox-ghost">_ _ _ _</span>';
+    if (!g.length) return '<div class="pp-lrow">' + tiles + '</div>';
+    var sum = g.reduce(function (a, c) { return a + val(c); }, 0), f = val(g[0]), l = val(g[g.length - 1]);
+    function chip(lbl, cur, tgt, cls) { return '<div class="pp-cp ' + cls + '"><span class="pp-cp__l">' + lbl + '</span><span class="pp-cp__v">' + cur + '<i>/' + tgt + '</i></span></div>'; }
+    var strip = chip('1st', f, q.f, f === +q.f ? 'is-ok' : 'is-bad') + chip('Sum', sum, q.t, sum === +q.t ? 'is-ok' : sum > +q.t ? 'is-over' : '') +
+      (q.n ? chip('Len', g.length, q.n, g.length === +q.n ? 'is-ok' : g.length > +q.n ? 'is-bad' : '') : '') + chip('Last', l, q.l, l === +q.l ? 'is-ok' : 'is-bad');
+    return '<div class="pp-lrow">' + tiles + '</div><div class="pp-cstrip">' + strip + '</div>';
   }
-  function alphaPlay(q, ci, val) {
-    var strip = AZ.split('').map(function (c, k) { return '<button type="button" class="pp-key" data-key="' + c + '"><b>' + c + '</b><span>' + (k + 1) + '</span></button>'; }).join('');
-    return '<div class="pp-asb">' +
-      '<div class="pp-asb__bl" data-blanks data-n="' + (q.n || 0) + '">' + blanks(q.n, val) + '</div>' +
-      '<form class="pp-ans pp-ans--as" data-ans="' + ci + '"><input class="hc-input" name="a" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="TYPE YOUR ANSWER" value="' + esc(val || '') + '"><button class="pbtn pbtn--white pbtn--lg" type="submit">' + (val ? 'Update' : 'Send') + '</button></form>' +
-      '<p class="pp-saved" data-saved>' + (val ? 'Sent: ' + esc(val) : '') + '</p>' +
-      '<p class="pp-asf__k" style="margin-top:20px">Cipher · A = 1 … Z = 26</p><div class="pp-keys">' + strip + '<button type="button" class="pp-key pp-key--w" data-key="⌫" aria-label="Delete">⌫</button><button type="button" class="pp-key pp-key--sp" data-key=" ">Space</button></div></div>';
+  function alphaPlay(q, ci, v) {
+    return '<div class="pp-asb"><div data-aslive>' + asLive(q, v) + '</div>' +
+      '<form class="pp-ans pp-ans--as" data-ans="' + ci + '"><input class="hc-input" name="a" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="TYPE YOUR ANSWER" value="' + esc(v || '') + '"><button class="pp-asgo" type="submit">' + (v ? 'UPDATE' : 'SEND') + ' →</button></form>' +
+      '<p class="pp-ashint" data-saved>' + (v ? 'Sent: ' + esc(v) + ' · change it any time before the reveal' : 'Enter to send · change it any time before the reveal') + '</p></div>';
   }
   function render() {
     var t = team();
@@ -161,30 +163,23 @@
   root.addEventListener('submit', function (e) {
     var f = e.target.closest('[data-ans]'); if (!f) return; e.preventDefault();
     var i = f.getAttribute('data-ans'), v = f.a.value.replace(/\s+/g, ' ').trim().slice(0, 80);
+    if (f.classList.contains('pp-ans--as')) v = v.toUpperCase().replace(/[^A-Z]/g, '');
     ans[i] = v; ls('pqt_play_ans:' + rk, JSON.stringify(ans)); sendAns(i);
     var saved = root.querySelector('[data-saved]');
-    if (+i === Math.min(S.cur, (S.qs || []).length - 1)) { if (saved) saved.textContent = v ? 'Sent: ' + v : 'Answer cleared'; f.querySelector('button').textContent = 'Update'; }
+    if (+i === Math.min(S.cur, (S.qs || []).length - 1)) { if (saved) saved.textContent = v ? 'Sent: ' + v + (S.type === 'alpha' ? ' · change it any time before the reveal' : '') : 'Answer cleared'; f.querySelector('button').textContent = S.type === 'alpha' ? 'UPDATE →' : 'Update'; }
     else { var b = f.querySelector('button'); b.textContent = 'Saved'; setTimeout(function () { b.textContent = 'Save'; }, 1200); }
     f.a.blur();
   });
   function paintBlanks(inp) {
-    var bl = root.querySelector('[data-blanks]'); if (!bl || !inp.closest('.pp-ans--as')) return;
-    bl.innerHTML = blanks(+bl.getAttribute('data-n'), inp.value);
+    var box = root.querySelector('[data-aslive]'); if (!box || !inp.closest('.pp-ans--as') || !S) return;
+    var i = +inp.closest('[data-ans]').getAttribute('data-ans'), q = (S.qs || [])[i]; if (q) box.innerHTML = asLive(q, inp.value);
   }
   root.addEventListener('input', function (e) {
     var inp = e.target; if (!inp.closest || !inp.closest('.pp-ans--as')) return;
-    var v = inp.value.toUpperCase().replace(/[^A-Z ]/g, ''); if (v !== inp.value) inp.value = v;
+    var v = inp.value.toUpperCase().replace(/[^A-Z]/g, ''); if (v !== inp.value) inp.value = v;
     paintBlanks(inp);
   });
   root.addEventListener('click', function (e) {
-    var k = e.target.closest('[data-key]');
-    if (k) {
-      var inp = root.querySelector('.pp-ans--as input'); if (!inp) return;
-      var c = k.getAttribute('data-key');
-      inp.value = c === '⌫' ? inp.value.slice(0, -1) : (inp.value + c).slice(0, 40);
-      paintBlanks(inp); if (navigator.vibrate) try { navigator.vibrate(8); } catch (x) {}
-      return;
-    }
     if (e.target.closest('[data-leave]')) { wantJoin = false; joined = false; lastHash = ''; viewJoin(); }
   });
   tick = setInterval(paintTimer, 250);
