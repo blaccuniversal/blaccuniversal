@@ -35,27 +35,28 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
+  // Connects to every broker at once and sends on all of them, so a phone, the host and the screen
+  // always share at least one broker, even when one is slow or blocked on a network.
   function mqLink(o) {
-    var bi = 0, cl = null, dead = false, everOk = false, failT = null;
-    function go() {
+    var dead = false, cls = [];
+    function anyOn() { return cls.some(function (c) { return c && c.connected; }); }
+    function one(url, k) {
       if (dead || !window.mqtt) return;
-      var url = BROKERS[bi % BROKERS.length]; everOk = false;
-      var opts = { clientId: 'pqt_' + Math.random().toString(16).slice(2, 10), clean: true, connectTimeout: 8000, reconnectPeriod: 2500, keepalive: 20 };
+      var opts = { clientId: 'pqt_' + Math.random().toString(16).slice(2, 10), clean: true, connectTimeout: 8000, reconnectPeriod: 2000, keepalive: 20 };
       if (o.will) opts.will = { topic: o.will.topic, payload: JSON.stringify(o.will.payload), retain: true, qos: 0 };
-      try { cl = window.mqtt.connect(url, opts); } catch (e) { bi++; setTimeout(go, 1000); return; }
-      clearTimeout(failT);
-      failT = setTimeout(function () { if (!everOk) { try { cl.end(true); } catch (e) {} bi++; go(); } }, 10000);
-      cl.on('connect', function () { everOk = true; o.onState && o.onState(true, url); o.onConnect && o.onConnect(cl); });
-      cl.on('close', function () { o.onState && o.onState(false, url); });
-      cl.on('offline', function () { o.onState && o.onState(false, url); });
-      cl.on('message', function (t, p) { var m; try { m = JSON.parse(p.toString()); } catch (e) { return; } o.onMessage && o.onMessage(t, m); });
+      var cl; try { cl = window.mqtt.connect(url, opts); } catch (e) { setTimeout(function () { one(url, k); }, 2000); return; }
+      cls[k] = cl;
+      cl.on('connect', function () { o.onState && o.onState(anyOn(), url); o.onConnect && o.onConnect(cl, url); });
+      cl.on('close', function () { o.onState && o.onState(anyOn(), url); });
+      cl.on('offline', function () { o.onState && o.onState(anyOn(), url); });
+      cl.on('message', function (t, p) { var m; try { m = JSON.parse(p.toString()); } catch (e) { return; } o.onMessage && o.onMessage(t, m, url); });
       cl.on('error', function () {});
     }
-    go();
+    BROKERS.forEach(one);
     return {
-      pub: function (t, obj, retain) { if (cl && cl.connected) try { cl.publish(t, JSON.stringify(obj), { qos: 0, retain: !!retain }); } catch (e) {} },
-      on: function () { return !!(cl && cl.connected); },
-      end: function () { dead = true; clearTimeout(failT); if (cl) try { cl.end(true); } catch (e) {} }
+      pub: function (t, obj, retain) { var s = JSON.stringify(obj); cls.forEach(function (cl) { if (cl && cl.connected) try { cl.publish(t, s, { qos: 0, retain: !!retain }); } catch (e) {} }); },
+      on: anyOn,
+      end: function () { dead = true; cls.forEach(function (cl) { if (cl) try { cl.end(true); } catch (e) {} }); cls = []; }
     };
   }
 
@@ -383,6 +384,7 @@ function pqtMain() {
           return '<div class="sc-qa"><p class="sc-intro__r">' + NM[q.type] + '</p><h2 class="sc-qa__h">' + (q.picker ? esc(q.picker) + ', pick a number' : 'Pick a number') + '</h2><div class="sc-numboard">' +
             Array.apply(null, Array(q.n)).map(function (_, i) { return '<span class="' + (q.used.indexOf(i) > -1 ? 'is-used' : '') + '">' + (i + 1) + '</span>'; }).join('') + '</div></div>';
         }
+        if (q.recap) return '<div class="sc-qa sc-recap"><p class="sc-intro__r">' + NM[q.type] + ' · Recap</p><h2 class="sc-recap__h">Check your answers</h2><ol class="sc-recap__l">' + q.recap.map(function (t, i) { return '<li style="animation-delay:' + (0.1 + i * 0.06) + 's"><b>' + (i + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('') + '</ol></div>';
         var head = '<div class="sc-qa__top"><p class="sc-intro__r">' + NM[q.type] + ' · ' + (q.type === 'spell' ? 'Word ' : q.type === 'talk' ? 'Topic ' : q.type === 'alpha' ? 'Puzzle ' : 'Question ') + (q.idx + 1) + (QA_BOARD[q.type] ? '' : ' of ' + q.n) + (SEQ[q.type] && q.phase === 'reveal' ? ' · Answer reveal' : '') + '</p>' + (QA_TIME[q.type] && !(SEQ[q.type] && q.phase === 'reveal') ? '<span class="sc-qa__timer" data-ringnum></span>' : '') + '</div>' + (S.phones && q.phase !== 'reveal' ? '<p class="sc-qa__join">Phones: blaccuniversal.com/pqt/play · <b>' + esc(S.code) + '</b></p>' : '');
         if (q.bd) head += '<p class="sc-qa__who' + (q.bd.bonus ? ' is-bonus' : '') + '">' + (q.bd.res != null ? (q.bd.res ? (q.bd.bonus ? 'Bonus point · ' : 'Point · ') + esc(q.bd.res) : 'Nobody got it') : (q.bd.bonus ? 'Bonus · ' + esc(q.bd.cur) : esc(q.bd.cur))) + '</p>';
         var mark = q.mark === 'ok' ? '<span class="sc-mark-ok">✓</span>' : q.mark === 'no' ? '<span class="sc-mark-no">✕</span>' : '';
@@ -501,11 +503,12 @@ function pqtMain() {
       feud: b ? { key: H.feud.qi + ':' + b.q, q: b.q, n: b.a.length, out: out, strikes: f.strikes, bank: f.awardedTo != null ? 0 : bank, awardedTo: f.awardedTo, awardedPts: f.awardedPts } : null
     };
   }
-  var hmq = null, mqScreen = false, seqN = 0;
+  var hmq = null, mqScreen = false, seqN = 0; var scrOn = {};
   function qaItem() { var q = H.qa, list = QA[q.type] || []; return list[q.idx]; }
   function qaPub() {
     var q = H.qa; if (!q.type) return null;
     var list = QA[q.type] || [], it = list[q.idx], o = { picker: QA_BOARD[q.type] ? tn(turnTeam()) : '', bd: QA_BOARD[q.type] && q.bd && q.mode === 'q' ? { owner: tn(q.bd.owner), cur: tn(q.bd.cur), bonus: q.bd.cur !== q.bd.owner, res: q.bd.res == null ? null : q.bd.res < 0 ? '' : tn(q.bd.res) } : null, type: q.type, mode: q.mode, n: SEQ[q.type] ? sqN() : list.length, idx: SEQ[q.type] ? q.idx - sq0() : q.idx, used: H.qaUsed[q.type] || [], revealed: q.revealed, mark: q.mark, phase: q.phase };
+    if (q.phase === 'recap') { o.recap = []; for (var ri = sq0(); ri < sq0() + sqN() && ri < list.length; ri++) o.recap.push(String(list[ri].q || '').split('\n')[0]); }
     if (q.mode === 'q' && it) {
       if (q.type === 'names') { o.clues = it.clues.slice(0, q.clue); o.total = it.clues.length; if (q.revealed) o.a = it.a; }
       else if (q.type === 'spell') { o.d = it.d; o.e = q.revealed ? it.e : it.e.replace(new RegExp(it.w.replace(/[^A-Za-z]/g, ''), 'gi'), '______'); if (q.revealed) o.w = it.w; }
@@ -523,11 +526,11 @@ function pqtMain() {
     if (hmq && H.code && (m.t === 'state' || m.t === 'fx')) hmq.pub(TOPIC + H.code + '/' + (m.t === 'state' ? 'state' : 'fx'), m, m.t === 'state');
   }
   function startHostMQ(code) {
-    if (hmq) hmq.end(); mqScreen = false;
+    if (hmq) hmq.end(); mqScreen = false; scrOn = {};
     var base = TOPIC + code + '/';
     hmq = mqLink({
       onConnect: function (cl) { cl.subscribe(base + 'screen'); cl.subscribe(base + 'in'); push(); },
-      onMessage: function (t, m) { if (t === base + 'in') { phoneMsg(m); return; } if (t === base + 'screen') { var was = mqScreen; mqScreen = !!(m && m.on); if (mqScreen && !was) push(); paintLink(); } },
+      onMessage: function (t, m, url) { if (t === base + 'in') { phoneMsg(m); return; } if (t === base + 'screen') { var was = mqScreen; scrOn[url] = !!(m && m.on); mqScreen = Object.keys(scrOn).some(function (k) { return scrOn[k]; }); if (mqScreen && !was) push(); paintLink(); } },
       onState: function () { paintLink(); }
     });
   }
@@ -1219,6 +1222,11 @@ function pqtMain() {
     var q = H.qa, type = QA_TYPES[H.roundType] ? H.roundType : '';
     if (!type) return '<p class="hc-note hc-lead">Start one of these rounds:</p><div class="hc-qstart">' + GORDER.map(function (t) { var n = t === 'words' ? WORDS.length : t === 'answers' ? BOARDS.length : t === 'pw' ? PW.length : (QA[t] || []).length; return '<button class="hc-mi" data-round="' + t + '" type="button"><b>' + GNAME[t] + '</b><span>' + (t === 'star' ? STAR_BEATS.length + ' built-in beats' : t === 'lyrics' ? 'Use presentation' : t === 'race' ? 'Live tournament' : n + ' in your cards') + '</span></button>'; }).join('') + '</div>';
     var list = QA[type] || [], it = list[q.idx], out = '';
+    if (type === 'written' && q.phase === 'recap') {
+      out = '<div class="hc-turn"><span>Written Round</span><b>Recap on the screen</b></div><p class="hc-note hc-lead">All ' + sqN() + ' questions are on the screen, without answers. Give teams a moment to check their sheets.</p><ol class="hc-recap">';
+      for (var rq = sq0(); rq < sq0() + sqN() && rq < list.length; rq++) out += '<li><b>' + (rq - sq0() + 1) + '</b><span>' + esc(String(list[rq].q || '').split('\n')[0]) + '</span></li>';
+      return out + '</ol><div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" type="button" data-recap="back">← Questions</button><button class="pbtn pbtn--lg pbtn--white" type="button" data-recap="reveal">Start answer reveal →</button></div>';
+    }
     var last = SEQ[type] ? q.idx + 1 >= sq0() + sqN() : q.idx + 1 >= list.length, rel = SEQ[type] ? q.idx - sq0() : q.idx, tot = SEQ[type] ? sqN() : list.length, finLbl = nextPlanned() ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner', fin = '<button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + finLbl + '</button>';
     if (!list.length) return '<p class="mute">No ' + GNAME[type] + ' content yet. Add some in the Cards tab.</p>';
     if (phOn() && q.phase !== 'reveal' && H.view === 'intro') out += phHostAsk();
@@ -1243,7 +1251,7 @@ function pqtMain() {
         out += '<div class="hc-qtext"><p class="hc-qlabel">' + (SEQ[type] && q.phase === 'reveal' ? 'Answer reveal · ' : '') + 'Question ' + (rel + 1) + ' of ' + tot + '</p>' + qHtml(it.q, '', it.a) + (it.img ? '<img class="hc-qimg" src="' + esc(it.img) + '" alt="">' : '') + '</div><div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Answer</p><div class="wcard__word hc-qans">' + esc(it.a) + '</div></div>';
       }
       if (type === 'talk') out += '<div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Previous</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (last ? finLbl : 'Next topic →') + '</button></div>';
-      else if (SEQ[type] && q.phase === 'ask') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (!last ? (type === 'alpha' ? 'Next puzzle →' : 'Next question →') : 'Start answer reveal →') + '</button></div><p class="hc-note">Each ' + (type === 'alpha' ? 'puzzle' : 'question') + ' gets ' + fmtT(QA_TIME[type]) + ' seconds. The answer stays hidden until the reveal.</p>' + (phOn() ? phHostAsk() : '');
+      else if (SEQ[type] && q.phase === 'ask') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (!last ? (type === 'alpha' ? 'Next puzzle →' : 'Next question →') : 'Start answer reveal →') + '</button></div>' + (last && type === 'written' ? '<button class="pbtn pbtn--lg pbtn--block hc-recapbtn" type="button" data-recap="show">Recap this round · all questions on screen</button>' : '') + '<p class="hc-note">Each ' + (type === 'alpha' ? 'puzzle' : 'question') + ' gets ' + fmtT(QA_TIME[type]) + ' seconds. The answer stays hidden until the reveal.</p>' + (phOn() ? phHostAsk() : '');
       else if (SEQ[type]) out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (last ? finLbl : 'Next answer →') + '</button></div>' + phHostReveal(it) + '<p class="hc-sub" style="margin-top:16px">Score the round</p><p class="hc-note" style="margin:0 0 8px">' + (phTeams().length ? 'Phone teams are counted for you. For answer sheets, count each team’s correct answers and set them here.' : 'Count each team’s correct answers, set them here, then add them all at once.') + '</p><div class="hc-wd">' + H.teams.map(function (t, i) { var v = (H.qa.wd || {})[i] || 0; return '<div class="hc-wd__r"><i style="background:' + t.color + '"></i><span class="hc-wd__n">' + esc(t.name) + '<em>' + t.score + ' now</em></span><button class="pbtn" data-wd="' + i + ':-1" type="button" aria-label="Less">−</button><b class="hc-wd__v' + (v ? ' is-set' : '') + '">' + (v > 0 ? '+' : '') + v + '</b><button class="pbtn" data-wd="' + i + ':1" type="button" aria-label="More">+</button></div>'; }).join('') + '</div><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-wd-go type="button"' + (H.teams.some(function (_, i) { return (H.qa.wd || {})[i]; }) ? '' : ' disabled') + '>Add points to all teams</button>';
       else {
         out += '<div class="hc-row" style="margin:10px 0"><button class="pbtn" data-qreveal>' + (q.revealed ? 'Hide answer' : 'Reveal answer') + '</button>' + (QA_TIME[type] ? '<button class="pbtn" data-qtime>' + (H.timer.running ? 'Pause timer' : 'Start ' + fmtT(QA_TIME[type]) + 's timer') + '</button>' : '') + '</div>';
@@ -1338,6 +1346,11 @@ function pqtMain() {
     else if (d.planPh != null) { var pi = +d.planPh; if (pi >= H.round - 1) { snap(); H.planPh = H.planPh || []; H.planPh[pi] = !H.planPh[pi]; push(); renderAll(); } }
     else if (b.hasAttribute('data-phsw')) { snap(); H.planPh = H.planPh || []; H.planPh[H.round - 1] = !H.planPh[H.round - 1]; push(); renderAll(); toast(phOn() ? 'Phones on for this round' : 'This round is on paper'); }
     else if (d.planI != null) { var k = +d.planI; if (k >= H.round) { var order = GORDER; H.plan[k] = order[(order.indexOf(H.plan[k]) + 1) % order.length]; push(); renderPlan(); paintMenu(); } }
+    else if (d.recap) {
+      if (d.recap === 'show') { snap(); H.qa.phase = 'recap'; H.timer.running = false; H.view = 'qa'; push(); renderAll(); splash('Recap', GNAME[H.roundType]); }
+      else if (d.recap === 'back') { snap(); H.qa.phase = 'ask'; H.qa.idx = sq0() + sqN() - 1; push(); renderAll(); }
+      else qaPhase('reveal');
+    }
     else if (b.hasAttribute('data-gonext')) goNext();
     else if (b.hasAttribute('data-us-score')) { closeSheets(); if (SEQ[H.roundType] && H.qa.phase !== 'reveal') { H.view = 'qa'; qaPhase('reveal'); } H.tab = 'quiz'; save(); renderTabs(); renderTab(); setTimeout(function () { var w = $('.hc-wd') || $('[data-wd-go]'); if (w) w.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 80); }
     else if (b.hasAttribute('data-us-go')) { closeSheets(); goNext(true); }

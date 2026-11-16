@@ -136,23 +136,30 @@
 
   /* ---------- link ---------- */
   function base() { return TOPIC + me.code + '/'; }
-  function send(m) { if (cl && cl.connected) try { cl.publish(base() + 'in', JSON.stringify(m), { qos: 0 }); } catch (e) {} }
+  function send(m) { var t = base() + 'in', p = JSON.stringify(m); cls.forEach(function (c) { if (c && c.connected) try { c.publish(t, p, { qos: 0 }); } catch (e) {} }); }
   function sendAns(i) { send({ t: 'ans', dev: dev, rk: rk, i: +i, a: ans[i] || '' }); sentT[i] = Date.now(); }
   var linkCode = '', wantJoin = false;
+  // Connect to every broker at once; the host publishes on all of them, so whichever answers first wins.
+  var cls = [], joinT = null;
   function link(code) {
     if (!window.mqtt || !code || code.length !== 4) return;
-    if (cl && linkCode === code) return;
-    if (cl) try { cl.end(true); } catch (e) {}
+    if (cls.length && linkCode === code) return;
+    cls.forEach(function (c) { try { c.end(true); } catch (e) {} }); cls = [];
     linkCode = code; S = null; lastHash = '';
-    var url = BROKERS[bi % BROKERS.length], ok = false, mine;
-    mine = cl = window.mqtt.connect(url, { clientId: 'pqtp_' + dev + '_' + Math.random().toString(16).slice(2, 6), clean: true, connectTimeout: 6000, reconnectPeriod: 1500, keepalive: 20 });
-    var fail = setTimeout(function () { if (!ok && cl === mine) { bi++; cl = null; link(code); } }, 7000);
-    cl.on('connect', function () { ok = true; clearTimeout(fail); if (cl !== mine) return; cl.subscribe(base() + 'play'); if (wantJoin) send({ t: 'join', dev: dev, name: me.name }); });
-    cl.on('message', function (tp, p) {
-      var m; try { m = JSON.parse(p.toString()); } catch (e) { return; }
-      if (tp !== TOPIC + linkCode + '/play' || !m || m.v !== 1) return;
-      onPlay(m);
+    BROKERS.forEach(function (url) {
+      var c; try { c = window.mqtt.connect(url, { clientId: 'pqtp_' + dev + '_' + Math.random().toString(16).slice(2, 6), clean: true, connectTimeout: 8000, reconnectPeriod: 1500, keepalive: 20 }); } catch (e) { return; }
+      cls.push(c); cl = c;
+      c.on('connect', function () { if (cls.indexOf(c) < 0) return; c.subscribe(TOPIC + code + '/play'); if (wantJoin && !joined) c.publish(TOPIC + code + '/in', JSON.stringify({ t: 'join', dev: dev, name: me.name }), { qos: 0 }); });
+      c.on('message', function (tp, p) {
+        var m; try { m = JSON.parse(p.toString()); } catch (e) { return; }
+        if (tp !== TOPIC + linkCode + '/play' || !m || m.v !== 1) return;
+        onPlay(m);
+      });
+      c.on('error', function () {});
     });
+    // keep knocking until the host has us
+    clearInterval(joinT);
+    joinT = setInterval(function () { if (wantJoin && !joined) send({ t: 'join', dev: dev, name: me.name }); }, 2000);
   }
   function onPlay(m) {
       if (S && m.seq && S.seq && m.seq < S.seq) return;   // an older state arrived late
@@ -173,7 +180,7 @@
     joined = false; wantJoin = true; lastHash = '';
     viewWait('Joining as ' + me.name + '…', 'Connecting to the game.');
     if (!window.mqtt) { viewJoin('Couldn’t load. Check your connection and reload.'); return; }
-    if (cl && linkCode === me.code && cl.connected) { send({ t: 'join', dev: dev, name: me.name }); if (S) { var h0 = S; S = null; onPlay(h0); } }
+    if (cls.length && linkCode === me.code && cls.some(function (c) { return c.connected; })) { send({ t: 'join', dev: dev, name: me.name }); if (S) { var h0 = S; S = null; onPlay(h0); } }
     else link(me.code);
   }
   root.addEventListener('submit', function (e) {
