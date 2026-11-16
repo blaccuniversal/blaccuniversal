@@ -61,10 +61,16 @@
       (q.n ? chip('Len', g.length, q.n, g.length === +q.n ? 'is-ok' : g.length > +q.n ? 'is-bad' : '') : '') + chip('Last', l, q.l, l === +q.l ? 'is-ok' : 'is-bad');
     return '<div class="pp-lrow">' + tiles + '</div><div class="pp-cstrip">' + strip + '</div>';
   }
+  function tleft() { return !S || !S.timer ? 1 : S.timer.running ? Math.max(0, S._end - Date.now()) : S.timer.left; }
+  function timeUp() { return S && S.timer && tleft() <= 0; }
+  function alphaLocked(q, v) {
+    return '<div class="pp-asb pp-asb--done">' + (v ? asLive(q, v) : '<div class="pp-lrow"><span class="pp-lbox-ghost">_ _ _ _</span></div>') +
+      '<p class="pp-lock">' + (v ? 'Answer locked in' : 'Time’s up · no answer') + '<span>Next puzzle when the time runs out.</span></p></div>';
+  }
   function alphaPlay(q, ci, v) {
     return '<div class="pp-asb"><div data-aslive>' + asLive(q, v) + '</div>' +
-      '<form class="pp-ans pp-ans--as" data-ans="' + ci + '"><input class="hc-input" name="a" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="TYPE YOUR ANSWER" value="' + esc(v || '') + '"><button class="pp-asgo" type="submit">' + (v ? 'UPDATE' : 'SEND') + ' →</button></form>' +
-      '<p class="pp-ashint" data-saved>' + (v ? 'Sent: ' + esc(v) + ' · change it any time before the reveal' : 'Enter to send · change it any time before the reveal') + '</p></div>';
+      '<form class="pp-ans pp-ans--as" data-ans="' + ci + '"><input class="hc-input" name="a" maxlength="40" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" placeholder="TYPE YOUR ANSWER" value="' + esc(v || '') + '"><button class="pp-asgo" type="submit">SUBMIT →</button></form>' +
+      '<p class="pp-ashint">Enter to submit · one answer per puzzle</p></div>';
   }
   function render() {
     var t = team();
@@ -89,12 +95,13 @@
     var ci = Math.min(cur, list.length - 1);
     if (S.type === 'alpha') {
       var qa = list[ci] || {};
-      out += '<div class="pp-asc"><div class="pp-asc__top"><span class="pp-pill' + (qa.h ? ' is-hard' : '') + '"><i></i>' + (qa.h ? 'Hard' : 'Easy') + '</span><span class="pp-asc__cat">AlphaSum</span><span class="pp-timer" data-timer></span><span class="pp-asc__no">' + (ci + 1) + '/' + S.n + '</span></div>' + puzzle(qa) + '</div>' + alphaPlay(qa, ci, ans[ci] || '');
+      var lockedA = ans[ci] != null || timeUp();
+      out += '<div class="pp-asc"><div class="pp-asc__top"><span class="pp-pill' + (qa.h ? ' is-hard' : '') + '"><i></i>' + (qa.h ? 'Hard' : 'Easy') + '</span><span class="pp-asc__cat">AlphaSum</span><span class="pp-timer" data-timer></span><span class="pp-asc__no">' + (ci + 1) + '/' + S.n + '</span></div>' + puzzle(qa) + '</div>' + (lockedA ? alphaLocked(qa, ans[ci]) : alphaPlay(qa, ci, ''));
     } else
     out += '<div class="pp-qhead"><p class="eyebrow pp-k">' + esc(S.name) + ' · ' + unit + ' ' + (ci + 1) + ' of ' + S.n + '</p><span class="pp-timer" data-timer></span></div>' + puzzle(list[ci]) +
       '<form class="pp-ans" data-ans="' + ci + '"><input class="hc-input" name="a" maxlength="80" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Your answer" value="' + esc(ans[ci] || '') + '"><button class="pbtn pbtn--white pbtn--lg" type="submit">' + (ans[ci] ? 'Update' : 'Send') + '</button></form>' +
       '<p class="pp-saved" data-saved>' + (ans[ci] ? 'Sent: ' + esc(ans[ci]) : '') + '</p>';
-    if (list.length > 1) {
+    if (list.length > 1 && S.type !== 'alpha') {
       out += '<p class="eyebrow pp-k" style="margin-top:28px">Your answers · change any before the reveal</p><ol class="pp-list">';
       for (var i = list.length - 1; i >= 0; i--) {
         if (i === ci) continue;
@@ -116,6 +123,12 @@
     var el = root.querySelector('[data-timer]'); if (!el || !S || !S.timer) return;
     var left = S.timer.running ? Math.max(0, S._end - Date.now()) : S.timer.left;
     el.textContent = Math.ceil(left / 1000) + 's'; el.classList.toggle('is-low', left < 4000 && S.timer.running);
+    if (S.type === 'alpha' && S.phase === 'ask' && left <= 0 && root.querySelector('.pp-ans--as')) {
+      var inp = root.querySelector('.pp-ans--as input'), i = inp.closest('[data-ans]').getAttribute('data-ans');
+      var v = inp.value.toUpperCase().replace(/[^A-Z]/g, '');
+      if (v && ans[i] == null) { ans[i] = v; ls('pqt_play_ans:' + rk, JSON.stringify(ans)); sendAns(i); }
+      render();
+    }
   }
 
   /* ---------- link ---------- */
@@ -150,7 +163,7 @@
         var nMine = Object.keys(ans).filter(function (k) { return ans[k]; }).length;
         if ((S.count && S.count[t.i] || 0) < nMine) Object.keys(ans).forEach(function (k) { if (ans[k] && Date.now() - (sentT[k] || 0) > 3000) sendAns(k); });
       }
-      var h = JSON.stringify([S.on, S.rk, S.phase, S.cur, (S.qs || []).length, (S.rev || []).length, S.res && t ? S.res[t.i] : 0, t && t.name, t && t.color]);
+      var h = JSON.stringify([S.on, S.rk, S.phase, S.cur, S.type === 'alpha' && timeUp(), (S.qs || []).length, (S.rev || []).length, S.res && t ? S.res[t.i] : 0, t && t.name, t && t.color]);
       if (h !== lastHash) { lastHash = h; render(); } else paintTimer();
   }
   function start() {
@@ -163,7 +176,10 @@
   root.addEventListener('submit', function (e) {
     var f = e.target.closest('[data-ans]'); if (!f) return; e.preventDefault();
     var i = f.getAttribute('data-ans'), v = f.a.value.replace(/\s+/g, ' ').trim().slice(0, 80);
-    if (f.classList.contains('pp-ans--as')) v = v.toUpperCase().replace(/[^A-Z]/g, '');
+    if (f.classList.contains('pp-ans--as')) {
+      v = v.toUpperCase().replace(/[^A-Z]/g, ''); if (!v || ans[i] != null || timeUp()) return;
+      ans[i] = v; ls('pqt_play_ans:' + rk, JSON.stringify(ans)); sendAns(i); f.a.blur(); render(); return;
+    }
     ans[i] = v; ls('pqt_play_ans:' + rk, JSON.stringify(ans)); sendAns(i);
     var saved = root.querySelector('[data-saved]');
     if (+i === Math.min(S.cur, (S.qs || []).length - 1)) { if (saved) saved.textContent = v ? 'Sent: ' + v + (S.type === 'alpha' ? ' · change it any time before the reveal' : '') : 'Answer cleared'; f.querySelector('button').textContent = S.type === 'alpha' ? 'UPDATE →' : 'Update'; }

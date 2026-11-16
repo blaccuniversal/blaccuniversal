@@ -1390,42 +1390,44 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .pp-rev .is-ok i{color:#5ad18f}
 .pp-rev .is-no i{color:#ff7a6a}
 
-/* AlphaSum on phones */
-.pp-asc{padding:18px 18px 20px;border:1px solid #222;border-radius:4px;background:#0a0a0a}
-.pp-asc__top{display:flex;align-items:center;gap:10px}
-.pp-pill{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 10px;border:1px solid rgba(62,207,142,.35);border-radius:3px;background:rgba(62,207,142,.08);color:#3ecf8e;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
-.pp-pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
-.pp-pill.is-hard{border-color:rgba(255,106,43,.4);background:rgba(255,106,43,.08);color:#ff7a3d}
-.pp-asc__cat{flex:1;min-width:0;font-size:14px;color:#8a8a8a}
-.pp-asc__no{font-size:14px;color:#8a8a8a;font-variant-numeric:tabular-nums}
-.pp-asc .pp-timer{height:28px;min-width:44px;font-size:13px}
-.pp-asf{display:flex;align-items:center;gap:8px;margin-top:18px;font-variant-numeric:tabular-nums;font-weight:700;line-height:1}
-.pp-asf__c{min-width:58px;padding:12px 10px;border-radius:4px;font-size:30px;text-align:center}
-.pp-asf__c--f{background:rgba(62,207,142,.1);border:1px solid rgba(62,207,142,.35);color:#3ecf8e}
-.pp-asf__c--l{background:rgba(255,106,43,.1);border:1px solid rgba(255,106,43,.35);color:#ff7a3d}
-.pp-asf__b{font-size:36px;font-weight:300;color:#3a3a3a}
-.pp-asf__t{font-size:34px;color:#d4b25a}
-.pp-asf__d{font-size:18px;color:#4a4a4a}
-.pp-asf__n{font-size:30px;color:#c8b820}
-.pp-asf__rule{height:1px;margin:18px 0 16px;background:#222}
-.pp-asf__k{margin:0;font-size:11px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:#7a7a7a}
-.pp-asf__q{margin-top:8px;font-size:clamp(19px,5.4vw,24px);font-weight:600;line-height:1.3}
-.pp-asb{margin-top:10px;padding:18px;border:1px solid #222;border-radius:4px;background:#0a0a0a}
-.pp-lrow{display:flex;flex-wrap:wrap;gap:7px;min-height:58px;align-items:center}
-.pp-lbox-ghost{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;letter-spacing:8px;color:#333}
-.pp-lbox{display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;height:54px;background:#141414;border:1px solid #2e2e2e;border-radius:4px}
-.pp-lbox b{font-size:22px;font-weight:700;line-height:1;color:#fff}
-.pp-lbox span{margin-top:3px;font-size:12px;color:#d4b25a;font-variant-numeric:tabular-nums}
-.pp-cstrip{display:flex;gap:8px;margin-top:14px}
-.pp-cp{flex:1 1 0;display:flex;flex-direction:column;align-items:center;min-width:0;max-width:96px;padding:7px 4px;background:#141414;border:1px solid #1f1f1f;border-radius:4px;transition:all .18s}
-.pp-cp__l{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:#5e5e5e}
-.pp-cp__v{margin-top:2px;font-size:20px;font-weight:700;color:#9a9a9a;font-variant-numeric:tabular-nums}
-.pp-cp__v i{font-style:normal;font-size:14px;color:#5e5e5e}
+/* AlphaSum on phones: sized like the AlphaSum game */
+.pp-asc{padding:12px 14px;border:1px solid #1f1f1f;border-radius:4px;background:#0b0b0b}
+.pp-asc__top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.pp-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border:1px solid rgba(40,200,152,.35);border-radius:2px;background:#0a2012;color:#28c860;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.pp-pill i{width:6px;height:6px;border-radius:50%;background:currentColor}
+.pp-pill.is-hard{border-color:rgba(232,48,80,.4);background:#20080e;color:#e83050}
+.pp-asc__cat{flex:1;min-width:0;font-size:12px;color:#7a7a7a}
+.pp-asc__no{font-size:12px;color:#7a7a7a;font-variant-numeric:tabular-nums}
+.pp-asc .pp-timer{height:24px;min-width:38px;font-size:12px}
+.pp-asf{display:flex;align-items:center;gap:5px;margin-bottom:10px;font-variant-numeric:tabular-nums;font-weight:700;line-height:1}
+.pp-asf__c{min-width:52px;padding:9px 12px;border-radius:3px;font-size:20px;text-align:center}
+.pp-asf__c--f{background:#0a1e18;border:1px solid rgba(40,200,152,.3);color:#28c898}
+.pp-asf__c--l{background:#1e0e08;border:1px solid rgba(255,106,43,.3);color:#ff6a2b}
+.pp-asf__b{font-size:24px;font-weight:300;color:#2e2e2e}
+.pp-asf__t{font-size:24px;color:#d4b25a}
+.pp-asf__d{font-size:18px;color:#2e2e2e}
+.pp-asf__n{font-size:20px;color:#c8b820}
+.pp-asf__rule{height:1px;margin:0 0 10px;background:#1f1f1f}
+.pp-asf__k{margin:0;font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#5e5e5e}
+.pp-asf__q{margin-top:4px;font-size:16px;font-weight:700;line-height:1.3}
+.pp-asb{display:flex;flex-direction:column;gap:8px;margin-top:6px;padding:10px 14px;border:1px solid #1f1f1f;border-radius:4px;background:#0b0b0b}
+.pp-lrow{display:flex;flex-wrap:wrap;gap:5px;min-height:50px;align-items:center}
+.pp-lbox-ghost{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:22px;letter-spacing:6px;color:#2e2e2e}
+.pp-lbox{display:flex;flex-direction:column;align-items:center;justify-content:center;width:34px;height:40px;background:#141414;border:1px solid #2e2e2e;border-radius:3px}
+.pp-lbox b{font-size:17px;font-weight:700;line-height:1;color:#fff}
+.pp-lbox span{margin-top:2px;font-size:9px;color:#d4b25a;font-variant-numeric:tabular-nums}
+.pp-cstrip{display:flex;flex-wrap:wrap;gap:6px}
+.pp-cp{display:flex;flex-direction:column;align-items:center;min-width:54px;padding:5px 10px;background:#141414;border:1px solid #1f1f1f;border-radius:3px;transition:all .18s}
+.pp-cp__l{font-size:8px;letter-spacing:.24em;text-transform:uppercase;color:#5e5e5e}
+.pp-cp__v{margin-top:1px;font-size:14px;font-weight:700;color:#9a9a9a;font-variant-numeric:tabular-nums}
+.pp-cp__v i{font-style:normal;font-size:10px;color:#5e5e5e}
 .pp-cp.is-ok{border-color:#28c898;background:#0a1e14}.pp-cp.is-ok .pp-cp__v{color:#28c898}
 .pp-cp.is-bad{border-color:#e83050;background:#1e0a0c}.pp-cp.is-bad .pp-cp__v{color:#e83050}
 .pp-cp.is-over{border-color:#ff6a2b;background:#1e0e08}.pp-cp.is-over .pp-cp__v{color:#ff6a2b}
-.pp-ans--as{margin-top:16px}
-.pp-ans--as .hc-input{height:58px;background:#141414;border:2px solid #2e2e2e;font-size:20px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
-.pp-ans--as .hc-input::placeholder{font-size:15px;letter-spacing:.14em;color:#5e5e5e}
-.pp-asgo{flex:none;height:58px;padding:0 20px;border:0;border-radius:3px;background:#fff;color:#000;font:inherit;font-size:15px;font-weight:700;letter-spacing:.08em;cursor:pointer}
-.pp-ashint{margin:12px 0 0;font-size:12px;letter-spacing:.04em;color:#5e5e5e;text-align:center}
+.pp-ans--as{margin-top:0}
+.pp-ans--as .hc-input{height:auto;padding:9px 12px;background:#141414;border:1px solid #2e2e2e;border-radius:2px;font-size:18px;font-weight:700;letter-spacing:.18em;text-transform:uppercase}
+.pp-ans--as .hc-input::placeholder{font-size:13px;letter-spacing:.12em;color:#5e5e5e}
+.pp-asgo{flex:none;padding:11px 16px;border:0;border-radius:2px;background:#fff;color:#000;font:inherit;font-size:13px;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.pp-ashint{margin:0;font-size:10px;letter-spacing:.04em;color:#5e5e5e;text-align:center}
+.pp-lock{margin:2px 0 0;font-size:14px;font-weight:600;color:#fff}
+.pp-lock span{display:block;margin-top:2px;font-size:11px;font-weight:400;color:#6a6a6a}

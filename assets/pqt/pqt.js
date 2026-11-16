@@ -595,7 +595,12 @@ function pqtMain() {
   setInterval(function () {
     var t = H.timer;
     if (t.running && Date.now() >= t.endsAt && H.view === 'pw' && H.pw.phase === 'play') { t.running = false; t.remaining = 0; pwMark('miss'); }
-    else if (t.running && Date.now() >= t.endsAt) { t.running = false; t.remaining = 0; if (H.view === 'fm' && H.fm && H.fm.phase === 'answer') { H.fm.phase = 'recap'; H.fm.rc = 0; H.fm.last = null; renderAll(); toast('Time’s up for ' + ((H.teams[fmTeam()] || {}).name || '')); } else if (H.view === 'star' && H.star.phase === 'play') { H.star.phase = 'done'; renderAll(); } else if (H.view === 'words') { H.view = 'turnend'; renderViews(); renderTab(); paintNow(); toast('Time’s up for ' + (team(H.words.team) || {}).name); } push(); fx('end'); }
+    else if (t.running && Date.now() >= t.endsAt) { t.running = false; t.remaining = 0; if (H.view === 'fm' && H.fm && H.fm.phase === 'answer') { H.fm.phase = 'recap'; H.fm.rc = 0; H.fm.last = null; renderAll(); toast('Time’s up for ' + ((H.teams[fmTeam()] || {}).name || '')); } else if (H.view === 'star' && H.star.phase === 'play') { H.star.phase = 'done'; renderAll(); } else if (H.view === 'words') { H.view = 'turnend'; renderViews(); renderTab(); paintNow(); toast('Time’s up for ' + (team(H.words.team) || {}).name); }
+      else if (H.view === 'qa' && H.qa.type === 'alpha' && H.qa.phase !== 'reveal' && H.qa.mode === 'q') {
+        H.qa.tEnd = Date.now(); var at = H.qa.idx;
+        setTimeout(function () { if (H.view !== 'qa' || H.qa.type !== 'alpha' || H.qa.phase === 'reveal' || H.qa.idx !== at || H.timer.running) return; if (at + 1 < sq0() + sqN()) qaNext(1); else { toast('Last puzzle done · start the answer reveal'); renderAll(); } }, 1800);
+      }
+      push(); fx('end'); }
     paintTimer();
   }, 200);
 
@@ -640,6 +645,11 @@ function pqtMain() {
     if (m.t === 'ans') {
       var tid = H.devs[m.dev]; if (tid == null || !H.teams[tid] || m.rk !== rkey() || !SEQ[H.roundType] || H.qa.phase === 'reveal') return;
       var P = phState(), i = +m.i; if (!(i >= 0) || i >= sqN() || i > Math.max(P.seen, H.qa.idx - sq0())) return;
+      if (H.roundType === 'alpha') {
+        if (i !== H.qa.idx - sq0() || H.view !== 'qa') return;
+        if (!H.timer.running && !(H.timer.remaining <= 0 && Date.now() - (H.qa.tEnd || 0) < 2500)) return;
+        if (P.ans[tid] && P.ans[tid][i]) return;   // first answer is final
+      }
       (P.ans[tid] = P.ans[tid] || {})[i] = String(m.a == null ? '' : m.a).slice(0, 80);
       save(); clearTimeout(phoneMsg._t); phoneMsg._t = setTimeout(function () { push(); if (H.tab === 'quiz') renderTab(); }, 250);
     }
