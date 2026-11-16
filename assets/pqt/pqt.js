@@ -35,6 +35,13 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
+  var BUILD = 2611161430, PLAY_BUILD = 9;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  // When the host runs a newer build, screens and phones reload themselves to match it.
+  function follow(b, mine) {
+    if (!b || b <= mine) return;
+    try { var t = JSON.parse(sessionStorage.getItem('pqt_follow') || '{}'); if (t.b === b && Date.now() - t.at < 60000) return; sessionStorage.setItem('pqt_follow', JSON.stringify({ b: b, at: Date.now() })); } catch (e) {}
+    setTimeout(function () { location.reload(); }, 300);
+  }
   // Connects to every broker at once and sends on all of them, so a phone, the host and the screen
   // always share at least one broker, even when one is slow or blocked on a network.
   function mqLink(o) {
@@ -165,7 +172,7 @@ function pqtMain() {
     }
     function onMsg(m) {
       if (!m || typeof m !== 'object') return;
-      if (m.t === 'state') { if (m.seq && m.seq <= lastSeq) { if (m.seq === lastSeq) reply({ t: 'ack' }); return; } if (m.seq) lastSeq = m.seq; apply(m.s); reply({ t: 'ack' }); }
+      if (m.t === 'state') { follow(m.b, BUILD); if (m.seq && m.seq <= lastSeq) { if (m.seq === lastSeq) reply({ t: 'ack' }); return; } if (m.seq) lastSeq = m.seq; apply(m.s); reply({ t: 'ack' }); }
       else if (m.t === 'fx') {
         if (m.id) { if (seenFx.indexOf(m.id) > -1) return; seenFx.push(m.id); if (seenFx.length > 60) seenFx.shift(); } if (m.fx === 'splash') { showSplash(m.text, m.sub); FX.ding(); return; } if (FX[m.fx]) FX[m.fx](); if (m.fx === 'buzz' && m.bigX) bigX(); }
       else if (m.t === 'ping') reply({ t: 'ack' });
@@ -517,7 +524,7 @@ function pqtMain() {
     return o;
   }
   function send(m) {
-    if (m.t === 'state') m.seq = Date.now() * 100 + (seqN = (seqN + 1) % 100);
+    if (m.t === 'state') { m.seq = Date.now() * 100 + (seqN = (seqN + 1) % 100); m.b = BUILD; }
     if (m.t === 'fx') m.id = Math.random().toString(36).slice(2, 10);
     if (hbc) try { hbc.postMessage(m); } catch (e) {}
     if (conn && conn.open) try { conn.send(m); } catch (e) {}
@@ -663,7 +670,7 @@ function pqtMain() {
     return { q: it.q + (it.opts && it.opts.length ? '' : '') };
   }
   function playState() {
-    var o = { v: 1, seq: Date.now(), title: H.title, teams: H.teams.map(function (t) { return { name: t.name, color: t.color }; }), devs: H.devs || {}, on: false };
+    var o = { v: 1, b: PLAY_BUILD, seq: Date.now(), title: H.title, teams: H.teams.map(function (t) { return { name: t.name, color: t.color }; }), devs: H.devs || {}, on: false };
     if (H.round && !H.ended) o.now = { round: H.round, rounds: H.plan.length, name: GNAME[H.roundType] || '' };
     if (H.ended) o.over = true;
     o.scores = H.teams.map(function (t) { return t.score; });

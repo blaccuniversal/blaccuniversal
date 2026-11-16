@@ -3,6 +3,13 @@
   'use strict';
   var BROKERS = ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt'];
   var TOPIC = 'blaccuniversal/pqt/v1/';
+  var BUILD = 9;   // must match PLAY_BUILD in pqt.js
+  // When the host runs a newer build, screens and phones reload themselves to match it.
+  function follow(b, mine) {
+    if (!b || b <= mine) return;
+    try { var t = JSON.parse(sessionStorage.getItem('pqt_follow') || '{}'); if (t.b === b && Date.now() - t.at < 60000) return; sessionStorage.setItem('pqt_follow', JSON.stringify({ b: b, at: Date.now() })); } catch (e) {}
+    setTimeout(function () { location.reload(); }, 300);
+  }
   var root = document.querySelector('[data-play]');
   function $(s) { return root.querySelector(s); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -162,6 +169,7 @@
     joinT = setInterval(function () { if (wantJoin && !joined) send({ t: 'join', dev: dev, name: me.name }); }, 2000);
   }
   function onPlay(m) {
+      follow(m.b, BUILD);
       if (S && m.seq && S.seq && m.seq < S.seq) return;   // an older state arrived late
       S = m; if (S.timer) S._end = Date.now() + S.timer.left;
       if (!wantJoin) return;   // connected early; nothing to show until the team joins

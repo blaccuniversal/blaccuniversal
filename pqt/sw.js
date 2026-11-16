@@ -1,5 +1,5 @@
 /* PQT offline: keeps the game saved on this device so it opens and plays without internet */
-var CACHE = 'pqt-v112';
+var CACHE = 'pqt-v113';
 var CORE = ['/pqt/', '/pqt/host/', '/pqt/screen/',
   '/assets/pqt/pqt.css', '/assets/pqt/pqt.js', '/assets/pqt/pqt-import.js', '/assets/pqt/pqt-play.js', '/pqt/play/', '/assets/pqt/pqt-gate.js', '/assets/pqt/pqt-leaderboard.js', '/pqt/leaderboard/', '/pqt/data/season-1.json',
   '/assets/pqt/mqtt.min.js', '/assets/pqt/peerjs.min.js', '/assets/pqt/pqt-logo.png', '/assets/pqt/pqt-mark.png', '/assets/pqt/pqt-icon.png', '/assets/pqt/pqt-apple-touch-icon.png', '/assets/pqt/pqt-icon-192.png',
@@ -20,7 +20,7 @@ self.addEventListener('fetch', function (e) {
   if (nav) {
     var u = new URL(req.url);
     if (!/\/$/.test(u.pathname) && !/\.[a-z0-9]+$/i.test(u.pathname)) return;   // let the site add the trailing slash
-    e.respondWith(fetch(req).then(function (r) {
+    e.respondWith(fetch(req.url, { cache: 'no-cache', credentials: 'same-origin' }).then(function (r) {
       if (good(r)) { var cp = r.clone(); caches.open(CACHE).then(function (c) { c.put(key(req.url, true), cp); }); }
       return r;
     }).catch(function () { return caches.open(CACHE).then(function (c) { return c.match(key(req.url, true)).then(function (hit) { return hit || c.match(key('/pqt/', true)); }); }); }));
