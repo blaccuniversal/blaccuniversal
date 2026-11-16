@@ -3,7 +3,7 @@
   'use strict';
   var BROKERS = ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt'];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 9;   // must match PLAY_BUILD in pqt.js
+  var BUILD = 10;   // must match PLAY_BUILD in pqt.js
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -217,5 +217,10 @@
     if (e.target.closest('[data-leave]')) { wantJoin = false; joined = false; lastHash = ''; viewJoin(); }
   });
   tick = setInterval(paintTimer, 250);
+  // keep the phone awake while a team is playing
+  var wake = null;
+  function keepAwake() { try { if (wantJoin && navigator.wakeLock && document.visibilityState === 'visible' && !wake) navigator.wakeLock.request('screen').then(function (w) { wake = w; w.addEventListener('release', function () { wake = null; }); }).catch(function () {}); } catch (e) {} }
+  document.addEventListener('visibilitychange', function () { keepAwake(); if (document.visibilityState === 'visible' && wantJoin && S) { lastHash = ''; var h0 = S; S = null; onPlay(h0); } });
+  document.addEventListener('pointerdown', keepAwake, { passive: true });
   if (me.code && me.name && qs.get('c') == null && ls('pqt_play_code')) start(); else viewJoin();
 })();

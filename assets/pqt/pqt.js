@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611161430, PLAY_BUILD = 9;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611161500, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -582,7 +582,7 @@ function pqtMain() {
     var on = linked();
     el.className = 'hc-status ' + (on ? 'is-on' : H.code ? 'is-wait' : '');
     el.querySelector('span').textContent = on ? 'Screen ' + H.code : H.code ? (linkState === 'missing' ? 'Looking for ' + H.code + '…' : 'Connecting ' + H.code + '…') : 'No screen';
-    var cs = $('[data-connect-sec]'); if (cs) cs.hidden = on && !$('[data-connect-sec]').dataset.force;
+    var cs = $('[data-connect-sec]'); if (cs) cs.hidden = (on || (H.round > 0 && !H.ended)) && !cs.dataset.force;   // tucked away once the game is running; tap the screen status to bring it back
   }
   setInterval(function () { send({ t: 'ping' }); paintLink(); }, 2500);
   setInterval(function () { if (H.code) send({ t: 'state', s: pub() }); }, 5000);
@@ -1099,6 +1099,8 @@ function pqtMain() {
   var VIEWNAME = { pw: 'Password', race: 'Word Race', star: 'Superstar', fm: 'Quests Feud', qa: 'Question on screen', lobby: 'Lobby', scores: 'Scores', ranking: 'Ranking', winner: 'Winner', words: 'All Except These Ones · playing', answers: 'Quests Feud board', intro: 'Round intro', turn: 'Up next', turnend: 'Time’s up' };
   function paintNow() {
     var v = $('[data-now-view]'); if (!v) return;
+    var ms = $('[data-mscores]');
+    if (ms) { var showS = H.round > 0 && H.teams.length; ms.hidden = !showS; if (showS) { var hs = H.teams.map(function (t, i) { return '<button type="button" data-tab="teams" class="hc-ms" style="--c:' + t.color + '"><i></i><span>' + esc(t.name) + '</span><b>' + t.score + '</b></button>'; }).join(''); if (ms._h !== hs) { ms._h = hs; ms.innerHTML = hs; } } }
     v.textContent = (H.paused ? 'Paused · ' : '') + (VIEWNAME[H.view] || H.view);
     if (H.view === 'qa') v.textContent = (H.paused ? 'Paused · ' : '') + (H.qa.mode === 'board' ? 'Number board' : GNAME[H.qa.type] + ' · ' + (SEQ[H.qa.type] ? (H.qa.phase === 'reveal' ? 'answer ' : '') + (H.qa.idx - sq0() + 1) + ' of ' + sqN() : (H.qa.idx + 1) + ' of ' + ((QA[H.qa.type] || []).length)));
     if (H.ended) { v.textContent = 'Game over'; $('[data-now-round]').textContent = (H.title || 'PQT') + ' · winner on screen'; } else
@@ -1110,6 +1112,9 @@ function pqtMain() {
 
   /* ---------- render host ---------- */
   var root = $('[data-host]');
+  var wake = null;
+  function keepAwake() { try { if (navigator.wakeLock && document.visibilityState === 'visible' && !wake) navigator.wakeLock.request('screen').then(function (w) { wake = w; w.addEventListener('release', function () { wake = null; }); }).catch(function () {}); } catch (e) {} }
+  document.addEventListener('visibilitychange', keepAwake); document.addEventListener('pointerdown', keepAwake, { passive: true });
   function renderAll() { renderViews(); renderTabs(); renderTab(); renderTeams(); paintTimer(); paintLink(); paintNow(); paintMenu(); renderPlan(); }
   function renderViews() { var gameV = ['words', 'answers', 'qa', 'intro', 'turn', 'turnend', 'star', 'fm', 'race', 'pw'].indexOf(H.view) > -1; $$('[data-view]').forEach(function (b) { var v = b.getAttribute('data-view'); b.classList.toggle('is-on', v === 'game' ? gameV : v === H.view); }); var gb = $('[data-view-game]'); if (gb) gb.textContent = H.roundType ? 'Game · ' + GNAME[H.roundType] : 'Game'; var isRace = H.roundType === 'race' && H.race && !H.ended, gr = $('[data-game-row]'), rv = $('[data-race-views]'); if (gr) gr.hidden = isRace; if (rv) { rv.hidden = !isRace; $$('[data-race^="scene-"]', rv).forEach(function (b) { var v = b.getAttribute('data-race').slice(6); b.classList.toggle('is-on', isRace && (v === 'rules' ? H.view === 'intro' : H.view === 'race' && (H.race.scene || 'battle') === v)); }); } }
   function paneOf() { if (H.ended && H.tab === 'quiz') return 'quiz'; return H.tab === 'quiz' && (H.roundType === 'words' || H.roundType === 'answers') ? H.roundType : H.tab; }
@@ -1386,7 +1391,7 @@ function pqtMain() {
     else if (b.hasAttribute('data-zero')) { if (confirmTwice(b)) { snap(); H.teams.forEach(function (t) { t.score = 0; }); push(); renderTeams(); } }
     else if (b.hasAttribute('data-undo')) { var s = hist.pop(); if (s) { H = JSON.parse(s); push(); renderAll(); } }
     else if (b.hasAttribute('data-connect')) { var ok = connect($('[data-codein]').value); $('[data-codein]').classList.toggle('is-bad', !ok); delete $('[data-connect-sec]').dataset.force; }
-    else if (b.hasAttribute('data-change')) { var cs = $('[data-connect-sec]'); if (!cs.hidden && linked()) { delete cs.dataset.force; cs.hidden = true; } else { cs.dataset.force = '1'; cs.hidden = false; window.scrollTo(0, 0); $('[data-codein]').focus(); } }
+    else if (b.hasAttribute('data-change')) { var cs = $('[data-connect-sec]'); if (!cs.hidden && (linked() || H.round > 0)) { delete cs.dataset.force; cs.hidden = true; } else { cs.dataset.force = '1'; cs.hidden = false; window.scrollTo(0, 0); $('[data-codein]').focus(); } }
     else if (b.hasAttribute('data-setup-edit')) openSetup(H.ended || H.round === 0);
     else if (b.hasAttribute('data-opensc')) { var w = window.open('/pqt/screen/', 'pqtscreen'); if (!w) location.href = '/pqt/screen/'; }
     else if (b.hasAttribute('data-savecards')) { H.wordsTxt = $('[data-wtxt]').value; H.boardsTxt = $('[data-btxt]').value; ['names', 'spell', 'written', 'rapid', 'talk', 'alpha', 'pw'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el) H[k + 'Txt'] = el.value; }); loadQA(); reloadBanks(); b.textContent = 'Saved'; setTimeout(function () { b.textContent = 'Save cards'; }, 1500); }
