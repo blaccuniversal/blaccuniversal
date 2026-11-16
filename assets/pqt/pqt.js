@@ -107,7 +107,10 @@ function pqtMain() {
 
   var QA_TYPES = { names: 1, spell: 1, written: 1, rapid: 1, talk: 1, alpha: 1 };
   var QA_TIME = { names: 10000, written: 10000, rapid: 5000, spell: 30000, alpha: 30000 };
-  var QA_BOARD = { spell: 1, rapid: 1, alpha: 1 };
+  var QA_BOARD = { spell: 1, rapid: 1 };
+  var SEQ = { written: 1, alpha: 1 }, SEQ_N = 10;
+  function sq0() { return H.qa.start || 0; }
+  function sqN() { return H.qa.cnt || (QA[H.qa.type] || []).length; }   // everyone answers every question, then an answer reveal
 
   /* =====================================================================
      SCREEN
@@ -298,10 +301,10 @@ function pqtMain() {
         var QR = {
           names: ['A vague description of a famous person or thing appears.', 'Respond with “Hi, my name is…” and the answer.', 'Give as many answers as you can within 10 seconds.'],
           spell: ['Pick a number. Delegate a player to spell.', 'You’ll hear the word, its meaning and an example.', 'You get only one shot at spelling.'],
-          written: ['Ten questions: science, art, business, tech, geography and more.', 'Each question gets 10 seconds. Write your answers down.', 'Answers are revealed at the end of the round.'],
+          written: ['Ten questions: science, art, business, tech, geography and more.', 'Each question gets 10 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
           rapid: ['Pick a number. The question behind it is read to you.', 'Answer within 5 seconds.', 'Try as many times as you can within your time.'],
           talk: ['A topic goes up on the screen.', 'Share your thoughts. Hear each other out.', 'No points, just good conversation.'],
-          alpha: ['Pick a number. An AlphaSum puzzle goes up: first letter, total, length and last letter. A = 1 … Z = 26.', 'Use the clue and the numbers to crack the word in 30 seconds.', 'Miss it and the next team gets a bonus shot.'],
+          alpha: ['Every team answers every puzzle: first letter, total, length and last letter, plus a clue. A = 1 … Z = 26.', 'Each puzzle gets 30 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
           star: ['One rapper per team, one turn each.', 'Follow the ball. Land the rhyme on the fourth beat of every bar.', 'The judges score every turn.'],
           race: ['Two letters spin, then stop: one to start the word, one to end it.', 'First team to call a real word that fits wins the battle.', 'Three battles, 3 points for each one won. Most points wins.'],
           pw: ['Ten letters light up, one at a time. Each one starts a hidden word.', 'The describer gives a one-word clue. The guesser names the word.', 'Each letter lasts 10 seconds. Every word guessed is a point.']
@@ -310,7 +313,8 @@ function pqtMain() {
         if (QR[S.roundType]) {
           var NM = { names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion', alpha: 'AlphaSum', star: 'Superstar', race: 'Word Race', pw: 'Password' };
           return '<div class="sc-intro"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + '</p><h1 class="sc-intro__t">' + NM[S.roundType] + '</h1>' +
-            '<ol class="sc-intro__rules">' + QR[S.roundType].map(function (r, i) { return '<li style="animation-delay:' + (0.35 + i * 0.15) + 's"><b>0' + (i + 1) + '</b>' + esc(r) + '</li>'; }).join('') + '</ol></div>';
+            '<ol class="sc-intro__rules">' + QR[S.roundType].map(function (r, i) { return '<li style="animation-delay:' + (0.35 + i * 0.15) + 's"><b>0' + (i + 1) + '</b>' + esc(r) + '</li>'; }).join('') + '</ol>' +
+            (S.phones ? '<div class="sc-join"><span>Answer on your phone</span><b>blaccuniversal.com/pqt/play</b><em>' + esc(S.code) + '</em></div>' : '') + '</div>';
         }
         var isW = S.roundType === 'words';
         var rules = isW ? ['One clue giver per team, against the clock.', 'Describe the word. Don’t say it, or any banned word.', 'Every word guessed is a point. A buzz costs one.']
@@ -379,7 +383,7 @@ function pqtMain() {
           return '<div class="sc-qa"><p class="sc-intro__r">' + NM[q.type] + '</p><h2 class="sc-qa__h">' + (q.picker ? esc(q.picker) + ', pick a number' : 'Pick a number') + '</h2><div class="sc-numboard">' +
             Array.apply(null, Array(q.n)).map(function (_, i) { return '<span class="' + (q.used.indexOf(i) > -1 ? 'is-used' : '') + '">' + (i + 1) + '</span>'; }).join('') + '</div></div>';
         }
-        var head = '<div class="sc-qa__top"><p class="sc-intro__r">' + NM[q.type] + ' · ' + (q.type === 'spell' ? 'Word ' : q.type === 'talk' ? 'Topic ' : q.type === 'alpha' ? 'Puzzle ' : 'Question ') + (q.idx + 1) + (QA_BOARD[q.type] ? '' : ' of ' + q.n) + (q.type === 'written' && q.phase === 'reveal' ? ' · Answer reveal' : '') + '</p>' + (QA_TIME[q.type] && !(q.type === 'written' && q.phase === 'reveal') ? '<span class="sc-qa__timer" data-ringnum></span>' : '') + '</div>';
+        var head = '<div class="sc-qa__top"><p class="sc-intro__r">' + NM[q.type] + ' · ' + (q.type === 'spell' ? 'Word ' : q.type === 'talk' ? 'Topic ' : q.type === 'alpha' ? 'Puzzle ' : 'Question ') + (q.idx + 1) + (QA_BOARD[q.type] ? '' : ' of ' + q.n) + (SEQ[q.type] && q.phase === 'reveal' ? ' · Answer reveal' : '') + '</p>' + (QA_TIME[q.type] && !(SEQ[q.type] && q.phase === 'reveal') ? '<span class="sc-qa__timer" data-ringnum></span>' : '') + '</div>' + (S.phones && q.phase !== 'reveal' ? '<p class="sc-qa__join">Phones: blaccuniversal.com/pqt/play · <b>' + esc(S.code) + '</b></p>' : '');
         if (q.bd) head += '<p class="sc-qa__who' + (q.bd.bonus ? ' is-bonus' : '') + '">' + (q.bd.res != null ? (q.bd.res ? (q.bd.bonus ? 'Bonus point · ' : 'Point · ') + esc(q.bd.res) : 'Nobody got it') : (q.bd.bonus ? 'Bonus · ' + esc(q.bd.cur) : esc(q.bd.cur))) + '</p>';
         var mark = q.mark === 'ok' ? '<span class="sc-mark-ok">✓</span>' : q.mark === 'no' ? '<span class="sc-mark-no">✕</span>' : '';
         if (q.type === 'names') return '<div class="sc-qa">' + head + '<div class="sc-qa__clues">' + (q.clues || []).map(function (c) { return '<p>' + esc(c) + '</p>'; }).join('') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Hi, my name is…</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
@@ -488,7 +492,7 @@ function pqtMain() {
     var w = H.words, b = BOARDS[H.feud.qi], f = H.feud, out = {}, bank = 0;
     if (b) Object.keys(f.out).forEach(function (i) { var a = b.a[i]; if (a) { out[i] = { a: a.a, p: a.p }; if (f.out[i] === 'p') bank += a.p; } });
     return {
-      view: H.view, title: H.title, round: H.round, rounds: H.plan.length, roundType: H.roundType, paused: H.paused,
+      view: H.view, title: H.title, code: H.code, phones: !!(SEQ[H.roundType] && H.code), round: H.round, rounds: H.plan.length, roundType: H.roundType, paused: H.paused,
       teams: H.teams.map(function (x, i) { var rp = roundPts(i); return { name: x.name, color: x.color, score: x.score, rounds: rp.rounds, pen: rp.pen, strikes: x.strikes || 0 }; }),
       timer: { total: t.total, remaining: left, running: t.running },
       words: { team: w.team, correct: w.correct, skipped: w.skipped, buzzed: w.buzzed, stream: w.stream.slice(-14), pts: w.correct - (w.buzzCost ? w.buzzed : 0) },
@@ -501,7 +505,7 @@ function pqtMain() {
   function qaItem() { var q = H.qa, list = QA[q.type] || []; return list[q.idx]; }
   function qaPub() {
     var q = H.qa; if (!q.type) return null;
-    var list = QA[q.type] || [], it = list[q.idx], o = { picker: QA_BOARD[q.type] ? tn(turnTeam()) : '', bd: QA_BOARD[q.type] && q.bd && q.mode === 'q' ? { owner: tn(q.bd.owner), cur: tn(q.bd.cur), bonus: q.bd.cur !== q.bd.owner, res: q.bd.res == null ? null : q.bd.res < 0 ? '' : tn(q.bd.res) } : null, type: q.type, mode: q.mode, n: list.length, idx: q.idx, used: H.qaUsed[q.type] || [], revealed: q.revealed, mark: q.mark, phase: q.phase };
+    var list = QA[q.type] || [], it = list[q.idx], o = { picker: QA_BOARD[q.type] ? tn(turnTeam()) : '', bd: QA_BOARD[q.type] && q.bd && q.mode === 'q' ? { owner: tn(q.bd.owner), cur: tn(q.bd.cur), bonus: q.bd.cur !== q.bd.owner, res: q.bd.res == null ? null : q.bd.res < 0 ? '' : tn(q.bd.res) } : null, type: q.type, mode: q.mode, n: SEQ[q.type] ? sqN() : list.length, idx: SEQ[q.type] ? q.idx - sq0() : q.idx, used: H.qaUsed[q.type] || [], revealed: q.revealed, mark: q.mark, phase: q.phase };
     if (q.mode === 'q' && it) {
       if (q.type === 'names') { o.clues = it.clues.slice(0, q.clue); o.total = it.clues.length; if (q.revealed) o.a = it.a; }
       else if (q.type === 'spell') { o.d = it.d; o.e = q.revealed ? it.e : it.e.replace(new RegExp(it.w.replace(/[^A-Za-z]/g, ''), 'gi'), '______'); if (q.revealed) o.w = it.w; }
@@ -522,12 +526,12 @@ function pqtMain() {
     if (hmq) hmq.end(); mqScreen = false;
     var base = TOPIC + code + '/';
     hmq = mqLink({
-      onConnect: function (cl) { cl.subscribe(base + 'screen'); push(); },
-      onMessage: function (t, m) { if (t === base + 'screen') { var was = mqScreen; mqScreen = !!(m && m.on); if (mqScreen && !was) push(); paintLink(); } },
+      onConnect: function (cl) { cl.subscribe(base + 'screen'); cl.subscribe(base + 'in'); push(); },
+      onMessage: function (t, m) { if (t === base + 'in') { phoneMsg(m); return; } if (t === base + 'screen') { var was = mqScreen; mqScreen = !!(m && m.on); if (mqScreen && !was) push(); paintLink(); } },
       onState: function () { paintLink(); }
     });
   }
-  function push() { save(); send({ t: 'state', s: pub() }); if (typeof renderTeams === 'function' && root) renderTeams(); }
+  function push() { save(); send({ t: 'state', s: pub() }); if (hmq && H.code) hmq.pub(TOPIC + H.code + '/play', playState(), true); if (typeof renderTeams === 'function' && root) renderTeams(); }
   function fx(name, extra) { var m = { t: 'fx', fx: name }; if (extra) for (var k in extra) m[k] = extra[k]; send(m); }
   function onHostMsg(m, via) {
     if (!m) return;
@@ -604,6 +608,86 @@ function pqtMain() {
   function toast(msg) { var el = $('[data-toast]'); if (!el) return; el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { el.hidden = true; }, 2200); }
   function splash(text, sub) { fx('splash', { text: text, sub: sub || '' }); }
   function resetTally() { var w = H.words; w.correct = w.skipped = w.buzzed = 0; w.stream = []; }
+  /* ---------- phones: teams join with the screen code and answer Written Round / AlphaSum ---------- */
+  function rkey() { return (H.gameId || 'g') + ':' + H.round; }
+  function phNorm(x) { return String(x == null ? '' : x).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]+/g, ' ').replace(/\b(the|a|an)\b/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function phAuto(ans, correct) {
+    var a = phNorm(ans); if (!a) return false;
+    return String(correct || '').split(/\s*\/\s*|\s+or\s+/i).some(function (alt) {
+      var c = phNorm(alt.replace(/\(.*?\)/g, '')); if (!c) return false;
+      if (a === c || a.replace(/ /g, '') === c.replace(/ /g, '')) return true;
+      return c.length >= 4 && a.length >= 3 && (c.indexOf(a) === 0 && a.length >= c.length * .6 || a.indexOf(c) > -1);
+    });
+  }
+  function phState() { var P = H.ph; if (!P || P.rk !== rkey()) P = H.ph = { rk: rkey(), ans: {}, mark: {}, seen: -1, added: false }; return P; }
+  function phTeams() { var P = H.ph; if (!P || P.rk !== rkey()) return []; return Object.keys(P.ans).map(Number).filter(function (t) { return H.teams[t]; }); }
+  function phMark(t, i) { var P = phState(), k = t + ':' + i; if (P.mark[k] != null) return P.mark[k]; var it = (QA[H.roundType] || [])[sq0() + i]; return !!(it && phAuto((P.ans[t] || {})[i], it.a)); }
+  function phFill() { var P = phState(); if (P.added) return; var n = sqN(), wd = H.qa.wd = H.qa.wd || {}; phTeams().forEach(function (t) { var c = 0; for (var i = 0; i < n; i++) if (phMark(t, i)) c++; wd[t] = c; }); }
+  function phoneMsg(m) {
+    if (!m || !m.dev || typeof m.dev !== 'string') return;
+    H.devs = H.devs || {};
+    if (m.t === 'join') {
+      var name = String(m.name || '').replace(/\s+/g, ' ').trim().slice(0, 24); if (!name) return;
+      var ti = -1; H.teams.forEach(function (t, i) { if (ti < 0 && phNorm(t.name) === phNorm(name)) ti = i; });
+      if (ti < 0) {
+        if (H.teams.length >= MAXT) return;
+        var used = H.teams.map(function (t) { return t.color; });
+        H.teams.push({ name: name, color: COLORS.filter(function (c) { return used.indexOf(c) < 0; })[0] || COLORS[H.teams.length % COLORS.length], score: 0, strikes: 0, joined: H.round || 0 });
+        ti = H.teams.length - 1; toast(name + ' joined on a phone');
+      } else if (H.devs[m.dev] !== ti) toast(H.teams[ti].name + ' joined on a phone');
+      H.devs[m.dev] = ti; push(); renderAll(); return;
+    }
+    if (m.t === 'ans') {
+      var tid = H.devs[m.dev]; if (tid == null || !H.teams[tid] || m.rk !== rkey() || !SEQ[H.roundType] || H.qa.phase === 'reveal') return;
+      var P = phState(), i = +m.i; if (!(i >= 0) || i >= sqN() || i > Math.max(P.seen, H.qa.idx - sq0())) return;
+      (P.ans[tid] = P.ans[tid] || {})[i] = String(m.a == null ? '' : m.a).slice(0, 80);
+      save(); clearTimeout(phoneMsg._t); phoneMsg._t = setTimeout(function () { push(); if (H.tab === 'quiz') renderTab(); }, 250);
+    }
+  }
+  function phItem(type, it) {
+    if (!it) return null;
+    if (type === 'alpha') return { f: it.f, t: it.t, n: it.hard ? '' : it.n, l: it.l, c: it.q };
+    return { q: it.q + (it.opts && it.opts.length ? '' : '') };
+  }
+  function playState() {
+    var o = { v: 1, seq: Date.now(), title: H.title, teams: H.teams.map(function (t) { return { name: t.name, color: t.color }; }), devs: H.devs || {}, on: false };
+    if (!SEQ[H.roundType] || H.ended || !H.round) return o;
+    var q = H.qa, list = QA[H.roundType] || [], P = phState();
+    var s0 = sq0(), rel = q.idx - s0;
+    if (q.phase !== 'reveal' && H.view === 'qa') P.seen = Math.max(P.seen, rel);
+    var t = H.timer, left = t.running ? Math.max(0, t.endsAt - Date.now()) : t.remaining;
+    o.on = true; o.rk = rkey(); o.type = H.roundType; o.name = GNAME[H.roundType]; o.round = H.round; o.n = sqN();
+    o.phase = q.phase === 'reveal' ? 'reveal' : 'ask'; o.cur = H.view === 'qa' ? rel : -1;
+    o.qs = []; for (var i = 0; i <= P.seen && i < sqN(); i++) o.qs.push(phItem(H.roundType, list[s0 + i]));
+    o.timer = { left: left, running: t.running, total: t.total };
+    o.count = {}; Object.keys(P.ans).forEach(function (k) { o.count[k] = Object.keys(P.ans[k]).filter(function (x) { return P.ans[k][x]; }).length; });
+    if (o.phase === 'reveal') {
+      o.rev = []; o.res = {};
+      for (var r = 0; r <= rel && r < sqN(); r++) o.rev.push(list[s0 + r].a);
+      phTeams().forEach(function (tm) { o.res[tm] = []; for (var r2 = 0; r2 <= rel && r2 < sqN(); r2++) o.res[tm].push(phMark(tm, r2) ? 1 : 0); });
+    }
+    return o;
+  }
+  function phJoinBox() {
+    return H.code ? '<div class="hc-phj"><div><b>Teams can answer on their phones</b><span>Open <u>blaccuniversal.com/pqt/play</u> and enter code <em>' + esc(H.code) + '</em>, then their team name. Answer sheets still work too.</span></div></div>'
+      : '<div class="hc-phj"><div><b>Answering on phones?</b><span>Connect a screen first. Teams join with the screen’s code at blaccuniversal.com/pqt/play.</span></div></div>';
+  }
+  function phHostAsk() {
+    var P = phState(), n = sqN(), devs = H.devs || {}, on = {};
+    Object.keys(devs).forEach(function (d) { if (H.teams[devs[d]]) on[devs[d]] = 1; });
+    var ids = Object.keys(on).map(Number);
+    var out = phJoinBox();
+    if (ids.length) out += '<div class="hc-phl">' + ids.map(function (t) { var c = Object.keys(P.ans[t] || {}).filter(function (x) { return P.ans[t][x]; }).length; return '<span style="--c:' + H.teams[t].color + '"><i></i>' + esc(H.teams[t].name) + '<b>' + c + '/' + n + '</b></span>'; }).join('') + '</div>';
+    return out;
+  }
+  function phHostReveal(it) {
+    var ids = phTeams(); if (!ids.length || !it) return '';
+    var i = H.qa.idx - sq0(), P = phState();
+    return '<p class="hc-sub" style="margin-top:16px">Phone answers · ' + (H.roundType === 'alpha' ? 'puzzle ' : 'question ') + (i + 1) + '</p><div class="hc-pha">' + ids.map(function (t) {
+      var a = (P.ans[t] || {})[i] || '', ok = phMark(t, i);
+      return '<button type="button" class="hc-pha__r' + (ok ? ' is-ok' : '') + '" data-phm="' + t + ':' + i + '" style="--c:' + H.teams[t].color + '"><i></i><span class="hc-pha__n">' + esc(H.teams[t].name) + '</span><span class="hc-pha__a">' + (a ? esc(a) : '<em>No answer</em>') + '</span><b>' + (ok ? '✓' : '✕') + '</b></button>';
+    }).join('') + '</div><p class="hc-note" style="margin-top:6px">Matched automatically. Tap a team to flip it.</p>';
+  }
   function startRound(type) {
     snap(); H.round++; H.roundType = type; H.ledger = []; H.paused = false;
     resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total;
@@ -613,7 +697,9 @@ function pqtMain() {
     if (type === 'race') raceNew();
     if (type === 'pw') pwReset();
     if (type === 'lyrics') { H.lyr = null; lyrState(); }
+    if (SEQ[type]) H.ph = null;
     if (QA_TYPES[type]) H.qa = { wr: {}, type: type, mode: QA_BOARD[type] ? 'board' : 'q', idx: (H.qaPos[type] || 0) % Math.max(1, (QA[type] || []).length), clue: 1, revealed: false, mark: '', phase: 'ask' };
+    if (SEQ[type]) { var ln = (QA[type] || []).length, cn = Math.min(SEQ_N, ln), st = H.qa.idx; if (st + cn > ln) st = 0; H.qa.start = st; H.qa.cnt = cn; H.qa.idx = st; }
     if (H.round > H.plan.length) H.plan.push(type); else H.plan[H.round - 1] = type;
     H.view = 'intro'; H.tab = 'quiz'; push(); renderAll(); toast('Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[type]);
   }
@@ -639,7 +725,7 @@ function pqtMain() {
     var n = nextPlanned(), b = $('[data-m-next]'), sb = $('[data-m-next-sub]');
     if (b) b.textContent = H.ended ? 'Game over · set up a new one' : n ? 'Start round ' + (H.round + 1) + ' of ' + H.plan.length : 'All rounds played · end game';
     if (sb) sb.textContent = H.ended ? 'Name, teams and rounds for the next game.' : n ? GNAME[n] + ' · from your game plan' : 'Final scores and the winner on screen.';
-    var ps = $('[data-m-plan-sub]'); if (ps) ps.textContent = pl(H.plan.length, 'round') + ' · ' + H.plan.map(function (g) { return GNAME[g]; }).join(' → ');
+    var ps = $('[data-m-plan-sub]'); if (ps) ps.textContent = pl(H.plan.length, 'round');
   }
   function restartRound() {
     if (!H.roundType) { toast('No round to restart yet'); return; }
@@ -649,6 +735,7 @@ function pqtMain() {
     if (H.roundType === 'star') starReset();
     if (H.roundType === 'race') raceNew();
     if (H.roundType === 'pw') pwReset();
+    if (SEQ[H.roundType]) H.ph = null;
     if (QA_TYPES[H.roundType]) { H.qaUsed[H.roundType] = []; H.qa = { type: H.roundType, mode: QA_BOARD[H.roundType] ? 'board' : 'q', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; }
     H.view = 'intro'; push(); renderAll(); splash('Round ' + H.round, 'Restarted'); toast('Round ' + H.round + ' restarted');
   }
@@ -850,11 +937,12 @@ function pqtMain() {
   function qaNext(d) {
     var q = H.qa, n = (QA[q.type] || []).length; if (!n) return;
     var i = q.idx + d; if (i < 0) i = 0;
-    if (i >= n) { if (q.type === 'written' && q.phase === 'ask') { qaPhase('reveal'); return; } goNext(); return; }
-    if (q.type === 'written' && q.phase === 'reveal') { snap(); q.idx = i; q.revealed = true; q.mode = 'q'; H.view = 'qa'; push(); renderAll(); return; }
+    if (SEQ[q.type]) { if (i < sq0()) i = sq0(); n = sq0() + sqN(); }
+    if (i >= n) { if (SEQ[q.type] && q.phase === 'ask') { qaPhase('reveal'); return; } goNext(); return; }
+    if (SEQ[q.type] && q.phase === 'reveal') { snap(); q.idx = i; q.revealed = true; q.mode = 'q'; H.view = 'qa'; push(); renderAll(); return; }
     qaShow(i, true);
   }
-  function qaPhase(ph) { snap(); var q = H.qa; q.phase = ph; q.idx = 0; q.mode = 'q'; q.revealed = ph === 'reveal'; H.timer.running = false; H.view = 'qa'; push(); renderAll(); if (ph === 'reveal') splash('Answer reveal', GNAME.written); }
+  function qaPhase(ph) { snap(); var q = H.qa; q.phase = ph; q.idx = SEQ[q.type] ? sq0() : 0; q.mode = 'q'; q.revealed = ph === 'reveal'; H.timer.running = false; H.view = 'qa'; push(); renderAll(); if (ph === 'reveal') { phFill(); splash('Answer reveal', GNAME[q.type]); } }
   function qaReveal() { snap(); H.qa.revealed = !H.qa.revealed; if (H.qa.revealed) { H.timer.running = false; H.timer.remaining = timerLeft(); fx('ding'); } push(); renderAll(); }
   function qaClue(d) { var it = qaItem(); if (!it) return; snap(); H.qa.clue = Math.max(1, Math.min(it.clues.length, H.qa.clue + d)); push(); renderAll(); }
   function qaMark(kind, ti) {
@@ -958,7 +1046,7 @@ function pqtMain() {
   function paintNow() {
     var v = $('[data-now-view]'); if (!v) return;
     v.textContent = (H.paused ? 'Paused · ' : '') + (VIEWNAME[H.view] || H.view);
-    if (H.view === 'qa') v.textContent = (H.paused ? 'Paused · ' : '') + (H.qa.mode === 'board' ? 'Number board' : GNAME[H.qa.type] + ' · ' + (H.qa.idx + 1) + ' of ' + ((QA[H.qa.type] || []).length));
+    if (H.view === 'qa') v.textContent = (H.paused ? 'Paused · ' : '') + (H.qa.mode === 'board' ? 'Number board' : GNAME[H.qa.type] + ' · ' + (SEQ[H.qa.type] ? (H.qa.phase === 'reveal' ? 'answer ' : '') + (H.qa.idx - sq0() + 1) + ' of ' + sqN() : (H.qa.idx + 1) + ' of ' + ((QA[H.qa.type] || []).length)));
     if (H.ended) { v.textContent = 'Game over'; $('[data-now-round]').textContent = (H.title || 'PQT') + ' · winner on screen'; } else
     $('[data-now-round]').textContent = H.round ? 'Round ' + H.round + ' of ' + H.plan.length + ' · ' + GNAME[H.roundType] : pl(H.plan.length, 'round') + ' planned · not started';
     var pb = $('[data-pause]'); pb.textContent = H.paused ? 'Resume screen' : 'Pause screen'; pb.classList.toggle('is-on', H.paused);
@@ -1083,9 +1171,10 @@ function pqtMain() {
     var q = H.qa, type = QA_TYPES[H.roundType] ? H.roundType : '';
     if (!type) return '<p class="hc-note hc-lead">Start one of these rounds:</p><div class="hc-qstart">' + GORDER.map(function (t) { var n = t === 'words' ? WORDS.length : t === 'answers' ? BOARDS.length : t === 'pw' ? PW.length : (QA[t] || []).length; return '<button class="hc-mi" data-round="' + t + '" type="button"><b>' + GNAME[t] + '</b><span>' + (t === 'star' ? STAR_BEATS.length + ' built-in beats' : t === 'lyrics' ? 'Use presentation' : n + ' in your cards') + '</span></button>'; }).join('') + '</div>';
     var list = QA[type] || [], it = list[q.idx], out = '';
-    var last = q.idx + 1 >= list.length, finLbl = nextPlanned() ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner', fin = '<button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + finLbl + '</button>';
+    var last = SEQ[type] ? q.idx + 1 >= sq0() + sqN() : q.idx + 1 >= list.length, rel = SEQ[type] ? q.idx - sq0() : q.idx, tot = SEQ[type] ? sqN() : list.length, finLbl = nextPlanned() ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner', fin = '<button class="pbtn pbtn--o pbtn--lg pbtn--block hc-fin" data-gonext type="button">' + finLbl + '</button>';
     if (!list.length) return '<p class="mute">No ' + GNAME[type] + ' content yet. Add some in the Cards tab.</p>';
-    if (H.view === 'intro') out += '<div class="hc-flowbox"><button class="pbtn pbtn--o pbtn--lg pbtn--block" ' + (QA_BOARD[type] ? 'data-qboard' : 'data-qgo="' + q.idx + '"') + '>' + (QA_BOARD[type] ? 'Show the number board' : 'Show ' + (type === 'talk' ? 'the topic' : 'question ' + (q.idx + 1))) + '</button></div>';
+    if (SEQ[type] && q.phase !== 'reveal' && H.view === 'intro') out += phHostAsk();
+    if (H.view === 'intro') out += '<div class="hc-flowbox"><button class="pbtn pbtn--o pbtn--lg pbtn--block" ' + (QA_BOARD[type] ? 'data-qboard' : 'data-qgo="' + q.idx + '"') + '>' + (QA_BOARD[type] ? 'Show the number board' : 'Show ' + (type === 'talk' ? 'the topic' : (type === 'alpha' ? 'puzzle ' : 'question ') + (rel + 1))) + '</button></div>';
     if (QA_BOARD[type] && !(q.mode === 'q' && H.view === 'qa')) {
       var used = H.qaUsed[type] || [];
       out += '<p class="hc-sub">Number board · <b class="hc-pick" style="color:' + (H.teams[turnTeam()] || {}).color + '">' + esc(tn(turnTeam())) + '</b> picks · <label class="hc-pickch">change <select data-qturn>' + teamOpts(turnTeam()) + '</select></label></p><div class="hc-board">' + list.map(function (_, i) { return '<button class="hc-num' + (used.indexOf(i) > -1 ? ' is-used' : '') + (q.mode === 'q' && q.idx === i ? ' is-cur' : '') + '" data-qgo="' + i + '">' + (i + 1) + '</button>'; }).join('') + '</div>';
@@ -1099,15 +1188,15 @@ function pqtMain() {
       } else if (type === 'spell') {
         out += '<div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Word ' + (q.idx + 1) + ' · say it aloud</p><div class="wcard__word">' + esc(it.w) + '</div><p class="hc-qdef">' + esc(it.d) + '</p><p class="hc-qex">' + esc(it.e) + '</p></div>';
       } else if (type === 'alpha') {
-        out += '<div class="hc-qtext"><p class="hc-qlabel">Puzzle ' + (q.idx + 1) + ' of ' + list.length + (it.hard ? ' · hard' : '') + '</p><p class="hc-asf"><b>' + it.f + '</b> [ <b>' + it.t + '</b>' + (it.hard ? '' : ' · <b>' + it.n + '</b>') + ' ] <b>' + it.l + '</b></p><p>' + esc(it.q) + '</p></div><div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Answer</p><div class="wcard__word hc-qans">' + esc(it.a) + '</div></div>';
+        out += '<div class="hc-qtext"><p class="hc-qlabel">' + (q.phase === 'reveal' ? 'Answer reveal · ' : '') + 'Puzzle ' + (rel + 1) + ' of ' + tot + (it.hard ? ' · hard' : '') + '</p><p class="hc-asf"><b>' + it.f + '</b> [ <b>' + it.t + '</b>' + (it.hard ? '' : ' · <b>' + it.n + '</b>') + ' ] <b>' + it.l + '</b></p><p>' + esc(it.q) + '</p></div><div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Answer</p><div class="wcard__word hc-qans">' + esc(it.a) + '</div></div>';
       } else if (type === 'talk') {
         out += '<div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Topic ' + (q.idx + 1) + ' of ' + list.length + '</p><div class="hc-qtopic">' + esc(it) + '</div></div>';
       } else {
-        out += '<div class="hc-qtext"><p class="hc-qlabel">' + (type === 'written' && q.phase === 'reveal' ? 'Answer reveal · ' : '') + 'Question ' + (q.idx + 1) + ' of ' + list.length + '</p>' + qHtml(it.q, '', it.a) + (it.img ? '<img class="hc-qimg" src="' + esc(it.img) + '" alt="">' : '') + '</div><div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Answer</p><div class="wcard__word hc-qans">' + esc(it.a) + '</div></div>';
+        out += '<div class="hc-qtext"><p class="hc-qlabel">' + (SEQ[type] && q.phase === 'reveal' ? 'Answer reveal · ' : '') + 'Question ' + (rel + 1) + ' of ' + tot + '</p>' + qHtml(it.q, '', it.a) + (it.img ? '<img class="hc-qimg" src="' + esc(it.img) + '" alt="">' : '') + '</div><div class="card card--white wcard hc-qcard"><p class="eyebrow" style="color:#666">Answer</p><div class="wcard__word hc-qans">' + esc(it.a) + '</div></div>';
       }
       if (type === 'talk') out += '<div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Previous</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (last ? finLbl : 'Next topic →') + '</button></div>';
-      else if (type === 'written' && q.phase === 'ask') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (q.idx + 1 < list.length ? 'Next question →' : 'Start answer reveal →') + '</button></div><p class="hc-note">Each question gets ' + fmtT(QA_TIME.written) + ' seconds. The answer stays hidden until the reveal.</p>';
-      else if (type === 'written') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (last ? finLbl : 'Next answer →') + '</button></div><p class="hc-sub" style="margin-top:16px">Score the sheets</p><p class="hc-note" style="margin:0 0 8px">Count each team’s correct answers, set them here, then add them all at once.</p><div class="hc-wd">' + H.teams.map(function (t, i) { var v = (H.qa.wd || {})[i] || 0; return '<div class="hc-wd__r"><i style="background:' + t.color + '"></i><span class="hc-wd__n">' + esc(t.name) + '<em>' + t.score + ' now</em></span><button class="pbtn" data-wd="' + i + ':-1" type="button" aria-label="Less">−</button><b class="hc-wd__v' + (v ? ' is-set' : '') + '">' + (v > 0 ? '+' : '') + v + '</b><button class="pbtn" data-wd="' + i + ':1" type="button" aria-label="More">+</button></div>'; }).join('') + '</div><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-wd-go type="button"' + (H.teams.some(function (_, i) { return (H.qa.wd || {})[i]; }) ? '' : ' disabled') + '>Add points to all teams</button>';
+      else if (SEQ[type] && q.phase === 'ask') out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (!last ? (type === 'alpha' ? 'Next puzzle →' : 'Next question →') : 'Start answer reveal →') + '</button></div><p class="hc-note">Each ' + (type === 'alpha' ? 'puzzle' : 'question') + ' gets ' + fmtT(QA_TIME[type]) + ' seconds. The answer stays hidden until the reveal.</p>' + phHostAsk();
+      else if (SEQ[type]) out += '<div class="w-actions" style="grid-template-columns:1fr 2fr"><button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (last ? finLbl : 'Next answer →') + '</button></div>' + phHostReveal(it) + '<p class="hc-sub" style="margin-top:16px">Score the round</p><p class="hc-note" style="margin:0 0 8px">' + (phTeams().length ? 'Phone teams are counted for you. For answer sheets, count each team’s correct answers and set them here.' : 'Count each team’s correct answers, set them here, then add them all at once.') + '</p><div class="hc-wd">' + H.teams.map(function (t, i) { var v = (H.qa.wd || {})[i] || 0; return '<div class="hc-wd__r"><i style="background:' + t.color + '"></i><span class="hc-wd__n">' + esc(t.name) + '<em>' + t.score + ' now</em></span><button class="pbtn" data-wd="' + i + ':-1" type="button" aria-label="Less">−</button><b class="hc-wd__v' + (v ? ' is-set' : '') + '">' + (v > 0 ? '+' : '') + v + '</b><button class="pbtn" data-wd="' + i + ':1" type="button" aria-label="More">+</button></div>'; }).join('') + '</div><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-wd-go type="button"' + (H.teams.some(function (_, i) { return (H.qa.wd || {})[i]; }) ? '' : ' disabled') + '>Add points to all teams</button>';
       else {
         out += '<div class="hc-row" style="margin:10px 0"><button class="pbtn" data-qreveal>' + (q.revealed ? 'Hide answer' : 'Reveal answer') + '</button>' + (QA_TIME[type] ? '<button class="pbtn" data-qtime>' + (H.timer.running ? 'Pause timer' : 'Start ' + fmtT(QA_TIME[type]) + 's timer') + '</button>' : '') + '</div>';
         if (QA_BOARD[type] && q.bd) {
@@ -1214,8 +1303,9 @@ function pqtMain() {
     else if (d.strike != null) { var si = +d.strike, stm = H.teams[si]; if (stm) { snap(); stm.strikes = (stm.strikes || 0) + 1; if (stm.strikes >= 3) { stm.strikes = 0; pts(si, -(H.penalty || 3), 'pen'); fx('buzz', { bigX: true }); toast('Third strike · −' + (H.penalty || 3) + ' to ' + stm.name); } else { fx('buzz'); toast('Strike ' + stm.strikes + ' of 3 · ' + stm.name); } push(); renderTeams(); } }
     else if (d.unstrike != null) { var ui = +d.unstrike, utm = H.teams[ui]; if (utm && utm.strikes) { snap(); utm.strikes--; push(); renderTeams(); } }
     else if (d.pen) { H.penalty = Math.max(1, Math.min(20, (H.penalty || 3) + +d.pen)); save(); renderTeams(); }
+    else if (d.phm) { var pm = d.phm.split(':'), PP = phState(), kk = pm[0] + ':' + pm[1]; snap(); PP.mark[kk] = !phMark(+pm[0], +pm[1]); phFill(); push(); renderTab(); }
     else if (d.wd) { var pw = d.wd.split(':'), wd = H.qa.wd = H.qa.wd || {}; wd[pw[0]] = (wd[pw[0]] || 0) + +pw[1]; save(); renderTab(); }
-    else if (b.hasAttribute('data-wd-go')) { var wd2 = H.qa.wd || {}, msg = []; snap(); H.teams.forEach(function (t, i) { var v = wd2[i] || 0; if (v) { pts(i, v); msg.push(t.name + ' ' + (v > 0 ? '+' : '') + v); } }); H.qa.wd = {}; push(); renderTab(); fx('ok'); toast(msg.join(' · ')); }
+    else if (b.hasAttribute('data-wd-go')) { var wd2 = H.qa.wd || {}, msg = []; snap(); if (SEQ[H.roundType]) phState().added = true; H.teams.forEach(function (t, i) { var v = wd2[i] || 0; if (v) { pts(i, v); msg.push(t.name + ' ' + (v > 0 ? '+' : '') + v); } }); H.qa.wd = {}; push(); renderTab(); fx('ok'); toast(msg.join(' · ')); }
     else if (b.hasAttribute('data-qtime')) { H.timer.running ? timerPause() : timerStart(); renderTab(); }
     else if (d.fa != null) feudToggle(+d.fa);
     else if (b.hasAttribute('data-fx')) feudStrike();
@@ -1263,6 +1353,7 @@ function pqtMain() {
     else if (m === 'open') { closeSheets(); var w = window.open('/pqt/screen/', 'pqtscreen'); if (!w) location.href = '/pqt/screen/'; }
     else if (m === 'teams' || m === 'cards') { closeSheets(); H.tab = m; save(); renderTabs(); renderTab(); var pn = $('[data-pane="' + m + '"]'); if (pn) pn.scrollIntoView({ block: 'start' }); }
     else if (m === 'lock') { try { localStorage.removeItem('pqt_pass'); } catch (e) {} location.reload(); }
+    else if (m === 'logout') { if (!confirmTwice(b.querySelector('b') || b)) return; try { localStorage.removeItem('pqt_pass'); } catch (e) {} location.href = '/pqt/'; }
   }
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheets(); });
   /* ---- setup + end sheets ---- */

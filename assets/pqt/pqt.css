@@ -1295,3 +1295,99 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-lyr__log{margin:16px 0 0;padding:0;list-style:none;border-top:1px solid #1a1a1a}
 .hc-lyr__log li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #1a1a1a;font-size:14px;color:#cfcfcf}
 .hc-lyr__log b{font-weight:600;color:#8a8a8a}
+
+/* game menu */
+.hc-mnext{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;margin:0 0 10px;padding:18px 20px;border:0;border-radius:2px;background:#fff;color:#000;font:inherit;text-align:left;cursor:pointer;transition:background .2s}
+.hc-mnext:hover{background:#e8e8e8}
+.hc-mnext span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.hc-mnext b{font-size:17px;font-weight:600}
+.hc-mnext em{font-style:normal;font-size:13px;color:#555}
+.hc-mnext svg{flex:none}
+.hc-mgrid{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;gap:8px}
+.hc-mt{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-height:84px;padding:14px 16px;border:1px solid #232323;border-radius:2px;background:#070707;color:#fff;font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,background .2s}
+.hc-mt:hover{border-color:#5a5a5a;background:#0e0e0e}
+.hc-mt svg{color:#9a9a9a}
+.hc-mt b{font-size:15px;font-weight:600;line-height:1.2}
+.hc-mt span{margin-top:-6px;font-size:12px;color:#7a7a7a}
+.hc-mt--out b,.hc-mt--out svg{color:#ff8a7a}
+.hc-mt.is-armed,.hc-mt b.is-armed{color:#ffb38a}
+.hc-mrow{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border:1px solid #232323;border-radius:2px;background:#070707;color:#fff;font:inherit;text-align:left;cursor:pointer;transition:border-color .2s}
+.hc-mrow:hover{border-color:#5a5a5a}
+.hc-mrow svg{flex:none;color:#9a9a9a}
+.hc-mrow span{display:flex;flex-direction:column;gap:3px}
+.hc-mrow b{font-size:15px;font-weight:600}
+.hc-mrow em{font-style:normal;font-size:12px;color:#7a7a7a}
+[data-menu] .hc-sheet__sub{margin:22px 0 10px}
+[data-menu] .hc-sheet__sub:first-of-type{margin-top:6px}
+
+/* phones in Written Round / AlphaSum */
+.hc-phj{margin:14px 0 10px;padding:14px 16px;border:1px dashed #3a3a3a;border-radius:2px}
+.hc-phj b{display:block;font-size:14px;font-weight:600;color:#fff}
+.hc-phj span{display:block;margin-top:4px;font-size:13px;line-height:1.55;color:#9a9a9a}
+.hc-phj u{text-decoration:none;color:#fff}
+.hc-phj em{font-style:normal;font-weight:700;letter-spacing:.12em;color:#ff6a2b}
+.hc-phl{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.hc-phl span{display:inline-flex;align-items:center;gap:8px;height:32px;padding:0 10px;border:1px solid #262626;border-radius:2px;font-size:13px;color:#cfcfcf}
+.hc-phl i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.hc-phl b{font-weight:600;color:#fff;font-variant-numeric:tabular-nums}
+.hc-pha{display:flex;flex-direction:column;gap:6px}
+.hc-pha__r{display:grid;grid-template-columns:auto minmax(0,.9fr) minmax(0,1.3fr) auto;align-items:center;gap:10px;min-height:46px;padding:0 14px;border:1px solid #2a1414;border-radius:2px;background:#0c0606;color:#cfcfcf;font:inherit;font-size:14px;text-align:left;cursor:pointer}
+.hc-pha__r.is-ok{border-color:#173d24;background:#06100a}
+.hc-pha__r i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.hc-pha__n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff;font-weight:600}
+.hc-pha__a{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hc-pha__a em{color:#6a6a6a}
+.hc-pha__r b{font-size:16px;color:#ff7a6a}
+.hc-pha__r.is-ok b{color:#5ad18f}
+.sc-join{display:inline-flex;align-items:center;gap:1.4vw;margin-top:5vh;padding:1.6vh 2vw;border:1px solid #333;border-radius:2px;font-size:clamp(14px,1.6vw,26px);animation:scFadeUp .6s .9s both}
+.sc-join span{color:#9a9a9a}
+.sc-join b{font-weight:600;color:#fff}
+.sc-join em{font-style:normal;font-weight:700;letter-spacing:.2em;color:#ff6a2b}
+.sc-qa__join{position:fixed;left:4vw;bottom:3vh;margin:0;font-size:clamp(12px,1.2vw,20px);color:#7a7a7a}
+.sc-qa__join b{letter-spacing:.16em;color:#fff}
+
+/* ---------- Play (team phones) ---------- */
+.pp{min-height:100vh;min-height:100dvh;display:flex;align-items:flex-start;justify-content:center;padding:max(20px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom));background:#000;color:#fff}
+.pp-card{width:100%;max-width:520px}
+.pp-join,.pp-wait{margin-top:8vh}
+.pp-mark{display:block;width:44px;height:auto;margin:0 0 28px}
+.pp-h{margin:10px 0 0;font-size:clamp(28px,8vw,40px);font-weight:600;line-height:1.08;letter-spacing:-.02em;text-wrap:balance}
+.pp-sub{margin:12px 0 0;font-size:16px;line-height:1.55;color:#9a9a9a}
+.pp-lab{display:block;margin-top:20px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#8a8a8a}
+.pp-lab .hc-input{margin-top:8px;width:100%;font-size:18px;letter-spacing:normal;text-transform:none}
+.pp-code{font-size:28px !important;font-weight:700;letter-spacing:.3em !important;text-transform:uppercase !important}
+.pp-join .pbtn{margin-top:22px}
+.pp-err{margin:14px 0 0;font-size:14px;color:#ff8a7a}
+.pp-spin{display:block;width:26px;height:26px;margin-top:28px;border:2px solid #333;border-top-color:#fff;border-radius:50%;animation:ppSpin 1s linear infinite}
+@keyframes ppSpin{to{transform:rotate(360deg)}}
+.pp-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 26px;padding-bottom:14px;border-bottom:1px solid #1f1f1f}
+.pp-team{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:600}
+.pp-team i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.pp-leave{margin-left:auto;padding:8px 0;border:0;background:none;color:#7a7a7a;font:inherit;font-size:13px;cursor:pointer}
+.pp-wait .pp-leave{display:block;margin:36px 0 0}
+.pp-k{margin:0;color:#8a8a8a}
+.pp-qhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pp-timer{flex:none;min-width:52px;height:34px;display:grid;place-items:center;border:1px solid #2a2a2a;border-radius:2px;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums}
+.pp-timer.is-low{border-color:#ff6a2b;color:#ff6a2b}
+.pp-q{margin:16px 0 0;font-size:clamp(20px,5.6vw,26px);font-weight:500;line-height:1.35;text-wrap:pretty}
+.pp-q--clue{font-size:18px;color:#cfcfcf}
+.pp-asf{display:flex;align-items:center;gap:10px;margin-top:18px;font-size:clamp(28px,9vw,40px);font-weight:700;font-variant-numeric:tabular-nums}
+.pp-asf span{color:#555;font-weight:400}
+.pp-ans{display:flex;gap:8px;margin-top:20px}
+.pp-ans .hc-input{flex:1;min-width:0;font-size:17px}
+.pp-ans .pbtn{flex:none}
+.pp-ans--sm{margin-top:0}
+.pp-ans--sm .hc-input{font-size:15px;padding-top:10px;padding-bottom:10px}
+.pp-saved{min-height:1.4em;margin:10px 0 0;font-size:14px;color:#5ad18f}
+.pp-list{margin:12px 0 0;padding:0;list-style:none}
+.pp-list li{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #161616}
+.pp-list li>span{flex:none;width:22px;font-size:13px;color:#7a7a7a;text-align:right}
+.pp-list .pp-ans{flex:1}
+.pp-rev{margin:22px 0 0;padding:0;list-style:none}
+.pp-rev li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:14px 0;border-bottom:1px solid #1a1a1a}
+.pp-rev span{grid-column:1;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7a7a7a}
+.pp-rev b{grid-column:1;font-size:18px;font-weight:600}
+.pp-rev em{grid-column:1;font-style:normal;font-size:14px;color:#9a9a9a}
+.pp-rev i{grid-column:2;grid-row:1/4;align-self:center;font-style:normal;font-size:22px}
+.pp-rev .is-ok i{color:#5ad18f}
+.pp-rev .is-no i{color:#ff7a6a}

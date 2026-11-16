@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611160105">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611160215">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -79,14 +79,20 @@
     <div class="hc-sheet__panel card">
       <div class="hc-sheet__head"><span class="eyebrow">Game menu</span><button class="pbtn pbtn--sm pbtn--ghost" data-menu-close type="button">Close</button></div>
       <p class="hc-sheet__sub" data-m-gtitle>This game</p>
-      <button class="hc-mi" data-m="next" type="button"><b data-m-next>Start next round</b><span data-m-next-sub>Follows your game plan.</span></button>
-      <button class="hc-mi" data-m="skip" type="button"><b>Skip this round</b><span>Move straight to the next round in your plan.</span></button>
-      <button class="hc-mi" data-m="restart" type="button"><b>Restart this round</b><span>Undo this round’s points and start it again.</span></button>
-      <button class="hc-mi" data-m="plan" type="button"><b>Game plan</b><span data-m-plan-sub>How many rounds, and which game in each.</span></button>
-      <button class="hc-mi" data-m="end" type="button"><b>End game</b><span>Final scores, winner on screen, saved to the leaderboard.</span></button>
+      <button class="hc-mnext" data-m="next" type="button"><span><b data-m-next>Start next round</b><em data-m-next-sub>Follows your game plan.</em></span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <div class="hc-mgrid">
+        <button class="hc-mt" data-m="skip" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6l7 6-7 6zM13 6l7 6-7 6z"/></svg><b>Skip round</b></button>
+        <button class="hc-mt" data-m="restart" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg><b>Restart round</b></button>
+        <button class="hc-mt" data-m="plan" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.4"/></svg><b>Game plan</b><span data-m-plan-sub></span></button>
+        <button class="hc-mt" data-m="end" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2 4 2 4H6"/></svg><b>End game</b></button>
+      </div>
       <p class="hc-sheet__sub">Setup</p>
-      <button class="hc-mi" data-m="newgame" type="button"><b>New game</b><span>Name it, pick teams and rounds, then start fresh.</span></button>
-      <button class="hc-mi hc-mi--quiet" data-m="lock" type="button"><b>Switch host code</b><span>Locks this device. The next code opens its own questions.</span></button>
+      <button class="hc-mrow" data-m="newgame" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span><b>New game</b><em>Name, teams and rounds.</em></span></button>
+      <p class="hc-sheet__sub">Account</p>
+      <div class="hc-mgrid">
+        <button class="hc-mt" data-m="lock" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3l4 4-4 4"/><path d="M20 7H8a4 4 0 0 0 0 8h1"/><path d="M8 21l-4-4 4-4"/><path d="M4 17h12a4 4 0 0 0 0-8h-1"/></svg><b>Switch code</b></button>
+        <button class="hc-mt hc-mt--out" data-m="logout" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 16l-4-4 4-4M6 12h10"/></svg><b>Log out</b></button>
+      </div>
     </div>
   </div>
   <div class="hc-sheet" data-pick hidden role="dialog" aria-modal="true" aria-label="Next round">
@@ -152,7 +158,7 @@
 <script src="/assets/pqt/peerjs.min.js?v=261112171"></script>
 <script src="/assets/pqt/wordrace/wr-engine.js?v=10"></script>
 <script src="/assets/pqt/pqt-import.js?v=1"></script>
-<script src="/assets/pqt/pqt.js?v=2611160105"></script>
+<script src="/assets/pqt/pqt.js?v=2611160215"></script>
 <script src="/assets/pqt/pqt-offline.js?v=261112171"></script>
 </body>
 </html>
