@@ -1522,14 +1522,3 @@ select option{background:#111;color:#fff}
 .hc-us i{display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;vertical-align:1px}
 .hc-us__btns{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 
-/* Written Round recap */
-.hc-recapbtn{margin-top:8px;border-color:#ff6a2b;color:#ff8a4a}
-.hc-recap{margin:12px 0 16px;padding:0;list-style:none;border-top:1px solid #1a1a1a}
-.hc-recap li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #1a1a1a;font-size:14px;line-height:1.45;color:#cfcfcf}
-.hc-recap b{flex:none;width:22px;color:#ff6a2b;font-variant-numeric:tabular-nums}
-.sc-recap{max-width:min(92vw,1500px)}
-.sc-recap__h{margin:1.2vh 0 3vh;font-size:clamp(28px,3.4vw,60px);font-weight:600;letter-spacing:-.02em}
-.sc-recap__l{margin:0;padding:0;list-style:none;columns:2;column-gap:4vw}
-.sc-recap__l li{display:flex;gap:1.2vw;break-inside:avoid;padding:1.2vh 0;border-bottom:1px solid #1e1e1e;font-size:clamp(15px,1.45vw,28px);line-height:1.35;color:#e8e8e8;animation:scFadeUp .5s both}
-.sc-recap__l b{flex:none;min-width:1.6em;font-family:var(--dot);font-weight:900;color:#ff6a2b}
-@media (max-aspect-ratio:1/1){.sc-recap__l{columns:1}}
