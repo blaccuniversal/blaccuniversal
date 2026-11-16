@@ -106,7 +106,7 @@ function pqtMain() {
   }
 
   var QA_TYPES = { names: 1, spell: 1, written: 1, rapid: 1, talk: 1, alpha: 1 };
-  var QA_TIME = { names: 10000, written: 10000, rapid: 5000, spell: 30000, alpha: 30000 };
+  var QA_TIME = { names: 10000, written: 10000, rapid: 5000, spell: 30000, alpha: 15000 };
   var QA_BOARD = { spell: 1, rapid: 1 };
   var SEQ = { written: 1, alpha: 1 }, SEQ_N = 10;
   function sq0() { return H.qa.start || 0; }
@@ -304,7 +304,7 @@ function pqtMain() {
           written: ['Ten questions: science, art, business, tech, geography and more.', 'Each question gets 10 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
           rapid: ['Pick a number. The question behind it is read to you.', 'Answer within 5 seconds.', 'Try as many times as you can within your time.'],
           talk: ['A topic goes up on the screen.', 'Share your thoughts. Hear each other out.', 'No points, just good conversation.'],
-          alpha: ['Every team answers every puzzle: first letter, total, length and last letter, plus a clue. A = 1 … Z = 26.', 'Each puzzle gets 30 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
+          alpha: ['Every team answers every puzzle: first letter, total, length and last letter, plus a clue. A = 1 … Z = 26.', 'Each puzzle gets 15 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
           star: ['One rapper per team, one turn each.', 'Follow the ball. Land the rhyme on the fourth beat of every bar.', 'The judges score every turn.'],
           race: ['Two letters spin, then stop: one to start the word, one to end it.', 'First team to call a real word that fits wins the battle.', 'Three battles, 3 points for each one won. Most points wins.'],
           pw: ['Ten letters light up, one at a time. Each one starts a hidden word.', 'The describer gives a one-word clue. The guesser names the word.', 'Each letter lasts 10 seconds. Every word guessed is a point.']
