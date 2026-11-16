@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611161500, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611161510, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -56,7 +56,7 @@ function pqtMain() {
       cl.on('connect', function () { o.onState && o.onState(anyOn(), url); o.onConnect && o.onConnect(cl, url); });
       cl.on('close', function () { o.onState && o.onState(anyOn(), url); });
       cl.on('offline', function () { o.onState && o.onState(anyOn(), url); });
-      cl.on('message', function (t, p) { var m; try { m = JSON.parse(p.toString()); } catch (e) { return; } o.onMessage && o.onMessage(t, m, url); });
+      cl.on('message', function (t, p, pk) { var m; try { m = JSON.parse(p.toString()); } catch (e) { return; } o.onMessage && o.onMessage(t, m, url, !!(pk && pk.retain)); });
       cl.on('error', function () {});
     }
     BROKERS.forEach(one);
@@ -170,9 +170,10 @@ function pqtMain() {
       if (bc) try { bc.postMessage(m); } catch (e) {}
       sinks.forEach(function (c) { try { if (c.open) c.send(m); } catch (e) {} });
     }
-    function onMsg(m) {
+    var curHid = '';
+    function onMsg(m, old) {
       if (!m || typeof m !== 'object') return;
-      if (m.t === 'state') { follow(m.b, BUILD); if (m.seq && m.seq <= lastSeq) { if (m.seq === lastSeq) reply({ t: 'ack' }); return; } if (m.seq) lastSeq = m.seq; apply(m.s); reply({ t: 'ack' }); }
+      if (m.t === 'state') { follow(m.b, BUILD); if (m.hid && m.hid !== curHid) { if (old && curHid) return; curHid = m.hid; lastSeq = 0; } if (m.seq && m.seq <= lastSeq) { if (m.seq === lastSeq) reply({ t: 'ack' }); return; } if (m.seq) lastSeq = m.seq; apply(m.s); reply({ t: 'ack' }); }
       else if (m.t === 'fx') {
         if (m.id) { if (seenFx.indexOf(m.id) > -1) return; seenFx.push(m.id); if (seenFx.length > 60) seenFx.shift(); } if (m.fx === 'splash') { showSplash(m.text, m.sub); FX.ding(); return; } if (FX[m.fx]) FX[m.fx](); if (m.fx === 'buzz' && m.bigX) bigX(); }
       else if (m.t === 'ping') reply({ t: 'ack' });
@@ -183,7 +184,7 @@ function pqtMain() {
       mq = mqLink({
         will: { topic: base + 'screen', payload: { on: false } },
         onConnect: function (cl) { cl.subscribe([base + 'state', base + 'fx']); cl.publish(base + 'screen', JSON.stringify({ on: true, at: Date.now() }), { retain: true }); },
-        onMessage: function (t, m) { onMsg(m); },
+        onMessage: function (t, m, u, old) { onMsg(m, old); },
         onState: function (on) { mqOn = on; setNet(); }
       });
     }
@@ -495,6 +496,11 @@ function pqtMain() {
 
   /* link */
   var hbc = null, hpeer = null, conn = null, bcSeen = 0, retryT = null, linkState = 'off';
+  var HID = Math.random().toString(36).slice(2, 10);   // this host window
+  function release(msg) {   // another controller took this screen: stop sending to it
+    if (hmq) { hmq.end(); hmq = null; } if (hbc) { try { hbc.close(); } catch (e) {} hbc = null; } if (conn) { try { conn.close(); } catch (e) {} conn = null; }
+    clearTimeout(retryT); H.code = ''; mqScreen = false; linkState = 'off'; save(); paintLink(); if (msg) toast(msg);
+  }
   function pub() {
     var t = H.timer, left = t.running ? Math.max(0, t.endsAt - Date.now()) : t.remaining;
     var w = H.words, b = BOARDS[H.feud.qi], f = H.feud, out = {}, bank = 0;
@@ -524,7 +530,7 @@ function pqtMain() {
     return o;
   }
   function send(m) {
-    if (m.t === 'state') { m.seq = Date.now() * 100 + (seqN = (seqN + 1) % 100); m.b = BUILD; }
+    if (m.t === 'state') { m.seq = Date.now() * 100 + (seqN = (seqN + 1) % 100); m.b = BUILD; m.hid = HID; }
     if (m.t === 'fx') m.id = Math.random().toString(36).slice(2, 10);
     if (hbc) try { hbc.postMessage(m); } catch (e) {}
     if (conn && conn.open) try { conn.send(m); } catch (e) {}
@@ -534,8 +540,8 @@ function pqtMain() {
     if (hmq) hmq.end(); mqScreen = false; scrOn = {};
     var base = TOPIC + code + '/';
     hmq = mqLink({
-      onConnect: function (cl) { cl.subscribe(base + 'screen'); cl.subscribe(base + 'in'); push(); },
-      onMessage: function (t, m, url) { if (t === base + 'in') { phoneMsg(m); return; } if (t === base + 'screen') { var was = mqScreen; scrOn[url] = !!(m && m.on); mqScreen = Object.keys(scrOn).some(function (k) { return scrOn[k]; }); if (mqScreen && !was) push(); paintLink(); } },
+      onConnect: function (cl) { cl.subscribe(base + 'screen'); cl.subscribe(base + 'in'); cl.subscribe(base + 'host'); cl.publish(base + 'host', JSON.stringify({ hid: HID, at: Date.now() })); push(); },
+      onMessage: function (t, m, url, old) { if (t === base + 'host') { if (!old && m && m.hid && m.hid !== HID) release('Another device took over screen ' + code + '. Connect again to take it back.'); return; } if (t === base + 'in') { phoneMsg(m); return; } if (t === base + 'screen') { var was = mqScreen; scrOn[url] = !!(m && m.on); mqScreen = Object.keys(scrOn).some(function (k) { return scrOn[k]; }); if (mqScreen && !was) push(); paintLink(); } },
       onState: function () { paintLink(); }
     });
   }
@@ -544,6 +550,7 @@ function pqtMain() {
   function onHostMsg(m, via) {
     if (!m) return;
     if (via === 'bc') bcSeen = Date.now();
+    if (m.t === 'host' && m.hid && m.hid !== HID) { release('Another tab took over this screen.'); return; }
     if (m.t === 'hello') push();
     paintLink();
   }
@@ -551,7 +558,7 @@ function pqtMain() {
     code = cleanCode(code); if (code.length !== 4) return false;
     H.code = code; save();
     if (hbc) hbc.close();
-    if ('BroadcastChannel' in window) { hbc = new BroadcastChannel(PREFIX + code); hbc.onmessage = function (e) { onHostMsg(e.data, 'bc'); }; hbc.postMessage({ t: 'ping' }); }
+    if ('BroadcastChannel' in window) { hbc = new BroadcastChannel(PREFIX + code); hbc.onmessage = function (e) { onHostMsg(e.data, 'bc'); }; hbc.postMessage({ t: 'ping' }); hbc.postMessage({ t: 'host', hid: HID }); }
     linkState = 'wait'; startHostMQ(code); paintLink();
     clearTimeout(retryT);
     if (window.Peer) {
@@ -576,7 +583,7 @@ function pqtMain() {
     conn.on('data', function (m) { onHostMsg(m, 'peer'); });
     conn.on('close', function () { linkState = 'wait'; paintLink(); clearTimeout(retryT); retryT = setTimeout(dial, 2000); });
   }
-  function linked() { return (conn && conn.open) || Date.now() - bcSeen < 7000 || (hmq && hmq.on() && mqScreen); }
+  function linked() { return !!H.code && ((conn && conn.open) || Date.now() - bcSeen < 7000 || (hmq && hmq.on() && mqScreen)); }
   function paintLink() {
     var el = $('[data-status]'); if (!el) return;
     var on = linked();
