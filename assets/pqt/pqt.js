@@ -629,7 +629,8 @@ function pqtMain() {
   }
   function phState() { var P = H.ph; if (!P || P.rk !== rkey()) P = H.ph = { rk: rkey(), ans: {}, mark: {}, seen: -1, added: false }; return P; }
   function phTeams() { var P = H.ph; if (!P || P.rk !== rkey()) return []; return Object.keys(P.ans).map(Number).filter(function (t) { return H.teams[t]; }); }
-  function phMark(t, i) { var P = phState(), k = t + ':' + i; if (P.mark[k] != null) return P.mark[k]; var it = (QA[H.roundType] || [])[sq0() + i]; return !!(it && phAuto((P.ans[t] || {})[i], it.a)); }
+  function phMark(t, i) { var P = phState(), k = t + ':' + i; if (P.mark[k] != null) return P.mark[k]; var it = (QA[H.roundType] || [])[sq0() + i], a = (P.ans[t] || {})[i]; if (!it) return false; if (H.roundType === 'alpha') return !!a && asKey(a) === asKey(it.a); return phAuto(a, it.a); }
+  function asKey(x) { return String(x == null ? '' : x).toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Z]/g, ''); }   // AlphaSum: exact spelling, spaces and punctuation ignored
   function phFill() { var P = phState(); if (P.added) return; var n = sqN(), wd = H.qa.wd = H.qa.wd || {}; phTeams().forEach(function (t) { var c = 0; for (var i = 0; i < n; i++) if (phMark(t, i)) c++; wd[t] = c; }); }
   function phoneMsg(m) {
     if (!m || !m.dev || typeof m.dev !== 'string') return;
