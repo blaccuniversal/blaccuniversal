@@ -1482,3 +1482,8 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-qstart .hc-mi b{font-size:15px;line-height:1.25}
 .hc-qstart .hc-mi span{font-size:12px}
 .pq-joinbtn{border-style:dashed}
+
+/* home: logo centred in its box */
+.pq-board--home .pq-tile--title{display:flex;align-items:center;justify-content:center;min-height:0;padding:clamp(36px,9vw,64px) clamp(28px,8vw,56px)}
+.pq-board--home .pq-tile__h{width:100%;display:flex;justify-content:center}
+.pq-board--home .pq-tile__h .pq-logo{width:100%;max-width:400px;margin:0 auto}
