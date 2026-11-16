@@ -389,7 +389,7 @@ function pqtMain() {
         var mark = q.mark === 'ok' ? '<span class="sc-mark-ok">✓</span>' : q.mark === 'no' ? '<span class="sc-mark-no">✕</span>' : '';
         if (q.type === 'names') return '<div class="sc-qa">' + head + '<div class="sc-qa__clues">' + (q.clues || []).map(function (c) { return '<p>' + esc(c) + '</p>'; }).join('') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Hi, my name is…</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
         if (q.type === 'spell') return '<div class="sc-qa">' + head + '<div class="sc-qa__word' + (q.w ? ' is-on' : '') + '">' + (q.w ? esc(q.w) : '<i>???</i>') + mark + '</div><p class="sc-qa__def">' + esc(q.d || '') + '</p>' + (q.e ? '<p class="sc-qa__ex">' + (/^[“"]/.test(q.e) ? esc(q.e) : '“' + esc(q.e) + '”') + '</p>' : '') + '</div>';
-        if (q.type === 'alpha') return '<div class="sc-qa">' + head + '<div class="sc-asf"><span class="sc-asf__c sc-asf__c--f">' + q.f + '</span><span class="sc-asf__b">[</span><span class="sc-asf__t">' + q.t + '</span>' + (q.hard ? '' : '<span class="sc-asf__d">·</span><span class="sc-asf__n">' + q.n + '</span>') + '<span class="sc-asf__b">]</span><span class="sc-asf__c sc-asf__c--l">' + q.l + '</span></div><p class="sc-qa__q sc-asf__clue">' + esc(q.q || '') + '</p><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
+        if (q.type === 'alpha') return '<div class="sc-qa">' + head + '<div class="sc-asf"><span class="sc-asf__c sc-asf__c--f">' + q.f + '</span><span class="sc-asf__b">[</span><span class="sc-asf__t">' + q.t + '</span>' + (q.hard ? '' : '<span class="sc-asf__d">·</span><span class="sc-asf__n">' + q.len + '</span>') + '<span class="sc-asf__b">]</span><span class="sc-asf__c sc-asf__c--l">' + q.l + '</span></div><p class="sc-qa__q sc-asf__clue">' + esc(q.q || '') + '</p><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
         if (q.type === 'talk') return '<div class="sc-qa sc-qa--talk">' + head + '<p class="sc-qa__q sc-qa__q--big">' + esc(q.q || '') + '</p></div>';
         return '<div class="sc-qa sc-qa--' + q.type + '">' + head + '<div class="sc-qa__body' + (q.img ? ' has-img' : '') + '"><div class="sc-qa__qw">' + qHtml(q.q, 'sc-qa__q', q.a) + '</div>' + (q.img ? '<img class="sc-qa__img" src="' + esc(q.img) + '" alt="">' : '') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
       },
@@ -511,7 +511,7 @@ function pqtMain() {
       if (q.type === 'names') { o.clues = it.clues.slice(0, q.clue); o.total = it.clues.length; if (q.revealed) o.a = it.a; }
       else if (q.type === 'spell') { o.d = it.d; o.e = q.revealed ? it.e : it.e.replace(new RegExp(it.w.replace(/[^A-Za-z]/g, ''), 'gi'), '______'); if (q.revealed) o.w = it.w; }
       else if (q.type === 'talk') { o.q = it; }
-      else if (q.type === 'alpha') { o.q = it.q; o.f = it.f; o.t = it.t; o.n = it.n; o.l = it.l; o.hard = it.hard; if (q.revealed) o.a = it.a; }
+      else if (q.type === 'alpha') { o.q = it.q; o.f = it.f; o.t = it.t; o.len = it.n; o.l = it.l; o.hard = it.hard; if (q.revealed) o.a = it.a; }
       else { o.q = it.q; o.img = it.img; if (q.revealed) o.a = it.a; }
     }
     return o;
