@@ -1454,3 +1454,23 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .pp-scores b{font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
 .pp-scores li.is-me{color:#fff}
 .pp-scores li.is-me span{font-weight:600}
+
+/* setup: teams and rounds, cleaner */
+.hc-su__team{display:grid!important;grid-template-columns:auto minmax(0,1fr) 44px!important;gap:0!important;align-items:center;margin:0 0 6px;padding-left:16px;border:1px solid #222;border-radius:2px;background:#070707;transition:border-color .2s}
+.hc-su__team:focus-within{border-color:#555}
+.hc-su__team .hc-su__sw{display:block!important;width:14px;height:14px;padding:0;border:0;border-radius:50%;box-shadow:none;cursor:pointer}
+.hc-su__team .hc-input{min-height:50px;padding:0 14px;border:0;background:none;font-size:16px}
+.hc-su__team .hc-input:focus{outline:none;box-shadow:none}
+.hc-su__team .pbtn{width:44px;min-height:50px;border:0;border-left:1px solid #1a1a1a;border-radius:0;color:#6a6a6a;font-size:14px}
+.hc-su__team .pbtn:hover{color:#fff}
+.hc-su__add{width:100%;min-height:46px;margin-top:2px;border-style:dashed;color:#9a9a9a}
+.hc-su__round{display:grid!important;grid-template-columns:44px minmax(0,1fr) auto!important;gap:0!important;align-items:stretch;margin:0 0 6px;border:1px solid #222;border-radius:2px;background:#070707;overflow:hidden}
+.hc-su__round.is-locked{opacity:.5}
+.hc-su__no{display:grid;place-items:center;border-right:1px solid #1a1a1a;font-family:var(--dot);font-size:14px;font-weight:900;letter-spacing:.06em;color:var(--o2)}
+.hc-su__round .hc-sel{min-height:50px;padding:0 36px 0 14px;border:0;border-radius:0;background-color:transparent;font-size:16px}
+.hc-su__ph{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:96px;padding:0 12px;border:0;border-left:1px solid #1a1a1a;background:none;color:#7a7a7a;font:inherit;font-size:12px;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:color .2s,background .2s}
+.hc-su__ph svg{flex:none}
+.hc-su__ph.is-on{color:#ff6a2b;background:rgba(255,106,43,.08)}
+.hc-su__ph.is-na{min-width:0;padding:0;border:0;cursor:default}
+.hc-su__ph:disabled{cursor:default}
+.hc-su__round .hc-su__ph span{font-size:12px;letter-spacing:.02em;color:inherit}
