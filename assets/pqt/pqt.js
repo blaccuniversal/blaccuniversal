@@ -314,7 +314,7 @@ function pqtMain() {
           var NM = { names: 'Hi, My Name Is…', spell: 'Spelling Bee', written: 'Written Round', rapid: 'Rapid Fire', talk: 'Discussion', alpha: 'AlphaSum', star: 'Superstar', race: 'Word Race', pw: 'Password' };
           return '<div class="sc-intro"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + '</p><h1 class="sc-intro__t">' + NM[S.roundType] + '</h1>' +
             '<ol class="sc-intro__rules">' + QR[S.roundType].map(function (r, i) { return '<li style="animation-delay:' + (0.35 + i * 0.15) + 's"><b>0' + (i + 1) + '</b>' + esc(r) + '</li>'; }).join('') + '</ol>' +
-            (S.phones ? '<div class="sc-join"><span>Answer on your phone</span><b>blaccuniversal.com/pqt/play</b><em>' + esc(S.code) + '</em></div>' : '') + '</div>';
+            (S.phones ? '<div class="sc-phj"><span>Answer on your phone</span><b>blaccuniversal.com/pqt/play</b><em>' + esc(S.code) + '</em></div>' : '') + '</div>';
         }
         var isW = S.roundType === 'words';
         var rules = isW ? ['One clue giver per team, against the clock.', 'Describe the word. Don’t say it, or any banned word.', 'Every word guessed is a point. A buzz costs one.']

@@ -1339,10 +1339,10 @@ button.hc-status:hover{border-color:#2a2a2a;color:#cfcfcf}
 .hc-pha__a em{color:#6a6a6a}
 .hc-pha__r b{font-size:16px;color:#ff7a6a}
 .hc-pha__r.is-ok b{color:#5ad18f}
-.sc-join{display:inline-flex;align-items:center;gap:1.4vw;margin-top:5vh;padding:1.6vh 2vw;border:1px solid #333;border-radius:2px;font-size:clamp(14px,1.6vw,26px);animation:scFadeUp .6s .9s both}
-.sc-join span{color:#9a9a9a}
-.sc-join b{font-weight:600;color:#fff}
-.sc-join em{font-style:normal;font-weight:700;letter-spacing:.2em;color:#ff6a2b}
+.sc-phj{display:inline-flex;align-items:center;gap:1.4vw;margin-top:5vh;padding:1.6vh 2vw;border:1px solid #333;border-radius:2px;font-size:clamp(14px,1.6vw,26px);animation:scFadeUp .6s .9s both}
+.sc-phj span{color:#9a9a9a}
+.sc-phj b{font-weight:600;color:#fff}
+.sc-phj em{font-style:normal;font-weight:700;letter-spacing:.2em;color:#ff6a2b}
 .sc-qa__join{position:fixed;left:4vw;bottom:3vh;margin:0;font-size:clamp(12px,1.2vw,20px);color:#7a7a7a}
 .sc-qa__join b{letter-spacing:.16em;color:#fff}
 
