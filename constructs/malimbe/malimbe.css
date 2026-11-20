@@ -360,9 +360,9 @@ footer .mud{margin-bottom:64px;opacity:.35}
 /* ===== BLACC Clean · refined layer (keeps cream, rust, mudcloth and the serif accent) ===== */
 h1,h2,h3,.fact b,.loc-stats b,.toast-text,.partner h3,.xp-list li span:nth-child(2),.addr p{font-family:var(--sans)}
 h1{font-weight:300!important;letter-spacing:-.045em!important;line-height:1.02}
-h2{font-weight:300;letter-spacing:-.04em;line-height:1.05}
+h2{font-weight:300;letter-spacing:-.04em;line-height:1.08;padding-bottom:.08em}
 h3{font-weight:400;letter-spacing:-.02em}
-h1 em,h2 em{font-family:var(--display);font-style:italic;font-weight:400;letter-spacing:-.02em;color:var(--accent)}
+h1 em,h2 em{font-family:var(--display);font-style:italic;font-weight:400;font-size:1.3em;line-height:.86;letter-spacing:-.025em;color:var(--accent)}
 .s-dark h2 em,.s-black h2 em{color:var(--sand)}
 .s-rust h2 em{color:#f6dcb8}
 .fact b,.loc-stats b{font-weight:300;letter-spacing:-.04em}
