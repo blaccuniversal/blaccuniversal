@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Malimbe Lodge — Where luxury meets the wild · Ibadan</title>
+<meta name="description" content="Malimbe Lodge — a nature-themed boutique lodge set within 6,000 sqm of indigenous forest, opposite IITA, Ibadan. Opening December 2026.">
+<meta name="theme-color" content="#0b0807">
+<meta name="robots" content="noindex, nofollow">
+<script src="/assets/js/cx-codes.js?v=4"></script>
+<script src="/assets/js/cx-gate.js?v=2" data-id="malimbe" data-name="Malimbe Lodge"></script>
+<link rel="icon" type="image/png" href="/constructs/malimbe/img/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/constructs/malimbe/malimbe.css?v=1">
+</head>
+<body>
+<div class="grain"></div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a href="#top" class="brand"><span class="mark"></span><span>Malimbe Lodge<small>Ibadan · Nigeria</small></span></a>
+    <nav class="nav-links">
+      <a href="#lodge">The Lodge</a><a href="#rooms">Rooms</a><a href="#spaces">Spaces</a><a href="#experiences">Experiences</a><a href="#events">Events</a><a href="#location">Location</a>
+      <a href="#join" class="pill"><span class="dot"></span>Opening Dec 2026</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span></button>
+  </div>
+</header>
+<div class="mobile-menu" id="mmenu">
+  <a href="#lodge">The Lodge</a><a href="#rooms">Rooms</a><a href="#spaces">Spaces</a><a href="#experiences">Experiences</a><a href="#events">Events</a><a href="#location">Location</a><a href="#join">Founding guest list</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-copy">
+    <div class="eyebrow mono"><i></i>Opening December 2026 · Ibadan</div>
+    <h1>Where luxury<br>meets the <em>wild.</em></h1>
+    <p>A nature-themed boutique lodge set within 6,000 sqm of lush indigenous forest, opposite IITA. Eleven culture-themed rooms, garden events and nature experiences you won't find anywhere else in the region.</p>
+    <div class="cta-row">
+      <button class="btn btn-primary" id="guideBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" fill="currentColor" stroke="none"/></svg>
+        Guide me there
+      </button>
+      <a href="#join" class="btn btn-ghost">Join the founding guest list</a>
+    </div>
+  </div>
+
+  <div class="hero-stage" id="stage">
+    <canvas id="map" aria-label="Live wayfinding map to Malimbe Lodge"></canvas>
+
+    <div class="hud hud-tr">
+      Wayfinder <b>/01</b><br>
+      <span id="hudCoord">7.4962° N · 3.9062° E</span><br>
+      <span class="hud-status" id="hudStatus"><i></i><span id="hudStatusText">Standby</span></span>
+    </div>
+
+    <div class="hud hud-bl">
+      <div class="meter-row"><span id="hudDistLabel">To Malimbe</span><span id="hudDist">—</span></div>
+      <div class="meter"><i id="hudMeter"></i></div>
+      <div class="hud-stats">
+        <div><span>ETA</span><b id="hudEta">—</b></div>
+        <div><span>Bearing</span><b id="hudBearing">—</b></div>
+        <div><span>Heading</span><b id="hudHeading">N-UP</b></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">
+      <div class="toast-main">
+        <div class="toast-icon"><svg id="toastArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></div>
+        <div>
+          <div class="toast-text" id="toastText">In Ibadan? Tap “Guide me there” and the map turns into a live compass.</div>
+          <div class="toast-sub" id="toastSub">Opposite IITA · Oyo Road · Ibadan</div>
+        </div>
+      </div>
+      <div class="toast-actions" id="toastActions"></div>
+      <div class="toast-bar"><i></i></div>
+    </div>
+  </div>
+  <div class="scroll-cue"></div>
+</section>
+
+<div class="ticker" aria-hidden="true"><div class="ticker-track">
+  <span>11 culture-themed rooms</span><span>6,000 sqm indigenous forest</span><span>Opposite IITA, Ibadan</span><span>Garden weddings &amp; events</span><span>Padel · Tennis · 5-a-side</span><span>Outdoor cinema</span><span>Opening December 2026</span>
+  <span>11 culture-themed rooms</span><span>6,000 sqm indigenous forest</span><span>Opposite IITA, Ibadan</span><span>Garden weddings &amp; events</span><span>Padel · Tennis · 5-a-side</span><span>Outdoor cinema</span><span>Opening December 2026</span>
+</div></div>
+
+<!-- LODGE -->
+<section class="sec" id="lodge">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><div class="idx mono"><i></i>01 — The Lodge</div><h2>A forest retreat,<br><em>inside</em> the city.</h2></div>
+      <p class="lede rv">Malimbe is a first-of-its-kind hospitality destination for Southwest Nigeria: boutique rooms, event spaces and eco-experiences in one place. It sits close enough to drive to and far enough to feel like an escape.</p>
+    </div>
+    <div class="lodge-grid">
+      <div class="frame lodge-big rv"><img src="/constructs/malimbe/img/building.webp" alt="Malimbe Lodge courtyard with tree planter" loading="lazy"><span class="tag mono">Courtyard · Render</span></div>
+      <div class="lodge-side">
+        <div class="frame rv"><img src="/constructs/malimbe/img/lounge.webp" alt="Lounge with African art" loading="lazy"><span class="tag mono">Lounge · Render</span></div>
+        <div class="facts rv">
+          <div class="fact"><b>11</b><span class="mono">Boutique rooms</span></div>
+          <div class="fact"><b>6,000</b><span class="mono">Sqm of forest</span></div>
+          <div class="fact"><b>20</b><span class="mono">Seat meeting room</span></div>
+          <div class="fact"><b>2</b><span class="mono">Co-work spaces</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS -->
+<section class="sec rooms" id="rooms">
+  <div class="wrap rail-head">
+    <div class="rv"><div class="idx mono"><i></i>02 — Rooms</div><h2>Eleven rooms.<br>Eleven <em>stories.</em></h2></div>
+    <div class="rail-ctrl">
+      <button id="railPrev" aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button id="railNext" aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+  <div class="rail" id="rail"></div>
+  <div class="wrap"><p class="note mono">Every room is culture-themed, with its own art, textiles and palette. Images are design renders; final finishes may vary.</p></div>
+</section>
+
+<!-- SPACES -->
+<section class="sec" id="spaces">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><div class="idx mono"><i></i>03 — Spaces</div><h2>Warm walls,<br>woven <em>light.</em></h2></div>
+      <p class="lede rv">Terracotta plaster, rattan pendants, carved wood and contemporary African art. The reception, restaurant, lounges and kitchens are designed to feel like a home that happens to sit in a forest.</p>
+    </div>
+    <div class="bento" id="bento"></div>
+  </div>
+</section>
+
+<!-- EXPERIENCES -->
+<section class="sec" id="experiences" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><div class="idx mono"><i></i>04 — Experiences</div><h2>Play, rest,<br>go <em>wild.</em></h2></div>
+      <p class="lede rv">There's sport and leisure on the grounds. Across the road is one of West Africa's great managed tropical forests.</p>
+    </div>
+    <div class="xp-grid">
+      <div class="xp-col rv">
+        <h3>On the grounds</h3>
+        <p>Everything you need for a weekend that never has to leave the gate.</p>
+        <ul class="xp-list">
+          <li><span class="n mono">01</span><span>Swimming pool</span><span class="k mono">Leisure</span></li>
+          <li><span class="n mono">02</span><span>Padel court</span><span class="k mono">Sport</span></li>
+          <li><span class="n mono">03</span><span>Tennis court</span><span class="k mono">Sport</span></li>
+          <li><span class="n mono">04</span><span>5-a-side pitch</span><span class="k mono">Sport</span></li>
+          <li><span class="n mono">05</span><span>Outdoor cinema</span><span class="k mono">Nights</span></li>
+          <li><span class="n mono">06</span><span>Mini forest &amp; park</span><span class="k mono">Nature</span></li>
+          <li><span class="n mono">07</span><span>Co-work spaces</span><span class="k mono">Work</span></li>
+        </ul>
+      </div>
+      <div class="xp-col rv">
+        <h3>Beyond the gate</h3>
+        <p>Being right next to the International Institute of Tropical Agriculture gives guests nature experiences you can't get anywhere else in the city.</p>
+        <ul class="xp-list">
+          <li><span class="n mono">08</span><span>Guided forest walks</span><span class="k mono">IITA</span></li>
+          <li><span class="n mono">09</span><span>Bird watching</span><span class="k mono">Eco</span></li>
+          <li><span class="n mono">10</span><span>Fishing</span><span class="k mono">Eco</span></li>
+          <li><span class="n mono">11</span><span>Golf</span><span class="k mono">IITA</span></li>
+          <li><span class="n mono">12</span><span>Ticketed eco-tours</span><span class="k mono">Premium</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section class="sec events" id="events">
+  <div class="events-bg"><img src="/constructs/malimbe/img/forest.webp" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><div class="idx mono"><i></i>05 — Events</div><h2>Say yes<br>under the <em>trees.</em></h2></div>
+      <p class="lede rv">An events pavilion, an outdoor restaurant and a private mini forest for weddings, picnics and gatherings that deserve better than a hall.</p>
+    </div>
+    <div class="ev-grid rv">
+      <div class="ev"><span class="mono">/ 01</span><h3>Garden weddings</h3><p>Ceremonies and receptions in the mini forest, plus garden parties and picnics.</p></div>
+      <div class="ev"><span class="mono">/ 02</span><h3>Corporate retreats</h3><p>A 20-person meeting room, co-work spaces and room blocks for offsites.</p></div>
+      <div class="ev"><span class="mono">/ 03</span><h3>Brand activations</h3><p>Launches, cocktail events and content shoots with a setting that does the work.</p></div>
+      <div class="ev"><span class="mono">/ 04</span><h3>Culture &amp; dining</h3><p>Curated dining with resident and visiting chefs, small concerts and art shows.</p></div>
+    </div>
+    <div class="ev-cta rv">
+      <p>We're taking early enquiries for dates from December 2026 onwards.</p>
+      <a href="#join" class="btn btn-primary" data-interest="Event enquiry">Enquire about a date</a>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section class="sec" id="location">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><div class="idx mono"><i></i>06 — Location</div><h2>Opposite IITA.<br>Ten minutes from <em>everything.</em></h2></div>
+      <p class="lede rv">Malimbe sits on the Lagos–Ibadan corridor, Nigeria's busiest intercity route. It's the natural place to rest, retreat or celebrate.</p>
+    </div>
+    <div class="loc-grid">
+      <div class="rv">
+        <div class="loc-stats">
+          <div><span class="mono">From train station</span><b>10 mins</b><small>Ibadan rail hub</small></div>
+          <div><span class="mono">From expressway</span><b>10 mins</b><small>Lagos–Ibadan Expressway</small></div>
+          <div><span class="mono">From Lagos</span><b>~90 mins</b><small>By expressway</small></div>
+          <div><span class="mono">Opposite</span><b>IITA</b><small>1,000-acre research forest</small></div>
+        </div>
+        <div class="addr">
+          <div><div class="mono">Address</div><p>Oyo Road, opposite IITA, Ibadan, Oyo State</p></div>
+          <a class="btn btn-ghost" id="gmapsLink" href="#" target="_blank" rel="noopener">Open in Google Maps</a>
+        </div>
+      </div>
+      <ul class="loc-why rv">
+        <li><b>Rail</b><span>The Lagos–Ibadan rail line brings day-trippers and weekend guests to within ten minutes of the gate.</span></li>
+        <li><b>Expressway</b><span>Easy access for Lagos-based corporate, wedding and leisure guests.</span></li>
+        <li><b>IITA</b><span>Right by 1,000 acres of managed tropical forest, a nature setting no one else can offer.</span></li>
+        <li><b>University belt</b><span>The University of Ibadan and research institutions are within a 5 km radius.</span></li>
+        <li><b>New roads</b><span>The new Moniya highway and circular road are opening up the area around the lodge.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section class="sec join" id="join">
+  <div class="wrap join-grid">
+    <div class="rv">
+      <div class="idx mono"><i></i>07 — Founding guests</div>
+      <h2>Be first<br>through the <em>gate.</em></h2>
+      <p class="lede" style="justify-self:start;margin-top:22px">Malimbe opens in December 2026 with a soft launch for founding guests, media and events. Add your name for first access to dates and launch invitations.</p>
+      <ul class="perks">
+        <li>Early access to opening-season dates</li>
+        <li>Invitations to soft-launch events</li>
+        <li>First look at event-date availability</li>
+      </ul>
+    </div>
+    <form id="joinForm" class="rv" novalidate>
+      <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name" required></div>
+      <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="f-phone">Phone / WhatsApp</label><input id="f-phone" name="phone" type="tel" autocomplete="tel"></div>
+      <div class="field"><label for="f-int">I'm interested in</label>
+        <select id="f-int" name="interest"><option>A stay</option><option>Event enquiry</option><option>Corporate retreat</option><option>Partnership</option><option>Investment</option></select></div>
+      <div class="field full"><label for="f-msg">Anything else? (optional)</label><textarea id="f-msg" name="message" placeholder="Dates, guest numbers, ideas…"></textarea></div>
+      <div class="form-foot">
+        <p class="form-msg" id="formMsg">We'll only contact you about Malimbe Lodge.</p>
+        <button class="btn btn-primary" type="submit">Join the list</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- PEOPLE -->
+<section class="sec" id="team" style="padding-top:clamp(70px,9vw,120px)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="rv"><div class="idx mono"><i></i>08 — The people</div><h2>Built by <em>believers.</em></h2></div>
+      <p class="lede rv">Malimbe Lodge is a subsidiary of Malimbe Hospitality Group.</p>
+    </div>
+    <div class="people rv">
+      <div class="person"><span class="mono">Director</span><h3>Dr. Ayodele O. Majekodunmi</h3><p>One Health epidemiologist and global health expert with over 18 years of experience across Africa.</p></div>
+      <div class="person"><span class="mono">Director</span><h3>Oghenetega David Iortim</h3><p>Entrepreneur and technology executive. Founder and former CEO of Figorr, and founder of OpenSylo.</p></div>
+      <div class="person"><span class="mono">Chief Hospitality Officer</span><h3>Abiodun Aroworamimo</h3><p>Managing Director of Inqaba Biotec West Africa, and an alumnus of the Stanford SEED programme.</p></div>
+    </div>
+    <div class="partner rv">
+      <div><div class="mono" style="color:var(--sand)">Partner with Malimbe</div><h3>Help us open Nigeria's first genuine nature lodge.</h3><p>We're working with partners and investors on the final stretch to opening. Ask for the investor overview.</p></div>
+      <a href="#join" class="btn btn-ghost" data-interest="Investment">Request the overview</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-big"><span class="mark"></span>Malimbe Lodge</div>
+    <div class="foot-row mono">
+      <span>A subsidiary of Malimbe Hospitality Group</span>
+      <span>Opposite IITA · Ibadan · Oyo State</span>
+      <a href="https://blaccuniversal.komi.io" target="_blank" rel="noopener">Designed by BLACC Universal</a>
+    </div>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true">
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 6l-6 6 6 6"/></svg></button>
+  <img id="lbImg" alt="">
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 6l6 6-6 6"/></svg></button>
+  <div class="lb-cap mono" id="lbCap"></div>
+</div>
+
+<script src="/constructs/malimbe/malimbe.js?v=1" defer></script>
+</body>
+</html>
