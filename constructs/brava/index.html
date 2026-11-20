@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/brava/img/favicon.png?v=2">
 <link rel="preload" as="image" href="/constructs/brava/img/exterior.webp" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/brava/brava.css?v=9">
+<link rel="stylesheet" href="/constructs/brava/brava.css?v=10">
 </head>
 <body>
 
@@ -187,25 +187,51 @@
     <a class="pill pill--ghost" href="https://www.google.com/travel/search?q=brava%20hotel%20ibadan" target="_blank" rel="noopener">Read reviews or leave one</a>
   </section>
 
-  <!-- VISIT -->
-  <section class="visit" id="visit">
-    <div class="wrap vgrid">
-      <div class="reveal">
-        <p class="eyebrow">Visit</p>
-        <h2 class="h2">No 59, Samonda,<br>Ibadan.</h2>
-        <dl class="info">
-          <div><dt>Open</dt><dd>24 hours, every day</dd></div>
-          <div><dt>Call</dt><dd><a href="tel:+2347047000608">0704 700 0608</a></dd></div>
-          <div><dt>WhatsApp</dt><dd><a href="https://wa.me/2347047000608" target="_blank" rel="noopener">0704 700 0608</a></dd></div>
-          <div><dt>Follow</dt><dd class="soc"><a href="https://www.instagram.com/bravahotelgroup/" target="_blank" rel="noopener" aria-label="Instagram, @bravahotelgroup" title="Instagram, @bravahotelgroup"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25"/><circle cx="12" cy="12" r="4.25"/><circle cx="17.4" cy="6.6" r=".6" fill="currentColor" stroke="none"/></svg></a></dd></div>
-        </dl>
-        <div class="vbtns"><a class="pill pill--w" href="https://www.google.com/maps/search/?api=1&amp;query=Brava%20Hotel%2C%2059%20Samonda%2C%20Ibadan" target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg>Directions</a><a class="pill pill--ghost" href="tel:+2347047000608"><svg><use href="#i-phone"/></svg>Call now</a></div>
+  <!-- VISIT · WAYFINDER -->
+  <section class="wf" id="visit">
+    <div class="wf__copy">
+      <p class="eyebrow">Visit</p>
+      <h2 class="h2">Find your way<br>to Brava.</h2>
+      <div class="addr">
+        <span class="addr__k">Address</span>
+        <p class="addr__l1">59 Samonda Road</p>
+        <p class="addr__l2">Samonda, Ibadan &middot; Oyo State</p>
+        <button class="addr__copy" type="button" data-copy="Brava Hotel, 59 Samonda Road, Ibadan, Oyo State">Copy address</button>
       </div>
-      <a class="map reveal" href="https://www.google.com/maps/search/?api=1&amp;query=Brava%20Hotel%2C%2059%20Samonda%2C%20Ibadan" target="_blank" rel="noopener" aria-label="Open Brava Hotel in Google Maps">
-        <svg viewBox="0 0 400 300" aria-hidden="true"><g fill="none" stroke="#1f1f1f" stroke-width="10" stroke-linecap="round"><path d="M-10 210 C80 190 160 230 240 200 S360 140 420 150"/><path d="M120 -10 C140 80 120 160 150 320"/><path d="M260 -10 C250 70 290 130 270 320" stroke-width="6"/><path d="M-10 90 C90 110 200 70 420 100" stroke-width="6"/></g><g fill="none" stroke="#151515" stroke-width="3"><path d="M30 -10 V320M330 -10 V320M-10 40 H420M-10 260 H420"/></g></svg>
-        <span class="map__pin"><i></i><b>Brava Hotel</b><small>59 Samonda</small></span>
-        <span class="map__go">Open in Maps<svg><use href="#i-arrow"/></svg></span>
-      </a>
+      <div class="vbtns">
+        <button class="pill pill--w" type="button" id="guideBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></g></svg>Guide me there</button>
+        <a class="pill pill--ghost" id="gmapsLink" href="https://www.google.com/maps/dir/?api=1&amp;destination=7.43177,3.90559" target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg>Directions</a>
+      </div>
+    </div>
+    <div class="wf__stage" id="stage">
+      <canvas id="map" aria-label="Live wayfinding map to Brava Hotel"></canvas>
+      <div class="hud hud--tr">Wayfinder <b>/ 01</b><br><span id="hudCoord">7.4318&deg; N &middot; 3.9056&deg; E</span><br><span class="hud__st" id="hudStatus"><i></i><span id="hudStatusText">Standby</span></span></div>
+      <div class="hud hud--stats">
+        <div class="hud__row"><span>To Brava</span><span id="hudDist">&mdash;</span></div>
+        <div class="hud__meter"><i id="hudMeter"></i></div>
+        <div class="hud__grid"><div><span>ETA</span><b id="hudEta">&mdash;</b></div><div><span>Bearing</span><b id="hudBearing">&mdash;</b></div><div><span>Heading</span><b id="hudHeading">N-UP</b></div></div>
+      </div>
+      <div class="wtoast" id="toast">
+        <div class="wtoast__main">
+          <div class="wtoast__ic"><svg id="toastArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></div>
+          <div><div class="wtoast__t" id="toastText">In Ibadan? Tap &ldquo;Guide me there&rdquo; for a live compass.</div><div class="wtoast__s" id="toastSub">59 Samonda Road &middot; Ibadan</div></div>
+        </div>
+        <div class="wtoast__acts" id="toastActions"></div>
+        <div class="wtoast__bar"><i></i></div>
+      </div>
+    </div>
+    <div class="wrap wf__info">
+      <dl class="vinfo">
+        <div><dt><svg><use href="#i-clock"/></svg>Open</dt><dd>24 hours, every day</dd></div>
+        <div><dt><svg><use href="#i-phone"/></svg>Call</dt><dd><a href="tel:+2347047000608">0704 700 0608</a></dd></div>
+        <div><dt><svg><use href="#i-wa"/></svg>WhatsApp</dt><dd><a href="https://wa.me/2347047000608" target="_blank" rel="noopener">0704 700 0608</a></dd></div>
+        <div><dt><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="4.8"/><circle cx="12" cy="12" r="3.9"/><circle cx="17" cy="7" r=".5" fill="currentColor" stroke="none"/></g></svg>Instagram</dt><dd><a href="https://www.instagram.com/bravahotelgroup/" target="_blank" rel="noopener">@bravahotelgroup</a></dd></div>
+      </dl>
+      <ul class="near">
+        <li><b>3 min</b><span>University of Ibadan, by car</span></li>
+        <li><b>12 min</b><span>Ventura Mall, on foot</span></li>
+        <li><b>~30 min</b><span>Ibadan Airport, by car</span></li>
+      </ul>
     </div>
   </section>
 </main>
@@ -241,6 +267,7 @@
   <img data-lbx-img alt="">
 </div>
 <div class="toast" data-toast hidden></div>
-<script src="/constructs/brava/brava.js?v=5" defer></script>
+<script src="/constructs/brava/brava.js?v=6" defer></script>
+<script src="/constructs/brava/brava-wf.js?v=1" defer></script>
 </body>
 </html>
