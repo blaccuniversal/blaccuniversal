@@ -362,3 +362,4 @@ body.is-lock .cxg-dock,body.is-lock .obar{display:none!important}
 .cart__f{background:var(--bg)}
 .cart__tot b{font-weight:600}
 .toast{border-radius:2px;background:var(--tx);color:#070606;font-weight:600}
+.badge--hero{z-index:3}.ring{z-index:1}.hero__float{z-index:3}
