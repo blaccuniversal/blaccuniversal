@@ -322,3 +322,26 @@ footer .mud{margin-bottom:64px;opacity:.35}
   .toast{position:relative;left:auto;bottom:auto;transform:none;width:auto;margin:-30px var(--pad) 28px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+
+/* ---- tighter phone layout ---- */
+@media (max-width:720px){
+  .sec{padding:56px 0}
+  .sec-head{margin-bottom:26px;gap:10px}
+  .hero{min-height:0;padding:100px 0 40px}
+  .hero-stats{margin-top:30px}
+  .hero-art{margin-top:6px}
+  .lodge-grid,.lodge-side{gap:14px}
+  .facts,.loc-stats{grid-template-columns:1fr 1fr}
+  .fact,.loc-stats div{padding:16px 0}
+  .fact:nth-child(odd),.loc-stats div:nth-child(odd){border-right:1px solid var(--line);padding-right:14px}
+  .fact:nth-child(even),.loc-stats div:nth-child(even){padding-left:16px}
+  .fact b{font-size:32px}.loc-stats b{font-size:32px;margin:8px 0 2px}
+  .xp-grid,.loc-grid,.join-grid{gap:34px}
+  .xp-list li{padding:13px 0;grid-template-columns:34px 1fr auto}
+  .ev{padding:20px 18px 22px}
+  .partner{margin-top:40px;padding:24px 20px;gap:18px}
+  .partner .btn{justify-self:start}
+  .people{margin-top:0}
+  .person,.person+.person{padding:20px 0}
+  footer,.s-black{padding-top:44px}
+}
