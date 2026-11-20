@@ -107,33 +107,81 @@
     '89ca14c9dd4c637c089ad13051615b5e493c6128ca2db4a2d74ffced08151562' /* key 100 */
   ];
   var KEY = 'bmo_pass', DAYS = 30, body = document.body;
+  var FREE_KEY = 'bmo_free', FREE_MS = 60 * 60 * 1000;   // free play: 1 hour a day per device, resets at midnight
   function hex(buf) { return [].map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
   function hash(s) { return crypto.subtle.digest('SHA-256', new TextEncoder().encode('blaccbmo:' + s)).then(hex); }
   function saved() { try { var v = JSON.parse(localStorage.getItem(KEY) || 'null'); return v && v.until > Date.now() && PASSES.indexOf(v.h) > -1; } catch (e) { return false; } }
+  function today() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function freeRead() { var v = null; try { v = JSON.parse(localStorage.getItem(FREE_KEY) || 'null'); } catch (e) {} if (!v || v.d !== today()) v = { d: today(), used: 0, on: false }; return v; }
+  function freeWrite(v) { try { localStorage.setItem(FREE_KEY, JSON.stringify(v)); } catch (e) {} }
+  function freeLeft() { return Math.max(0, FREE_MS - freeRead().used); }
+  function mins(ms) { var m = Math.ceil(ms / 60000); return m + ' min'; }
   if (saved()) return;
-  body.setAttribute('data-locked', '');
-  var g = document.createElement('section');
-  g.className = 'gate';
-  g.innerHTML = '<form class="gate__card" novalidate>' +
-    '<p class="eyebrow">Private preview</p>' +
-    '<h1 class="gate__t">Bemaamoo</h1>' +
-    '<p class="gate__p">Enter your passkey to play.</p>' +
-    '<input class="gate__in" type="password" autocomplete="current-password" autocapitalize="characters" spellcheck="false" placeholder="Passkey" aria-label="Passkey" required>' +
-    '<p class="gate__err" role="alert" hidden>That passkey didn’t work. Check it and try again.</p>' +
-    '<button class="btn btn--big btn--full" type="submit">Unlock</button>' +
-    '<p class="gate__note">This device stays unlocked for 30 days.</p>' +
-    '<a class="gate__back" href="/projects/">← BLACC Universal</a></form>';
-  body.appendChild(g);
-  var f = g.querySelector('form'), inp = g.querySelector('input'), err = g.querySelector('.gate__err');
-  setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60);
-  f.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var v = inp.value.replace(/\s+/g, '').toUpperCase(); if (!v) return;
-    if (!window.crypto || !crypto.subtle) { err.textContent = 'This browser can’t check passkeys. Open the page over https.'; err.hidden = false; return; }
-    hash(v).then(function (h) {
-      if (PASSES.indexOf(h) < 0) { err.hidden = false; inp.select(); return; }
-      try { localStorage.setItem(KEY, JSON.stringify({ h: h, until: Date.now() + DAYS * 864e5 })); } catch (x) {}
-      g.remove(); body.removeAttribute('data-locked');
+
+  var g = null, meter = null, badge = null;
+  function lock(mode) {
+    body.setAttribute('data-locked', '');
+    if (g) g.remove();
+    g = document.createElement('section');
+    g.className = 'gate';
+    var left = freeLeft(), up = mode === 'up' || left <= 0;
+    g.innerHTML = '<form class="gate__card" novalidate>' +
+      '<p class="eyebrow">' + (up ? 'Free hour used' : 'Word game') + '</p>' +
+      '<h1 class="gate__t">Bemaamoo</h1>' +
+      (up ? '<p class="gate__p">That’s your free hour for today. Your game is saved. Come back tomorrow for another free hour, or enter a passkey to keep playing.</p>'
+          : '<p class="gate__p">Play free for 1 hour every day, or enter a passkey for unlimited play.</p>' +
+            '<button class="btn btn--big btn--full gate__free" type="button" data-free>Play free · ' + (left >= FREE_MS ? '1 hour' : mins(left)) + ' left today</button>' +
+            '<p class="gate__or"><span>or</span></p>') +
+      '<input class="gate__in" type="password" autocomplete="current-password" autocapitalize="characters" spellcheck="false" placeholder="Passkey" aria-label="Passkey" required>' +
+      '<p class="gate__err" role="alert" hidden>That passkey didn’t work. Check it and try again.</p>' +
+      '<button class="btn btn--big btn--full' + (up ? '' : ' btn--ghost') + '" type="submit">Unlock</button>' +
+      '<p class="gate__note">' + (up ? 'Free play starts again at midnight.' : 'A passkey keeps this device unlocked for 30 days.') + '</p>' +
+      '<a class="gate__back" href="/projects/">← BLACC Universal</a></form>';
+    body.appendChild(g);
+    var f = g.querySelector('form'), inp = g.querySelector('input'), err = g.querySelector('.gate__err'), fb = g.querySelector('[data-free]');
+    if (fb) fb.addEventListener('click', startFree);
+    if (up) setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60);
+    f.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = inp.value.replace(/\s+/g, '').toUpperCase(); if (!v) return;
+      if (!window.crypto || !crypto.subtle) { err.textContent = 'This browser can’t check passkeys. Open the page over https.'; err.hidden = false; return; }
+      hash(v).then(function (h) {
+        if (PASSES.indexOf(h) < 0) { err.hidden = false; inp.select(); return; }
+        try { localStorage.setItem(KEY, JSON.stringify({ h: h, until: Date.now() + DAYS * 864e5 })); } catch (x) {}
+        stopFree(); g.remove(); g = null; body.removeAttribute('data-locked');
+      });
     });
-  });
+  }
+
+  /* free hour: counts only while the page is open and in front */
+  function startFree() {
+    var v = freeRead(); if (v.used >= FREE_MS) { lock('up'); return; }
+    v.on = true; freeWrite(v);
+    if (g) { g.remove(); g = null; } body.removeAttribute('data-locked');
+    var last = Date.now();
+    clearInterval(meter);
+    meter = setInterval(function () {
+      var now = Date.now(), dt = Math.min(now - last, 5000); last = now;
+      if (document.hidden) return;
+      var w = freeRead(); w.used += dt; w.on = true; freeWrite(w);
+      var left = FREE_MS - w.used;
+      paintBadge(left);
+      if (left <= 0) { stopFree(); lock('up'); }
+    }, 1000);
+    paintBadge(freeLeft());
+  }
+  function stopFree() { clearInterval(meter); meter = null; if (badge) { badge.remove(); badge = null; } }
+  function paintBadge(left) {
+    if (left > 5 * 60000) { if (badge) { badge.remove(); badge = null; } return; }   // only shows in the last 5 minutes
+    if (!badge) { badge = document.createElement('div'); badge.className = 'freebadge'; body.appendChild(badge); }
+    var s = Math.max(0, Math.ceil(left / 1000));
+    badge.textContent = 'Free play · ' + Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2) + ' left today';
+  }
+
+  function boot() {
+    var v = freeRead();
+    if (v.on && v.used < FREE_MS) startFree();   // already playing free today: carry on without asking again
+    else lock(v.used >= FREE_MS ? 'up' : '');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
