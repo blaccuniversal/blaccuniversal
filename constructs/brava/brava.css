@@ -313,3 +313,83 @@ svg{display:block}
 .sstay{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid var(--ln);border-radius:var(--r);font-size:13.5px;font-weight:600}
 .sstay__ch{border:0;background:none;padding:0;color:var(--amb);font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
 .sstay__note{margin:-2px 0 0!important;font-size:12.5px;color:var(--tx3)!important;text-align:center}
+
+
+/* ======== Luxury refinement · BLACC premium ======== */
+:root{--amb:#c8a97e;--amb2:#a88a5f;--ln:rgba(255,255,255,.09);--ln2:rgba(255,255,255,.18);--tx2:#a39e96;--tx3:#6b6660}
+body{letter-spacing:.005em}
+.eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.32em;color:var(--amb)}
+.h2{font-weight:300;letter-spacing:-.04em;line-height:1.04}
+.hero__t{font-weight:300;letter-spacing:-.055em}
+.hero__p,.lead{font-weight:300}
+/* buttons: squared, quiet, tracked */
+.pill{border-radius:2px;min-height:48px;padding:0 24px;font-size:11.5px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;gap:12px}
+.pill svg{width:16px;height:16px}
+.pill--lg{min-height:54px;padding:0 30px;font-size:12px}
+.pill--w{box-shadow:none}
+.pill--ghost{background:rgba(255,255,255,.02)}
+.pill--ghost:hover{background:rgba(255,255,255,.06)}
+.nav .pill{border-radius:999px;letter-spacing:.14em;font-size:10.5px;min-height:38px;padding:0 18px}
+.drawer .pill{border-radius:2px}
+.nav__links a{font-size:12.5px;letter-spacing:.02em}
+.chip{border-radius:2px;font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;padding:8px 14px;background:rgba(0,0,0,.25)}
+.dot{width:6px;height:6px}
+.scroll{border-radius:2px}
+/* booking bar */
+.bk__bar{border-radius:2px;padding:6px}
+.bk__go{border-radius:2px;min-height:58px}
+@media (max-width:900px){.bk__bar{border-radius:2px}.bk__go{border-radius:2px}}
+.bk__f>span{font-size:10px;letter-spacing:.26em}
+.bk__f input,.bk__f select,.step b{font-weight:500}
+.step button{border-radius:2px;font-weight:300}
+/* facts: hairline, quiet */
+.facts li{gap:4px;padding:34px 12px}
+.facts svg{width:22px;height:22px;color:var(--amb);margin-bottom:10px}
+.facts b{font-size:17px;font-weight:400;letter-spacing:-.01em}
+.facts span{font-size:12px;letter-spacing:.04em}
+/* rooms */
+.room{border-color:var(--ln);background:#080808}
+.room:hover{transform:none;border-color:var(--ln2)}
+.room__art{aspect-ratio:5/4}
+.room__b{gap:8px;padding:24px 24px 26px}
+.room__k{font-size:10px;letter-spacing:.3em}
+.room__t{font-size:24px;font-weight:300;letter-spacing:-.03em}
+.room__d{font-size:14px;font-weight:300}
+.room__f{gap:0 14px;margin-top:6px}
+.room__f li{padding:0;border:0;border-radius:0;background:none;font-size:12px;color:var(--tx2);gap:7px}
+.room__f svg{width:15px;height:15px;color:var(--amb)}
+.room__foot{padding-top:18px}
+.room__p{font-size:21px;font-weight:300;letter-spacing:-.02em}
+.room__p small{font-size:11px;letter-spacing:.06em}
+.room__go{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--tx2)}
+.room:hover .room__go{color:var(--tx)}
+/* venues, cinema, review, visit */
+.venue{background:#080808}
+.venue__b h3{font-weight:300;letter-spacing:-.03em;font-size:30px}
+.venue__b p{font-weight:300}
+.rev blockquote{font-weight:300;letter-spacing:-.035em}
+.stars5{gap:6px}.stars5 svg{width:14px;height:14px}
+.rev__by{font-size:11px;letter-spacing:.24em;text-transform:uppercase}
+.info dt{font-size:10px;letter-spacing:.28em}
+.info dd{font-weight:400}
+.map,.gal__i,.plate,.mo{border-radius:2px}
+.gal__i figcaption{border-radius:2px;font-size:10px;letter-spacing:.24em;text-transform:uppercase;padding:7px 12px}
+.map__go{border-radius:2px;font-size:10px;letter-spacing:.22em;text-transform:uppercase}
+.rbtn{border-radius:2px}
+/* room sheet */
+.sheet__card{background:#080808}
+.sheet__b h3{font-weight:300;letter-spacing:-.035em}
+.sheet__price{font-weight:300!important;font-size:22px}
+.feats li{border-radius:2px;font-size:13px;font-weight:400;padding:13px 14px;gap:12px}
+.feats svg{width:18px;height:18px}
+.sstay{border-radius:2px;font-weight:500;font-size:13px}
+.sstay__ch{color:var(--amb);font-size:11px;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px}
+.sheet__thumbs button{border-radius:2px}
+.toast{border-radius:2px;font-size:12.5px;letter-spacing:.04em}
+.ft p{font-weight:300}
+.ft small{letter-spacing:.08em}
+@media (max-width:760px){
+  .gal{scroll-padding-left:clamp(18px,5vw,40px)}
+  .hero__btns{flex-direction:column;align-items:stretch;width:min(100%,320px);margin-left:auto;margin-right:auto}
+  .hero__btns .pill{width:100%}
+}
