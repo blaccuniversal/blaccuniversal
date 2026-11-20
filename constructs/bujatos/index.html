@@ -14,8 +14,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/bujatos/img/favicon.png">
 <link rel="apple-touch-icon" href="/constructs/bujatos/img/apple-touch-icon.png">
-<link rel="preload" as="image" href="/constructs/bujatos/img/jollof.webp" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/bujatos/bujatos.css?v=3">
+<link rel="preload" as="image" href="/constructs/bujatos/img/hero-jollof.webp" fetchpriority="high">
+<link rel="stylesheet" href="/constructs/bujatos/bujatos.css?v=5">
 </head>
 <body>
 
@@ -32,12 +32,14 @@
   <symbol id="i-ig" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3.5" y="3.5" width="17" height="17" rx="4.8"/><circle cx="12" cy="12" r="3.9"/><circle cx="17" cy="7" r=".6" fill="currentColor" stroke="none"/></g></symbol>
   <symbol id="i-tt" viewBox="0 0 24 24"><path d="M14 3.5v11.2a3.6 3.6 0 1 1-3.6-3.6M14 3.5c.4 2.6 2.3 4.4 5 4.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 2c.6 5.4 4.6 9.4 10 10-5.4.6-9.4 4.6-10 10-.6-5.4-4.6-9.4-10-10 5.4-.6 9.4-4.6 10-10z" fill="currentColor"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></g></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="1.5"/><path d="M4 7l8 6 8-6"/></g></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><rect x="8.5" y="8.5" width="11" height="11" rx="1.5"/><path d="M15.5 8.5V6a1.5 1.5 0 0 0-1.5-1.5H6A1.5 1.5 0 0 0 4.5 6v8A1.5 1.5 0 0 0 6 15.5h2.5"/></g></symbol>
 </svg>
 
 <header class="nav" data-nav>
   <a class="brand" href="#top" aria-label="Bujatos Kitchen, home"><img class="brand__mark" src="/constructs/bujatos/img/mark.png" alt="" width="529" height="610"><img class="brand__word" src="/constructs/bujatos/img/wordmark.png" alt="Bujatos" width="641" height="171"></a>
-  <nav class="nav__links" aria-label="Sections"><a href="#menu">Menu</a><a href="#deals">Deals</a><a href="#feed">Feed</a><a href="#visit">Visit</a></nav>
+  <nav class="nav__links" aria-label="Sections"><a href="#menu">Menu</a><a href="#specials">Specials</a><a href="#deals">Deals</a><a href="#events">Events</a><a href="#visit">Visit</a></nav>
   <button class="cartbtn" type="button" data-cart-open aria-label="Open your order"><svg><use href="#i-bag"/></svg><span class="cartbtn__t">Order</span><b class="cartbtn__n" data-count hidden>0</b></button>
 </header>
 
@@ -48,23 +50,24 @@
     <div class="wrap hero__in">
       <div class="hero__copy">
         <p class="kick"><svg><use href="#i-spark"/></svg>Bujatos Kitchen · Ibadan</p>
+        <p class="status" data-status hidden><i></i><span data-status-t></span></p>
         <h1 class="h1">Respect yourself.<br><em>Eat good jollof.</em></h1>
-        <p class="lead">Generous portions, honest prices, no wahala. Plates from ₦3,000 on UI–Bodija Road.</p>
+        <p class="lead">Crave the flavour, love the bite. Generous portions and honest prices, for pickup or delivery from UI–Bodija Road.</p>
         <div class="btns">
           <a class="btn btn--w" href="#menu">Order now<svg><use href="#i-arrow"/></svg></a>
           <a class="btn btn--g" href="#deals">See today’s deals</a>
         </div>
       </div>
       <div class="hero__art">
-        <div class="hero__plate"><img src="/constructs/bujatos/img/jollof.webp" alt="Bujatos jollof rice with grilled chicken, fried plantain, onion and tomato" width="925" height="510" fetchpriority="high"></div>
+        <div class="hero__plate"><img src="/constructs/bujatos/img/hero-jollof.webp" alt="A plate of Bujatos jollof rice from above, with peppered chicken and a skewer of plantain" width="890" height="890" fetchpriority="high"></div>
         <div class="badge badge--hero" aria-label="Jollof small plate, three thousand naira"><svg><use href="#scallop"/></svg><span><small>₦</small>3k<sup>.00</sup></span></div>
-        <div class="ring" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="rp" d="M100 100m-93 0a93 93 0 1 1 186 0a93 93 0 1 1-186 0"/></defs><text><textPath href="#rp">JOLLOF SMALL PLATE · GENEROUS PORTIONS · HONEST PRICES · </textPath></text></svg></div>
+        <div class="ring" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="rp" d="M100 100m-93 0a93 93 0 1 1 186 0a93 93 0 1 1-186 0"/></defs><text><textPath href="#rp">SHAWARMA · GIZDODO · PORRIDGE · JOLLOF · GOOD FOOD · GREAT MOOD · </textPath></text></svg></div>
         <div class="hero__float"><img src="/constructs/bujatos/img/yogurt.webp" alt="" width="830" height="830" loading="lazy"><span>Strawberry yogurt · ₦2,500</span></div>
       </div>
     </div>
   </section>
 
-  <div class="marq" aria-hidden="true"><div class="marq__t"><span>Generous portions</span><svg><use href="#i-spark"/></svg><span>Honest prices</span><svg><use href="#i-spark"/></svg><span>No wahala</span><svg><use href="#i-spark"/></svg><span>Food that actually shows up on time</span><svg><use href="#i-spark"/></svg><span>Generous portions</span><svg><use href="#i-spark"/></svg><span>Honest prices</span><svg><use href="#i-spark"/></svg><span>No wahala</span><svg><use href="#i-spark"/></svg><span>Food that actually shows up on time</span><svg><use href="#i-spark"/></svg></div></div>
+  <div class="marq" aria-hidden="true"><div class="marq__t"><span>Crave the flavour, love the bite</span><svg><use href="#i-spark"/></svg><span>Generous portions</span><svg><use href="#i-spark"/></svg><span>Honest prices</span><svg><use href="#i-spark"/></svg><span>Good food, great mood</span><svg><use href="#i-spark"/></svg><span>Delivery & pickup</span><svg><use href="#i-spark"/></svg><span>Crave the flavour, love the bite</span><svg><use href="#i-spark"/></svg><span>Generous portions</span><svg><use href="#i-spark"/></svg><span>Honest prices</span><svg><use href="#i-spark"/></svg><span>Good food, great mood</span><svg><use href="#i-spark"/></svg><span>Delivery & pickup</span><svg><use href="#i-spark"/></svg></div></div>
 
   <!-- MENU -->
   <section class="menu" id="menu">
@@ -85,13 +88,24 @@
     </div>
   </section>
 
+  <!-- SPECIALS -->
+  <section class="spec" id="specials">
+    <div class="wrap">
+      <div class="head reveal">
+        <div><p class="eyebrow">Our special meals · Monday to Saturday</p><h2 class="h2">Same great taste, <em>all week.</em></h2></div>
+        <p class="note">One home-style special a day. Kindly pre-order to book yours.</p>
+      </div>
+      <ol class="days" data-days></ol>
+    </div>
+  </section>
+
   <!-- MANIFESTO -->
   <section class="mani">
     <div class="wrap">
       <div class="mani__grid">
         <figure class="mcard mcard--tall reveal"><img src="/constructs/bujatos/img/man.webp" alt="A smiling man in a rust shirt eating jollof rice" width="1080" height="675" loading="lazy"><figcaption><b>Food that actually shows up on time.</b></figcaption></figure>
-        <figure class="mcard reveal"><img src="/constructs/bujatos/img/shawarma.webp" alt="A Bujatos shawarma wrap in foil, loaded with beef, cabbage and cream sauce" width="620" height="560" loading="lazy"><figcaption><small>Shawarma combo</small><b>We didn’t invent it. We perfected it.</b></figcaption></figure>
-        <figure class="mcard mcard--y reveal"><img src="/constructs/bujatos/img/spagh.webp" alt="Stir-fried spaghetti with peppered chicken and plantain" width="820" height="525" loading="lazy"><figcaption><b>Stir-fried spagh, <em>worth the walk over.</em></b></figcaption></figure>
+        <figure class="mcard reveal"><img src="/constructs/bujatos/img/shaw-close.webp" alt="A Bujatos shawarma, grill-marked and packed with creamy chicken" width="1100" height="1467" loading="lazy"><figcaption><small>Exotic shawarma</small><b>We didn’t invent it. We perfected it.</b></figcaption></figure>
+        <figure class="mcard mcard--y reveal"><img src="/constructs/bujatos/img/stirfry-plate2.webp" alt="Stir-fried spaghetti with grilled chicken, vegetables and a skewer of plantain" width="1100" height="863" loading="lazy"><figcaption><b>Stir-fried spagh, <em>worth the walk over.</em></b></figcaption></figure>
       </div>
     </div>
   </section>
@@ -123,6 +137,22 @@
     </div>
   </section>
 
+  <!-- EVENTS -->
+  <section class="events" id="events">
+    <div class="wrap evgrid">
+      <div class="reveal">
+        <p class="eyebrow">Catering</p>
+        <h2 class="h2">We also cater <em>for events.</em></h2>
+        <p class="lead lead--sm">Birthdays, office lunches, campus events and owambe. Jollof, stir-fry, shawarma, grills and gizdodo, packed and delivered.</p>
+        <div class="btns"><a class="btn btn--w" data-event href="https://wa.me/2348060421977" target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg>Plan an event</a><a class="btn btn--g" href="mailto:bujatoshawarma@gmail.com">Email us</a></div>
+      </div>
+      <div class="evpics reveal">
+        <img src="/constructs/bujatos/img/box.webp" alt="Jollof rice, peppered chicken and plantain packed in a Bujatos takeaway box" width="1100" height="1095" loading="lazy">
+        <img src="/constructs/bujatos/img/bag.webp" alt="A Bujatos shawarma wrapped in branded paper on a Bujatos bag" width="1100" height="1468" loading="lazy">
+      </div>
+    </div>
+  </section>
+
   <!-- FEED -->
   <section class="feed" id="feed">
     <div class="wrap head reveal">
@@ -132,28 +162,51 @@
     <div class="rail" data-rail></div>
   </section>
 
-  <!-- VISIT -->
-  <section class="visit" id="visit">
-    <div class="wrap vgrid">
-      <div class="reveal">
-        <p class="eyebrow">Visit</p>
-        <h2 class="h2">Come <em>hungry.</em></h2>
-        <div class="addr">
-          <span class="addr__k">Address</span>
-          <p class="addr__l1">Area 1, Preboye’s Complex</p>
-          <p class="addr__l2">UI–Bodija Road, Ibadan · Oyo State</p>
-        </div>
-        <div class="btns">
-          <a class="btn btn--w" href="https://www.google.com/maps/search/?api=1&amp;query=Preboye%27s%20Complex%2C%20UI-Bodija%20Road%2C%20Ibadan" target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg>Directions</a>
-          <a class="btn btn--g" href="tel:+2348060421977"><svg><use href="#i-phone"/></svg>Call</a>
-        </div>
+  <!-- VISIT · WAYFINDER -->
+  <section class="wf" id="visit">
+    <div class="wf__copy">
+      <p class="eyebrow">Visit</p>
+      <h2 class="h2">Come <em>hungry.</em></h2>
+      <div class="addr">
+        <span class="addr__k">Address</span>
+        <p class="addr__l1">Preboye’s World, Area 1</p>
+        <p class="addr__l2">UI–Bodija Road, beside the University of Ibadan</p>
+        <button class="addr__copy" type="button" data-copy="Bujatos Kitchen, Preboye's World, Area 1, UI-Bodija Road, Ibadan, Oyo State">Copy address</button>
       </div>
-      <dl class="vinfo reveal">
+      <div class="btns">
+        <button class="btn btn--w" type="button" id="guideBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></g></svg>Guide me there</button>
+        <a class="btn btn--g" id="gmapsLink" href="https://www.google.com/maps/search/?api=1&amp;query=Bujatos%20Kitchen%2C%20Preboye%27s%20World%2C%20UI-Bodija%20Road%2C%20Ibadan" target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg>Directions</a>
+      </div>
+    </div>
+    <div class="wf__stage" id="stage">
+      <canvas id="map" aria-label="Live wayfinding map to Bujatos Kitchen"></canvas>
+      <div class="hud hud--tr">Wayfinder <b>/ 01</b><br><span id="hudCoord">&nbsp;</span><br><span class="hud__st" id="hudStatus"><i></i><span id="hudStatusText">Standby</span></span></div>
+      <div class="hud hud--stats">
+        <div class="hud__row"><span>To Bujatos</span><span id="hudDist">&mdash;</span></div>
+        <div class="hud__meter"><i id="hudMeter"></i></div>
+        <div class="hud__grid"><div><span>ETA</span><b id="hudEta">&mdash;</b></div><div><span>Bearing</span><b id="hudBearing">&mdash;</b></div><div><span>Heading</span><b id="hudHeading">N-UP</b></div></div>
+      </div>
+      <div class="wtoast" id="toast">
+        <div class="wtoast__main">
+          <div class="wtoast__ic"><svg id="toastArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></div>
+          <div><div class="wtoast__t" id="toastText">In Ibadan? Tap “Guide me there” for a live compass.</div><div class="wtoast__s" id="toastSub">Preboye’s World · UI–Bodija Road</div></div>
+        </div>
+        <div class="wtoast__acts" id="toastActions"></div>
+        <div class="wtoast__bar"><i></i></div>
+      </div>
+    </div>
+    <div class="wrap wf__info">
+      <div class="hours">
+        <p class="hours__h"><svg><use href="#i-clock"/></svg>Opening hours</p>
+        <ul class="hours__l" data-hours></ul>
+      </div>
+      <dl class="vinfo">
         <div><dt><svg><use href="#i-wa"/></svg>WhatsApp</dt><dd><a href="https://wa.me/2348060421977" target="_blank" rel="noopener">+234 806 042 1977</a></dd></div>
-        <div><dt><svg><use href="#i-phone"/></svg>Call</dt><dd><a href="tel:+2348060421977">+234 806 042 1977</a></dd></div>
+        <div><dt><svg><use href="#i-phone"/></svg>Call</dt><dd><a href="tel:+2348060421977">0806 042 1977</a></dd></div>
         <div><dt><svg><use href="#i-ig"/></svg>Instagram</dt><dd><a href="https://www.instagram.com/bujatoskitchen/" target="_blank" rel="noopener">@bujatoskitchen</a></dd></div>
         <div><dt><svg><use href="#i-tt"/></svg>TikTok</dt><dd><a href="https://www.tiktok.com/@bujatoskitchen" target="_blank" rel="noopener">@bujatoskitchen</a></dd></div>
-        <div class="vinfo__w"><dt><svg><use href="#i-bag"/></svg>Delivery</dt><dd>Order here on WhatsApp, or on <a href="https://www.barqlyapp.com" target="_blank" rel="noopener">Barqly</a> and <a href="https://glovoapp.com/ng/en/ibadan/stores/bujatos-meals-ibd" target="_blank" rel="noopener">Glovo</a>.</dd></div>
+        <div class="vinfo__w"><dt><svg><use href="#i-mail"/></svg>Email</dt><dd><a href="mailto:bujatoshawarma@gmail.com">bujatoshawarma@gmail.com</a></dd></div>
+        <div class="vinfo__w"><dt><svg><use href="#i-bag"/></svg>Delivery &amp; pickup</dt><dd>Order here on WhatsApp, or on <a href="https://www.barqlyapp.com" target="_blank" rel="noopener">Barqly</a> and <a href="https://glovoapp.com/ng/en/ibadan/stores/bujatos-meals-ibd" target="_blank" rel="noopener">Glovo</a>.</dd></div>
       </dl>
     </div>
   </section>
@@ -161,7 +214,7 @@
 
 <footer class="ft"><div class="wrap ft__in">
   <img class="ft__logo" src="/constructs/bujatos/img/lockup.png" alt="Bujatos" width="823" height="208" loading="lazy">
-  <p>Respect yourself. Eat good jollof.</p>
+  <p>Crave the flavour, love the bite.</p>
   <p class="ft__s">A construct by <a href="/">BLACC Universal</a>. Not the official Bujatos website.</p>
 </div></footer>
 
@@ -186,6 +239,7 @@
     <div class="cart__f">
       <div class="cart__tot"><span>Subtotal</span><b data-total>₦0</b></div>
       <p class="cart__hint" data-hint hidden>Items marked “ask” are priced by the kitchen.</p>
+      <div class="pay"><div><span class="pay__k">Pay by transfer</span><b>5009845374</b><small>Moniepoint · BUJATO’s Kitchen</small></div><button type="button" class="pay__c" data-copy="5009845374" aria-label="Copy account number"><svg><use href="#i-copy"/></svg></button></div>
       <button class="btn btn--r btn--full" type="button" data-send disabled><svg><use href="#i-wa"/></svg>Send order on WhatsApp</button>
     </div>
   </aside>
@@ -194,6 +248,7 @@
 <div class="lbx" data-lbx hidden><button class="lbx__x" type="button" data-lbx-close aria-label="Close"><svg><use href="#i-x"/></svg></button><img alt="" data-lbx-img></div>
 <div class="toast" data-toast hidden></div>
 
-<script src="/constructs/bujatos/bujatos.js?v=1" defer></script>
+<script src="/constructs/bujatos/bujatos.js?v=2" defer></script>
+<script src="/constructs/bujatos/bujatos-wf.js?v=1" defer></script>
 </body>
 </html>

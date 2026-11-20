@@ -8,16 +8,17 @@
 
   /* Prices come from Bujatos' own posts. null = price on request. */
   var DISHES = [
-    { id: 'jollof', cat: 'plates', name: 'Jollof Small Plate', desc: 'Smoky jollof, grilled chicken, fried plantain, onion and tomato. Generous portions, honest prices.', price: 3000, img: 'jollof.webp' },
-    { id: 'spagh', cat: 'plates', name: 'Stir-fried Spaghetti', desc: 'Stir-fried spagh with peppered chicken and plantain. Worth the walk over.', price: 3000, img: 'spagh.webp' },
-    { id: 'exec', cat: 'grills', name: 'Executive Plate', desc: 'Chicken and chips with plantain, under a heap of fresh pepper sauce.', price: 5000, img: 'chicken.webp', tag: 'Chicken & chips' },
+    { id: 'jollof', cat: 'plates', name: 'Jollof Small Plate', desc: 'Smoky jollof, peppered chicken and a skewer of fried plantain. Generous portions, honest prices.', price: 3000, img: 'jollof-plate.webp' },
+    { id: 'spagh', cat: 'plates', name: 'Stir-fried Spaghetti', desc: 'Stir-fried spagh with vegetables, grilled chicken and plantain. Worth the walk over.', price: 3000, img: 'stirfry-plate.webp' },
+    { id: 'exec', cat: 'grills', name: 'Executive Plate', desc: 'Chicken and chips with plantain, under a heap of fresh pepper sauce.', price: 5000, img: 'chips-plate.webp', tag: 'Chicken & chips' },
+    { id: 'bbqfish', cat: 'grills', name: 'Barbecue Fish', desc: 'Whole fish grilled in foil with pepper sauce, chips, plantain and coleslaw.', price: null, img: 'fish.webp' },
+    { id: 'shaw1', cat: 'wraps', name: 'Exotic Shawarma', desc: 'Grill-marked wrap with creamy chicken and one hot dog.', price: null, img: 'shaw-1dog.webp', tag: '1 hot dog' },
+    { id: 'shaw2', cat: 'wraps', name: 'Exotic Shawarma, Loaded', desc: 'Extra chicken and two hot dogs. For when one is not enough.', price: null, img: 'shaw-2dog.webp', tag: 'Extra chicken · 2 hot dogs' },
     { id: 'combo', cat: 'wraps', name: 'Shawarma Combo', desc: 'We didn’t invent the shawarma combo. We perfected it.', price: null, img: 'shawarma.webp' },
     { id: 'yogurt', cat: 'drinks', name: 'Strawberry Yogurt', desc: 'Strawberry, milk and sugar, bottled cold. The drink your group chat keeps asking about.', price: 2500, img: 'yogurt.webp' }
   ];
   var MORE = [
-    { id: 'bbqfish', cat: 'grills', name: 'Barbecue fish, chips & plantain' },
     { id: 'guinea', cat: 'grills', name: 'Guinea fowl' },
-    { id: 'shaw', cat: 'wraps', name: 'Chicken shawarma' },
     { id: 'club', cat: 'wraps', name: 'Club sandwich' },
     { id: 'gizdodo', cat: 'sides', name: 'Gizdodo' },
     { id: 'assorted', cat: 'sides', name: 'Peppered assorted meat' },
@@ -26,7 +27,18 @@
     { id: 'zobo', cat: 'drinks', name: 'Zobo' },
     { id: 'tiger', cat: 'drinks', name: 'Tiger nut drink' }
   ];
+  /* Weekly specials (Mon–Sat, pre-order) and opening hours, from Bujatos' WhatsApp Business profile */
+  var SPECIALS = [null,
+    { id: 'sp1', name: 'White rice with beans and stew' },
+    { id: 'sp2', name: 'Ofada rice with ayamase sauce' },
+    { id: 'sp3', name: 'Ewa agoyin with agoyin sauce' },
+    { id: 'sp4', name: 'Porridge with vegetable sauce' },
+    { id: 'sp5', name: 'Pounded yam with efo riro or egusi' },
+    { id: 'sp6', name: 'Yam and egg sauce, or amala dudu and ewedu' }];
+  var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  var HOURS = [[17, 0, 21, 0], [13, 0, 21, 35], [13, 0, 21, 35], [13, 0, 21, 0], [13, 0, 21, 35], [13, 0, 21, 35], [13, 0, 21, 35]];
   var ALL = {}; DISHES.concat(MORE).forEach(function (d) { ALL[d.id] = d; });
+  SPECIALS.forEach(function (d, i) { if (d) { d.cat = 'special'; d.price = null; d.day = DAYS[i]; ALL[d.id] = d; } });
 
   var cart = {}, mode = 'pickup', filter = 'all';
   try { var saved = JSON.parse(localStorage.getItem(KEY) || 'null'); if (saved && saved.items) { cart = saved.items; mode = saved.mode || 'pickup'; } } catch (e) {}
@@ -35,7 +47,7 @@
 
   function ctrl(id) {
     var q = cart[id] || 0;
-    if (!q) return '<button class="add" type="button" data-add="' + id + '" aria-label="Add ' + ALL[id].name + '"><svg><use href="#i-plus"/></svg>Add</button>';
+    if (!q) return '<button class="add" type="button" data-add="' + id + '" aria-label="Add ' + ALL[id].name + '"><svg><use href="#i-plus"/></svg>' + (ALL[id].day ? 'Pre-order' : 'Add') + '</button>';
     return '<span class="step"><button type="button" data-dec="' + id + '" aria-label="Remove one"><svg><use href="#i-minus"/></svg></button><b>' + q + '</b><button type="button" data-add="' + id + '" aria-label="Add one"><svg><use href="#i-plus"/></svg></button></span>';
   }
   function priceHTML(d) { return d.price ? '<span class="price">' + naira(d.price) + '</span>' : '<span class="price price--ask">Ask</span>'; }
@@ -71,7 +83,7 @@
     linesEl.innerHTML = ids.map(function (k) {
       var d = ALL[k];
       var pic = d.img ? '<img src="' + IMG + d.img + '" alt="">' : '<span class="ph"><svg><use href="#i-spark"/></svg></span>';
-      return '<li>' + pic + '<div><b>' + d.name + '</b><small>' + (d.price ? naira(d.price * cart[k]) : 'Price on request') + '</small></div><span data-ctrl="' + k + '">' + ctrl(k) + '</span></li>';
+      return '<li>' + pic + '<div><b>' + d.name + '</b><small>' + (d.day ? 'Pre-order · ' + d.day + ' special' : d.price ? naira(d.price * cart[k]) : 'Price on request') + '</small></div><span data-ctrl="' + k + '">' + ctrl(k) + '</span></li>';
     }).join('');
     $$('.seg button').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-mode') === mode); });
     $('[data-addr]').hidden = mode !== 'delivery';
@@ -96,7 +108,7 @@
     var name = $('[data-in="name"]').value.trim(), addr = $('[data-in="addr"]').value.trim(), note = $('[data-in="note"]').value.trim();
     if (mode === 'delivery' && !addr) { toast('Add a delivery address'); $('[data-in="addr"]').focus(); return; }
     var t = totals(), L = ['Hi Bujatos! I’d like to order:', ''];
-    Object.keys(cart).forEach(function (k) { var d = ALL[k]; L.push('• ' + cart[k] + ' × ' + d.name + ' — ' + (d.price ? naira(d.price * cart[k]) : 'price to confirm')); });
+    Object.keys(cart).forEach(function (k) { var d = ALL[k]; L.push('• ' + cart[k] + ' × ' + d.name + (d.day ? ' (' + d.day + ' special, pre-order)' : '') + ' — ' + (d.price ? naira(d.price * cart[k]) : 'price to confirm')); });
     L.push('', 'Subtotal: ' + naira(t.sum) + (t.ask ? ' (plus items to confirm)' : ''));
     L.push(mode === 'delivery' ? 'Delivery to: ' + addr : 'Pickup at Preboye’s Complex');
     if (name) L.push('Name: ' + name);
@@ -114,7 +126,7 @@
   });
 
   /* feed */
-  var POSTS = [['p-respect', 'Respect yourself. Eat good jollof!'], ['p-jollof', 'Bujatos Jollof small plate, ₦3k'], ['p-combo', 'We didn’t invent the shawarma combo, but we perfected it'], ['p-chicken', 'Executive plate: chicken and chips, ₦5k'], ['p-spagh', 'Stir-fried spagh, worth the walk over, ₦3k'], ['p-yogurt', 'Strawberry yogurt drink, ₦2,500'], ['p-ontime', 'Food that actually shows up on time'], ['p-barqly-jollof', 'Jollof, done right, on Barqly'], ['p-barqly-stirfry', 'Your stir-fry combo, for less, on Barqly'], ['p-barqly-free', 'Free delivery on your first Barqly order']];
+  var POSTS = [['p-specials', 'Our special meals, Monday to Saturday'], ['p-respect', 'Respect yourself. Eat good jollof!'], ['p-jollof', 'Bujatos Jollof small plate, ₦3k'], ['p-combo', 'We didn’t invent the shawarma combo, but we perfected it'], ['p-chicken', 'Executive plate: chicken and chips, ₦5k'], ['p-spagh', 'Stir-fried spagh, worth the walk over, ₦3k'], ['p-yogurt', 'Strawberry yogurt drink, ₦2,500'], ['p-ontime', 'Food that actually shows up on time'], ['p-barqly-jollof', 'Jollof, done right, on Barqly'], ['p-barqly-stirfry', 'Your stir-fry combo, for less, on Barqly'], ['p-barqly-free', 'Free delivery on your first Barqly order']];
   var rail = $('[data-rail]');
   rail.innerHTML = POSTS.map(function (p) { return '<button class="post" type="button" data-zoom="' + IMG + p[0] + '.webp"><img src="' + IMG + p[0] + '.webp" alt="' + p[1] + '" loading="lazy"></button>'; }).join('');
   var prev = $('[data-go="-1"]'), next = $('[data-go="1"]');
@@ -132,7 +144,11 @@
   /* copy code */
   $$('[data-copy]').forEach(function (b) {
     b.addEventListener('click', function () {
-      var t = b.getAttribute('data-copy'), done = function () { toast('Code copied: ' + t); var s = $('[data-copied]'); if (s) s.textContent = 'Copied. Paste it at checkout on Barqly.'; };
+      var t = b.getAttribute('data-copy'), done = function () {
+        if (t === 'BUJATO2026') { toast('Code copied: ' + t); var s = $('[data-copied]'); if (s) s.textContent = 'Copied. Paste it at checkout on Barqly.'; }
+        else if (/^\d+$/.test(t)) toast('Account number copied');
+        else toast('Address copied');
+      };
       if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, function () {});
       else { var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); done(); } catch (e) {} a.remove(); }
     });
@@ -152,5 +168,36 @@
     $$('.reveal').forEach(function (el) { io.observe(el); });
   } else $$('.reveal').forEach(function (el) { el.classList.add('is-in'); });
 
-  renderMenu(); renderCart();
+  /* time in Lagos */
+  function lagosNow() { var d = new Date(); return new Date(d.getTime() + d.getTimezoneOffset() * 60000 + 3600000); }
+  function hm(h, m) { var ap = h >= 12 ? 'PM' : 'AM', hh = h % 12 || 12; return hh + (m ? ':' + String(m).padStart(2, '0') : '') + ' ' + ap; }
+
+  /* specials */
+  var daysEl = $('[data-days]');
+  function renderDays() {
+    var today = lagosNow().getDay();
+    daysEl.innerHTML = SPECIALS.map(function (d, i) {
+      if (!d) return '';
+      var on = i === today;
+      return '<li class="day' + (on ? ' day--on' : '') + '"><span class="day__d">' + DAYS[i] + (on ? '<em>Today</em>' : '') + '</span><p class="day__n">' + d.name + '</p><span data-ctrl="' + d.id + '">' + ctrl(d.id) + '</span></li>';
+    }).join('');
+  }
+
+  /* hours + open status */
+  function renderHours() {
+    var now = lagosNow(), d = now.getDay(), mins = now.getHours() * 60 + now.getMinutes();
+    var order = [1, 2, 3, 4, 5, 6, 0];
+    $('[data-hours]').innerHTML = order.map(function (i) { var h = HOURS[i]; return '<li' + (i === d ? ' class="on"' : '') + '><span>' + DAYS[i] + '</span><b>' + hm(h[0], h[1]) + ' – ' + hm(h[2], h[3]) + '</b></li>'; }).join('');
+    var h = HOURS[d], o = h[0] * 60 + h[1], c = h[2] * 60 + h[3], st = $('[data-status]'), t;
+    if (mins >= o && mins < c) { t = 'Open now · until ' + hm(h[2], h[3]); st.classList.add('is-open'); }
+    else if (mins < o) { t = 'Opens today at ' + hm(h[0], h[1]); st.classList.remove('is-open'); }
+    else { var nx = (d + 1) % 7, n = HOURS[nx]; t = 'Closed now · opens ' + DAYS[nx] + ' at ' + hm(n[0], n[1]); st.classList.remove('is-open'); }
+    $('[data-status-t]').textContent = t; st.hidden = false;
+  }
+
+  var ev = $('[data-event]');
+  if (ev) ev.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hi Bujatos! I’d like to plan catering for an event.\n\nDate:\nNumber of guests:\nLocation:\nMeals:');
+
+  renderMenu(); renderDays(); renderHours(); renderCart();
+  setInterval(renderHours, 60000);
 })();
