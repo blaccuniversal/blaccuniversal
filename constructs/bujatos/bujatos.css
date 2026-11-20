@@ -268,3 +268,97 @@ img{display:block;max-width:100%}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 
 body.is-lock .cxg-dock,body.is-lock .obar{display:none!important}
+
+/* ===== BLACC Clean · refined layer (keeps Bujatos red, yellow, mark and badge) ===== */
+:root{--bg:#070606;--bg2:#0e0c0b;--bg3:#151210;--ln:rgba(255,246,233,.09);--ln2:rgba(255,246,233,.18);--tx2:#a99f95;--tx3:#6e665e}
+.eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.34em}
+.h2{font-weight:300;letter-spacing:-.045em;line-height:1.02;font-stretch:100%}
+.h2 em{font-style:italic;font-weight:600;color:var(--yel)}
+.note{font-size:14.5px}
+/* hero */
+.hero__glow{background:radial-gradient(closest-side,rgba(208,2,27,.22),rgba(208,2,27,.06) 55%,transparent)}
+.kick{font-weight:600;letter-spacing:.34em;font-size:10.5px}
+.h1{font-weight:300;letter-spacing:-.05em;line-height:.96;font-stretch:100%;font-size:clamp(46px,7vw,98px)}
+.h1 em{font-weight:700;letter-spacing:-.055em}
+.lead{font-size:clamp(15.5px,1.4vw,18px)}
+.hero__plate{box-shadow:0 40px 90px -40px rgba(0,0,0,.9),0 0 0 1px var(--ln2);outline:1px solid var(--ln);outline-offset:14px}
+.ring text{fill:var(--tx3);font-size:7.6px;font-weight:600;letter-spacing:.5em}
+.badge svg{filter:drop-shadow(0 16px 30px rgba(0,0,0,.55))}
+.hero__float{border-radius:2px;border-color:var(--ln2);background:rgba(14,12,11,.88);font-weight:500;letter-spacing:.02em}
+/* buttons: squared, tracked */
+.btn{font-weight:600;letter-spacing:.2em;font-size:11.5px}
+.btn--w:hover{background:#fff;box-shadow:0 0 0 1px var(--yel) inset}
+.btn--r{background:var(--tx);color:#070606}
+.btn--r:hover{background:#fff}
+.btn--r svg{color:#1c9a4a}
+.cartbtn{background:var(--tx);color:#070606;font-weight:600;letter-spacing:.18em;font-size:11px}
+.cartbtn:hover{background:#fff}
+.cartbtn__n{background:var(--red);color:#fff}
+.nav{background:rgba(7,6,6,.55);border-color:var(--ln)}
+.nav.is-s{background:rgba(7,6,6,.84)}
+.nav__links a{font-weight:500;font-size:12.5px;letter-spacing:.02em}
+/* marquee: quiet hairline band */
+.marq{background:var(--bg);color:var(--tx2);border-block:1px solid var(--ln)}
+.marq__t{padding:20px 0;gap:34px}
+.marq__t span{font-size:clamp(13px,1.3vw,15px);font-weight:500;letter-spacing:.3em;text-transform:uppercase;font-stretch:100%}
+.marq__t svg{width:11px;height:11px;color:var(--yel)}
+/* menu */
+.filters button{height:38px;font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase}
+.dish{border-radius:2px;background:var(--bg2)}
+.dish:hover{transform:none;border-color:var(--ln2)}
+.dish__tag{border-radius:2px;font-weight:600;letter-spacing:.24em;font-size:9.5px}
+.dish__n{font-size:19px;font-weight:600;letter-spacing:-.015em}
+.price{font-size:20px;font-weight:600;letter-spacing:-.02em}
+.price--ask{font-size:10.5px;font-weight:600;letter-spacing:.28em}
+.add{border:1px solid var(--ln2);border-radius:2px;background:none;color:var(--tx);font-weight:600;letter-spacing:.2em;font-size:10.5px;height:40px}
+.add:hover{background:var(--tx);color:#070606;border-color:var(--tx)}
+.add svg{color:var(--yel)}
+.add:hover svg{color:var(--red)}
+.step{border-radius:2px;height:40px}
+.step button{height:40px;width:40px}
+.step b{color:var(--yel)}
+.more__h{font-weight:600;letter-spacing:.3em}
+.more__l li span{font-weight:400}
+.more__l .add{border-color:var(--ln)}
+/* manifesto: black, hairline frames, red only as accent */
+.mani{background:var(--bg);border-top:1px solid var(--ln)}
+.mani::before{opacity:1;background:radial-gradient(60% 50% at 15% 0%,rgba(208,2,27,.16),transparent 70%)}
+.mcard{border-radius:2px;outline:1px solid var(--ln);outline-offset:-1px}
+.mcard b{font-weight:300;letter-spacing:-.035em;font-stretch:100%}
+.mcard small{font-weight:600;letter-spacing:.3em}
+.mcard figcaption::before{content:"";display:block;width:28px;height:2px;margin-bottom:14px;background:var(--red)}
+.mcard--y figcaption b{color:var(--tx)}
+.mcard--y figcaption b em{color:var(--yel)}
+/* deals: dark, yellow as the accent */
+.deals{background:var(--bg);color:var(--tx);border-top:1px solid var(--ln)}
+.deals::before{opacity:1;background:radial-gradient(50% 60% at 90% 10%,rgba(255,193,7,.09),transparent 70%);-webkit-mask-image:none;mask-image:none}
+.eyebrow--d{color:var(--yel)}
+.note--d{color:var(--tx2)}
+.deal{border-radius:2px;background:var(--bg2);border:1px solid var(--ln);box-shadow:none}
+.deal__k{font-weight:400;color:var(--tx2)}
+.deal__p b{font-weight:600}
+.deal__p s{text-decoration-color:var(--red)}
+.ticket{-webkit-mask:none;mask:none;border:1px dashed rgba(255,193,7,.45);border-radius:2px;background:linear-gradient(160deg,rgba(255,193,7,.07),transparent 60%),var(--bg2)}
+.ticket__k{font-weight:600;letter-spacing:.34em}
+.ticket__code{font-weight:600;letter-spacing:.08em;border-bottom-style:solid;border-bottom-width:1px}
+/* feed, visit, footer */
+.post{border-radius:2px}
+.rbtn{border-radius:2px}
+.addr__l1{font-weight:300}
+.vinfo dt{font-weight:600;letter-spacing:.3em}
+.ft__logo{width:150px;opacity:.95}
+/* order bar + cart */
+.obar{border-radius:2px;background:var(--tx);color:#070606;height:56px;padding:0 20px 0 8px}
+.obar__n{border-radius:2px;background:var(--red);color:#fff;width:40px;height:40px}
+.obar__t{font-weight:600;letter-spacing:.2em;font-size:11px}
+.obar b{font-weight:600}
+.cart__p{background:var(--bg)}
+.cart__h h3{font-weight:300;letter-spacing:-.03em;font-size:26px}
+.cart__x,.lbx__x{border-radius:2px}
+.cart__l img,.cart__l .ph{border-radius:2px}
+.seg{border-radius:2px}
+.seg button{border-radius:1px;font-weight:600;letter-spacing:.2em;font-size:11px}
+.fld span{font-weight:600}
+.cart__f{background:var(--bg)}
+.cart__tot b{font-weight:600}
+.toast{border-radius:2px;background:var(--tx);color:#070606;font-weight:600}
