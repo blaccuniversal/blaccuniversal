@@ -233,8 +233,8 @@ function W2S(p){ // world -> screen
 /* ---- drawing ---- */
 function drawLabel(p,txt,sub,color,align){
   const q=W2S(p); ctx.textAlign=align||'center';
-  ctx.font='500 10.5px Jost,sans-serif';ctx.letterSpacing='2px'; ctx.fillStyle=color||'rgba(239,230,223,.85)';
-  ctx.fillText(txt,q.x,q.y); if(sub){ctx.font='400 9.5px Jost,sans-serif';ctx.fillStyle='rgba(239,233,220,.7)';ctx.fillText(sub,q.x,q.y+14)}
+  ctx.font='500 10.5px "Open Sans",sans-serif';ctx.letterSpacing='2px'; ctx.fillStyle=color||'rgba(239,230,223,.85)';
+  ctx.fillText(txt,q.x,q.y); if(sub){ctx.font='400 9.5px "Open Sans",sans-serif';ctx.fillStyle='rgba(239,233,220,.7)';ctx.fillText(sub,q.x,q.y+14)}
 }
 function drawRoute(r,fromD,t){
   if(!r)return;
@@ -269,7 +269,7 @@ function drawLodge(t){
   ctx.restore();
   ctx.beginPath();ctx.arc(q.x,q.y,3.2,0,7);ctx.fillStyle='#fff';ctx.fill();
   ctx.beginPath();ctx.arc(q.x,q.y,6,0,7);ctx.strokeStyle='#b8653a';ctx.lineWidth=1.5;ctx.stroke();
-  ctx.letterSpacing='3px';ctx.textAlign='center';ctx.font='600 11px Jost,sans-serif';ctx.fillStyle='#fff';ctx.fillText('MALIMBE LODGE',q.x,q.y+26);
+  ctx.letterSpacing='3px';ctx.textAlign='center';ctx.font='600 11px "Open Sans",sans-serif';ctx.fillStyle='#fff';ctx.fillText('MALIMBE LODGE',q.x,q.y+26);
 }
 function drawCompass(t){
   const u=W2S(state.userW), R=mobile()?62:78;
@@ -280,7 +280,7 @@ function drawCompass(t){
   ctx.rotate(-view.rot);
   ctx.beginPath();ctx.arc(0,0,R,0,7);ctx.strokeStyle='rgba(239,230,223,.18)';ctx.lineWidth=1;ctx.stroke();
   for(let a=0;a<360;a+=5){const big=a%30===0,r1=R-(big?9:4);ctx.beginPath();ctx.moveTo(Math.sin(a*D2R)*r1,-Math.cos(a*D2R)*r1);ctx.lineTo(Math.sin(a*D2R)*R,-Math.cos(a*D2R)*R);ctx.strokeStyle=big?'rgba(239,230,223,.55)':'rgba(239,230,223,.2)';ctx.lineWidth=1;ctx.stroke()}
-  ctx.font='600 10px Jost,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font='600 10px "Open Sans",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
   [['N',0],['E',90],['S',180],['W',270]].forEach(([l,a])=>{const x=Math.sin(a*D2R)*(R+13),y=-Math.cos(a*D2R)*(R+13);ctx.save();ctx.translate(x,y);ctx.rotate(view.rot);ctx.fillStyle=l==='N'?'#d98a50':'rgba(239,230,223,.6)';ctx.fillText(l,0,0);ctx.restore()});
   // lodge bearing chevron
   const b=brg(state.user,LODGE)*D2R;
@@ -477,7 +477,7 @@ function frame(t){
   if(view.s>.05){
     const il=warp(g2w(8*C,-2*C)), ilq=W2S(il), lq=W2S({x:0,y:0});
     if(Math.hypot(ilq.x-lq.x,ilq.y-lq.y)>150) drawLabel(il,'IITA FOREST','1,000-acre research reserve','rgba(190,215,160,.75)');
-    const oy=warp(g2w(1*C,-9*C)); const q=W2S(oy); ctx.save();ctx.translate(q.x+10,q.y);ctx.rotate(-view.rot+(-15*D2R)+Math.PI/2);ctx.font='500 9.5px Jost,sans-serif';ctx.fillStyle='rgba(239,230,223,.4)';ctx.textAlign='center';ctx.fillText('OYO ROAD',0,0);ctx.restore();
+    const oy=warp(g2w(1*C,-9*C)); const q=W2S(oy); ctx.save();ctx.translate(q.x+10,q.y);ctx.rotate(-view.rot+(-15*D2R)+Math.PI/2);ctx.font='500 9.5px "Open Sans",sans-serif';ctx.fillStyle='rgba(239,230,223,.4)';ctx.textAlign='center';ctx.fillText('OYO ROAD',0,0);ctx.restore();
   }
   if(state.mode==='idle'||state.mode==='blocked'||state.mode==='outside'){
     drawRoute(ambient,0,t);
