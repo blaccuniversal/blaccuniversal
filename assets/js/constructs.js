@@ -10,7 +10,8 @@
     { name: 'Cinema D Hybrid', tag: 'Cinema · Ibadan', path: '/constructs/cinema/', img: '/constructs/cinema/img/cover.webp', logo: '/constructs/cinema/img/logo.png', ar: '103/94', lw: '34%' },
     { name: 'Mcrystal Cinemas', tag: 'Cinema · Lagos', path: '/constructs/mcrystal/', img: '/constructs/mcrystal/img/cover.webp?v=2', logo: '/constructs/mcrystal/img/logo.png', ar: '824/759', lw: '40%' },
     { name: 'Brava Hotel', tag: 'Hotel · Ibadan', path: '/constructs/brava/', img: '/constructs/brava/img/cover.webp', logo: '/constructs/brava/img/logo.png?v=2', ar: '824/393', lw: '62%' },
-    { name: 'Malimbe Lodge', tag: 'Lodge · Ibadan', path: '/constructs/malimbe/', img: '/constructs/malimbe/img/cover.webp', logo: '/constructs/malimbe/img/mark.png', ar: '207/164', lw: '34%' }
+    { name: 'Malimbe Lodge', tag: 'Lodge · Ibadan', path: '/constructs/malimbe/', img: '/constructs/malimbe/img/cover.webp', logo: '/constructs/malimbe/img/mark.png', ar: '207/164', lw: '34%' },
+    { name: 'Bujatos Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/bujatos/', img: '/constructs/bujatos/img/cover.webp', logo: '/constructs/bujatos/img/lockup.png', ar: '823/208', lw: '62%' }
   ];
 
   // tool rotation
