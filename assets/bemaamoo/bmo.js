@@ -499,7 +499,7 @@
   var mqP = null;
   function loadMqtt() {
     if (window.mqtt) return Promise.resolve();
-    if (!mqP) mqP = new Promise(function (ok, no) { var sc = document.createElement('script'); sc.src = '/assets/pqt/mqtt.min.js?v=5104'; sc.onload = ok; sc.onerror = function () { mqP = null; no(); }; document.head.appendChild(sc); });
+    if (!mqP) mqP = new Promise(function (ok, no) { var sc = document.createElement('script'); sc.src = '/assets/bemaamoo/mqtt.min.js?v=1'; sc.onload = ok; sc.onerror = function () { mqP = null; no(); }; document.head.appendChild(sc); });
     return mqP;
   }
   function netLink() {
@@ -508,9 +508,9 @@
     BROKERS.forEach(function (url) {
       var c; try { c = window.mqtt.connect(url, { clientId: 'bmo_' + DEV + '_' + Math.random().toString(16).slice(2, 6), clean: true, connectTimeout: 8000, reconnectPeriod: 1500, keepalive: 20 }); } catch (e) { return; }
       me.cls.push(c);
-      c.on('connect', function () { if (NET !== me) return; c.subscribe(T + (host ? 'in' : 'state')); if (host) pubNow(); else sendIn({ t: 'join', name: me.name }); netPaint(); });
+      c.on('connect', function () { if (NET !== me) return; c.subscribe(host ? T + 'in' : [T + 'state', T + 'in']); if (host) pubNow(); else sendIn({ t: 'join', name: me.name }); netPaint(); });
       c.on('close', function () { if (NET === me) netPaint(); });
-      c.on('message', function (tp, pl) { if (NET !== me) return; var m; try { m = JSON.parse(pl.toString()); } catch (e) { return; } if (host) hostMsg(m); else guestMsg(m); });
+      c.on('message', function (tp, pl) { if (NET !== me) return; var m; try { m = JSON.parse(pl.toString()); } catch (e) { return; } if (host) hostMsg(m); else if (tp === T + 'in') guestMove(m); else guestMsg(m); });
       c.on('error', function () {});
     });
     clearInterval(me.beatT);
@@ -533,7 +533,7 @@
 
   /* host: publish the whole game (retained, so late joiners get it at once) */
   var pubT = null;
-  function pubSoon() { if (!isHost() || pubT) return; pubT = setTimeout(function () { pubT = null; pubNow(); }, 100); }
+  function pubSoon() { if (!isHost() || pubT) return; pubT = setTimeout(function () { pubT = null; pubNow(); }, 0); }
   function pubNow() {
     if (!isHost()) return;
     var on = {};
@@ -565,7 +565,7 @@
     if (!G) return;
     var r = R(), cp = G.players[G.turn];
     if (!cp || cp.dev !== m.dev || r.done || !r.run) { pubSoon(); return; }
-    if (m.t === 'skip') { B.skip(G); save(); msg(''); paintGame(); toast(cp.name + ' skipped'); notifyTurn(); return; }
+    if (m.t === 'skip') { if (m.n != null && m.n !== r.entries.length) { pubSoon(); return; } B.skip(G); save(); msg(''); paintGame(); toast(cp.name + ' skipped'); notifyTurn(); return; }
     if (m.t === 'word') {
       getList(r.cat).then(function (Lst) { hostAdd(m, Lst); }, function () { hostAdd(m, null); });
     }
@@ -601,6 +601,7 @@
     var pr = prev && prev.rounds.length === st.G.rounds.length ? prev.rounds[prev.rounds.length - 1] : null;
     G = st.G;
     var r = R();
+    getList(r.cat);
     if (cur !== 'game') show('game');
     if (pr && r.entries.length === pr.entries.length + 1) {
       lastAdded = r.entries.length - 1;
@@ -624,15 +625,39 @@
     if (running && myTurn() && !wasMine) yourTurn();
     else if (running && myTurn()) focusIn();
   }
+  // Moves travel straight to every phone; each phone applies them with the same rules and word list,
+  // so words land at once. The host's copy of the game still has the final say a moment later.
+  function applyMove(m, L) {
+    if (!G) return false;
+    var r = R(), cp = G.players[G.turn];
+    if (!cp || cp.dev !== m.dev || r.done || !r.run || m.n !== r.entries.length) return false;
+    if (m.t === 'skip') { B.skip(G); msg(''); paintGame(); if (cp.dev !== DEV) toast(cp.name + ' skipped'); notifyTurn(); return true; }
+    var c = B.check(G, m.w, L ? L.full : null);
+    if (!c.ok) return false;
+    var e = B.add(G, c.w, { mav: L ? L.mav : null });
+    lastAdded = r.entries.length - 1;
+    if (m.dev === DEV) { $('[data-in]').value = ''; msg(''); }
+    celebrate(e); paintGame(); lastAdded = -1;
+    if (!r.done) notifyTurn();
+    return true;
+  }
+  function guestMove(m) {
+    if (!m || !G || (m.t !== 'word' && m.t !== 'skip') || m.dev === DEV) return;
+    if (m.t === 'skip') { applyMove(m, null); return; }
+    getList(R().cat).then(function (L) { applyMove(m, L); }, function () {});
+  }
   function guestSubmit(raw) {
     var r = R(), n = r.entries.length;
+    var L0 = null;
     function send(w) {
       var at = Date.now();
-      NET.pend = { w: w, n: n, at: at }; paintDock();
       sendIn({ t: 'word', w: w, n: n });
+      if (L0 && applyMove({ t: 'word', dev: DEV, w: w, n: n }, L0)) return;
+      NET.pend = { w: w, n: n, at: at }; paintDock();
       setTimeout(function () { if (NET && NET.pend && NET.pend.at === at) { NET.pend = null; paintDock(); toast('Not sent. Check your connection and try again.'); } }, 7000);
     }
     getList(r.cat).then(function (L) {
+      L0 = L;
       var c = B.check(G, raw, L.full);
       if (!c.ok) {
         var t = { unknown: '<b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(c.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.' }[c.why] || 'Try another word.';
@@ -708,8 +733,10 @@
     $('[data-rnet]').textContent = netOn() ? 'Online' : 'Connecting…';
     $('[data-rnet]').classList.toggle('is-on', netOn());
     if (!L) { $('[data-rplayers]').innerHTML = ''; $('[data-rhost]').hidden = true; $('[data-rguest]').hidden = false; $('[data-rwait]').textContent = 'Connecting to room ' + NET.code + '…'; $('[data-ostart]').hidden = true; return; }
-    $('[data-rplayers]').innerHTML = L.players.map(function (p, i) {
-      return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '"><i style="background:' + color(i) + '"></i><b>' + esc(p.name) + '</b><small>' + (i === 0 ? 'Host' : '') + (p.dev === DEV ? (i === 0 ? ' · you' : 'You') : '') + (isOn(p.dev) ? '' : ' · away') + '</small></li>';
+    var list = L.players.slice();
+    if (!host && !G && !list.some(function (p) { return p.dev === DEV; })) list.push({ dev: DEV, name: NET.name, joining: 1 });
+    $('[data-rplayers]').innerHTML = list.map(function (p, i) {
+      return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '"><i style="background:' + color(i) + '"></i><b>' + esc(p.name) + '</b><small>' + (i === 0 ? 'Host' : '') + (p.dev === DEV ? (i === 0 ? ' · you' : 'You') : '') + (p.joining ? ' · joining…' : '') + (isOn(p.dev) ? '' : ' · away') + '</small></li>';
     }).join('');
     $('[data-rhost]').hidden = !host; $('[data-rguest]').hidden = host;
     if (host) {
@@ -768,7 +795,7 @@
       case 'info': toast(B.catName(R().cat) + ' · ' + pl(R().entries.length, 'word') + ' on the board'); break;
       case 'skip':
         if (!running || R().done) break;
-        if (NET && !isHost()) { if (myTurn()) sendIn({ t: 'skip' }); break; }
+        if (NET && !isHost()) { if (myTurn()) { var sm = { t: 'skip', n: R().entries.length }; sendIn(sm); sm.dev = DEV; applyMove(sm, null); } break; }
         var who = pname(G.turn); B.skip(G); save(); msg(''); paintGame(); toast(who + ' skipped'); if (NET) notifyTurn(); else focusIn(); break;
       case 'undo':
         if (NET && !isHost()) break;
@@ -804,6 +831,7 @@
   if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/bemaamoo/sw.js').catch(function () {}); });
 
   show('home');
+  setTimeout(function () { loadMqtt().catch(function () {}); }, 1200);
   if (location.hash === '#new') show('setup');
   (function () {   // back into a room after a refresh, or open the join screen from a room link
     var q = (new URLSearchParams(location.search).get('room') || '').toUpperCase(), rm = load(KEY_ROOM);
