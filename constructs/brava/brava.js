@@ -53,6 +53,7 @@
     $('[data-st]').textContent = r.name;
     $('[data-sprice]').innerHTML = naira(r.price) + ' <small>/ night</small>';
     $('[data-sdesc]').textContent = r.desc;
+    $('[data-sstay]').textContent = stayLine();
     $('[data-sfeats]').innerHTML = r.feats.map(function (f) { return '<li>' + ic(f[0]) + f[1] + '</li>'; }).join('');
     sheet.hidden = false; document.body.style.overflow = 'hidden';
     setTimeout(function () { $('[data-close]').focus(); }, 50);
@@ -91,12 +92,17 @@
     e.preventDefault();
     var n = nights();
     if (n < 1) { toast('Check-out must be after check-in'); fOut.focus(); return; }
-    var r = byId(fRoom.value);
-    var msg = 'Hello Brava Hotel, I’d like to book the ' + r.name + '.\n' +
+    waBook(byId(fRoom.value));
+  });
+  // every booking goes straight to Brava's reservations WhatsApp, with the room, dates and guests filled in
+  function waBook(r) {
+    var n = Math.max(1, nights());
+    var msg = 'Hello Brava Hotel, I’d like to book the ' + r.name + ' (' + naira(r.price) + ' / night).\n' +
       'Check-in: ' + nice(fIn.value) + '\nCheck-out: ' + nice(fOut.value) + ' (' + n + ' night' + (n > 1 ? 's' : '') + ')\n' +
       'Guests: ' + guests + '\nIs it available?';
     window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
-  });
+  }
+  function stayLine() { var n = nights(); return n > 0 ? nice(fIn.value) + ' → ' + nice(fOut.value) + ' · ' + n + ' night' + (n > 1 ? 's' : '') + ' · ' + guests + ' guest' + (guests > 1 ? 's' : '') : ''; }
   sum();
 
   function goBook(roomId) {
@@ -118,12 +124,13 @@
   $$('a', drawer).forEach(function (a) { a.addEventListener('click', closeDrawer); });
 
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-book],[data-open],[data-close],[data-sbook]');
+    var t = e.target.closest('[data-book],[data-open],[data-close],[data-sbook],[data-sdates]');
     if (!t) { if (e.target === sheet) closeSheet(); return; }
     if (t.hasAttribute('data-book')) goBook();
     else if (t.hasAttribute('data-open')) openRoom(t.getAttribute('data-open'));
     else if (t.hasAttribute('data-close')) closeSheet();
-    else if (t.hasAttribute('data-sbook')) goBook(sheetRoom && sheetRoom.id);
+    else if (t.hasAttribute('data-sbook')) { if (sheetRoom) { fRoom.value = sheetRoom.id; sum(); waBook(sheetRoom); } }
+    else if (t.hasAttribute('data-sdates')) goBook(sheetRoom && sheetRoom.id);
   });
   // room photo thumbnails
   document.addEventListener('click', function (e) {

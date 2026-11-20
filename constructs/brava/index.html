@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/brava/img/favicon.png?v=2">
 <link rel="preload" as="image" href="/constructs/brava/img/exterior.webp" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/brava/brava.css?v=6">
+<link rel="stylesheet" href="/constructs/brava/brava.css?v=7">
 </head>
 <body>
 
@@ -229,7 +229,9 @@
       <p class="sheet__price" data-sprice></p>
       <p data-sdesc></p>
       <ul class="feats" data-sfeats></ul>
-      <button class="pill pill--w pill--lg pill--full" type="button" data-sbook>Book this room</button>
+      <div class="sstay"><span data-sstay></span><button type="button" class="sstay__ch" data-sdates>Change dates</button></div>
+      <button class="pill pill--w pill--lg pill--full" type="button" data-sbook><svg><use href="#i-wa"/></svg>Book this room on WhatsApp</button>
+      <p class="sstay__note">Opens WhatsApp to Brava reservations (0704 700 0608) with your room and dates filled in.</p>
     </div>
   </div>
 </div>
@@ -239,6 +241,6 @@
   <img data-lbx-img alt="">
 </div>
 <div class="toast" data-toast hidden></div>
-<script src="/constructs/brava/brava.js?v=4" defer></script>
+<script src="/constructs/brava/brava.js?v=5" defer></script>
 </body>
 </html>
