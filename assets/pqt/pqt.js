@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611161510, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611202250, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -588,7 +588,9 @@ function pqtMain() {
     var el = $('[data-status]'); if (!el) return;
     var on = linked();
     el.className = 'hc-status ' + (on ? 'is-on' : H.code ? 'is-wait' : '');
-    el.querySelector('span').textContent = on ? 'Screen ' + H.code : H.code ? (linkState === 'missing' ? 'Looking for ' + H.code + '…' : 'Connecting ' + H.code + '…') : 'No screen';
+    el.querySelector('span').textContent = on ? 'Screen ' + H.code : H.code ? (linkState === 'missing' ? 'Looking for ' + H.code + '…' : 'Connecting ' + H.code + '…') : 'Connect screen';
+    var ms = $('[data-m-scr]'); if (ms) { ms.textContent = on ? 'Screen ' + H.code + ' connected' : H.code ? 'Connecting to ' + H.code + '…' : 'Connect a screen'; $('[data-m-scrsub]').textContent = on ? 'Tap to change or disconnect.' : 'Show the game on a TV, projector or laptop.'; $('[data-m-scrdot]').className = on ? 'is-on' : ''; }
+    var ns = $('.hc-nowscr'); if (ns) ns.hidden = on || !(H.round > 0);
     var cs = $('[data-connect-sec]'); if (cs) cs.hidden = (on || (H.round > 0 && !H.ended)) && !cs.dataset.force;   // tucked away once the game is running; tap the screen status to bring it back
   }
   setInterval(function () { send({ t: 'ping' }); paintLink(); }, 2500);
@@ -1398,7 +1400,7 @@ function pqtMain() {
     else if (b.hasAttribute('data-zero')) { if (confirmTwice(b)) { snap(); H.teams.forEach(function (t) { t.score = 0; }); push(); renderTeams(); } }
     else if (b.hasAttribute('data-undo')) { var s = hist.pop(); if (s) { H = JSON.parse(s); push(); renderAll(); } }
     else if (b.hasAttribute('data-connect')) { var ok = connect($('[data-codein]').value); $('[data-codein]').classList.toggle('is-bad', !ok); delete $('[data-connect-sec]').dataset.force; }
-    else if (b.hasAttribute('data-change')) { var cs = $('[data-connect-sec]'); if (!cs.hidden && (linked() || H.round > 0)) { delete cs.dataset.force; cs.hidden = true; } else { cs.dataset.force = '1'; cs.hidden = false; window.scrollTo(0, 0); $('[data-codein]').focus(); } }
+    else if (b.hasAttribute('data-change')) { closeSheets(); var cs = $('[data-connect-sec]'); if (!cs.hidden && (linked() || H.round > 0)) { delete cs.dataset.force; cs.hidden = true; } else { cs.dataset.force = '1'; cs.hidden = false; window.scrollTo(0, 0); $('[data-codein]').focus(); } }
     else if (b.hasAttribute('data-setup-edit')) openSetup(H.ended || H.round === 0);
     else if (b.hasAttribute('data-opensc')) { var w = window.open('/pqt/screen/', 'pqtscreen'); if (!w) location.href = '/pqt/screen/'; }
     else if (b.hasAttribute('data-savecards')) { H.wordsTxt = $('[data-wtxt]').value; H.boardsTxt = $('[data-btxt]').value; ['names', 'spell', 'written', 'rapid', 'talk', 'alpha', 'pw'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el) H[k + 'Txt'] = el.value; }); loadQA(); reloadBanks(); b.textContent = 'Saved'; setTimeout(function () { b.textContent = 'Save cards'; }, 1500); }
