@@ -233,3 +233,6 @@ svg{display:block}
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
 .reveal.is-in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}.rise{opacity:1}}
+
+.nav__brand img{height:36px;width:auto;margin:-4px 0}
+.ft__brand img{height:52px;width:auto}
