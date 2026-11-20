@@ -234,7 +234,7 @@ function W2S(p){ // world -> screen
 function drawLabel(p,txt,sub,color,align){
   const q=W2S(p); ctx.textAlign=align||'center';
   ctx.font='500 10.5px Jost,sans-serif';ctx.letterSpacing='2px'; ctx.fillStyle=color||'rgba(239,230,223,.85)';
-  ctx.fillText(txt,q.x,q.y); if(sub){ctx.font='400 9.5px Jost,sans-serif';ctx.fillStyle='rgba(239,230,223,.45)';ctx.fillText(sub,q.x,q.y+14)}
+  ctx.fillText(txt,q.x,q.y); if(sub){ctx.font='400 9.5px Jost,sans-serif';ctx.fillStyle='rgba(239,233,220,.7)';ctx.fillText(sub,q.x,q.y+14)}
 }
 function drawRoute(r,fromD,t){
   if(!r)return;
@@ -350,7 +350,7 @@ function stop(){
   setStatus('','Standby');
   ['hudDist','hudEta','hudBearing'].forEach(id=>$(id).textContent='—');$('hudHeading').textContent='N-UP';$('hudMeter').style.width='8%';
   $('hudCoord').textContent=`${LODGE.lat.toFixed(4)}° N · ${LODGE.lng.toFixed(4)}° E`;
-  setToast('In Ibadan? Tap “Guide me there” and the map turns into a live compass.','Opposite IITA · Oyo Road · Ibadan',[A_DEMO,A_MAPS],0);
+  setToast('Tap “Guide me there” for a live compass.','Opposite IITA · Oyo Road · Ibadan',[A_DEMO,A_MAPS],0);
 }
 async function enableSensors(){
   try{ if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){await DeviceOrientationEvent.requestPermission()} }catch(_){}
