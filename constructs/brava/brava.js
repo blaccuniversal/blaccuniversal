@@ -7,10 +7,10 @@
 
   /* Rooms and rates as published by Brava Hotel. Put real photos in photo: '/constructs/brava/img/…' */
   var ROOMS = [
-    { id: 'standard', kind: 'Room', name: 'Standard Room', price: 95000, photo: '/constructs/brava/img/room-standard-s.webp',
+    { id: 'standard', kind: 'Room', name: 'Standard Room', price: 95000, photo: '/constructs/brava/img/room-standard-s.webp', more: ['/constructs/brava/img/room-standard-2-s.webp'],
       desc: 'A warm, inviting bedroom perfect for relaxing after a busy day.',
       feats: [['i-wifi', 'Free WiFi'], ['i-ac', 'Air conditioning'], ['i-tv', '65" flat screen']] },
-    { id: 'deluxe', kind: 'Room', name: 'Deluxe Room', price: 115000, photo: '/constructs/brava/img/room-deluxe-s.webp', pos: '50% 62%',
+    { id: 'deluxe', kind: 'Room', name: 'Deluxe Room', price: 115000, photo: '/constructs/brava/img/room-deluxe-s.webp', pos: '50% 62%', more: ['/constructs/brava/img/room-deluxe-2-s.webp', '/constructs/brava/img/room-deluxe-3-s.webp'],
       desc: 'Bright and spacious room designed for comfort and style.',
       feats: [['i-fridge', 'Mini fridge'], ['i-coffee', 'Coffee maker'], ['i-bell', 'Room service'], ['i-wifi', 'Free WiFi']] },
     { id: 'presidential', kind: 'Suite · 2 bedrooms', name: 'Presidential Suite', price: 300000, photo: '/constructs/brava/img/suite-lounge-s.webp', pos: '50% 55%',
@@ -46,6 +46,9 @@
   function openRoom(id) {
     var r = byId(id); sheetRoom = r; lastFocus = document.activeElement;
     $('[data-sart]').innerHTML = art(r);
+    var pics = r.photo ? [r.photo].concat(r.more || []) : [], th = $('[data-sthumbs]');
+    th.hidden = pics.length < 2;
+    th.innerHTML = pics.map(function (src, i) { return '<button type="button" class="' + (i ? '' : 'is-on') + '" data-sp="' + src + '" aria-label="Photo ' + (i + 1) + ' of ' + pics.length + '"><img src="' + src + '" alt="" loading="lazy"></button>'; }).join('');
     $('[data-skind]').textContent = r.kind;
     $('[data-st]').textContent = r.name;
     $('[data-sprice]').innerHTML = naira(r.price) + ' <small>/ night</small>';
@@ -122,6 +125,24 @@
     else if (t.hasAttribute('data-close')) closeSheet();
     else if (t.hasAttribute('data-sbook')) goBook(sheetRoom && sheetRoom.id);
   });
+  // room photo thumbnails
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-sp]'); if (!b) return;
+    var img = $('[data-sart] img'); if (img) { img.src = b.getAttribute('data-sp'); img.style.objectPosition = '50% 55%'; }
+    $$('[data-sp]').forEach(function (x) { x.classList.toggle('is-on', x === b); });
+  });
+  // photo viewer for the gallery and moments
+  var lbx = $('[data-lbx]');
+  function openLbx(src, alt) { $('[data-lbx-img]').src = src.replace('-s.webp', '.webp'); $('[data-lbx-img]').alt = alt || ''; lbx.hidden = false; document.body.style.overflow = 'hidden'; }
+  function closeLbx() { lbx.hidden = true; document.body.style.overflow = ''; }
+  document.addEventListener('click', function (e) {
+    var f = e.target.closest('.gal__i, .mo, .plate');
+    if (f && !e.target.closest('[data-lbx]')) { var im = $('img', f); openLbx(im.getAttribute('src'), im.alt); return; }
+    if (e.target.closest('[data-lbx-close]') || e.target === lbx || e.target.closest('[data-lbx-img]')) closeLbx();
+    var g = e.target.closest('[data-rail-go]');
+    if (g) { var rail = $('[data-rail]'); rail.scrollBy({ left: +g.getAttribute('data-rail-go') * rail.clientWidth * 0.8, behavior: 'smooth' }); }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lbx.hidden) { closeLbx(); return; } });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!sheet.hidden) closeSheet(); else if (!drawer.hidden) closeDrawer(); } });
 
   // nav state + active section
