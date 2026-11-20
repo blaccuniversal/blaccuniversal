@@ -14,7 +14,7 @@ const FORM_ENDPOINT = "";
 /* =========================================================
    Gallery data
    ========================================================= */
-const ROOMS = [1,2,3,4,5,6].map(n => ({src:`assets/bedroom-${n}.jpg`, label:`Room · ${String(n).padStart(2,'0')}`}));
+const ROOMS = [1,2,3,4,5,6].map(n => ({src:`/constructs/malimbe/img/bedroom-${n}.webp`, label:`Room · ${String(n).padStart(2,'0')}`}));
 const SPACES = [
   {src:'/constructs/malimbe/img/reception-1.webp', label:'Reception', cls:'b1'},
   {src:'/constructs/malimbe/img/living-1.webp', label:'Living room', cls:'b2'},
