@@ -142,6 +142,12 @@
     var g = e.target.closest('[data-rail-go]');
     if (g) { var rail = $('[data-rail]'); rail.scrollBy({ left: +g.getAttribute('data-rail-go') * rail.clientWidth * 0.8, behavior: 'smooth' }); }
   });
+  var railEl = $('[data-rail]');
+  function railBtns() { var a = $$('[data-rail-go]'); if (!railEl || a.length < 2) return; a[0].disabled = railEl.scrollLeft < 8; a[1].disabled = railEl.scrollLeft + railEl.clientWidth > railEl.scrollWidth - 8; }
+  if (railEl) { railEl.addEventListener('scroll', railBtns, { passive: true }); window.addEventListener('resize', railBtns); railBtns();
+  }
+  document.addEventListener('click', function () {
+  });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lbx.hidden) { closeLbx(); return; } });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!sheet.hidden) closeSheet(); else if (!drawer.hidden) closeDrawer(); } });
 
