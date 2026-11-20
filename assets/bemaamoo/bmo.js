@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var B = window.BMO;
-  var WORDS_V = 3;
+  var WORDS_V = 4;
   var KEY_GAME = 'bmo_game_v1', KEY_SETUP = 'bmo_setup_v1';
   var COLORS = ['#ffffff', '#3ddc97', '#c792ff', '#ff7ab6', '#5ee0e0', '#ffb347', '#a3e635', '#8fa2ff'];
   var TIMERS = [[0, 'Off'], [60, '1m'], [120, '2m'], [180, '3m'], [300, '5m'], [600, '10m']];
