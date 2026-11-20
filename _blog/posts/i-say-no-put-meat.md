@@ -66,6 +66,6 @@ Even more concerning is that madness no longer announces itself by eating garbag
 
 Anyway, I collected my three-day supply of soup and went home.
 
-I still have bills to pay, I dey find work and love and I absolutely have no plans for Detty December.
+I still have bills to pay, I dey find work ~~and love~~ and I absolutely have no plans for Detty December.
 
 Did I put meat in my own soup? I no know sha. But e dey make me fat too.

@@ -3,7 +3,7 @@
 import os, re, glob, html, datetime, json
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VER = '16'
+VER = '17'
 SHELL = open(os.path.join(ROOT, '_blog/shell.html')).read()
 SITE = 'https://blaccuniversal.com'
 AUTH = json.load(open(os.path.join(ROOT, '_blog/authors.json')))
@@ -38,6 +38,7 @@ def nice(d): return d.strftime('%-d %B %Y')
 def inline(s):
     s = e(s)
     s = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', s)
+    s = re.sub(r'~~(.+?)~~', r'<del>\1</del>', s)
     s = re.sub(r'(?<!\*)\*(?!\*)(.+?)\*', r'<em>\1</em>', s)
     return s
 
