@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=2">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=3">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -43,10 +43,12 @@
     <div class="hero">
       <div class="mark" aria-hidden="true" data-mark></div>
       <h1 class="wm">Bemaamoo</h1>
-      <p class="lead">Every word you add can spell another one going down. Play alone or pass the phone with up to 8 players.</p>
+      <p class="lead">Every word you add can spell another one going down. Play alone, pass the phone, or play online with friends anywhere, turn by turn.</p>
       <div class="hero__btns">
         <button class="btn btn--big" data-act="continue" data-continue hidden>Continue</button>
+        <button class="btn btn--big" data-act="room" data-roombtn hidden>Back to room</button>
         <button class="btn btn--big" data-act="setup" data-newbtn>New game</button>
+        <button class="btn btn--big btn--ghost" data-act="online">Play online</button>
         <button class="btn btn--big btn--ghost" data-act="help">How to play</button>
       </div>
       <p class="hero__note" data-contnote hidden></p>
@@ -83,6 +85,78 @@
       </div>
     </section>
     <button class="btn btn--big btn--full" data-act="start">Start game</button>
+  </main>
+</section>
+
+<!-- ONLINE: create or join -->
+<section class="scr" data-scr="online" hidden>
+  <header class="top">
+    <button class="back" data-act="home"><svg><use href="#i-back"/></svg><span>Home</span></button>
+    <b class="top__t">Play online</b>
+    <span class="top__sp"></span>
+  </header>
+  <main class="wrap setup">
+    <section class="fs">
+      <h2 class="eyebrow">Your name</h2>
+      <label class="pname"><i style="background:#fff"></i><input data-oname maxlength="18" placeholder="Your name" autocomplete="off" autocapitalize="words"></label>
+    </section>
+    <section class="fs ocard">
+      <h2 class="eyebrow">Start a room</h2>
+      <p class="onote">You pick the category and settings, share the code, and start when everyone’s in. Keep Bemaamoo open on your phone while you play.</p>
+      <button class="btn btn--big btn--full" data-act="ocreate">Create a room</button>
+    </section>
+    <section class="fs ocard">
+      <h2 class="eyebrow">Join a room</h2>
+      <div class="ojoin">
+        <input class="ocode" data-ocode maxlength="4" placeholder="CODE" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Room code">
+        <button class="btn btn--big" data-act="ojoin">Join</button>
+      </div>
+      <p class="oerr" data-oerr hidden></p>
+    </section>
+  </main>
+</section>
+
+<!-- ONLINE: room lobby -->
+<section class="scr" data-scr="room" hidden>
+  <header class="top">
+    <button class="back" data-act="home"><svg><use href="#i-back"/></svg><span>Home</span></button>
+    <b class="top__t">Room</b>
+    <span class="rnet" data-rnet>Connecting…</span>
+  </header>
+  <main class="wrap setup">
+    <section class="rcode">
+      <p class="eyebrow">Room code</p>
+      <b data-rcode>····</b>
+      <div class="rshare">
+        <button class="btn" data-act="oshare">Share link</button>
+        <button class="btn btn--ghost" data-act="owa">WhatsApp</button>
+        <button class="btn btn--ghost" data-act="ocopy">Copy</button>
+      </div>
+      <p class="onote">Friends open Bemaamoo, tap Play online and enter this code, or open the link.</p>
+    </section>
+    <section class="fs">
+      <h2 class="eyebrow">Players</h2>
+      <ol class="rplayers" data-rplayers></ol>
+    </section>
+    <div data-rhost hidden>
+      <section class="fs">
+        <h2 class="eyebrow">Category</h2>
+        <button class="pick" data-act="cats" type="button"><span><small data-rcatgroup>Names</small><b data-rcatname>Names (All)</b></span><svg><use href="#i-down"/></svg></button>
+      </section>
+      <section class="fs fs--2">
+        <div>
+          <h2 class="eyebrow">Round timer</h2>
+          <div class="seg" role="group" aria-label="Round timer" data-ropt="timer"></div>
+        </div>
+        <div>
+          <h2 class="eyebrow">Words per round</h2>
+          <div class="seg" role="group" aria-label="Words per round" data-ropt="limit"></div>
+        </div>
+      </section>
+    </div>
+    <div data-rguest hidden><p class="rwait" data-rwait>Connecting…</p></div>
+    <button class="btn btn--big btn--full" data-act="ostart" data-ostart hidden>Start game</button>
+    <button class="lnk rleave" data-act="oleave" type="button">Leave this room</button>
   </main>
 </section>
 
@@ -170,9 +244,9 @@
     <div class="sheet__head"><b>Game</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
     <div class="menu">
       <button class="btn btn--full" data-act="close">Back to the game</button>
-      <button class="btn btn--full btn--ghost" data-act="end">End this round</button>
+      <button class="btn btn--full btn--ghost" data-act="end" data-ho>End this round</button>
       <button class="btn btn--full btn--ghost" data-act="home">Leave (your game is saved)</button>
-      <button class="btn btn--full btn--ghost btn--warn" data-act="quit">Finish game</button>
+      <button class="btn btn--full btn--ghost btn--warn" data-act="quit" data-ho>Finish game</button>
     </div>
   </div>
 </div>
@@ -191,6 +265,7 @@
     <p class="eyebrow" data-sumround>Round 1 over</p>
     <h2 class="ov__t" data-sumt>Ada leads</h2>
     <div class="sum" data-sum></div>
+    <p class="ov__p" data-sumwait hidden></p>
     <div class="ov__btns" data-sumbtns>
       <button class="btn btn--big" data-act="next">Next round</button>
       <button class="btn btn--big btn--ghost" data-act="nextcat">Next round, new category</button>
@@ -215,6 +290,6 @@
 
 <script src="/assets/bemaamoo/bmo-gate.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=2"></script>
-<script src="/assets/bemaamoo/bmo.js?v=5"></script>
+<script src="/assets/bemaamoo/bmo.js?v=6"></script>
 </body>
 </html>

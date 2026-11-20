@@ -52,6 +52,8 @@
     if (name === 'home') paintHome();
     if (name === 'setup') paintSetup();
     if (name === 'game') { fitVh(); paintGame(); }
+    if (name === 'online') paintOnline();
+    if (name === 'room') paintRoom();
   }
   function openSheet(n) { $('[data-sheet="' + n + '"]').hidden = false; }
   function closeSheets() { $$('[data-sheet]').forEach(function (s) { s.hidden = true; }); }
@@ -77,6 +79,8 @@
       note.textContent = 'Saved game: ' + B.catName(R.cat) + ', round ' + R.n + ', ' + pl(R.entries.length, 'word') + ' on the board';
       note.hidden = false;
     } else note.hidden = true;
+    var rm = load(KEY_ROOM), rb = $('[data-roombtn]');
+    rb.hidden = !(rm && rm.code); if (rm && rm.code) rb.textContent = 'Back to room ' + rm.code;
   }
 
   /* ---------- setup ---------- */
@@ -122,7 +126,7 @@
 
   /* ---------- game ---------- */
   var G = null, running = false, tick = null, lastAdded = -1, feedOn = false;
-  function save() { store(KEY_GAME, G); }
+  function save() { if (NET) { if (isHost()) { storeRoom(); pubSoon(); } return; } store(KEY_GAME, G); }
   function R() { return B.round(G); }
   function color(i) { return COLORS[i % COLORS.length]; }
   function pname(i) { return G.players[i] ? G.players[i].name : ''; }
@@ -146,7 +150,16 @@
     var r = R();
     $('[data-rdround]').textContent = 'Round ' + r.n;
     $('[data-rdcat]').textContent = B.catName(r.cat);
-    var tx;
+    var tx, gb = $('[data-ov="ready"] [data-act="go"]');
+    gb.hidden = !!(NET && !isHost());
+    if (NET) {
+      if (isHost()) tx = r.started ? 'Paused. ' + pname(G.turn) + ' is up next.' : pname(G.turn) + ' starts. Everyone plays on their own phone.';
+      else tx = 'Waiting for ' + hostName() + ' to ' + (r.started ? 'resume' : 'start') + ' the round.';
+      $('[data-rdtx]').textContent = tx;
+      gb.textContent = r.started ? 'Resume' : 'Start round';
+      ov('ready', true);
+      return;
+    }
     if (r.started) tx = 'Paused. ' + (solo() ? 'Ready when you are.' : pname(G.turn) + ' is up next.');
     else tx = solo() ? (G.settings.timer ? 'You have ' + fmt(G.settings.timer) + '. Go for long words.' : 'Take your time. Go for long words.') : pname(G.turn) + ' starts. Pass the phone after each word.';
     $('[data-rdtx]').textContent = tx;
@@ -155,8 +168,10 @@
   }
 
   function go() {
+    if (NET && !isHost()) return;
     ov('ready', false);
     running = true;
+    if (NET) { R().run = true; save(); }
     startClock();
     paintGame();
     focusIn();
@@ -173,10 +188,12 @@
       if (!running || r.done) { last = now; return; }
       r.left = Math.max(0, r.left - (now - last) / 1000); last = now;
       paintClock();
+      if (isHost() && now - lastClockPub > 1000) { lastClockPub = now; pubNow(); }
       if (r.left <= 0) { B.endRound(G); save(); roundOver(); }
       else if (Math.floor(r.left) % 5 === 0) save();
     }, 250);
   }
+  var lastClockPub = 0;
   function stopClock() { if (tick) clearInterval(tick); tick = null; }
   function paintClock() {
     var c = $('[data-clock]');
@@ -186,6 +203,7 @@
     $('[data-clocktx]').textContent = fmt(left);
     c.classList.toggle('is-low', left <= 15 && !R().done);
     c.classList.toggle('is-paused', !running);
+    c.disabled = !!(NET && !isHost());
     c.querySelector('use').setAttribute('href', running ? '#i-pause' : '#i-play');
     c.setAttribute('aria-label', running ? 'Pause timer' : 'Resume timer');
   }
@@ -216,7 +234,8 @@
         '<div class="pchip pchip--part"><span class="c-key">Keystone</span><b>' + s.key + '</b></div>';
     } else {
       t.forEach(function (s, i) {
-        h += '<div class="pchip' + (i === G.turn ? ' is-on' : '') + '"><i style="background:' + color(i) + '"></i><span>' + esc(s.name) + '</span><b>' + s.total + '</b></div>';
+        var pd = G.players[i] && G.players[i].dev;
+        h += '<div class="pchip' + (i === G.turn ? ' is-on' : '') + (NET && pd && !isOn(pd) ? ' is-off' : '') + '"><i style="background:' + color(i) + '"></i><span>' + esc(s.name) + (NET && pd === DEV ? ' (you)' : '') + '</span><b>' + s.total + '</b></div>';
       });
     }
     el.innerHTML = h;
@@ -289,7 +308,21 @@
     } else { el.textContent = ''; el.classList.remove('is-hot'); }
     $('[data-act="skip"]').hidden = solo();
     $('[data-act="undo"]').disabled = !r.entries.length || r.done;
-    $('[data-in]').placeholder = 'Type ' + (/^names/.test(r.cat) ? 'a name' : 'a word') + ' · ' + B.catName(r.cat);
+    var inp = $('[data-in]'), goB = $('.entry__go');
+    inp.placeholder = 'Type ' + (/^names/.test(r.cat) ? 'a name' : 'a word') + ' · ' + B.catName(r.cat);
+    if (NET) {
+      var mine = myTurn(), cp = pname(G.turn), stale = !isHost() && hostStale();
+      $('[data-turn]').textContent = stale ? 'Waiting for ' + hostName() + ' to reconnect…' : r.done ? 'Round over' : (mine ? 'Your turn' : cp + '’s turn');
+      var off = r.done || !mine || !running || !!NET.pend || stale;
+      inp.disabled = off; goB.disabled = off;
+      if (!mine && !r.done) inp.placeholder = 'Waiting for ' + cp + '…';
+      if (NET.pend) inp.placeholder = 'Sending…';
+      var sk = $('[data-act="skip"]'); sk.hidden = r.done || !(mine || isHost()); sk.textContent = mine ? 'Skip turn' : 'Skip ' + cp;
+      $('[data-act="undo"]').hidden = !isHost(); $('[data-act="end"]').hidden = !isHost();
+    } else {
+      inp.disabled = false; goB.disabled = false;
+      $('[data-act="undo"]').hidden = false; $('[data-act="end"]').hidden = false; $('[data-act="skip"]').textContent = 'Skip turn';
+    }
   }
 
   function paintSide() {
@@ -318,6 +351,8 @@
     if (!running) { readyScreen(); return; }
     var inp = $('[data-in]'), raw = inp.value;
     if (!B.norm(raw)) { shake(); return; }
+    if (NET && !myTurn()) { toast('It’s ' + pname(G.turn) + '’s turn'); return; }
+    if (NET && !isHost()) { guestSubmit(raw); return; }
     var cat = R().cat;
     getList(cat).then(function (L) { tryAdd(raw, L, false); }, function () { tryAdd(raw, null, false, true); });
   }
@@ -325,7 +360,9 @@
     var r = R();
     var c = B.check(G, raw, forced || !L ? null : L.full);
     if (!c.ok) {
-      if (c.why === 'unknown') {
+      if (c.why === 'unknown' && NET) {
+        msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span><button type="button" class="is-pri" data-act="retry">Try another</button>', true);
+      } else if (c.why === 'unknown') {
         pending = raw;
         msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span><button type="button" data-act="force">Count it anyway</button><button type="button" class="is-pri" data-act="retry">Try another</button>', true);
       } else {
@@ -345,6 +382,7 @@
     paintGame();
     lastAdded = -1;
     if (r.done) { setTimeout(roundOver, 900); return; }
+    if (NET) { notifyTurn(); return; }
     focusIn();
   }
 
@@ -380,6 +418,9 @@
     if (G.rounds.length > 1 && !solo()) h += '<p class="sum__d">Game total after ' + pl(G.rounds.length, 'round') + '</p>' + sumRows(all, true);
     else if (G.rounds.length > 1) h += '<p class="sum__d">Game total after ' + pl(G.rounds.length, 'round') + ': ' + all[0].total + ' points</p>';
     $('[data-sum]').innerHTML = h;
+    var gw = NET && !isHost();
+    $('[data-sumbtns]').hidden = gw; $('[data-sumwait]').hidden = !gw;
+    if (gw) $('[data-sumwait]').textContent = 'Waiting for ' + hostName() + ' to start the next round.';
     ov('summary', true);
   }
   function sumRows(list, compact) {
@@ -411,12 +452,19 @@
     else t = all[0].name + ' wins';
     $('[data-fint]').textContent = t;
     $('[data-fin]').innerHTML = sumRows(all);
+    $('[data-act="again"]', $('[data-ov="final"]')).hidden = !!(NET && !isHost());
+    $('[data-act="again"]', $('[data-ov="final"]')).textContent = NET ? 'Play again, same room' : 'Play again';
     ov('final', true);
   }
 
   function leave() {
     running = false; stopClock();
     closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
+    if (NET) {
+      if (isHost()) { if (G && G.over) { G = null; NET.lobby.started = false; } storeRoom(); pubNow(); }
+      else { sendIn({ t: 'bye' }); store(KEY_ROOM, null); }
+      netClose(); G = null; show('home'); return;
+    }
     if (G && G.over) { store(KEY_GAME, null); G = null; }
     show('home');
   }
@@ -430,17 +478,263 @@
     if (R().done) roundOver(); else readyScreen();
   }
 
+
+  /* ---------- online rooms (live, turn by turn) ----------
+     The player who creates the room keeps the game on their phone and sends it to everyone else
+     through two public relays (the same ones PQT uses). Nothing is stored on a server. */
+  var BROKERS = ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt'];
+  var NTOPIC = 'blaccuniversal/bemaamoo/v1/', KEY_ROOM = 'bmo_room_v1';
+  var qbk = new URLSearchParams(location.search).get('broker');
+  if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
+  var DEV = load('bmo_dev'); if (!DEV) { DEV = Math.random().toString(36).slice(2, 10); store('bmo_dev', DEV); }
+  var NET = null;
+  function isHost() { return !!(NET && NET.role === 'host'); }
+  function meIdx() { if (!G) return -1; for (var i = 0; i < G.players.length; i++) if (G.players[i].dev === DEV) return i; return -1; }
+  function myTurn() { return !NET || (G && G.players[G.turn] && G.players[G.turn].dev === DEV); }
+  function hostName() { if (!NET || !NET.lobby) return 'the host'; var h = NET.lobby.players[0]; return h ? h.name : 'the host'; }
+  function hostStale() { return !!(NET && !isHost() && NET.gotAt && Date.now() - NET.gotAt > 25000); }
+  function isOn(dev) { if (!NET || dev === DEV) return true; if (isHost()) return Date.now() - (NET.seen[dev] || 0) < 30000; return !NET.on || NET.on[dev] !== false; }
+  function cleanName(n) { return String(n || '').replace(/\s+/g, ' ').trim().slice(0, 18) || 'Player'; }
+  function newCode() { var A = 'ABCDEFGHJKLMNPQRSTUVWXYZ', c = ''; for (var i = 0; i < 4; i++) c += A[Math.floor(Math.random() * A.length)]; return c; }
+  var mqP = null;
+  function loadMqtt() {
+    if (window.mqtt) return Promise.resolve();
+    if (!mqP) mqP = new Promise(function (ok, no) { var sc = document.createElement('script'); sc.src = '/assets/pqt/mqtt.min.js?v=5104'; sc.onload = ok; sc.onerror = function () { mqP = null; no(); }; document.head.appendChild(sc); });
+    return mqP;
+  }
+  function netLink() {
+    var T = NTOPIC + NET.code + '/', host = isHost(), me = NET;
+    me.cls = [];
+    BROKERS.forEach(function (url) {
+      var c; try { c = window.mqtt.connect(url, { clientId: 'bmo_' + DEV + '_' + Math.random().toString(16).slice(2, 6), clean: true, connectTimeout: 8000, reconnectPeriod: 1500, keepalive: 20 }); } catch (e) { return; }
+      me.cls.push(c);
+      c.on('connect', function () { if (NET !== me) return; c.subscribe(T + (host ? 'in' : 'state')); if (host) pubNow(); else sendIn({ t: 'join', name: me.name }); netPaint(); });
+      c.on('close', function () { if (NET === me) netPaint(); });
+      c.on('message', function (tp, pl) { if (NET !== me) return; var m; try { m = JSON.parse(pl.toString()); } catch (e) { return; } if (host) hostMsg(m); else guestMsg(m); });
+      c.on('error', function () {});
+    });
+    clearInterval(me.beatT);
+    me.beatT = setInterval(function () {
+      if (NET !== me) return;
+      if (host) pubNow(); else { sendIn({ t: 'here', name: me.name }); if (!me.lobby || (!G && !me.lobby.players.some(function (p) { return p.dev === DEV; }))) sendIn({ t: 'join', name: me.name }); }
+      netPaint();
+    }, host ? 10000 : 3000);
+  }
+  function netSend(topic, obj, retain) { if (!NET || !NET.cls) return; var t = JSON.stringify(obj); NET.cls.forEach(function (c) { if (c.connected) try { c.publish(topic, t, { qos: 0, retain: !!retain }); } catch (e) {} }); }
+  function netOn() { return !!(NET && NET.cls && NET.cls.some(function (c) { return c.connected; })); }
+  function sendIn(m) { if (!NET) return; m.dev = DEV; netSend(NTOPIC + NET.code + '/in', m); }
+  function netClose() { if (!NET) return; clearInterval(NET.beatT); (NET.cls || []).forEach(function (c) { try { c.end(true); } catch (e) {} }); NET = null; document.title = baseTitle; }
+  function netPaint() { if (cur === 'room') paintRoom(); else if (cur === 'game' && G) { paintDock(); paintStrip(); } }
+  function storeRoom() {
+    if (!NET) return;
+    if (isHost()) store(KEY_ROOM, { role: 'host', code: NET.code, name: NET.name, hs: NET.hs, seq: NET.seq, lobby: NET.lobby, G: G });
+    else store(KEY_ROOM, { role: 'guest', code: NET.code, name: NET.name });
+  }
+
+  /* host: publish the whole game (retained, so late joiners get it at once) */
+  var pubT = null;
+  function pubSoon() { if (!isHost() || pubT) return; pubT = setTimeout(function () { pubT = null; pubNow(); }, 100); }
+  function pubNow() {
+    if (!isHost()) return;
+    var on = {};
+    NET.lobby.players.forEach(function (p) { on[p.dev] = isOn(p.dev); });
+    NET.seq = (NET.seq || 0) + 1;
+    netSend(NTOPIC + NET.code + '/state', { v: 1, code: NET.code, hs: NET.hs, seq: NET.seq, lobby: NET.lobby, G: G, rej: NET.rej || null, on: on }, true);
+  }
+  function syncLobby() { if (!isHost()) return; NET.lobby.cat = S.cat; NET.lobby.timer = S.timer; NET.lobby.limit = S.limit; storeRoom(); pubSoon(); }
+  function hostMsg(m) {
+    if (!m || !m.dev || m.dev === DEV) return;
+    var wasOn = isOn(m.dev); NET.seen[m.dev] = Date.now();
+    var L = NET.lobby, p = L.players.filter(function (x) { return x.dev === m.dev; })[0];
+    if (m.t === 'join' || m.t === 'here') {
+      if (!p && m.t === 'join' && !G) {
+        if (L.players.length >= 8) return;
+        L.players.push({ dev: m.dev, name: cleanName(m.name) }); toast(cleanName(m.name) + ' joined'); buzz(15);
+        storeRoom(); paintRoom(); pubSoon(); return;
+      }
+      if (p && !G && m.name && cleanName(m.name) !== p.name) { p.name = cleanName(m.name); paintRoom(); pubSoon(); return; }
+      if (!wasOn || m.t === 'join') { pubSoon(); netPaint(); }
+      return;
+    }
+    if (m.t === 'bye') {
+      NET.seen[m.dev] = 0;
+      if (!G) L.players = L.players.filter(function (x) { return x.dev !== m.dev; });
+      if (p) toast(p.name + ' left');
+      storeRoom(); netPaint(); pubSoon(); return;
+    }
+    if (!G) return;
+    var r = R(), cp = G.players[G.turn];
+    if (!cp || cp.dev !== m.dev || r.done || !r.run) { pubSoon(); return; }
+    if (m.t === 'skip') { B.skip(G); save(); msg(''); paintGame(); toast(cp.name + ' skipped'); notifyTurn(); return; }
+    if (m.t === 'word') {
+      getList(r.cat).then(function (Lst) { hostAdd(m, Lst); }, function () { hostAdd(m, null); });
+    }
+  }
+  function hostAdd(m, Lst) {
+    var r = R(), cp = G.players[G.turn];
+    if (!cp || cp.dev !== m.dev || r.done || m.n !== r.entries.length) { pubSoon(); return; }
+    var c = B.check(G, m.w, Lst ? Lst.full : null);
+    if (!c.ok) { NET.rej = { dev: m.dev, w: c.w, why: c.why, k: Date.now() }; pubNow(); return; }
+    NET.rej = null;
+    var e = B.add(G, c.w, { mav: Lst ? Lst.mav : null });
+    lastAdded = r.entries.length - 1;
+    save(); celebrate(e); paintGame(); lastAdded = -1;
+    if (r.done) { setTimeout(roundOver, 900); return; }
+    notifyTurn();
+  }
+
+  /* guest: follow the host's game */
+  function guestMsg(st) {
+    if (!st || st.v !== 1 || st.code !== NET.code || !st.lobby) return;
+    if (st.hs === NET.hs && st.seq <= NET.lastSeq) return;
+    NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {};
+    clearTimeout(NET.noRoomT);
+    if (!st.G) {
+      G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
+      if (cur !== 'room') show('room'); else paintRoom();
+      return;
+    }
+    if (!st.G.players.some(function (p) { return p.dev === DEV; })) {
+      netClose(); store(KEY_ROOM, null); G = null; show('online'); toast('That game started without you. Ask for a new room.'); return;
+    }
+    var prev = G, wasMine = prev && myTurn();
+    var pr = prev && prev.rounds.length === st.G.rounds.length ? prev.rounds[prev.rounds.length - 1] : null;
+    G = st.G;
+    var r = R();
+    if (cur !== 'game') show('game');
+    if (pr && r.entries.length === pr.entries.length + 1) {
+      lastAdded = r.entries.length - 1;
+      var e = r.entries[lastAdded];
+      if (e.p === meIdx()) { $('[data-in]').value = ''; msg(''); }
+      celebrate(e);
+    }
+    if (NET.pend && (r.entries.length > NET.pend.n || !myTurn())) NET.pend = null;
+    if (st.rej && st.rej.dev === DEV && st.rej.k !== NET.rejSeen) {
+      NET.rejSeen = st.rej.k; NET.pend = null;
+      var t = { unknown: '<b>' + esc(st.rej.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(st.rej.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.' }[st.rej.why] || 'Try another word.';
+      msg('<span>' + t + '</span>', true); shake();
+    }
+    running = !!(r.run && !r.done);
+    paintGame(); lastAdded = -1;
+    if (G.over) { if ($('[data-ov="final"]').hidden) finish(); return; }
+    ov('final', false);
+    if (r.done) { ov('ready', false); if ($('[data-ov="summary"]').hidden) roundOver(); return; }
+    ov('summary', false);
+    if (!r.run) readyScreen(); else ov('ready', false);
+    if (running && myTurn() && !wasMine) yourTurn();
+    else if (running && myTurn()) focusIn();
+  }
+  function guestSubmit(raw) {
+    var r = R(), n = r.entries.length;
+    function send(w) {
+      var at = Date.now();
+      NET.pend = { w: w, n: n, at: at }; paintDock();
+      sendIn({ t: 'word', w: w, n: n });
+      setTimeout(function () { if (NET && NET.pend && NET.pend.at === at) { NET.pend = null; paintDock(); toast('Not sent. Check your connection and try again.'); } }, 7000);
+    }
+    getList(r.cat).then(function (L) {
+      var c = B.check(G, raw, L.full);
+      if (!c.ok) {
+        var t = { unknown: '<b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(c.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.' }[c.why] || 'Try another word.';
+        msg('<span>' + t + '</span><button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); return;
+      }
+      send(c.w);
+    }, function () { send(B.norm(raw)); });
+  }
+  var baseTitle = document.title, titleT = null;
+  function yourTurn() {
+    buzz([30, 60, 30]); toast('Your turn'); focusIn();
+    if (document.hidden) { clearInterval(titleT); var f = 0; titleT = setInterval(function () { document.title = (f = !f) ? '● Your turn · Bemaamoo' : baseTitle; if (!document.hidden) { clearInterval(titleT); document.title = baseTitle; } }, 1000); }
+  }
+  function notifyTurn() { if (myTurn() && running) yourTurn(); }
+
+  /* screens: create / join, and the room lobby */
+  function paintOnline() {
+    var n = $('[data-oname]'); if (!n.value) n.value = load('bmo_name') || (S.names[0] || '');
+    var q = new URLSearchParams(location.search).get('room');
+    if (q && !$('[data-ocode]').value) $('[data-ocode]').value = q.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
+    $('[data-oerr]').hidden = true;
+  }
+  function oName() { var v = cleanName($('[data-oname]').value); store('bmo_name', v); return v; }
+  function createRoom() {
+    var name = oName();
+    netClose();
+    NET = { role: 'host', code: newCode(), name: name, hs: Math.random().toString(36).slice(2, 8), seq: 0, seen: {}, lobby: { players: [{ dev: DEV, name: name }], cat: S.cat, timer: S.timer, limit: S.limit } };
+    G = null; storeRoom(); show('room');
+    loadMqtt().then(netLink, function () { toast('Couldn’t go online. Check your connection.'); });
+  }
+  function joinRoom(code, name) {
+    code = String(code || '').toUpperCase().replace(/[^A-Z]/g, '');
+    if (code.length !== 4) { var er = $('[data-oerr]'); er.textContent = 'Room codes have 4 letters.'; er.hidden = false; return; }
+    netClose();
+    NET = { role: 'guest', code: code, name: name, lastSeq: 0, lobby: null };
+    G = null; storeRoom(); show('room');
+    var me = NET;
+    me.noRoomT = setTimeout(function () { if (NET === me && !me.lobby) { $('[data-rwait]').textContent = 'No open room with code ' + code + ' yet. Check the code, or ask the host to open Bemaamoo.'; } }, 9000);
+    loadMqtt().then(netLink, function () { toast('Couldn’t go online. Check your connection.'); });
+  }
+  function resumeRoom() {
+    var rm = load(KEY_ROOM); if (!rm || !rm.code) return;
+    if (rm.role === 'guest') { joinRoom(rm.code, rm.name); return; }
+    netClose();
+    NET = { role: 'host', code: rm.code, name: rm.name, hs: Math.random().toString(36).slice(2, 8), seq: 0, seen: {}, lobby: rm.lobby };
+    G = rm.G || null;
+    if (G) {
+      if (G.over) { G = null; }
+      else { var r = R(); r.run = false; running = false; getList(r.cat); show('game'); if (r.done) roundOver(); else readyScreen(); }
+    }
+    if (!G) show('room');
+    loadMqtt().then(netLink, function () { toast('Couldn’t go online. Check your connection.'); });
+  }
+  function startOnline() {
+    if (!isHost() || NET.lobby.players.length < 2) return;
+    syncLobby();
+    G = B.create({ players: NET.lobby.players.map(function (p) { return { name: p.name }; }), category: S.cat, timer: S.timer, limit: S.limit });
+    G.players.forEach(function (p, i) { p.dev = NET.lobby.players[i].dev; });
+    NET.rej = null;
+    getList(S.cat); save(); show('game'); readyScreen();
+  }
+  function roomLink() { return location.origin + '/bemaamoo/?room=' + NET.code; }
+  function shareRoom(how) {
+    var url = roomLink(), text = 'Play Bemaamoo with me. Room ' + NET.code + ': ' + url;
+    if (how === 'wa') { window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank'); return; }
+    if (how !== 'copy' && navigator.share) { navigator.share({ title: 'Bemaamoo', text: 'Play Bemaamoo with me. Room ' + NET.code, url: url }).catch(function () {}); return; }
+    try { navigator.clipboard.writeText(url).then(function () { toast('Link copied'); }, function () { toast(url); }); } catch (e) { toast(url); }
+  }
+  function paintRoom() {
+    if (!NET) return;
+    var host = isHost(), L = NET.lobby;
+    $('[data-rcode]').textContent = NET.code;
+    $('[data-rnet]').textContent = netOn() ? 'Online' : 'Connecting…';
+    $('[data-rnet]').classList.toggle('is-on', netOn());
+    if (!L) { $('[data-rplayers]').innerHTML = ''; $('[data-rhost]').hidden = true; $('[data-rguest]').hidden = false; $('[data-rwait]').textContent = 'Connecting to room ' + NET.code + '…'; $('[data-ostart]').hidden = true; return; }
+    $('[data-rplayers]').innerHTML = L.players.map(function (p, i) {
+      return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '"><i style="background:' + color(i) + '"></i><b>' + esc(p.name) + '</b><small>' + (i === 0 ? 'Host' : '') + (p.dev === DEV ? (i === 0 ? ' · you' : 'You') : '') + (isOn(p.dev) ? '' : ' · away') + '</small></li>';
+    }).join('');
+    $('[data-rhost]').hidden = !host; $('[data-rguest]').hidden = host;
+    if (host) {
+      $('[data-rcatname]').textContent = B.catName(S.cat); $('[data-rcatgroup]').textContent = groupOf(S.cat);
+      seg('[data-ropt="timer"]', TIMERS, S.timer, 'timer'); seg('[data-ropt="limit"]', LIMITS, S.limit, 'limit');
+      var st = $('[data-ostart]'); st.hidden = false; st.disabled = L.players.length < 2;
+      st.textContent = L.players.length < 2 ? 'Waiting for players to join' : 'Start game · ' + pl(L.players.length, 'player');
+    } else {
+      $('[data-ostart]').hidden = true;
+      var tl = function (a, v) { for (var i = 0; i < a.length; i++) if (a[i][0] === v) return a[i][1]; return v; };
+      $('[data-rwait]').textContent = 'Waiting for ' + hostName() + ' to start. ' + B.catName(L.cat) + ' · timer ' + tl(TIMERS, L.timer) + ' · words per round ' + tl(LIMITS, L.limit) + '.';
+    }
+  }
+
   /* ---------- events ---------- */
   document.addEventListener('click', function (ev) {
     var t = ev.target.closest('button,[data-act]');
     if (!t) { if (ev.target.classList && ev.target.classList.contains('sheet')) closeSheets(); return; }
     var a = t.getAttribute('data-act');
     if (t.hasAttribute('data-pc')) { S.count = +t.getAttribute('data-pc'); saveSetup(); paintSetup(); return; }
-    if (t.hasAttribute('data-set')) { S[t.getAttribute('data-set')] = +t.getAttribute('data-v'); saveSetup(); paintSetup(); return; }
+    if (t.hasAttribute('data-set')) { S[t.getAttribute('data-set')] = +t.getAttribute('data-v'); saveSetup(); if (cur === 'room') { syncLobby(); paintRoom(); } else paintSetup(); return; }
     if (t.hasAttribute('data-cat')) {
       var k = t.getAttribute('data-cat');
       closeSheets();
-      if (catMode === 'setup') { S.cat = k; saveSetup(); paintSetup(); getList(k); }
+      if (catMode === 'setup') { S.cat = k; saveSetup(); if (cur === 'room') { syncLobby(); paintRoom(); } else paintSetup(); getList(k); }
       else nextRound(k);
       return;
     }
@@ -453,22 +747,38 @@
       case 'cats': openCats('setup'); break;
       case 'start': startGame(); break;
       case 'go': go(); break;
-      case 'menu': openSheet('menu'); break;
+      case 'menu':
+        $$('[data-ho]').forEach(function (b) { b.hidden = !!(NET && !isHost()); });
+        $('[data-act="home"]', $('[data-sheet="menu"]')).textContent = NET ? (isHost() ? 'Leave (the room stays saved on this phone)' : 'Leave the room') : 'Leave (your game is saved)';
+        openSheet('menu'); break;
+      case 'online': show('online'); break;
+      case 'ocreate': createRoom(); break;
+      case 'ojoin': joinRoom($('[data-ocode]').value, oName()); break;
+      case 'room': resumeRoom(); break;
+      case 'oshare': shareRoom(); break;
+      case 'ocopy': shareRoom('copy'); break;
+      case 'owa': shareRoom('wa'); break;
+      case 'ostart': startOnline(); break;
+      case 'oleave': if (NET) { if (!isHost()) sendIn({ t: 'bye' }); store(KEY_ROOM, null); netClose(); } G = null; show('home'); break;
       case 'clock':
-        if (R().done) break;
+        if (R().done || (NET && !isHost())) break;
+        if (NET && running) { running = false; R().run = false; save(); paintClock(); readyScreen(); break; }
         if (running) { running = false; paintClock(); readyScreen(); } else go();
         break;
       case 'info': toast(B.catName(R().cat) + ' · ' + pl(R().entries.length, 'word') + ' on the board'); break;
       case 'skip':
         if (!running || R().done) break;
-        var who = pname(G.turn); B.skip(G); save(); msg(''); paintGame(); toast(who + ' skipped'); focusIn(); break;
+        if (NET && !isHost()) { if (myTurn()) sendIn({ t: 'skip' }); break; }
+        var who = pname(G.turn); B.skip(G); save(); msg(''); paintGame(); toast(who + ' skipped'); if (NET) notifyTurn(); else focusIn(); break;
       case 'undo':
+        if (NET && !isHost()) break;
         var e = B.undo(G); if (!e) break; save(); msg(''); paintGame(); toast('Removed ' + e.w); focusIn(); break;
-      case 'end': closeSheets(); if (G && !R().done) { B.endRound(G); save(); roundOver(); } break;
-      case 'quit': finish(); break;
-      case 'next': nextRound(); break;
+      case 'end': if (NET && !isHost()) break; closeSheets(); if (G && !R().done) { B.endRound(G); save(); roundOver(); } break;
+      case 'quit': if (NET && !isHost()) break; if (NET) { G.over = true; save(); } finish(); break;
+      case 'next': if (NET && !isHost()) break; nextRound(); break;
       case 'nextcat': openCats('round'); break;
       case 'again':
+        if (NET) { if (!isHost()) break; ov('final', false); G = null; storeRoom(); pubNow(); show('room'); break; }
         ov('final', false); store(KEY_GAME, null); G = null; show('setup'); break;
       case 'force': if (pending != null) getList(R().cat).then(function (L) { tryAdd(pending, L, true); }, function () { tryAdd(pending, null, true); }); break;
       case 'retry': msg(''); $('[data-in]').select(); focusIn(); break;
@@ -486,6 +796,8 @@
   });
   window.addEventListener('resize', function () { if (cur === 'game' && G) { sizeBoard(); paintSide(); } });
   document.addEventListener('visibilitychange', function () {
+    if (NET && !document.hidden && cur === 'game' && G) paintGame();
+    if (NET) return;
     if (document.hidden && running && G && G.settings.timer && !R().done) { running = false; save(); paintClock(); readyScreen(); }
   });
 
@@ -493,4 +805,10 @@
 
   show('home');
   if (location.hash === '#new') show('setup');
+  (function () {   // back into a room after a refresh, or open the join screen from a room link
+    var q = (new URLSearchParams(location.search).get('room') || '').toUpperCase(), rm = load(KEY_ROOM);
+    if (rm && rm.code && (!q || q === rm.code)) { resumeRoom(); return; }
+    if (q) show('online');
+  })();
+  setInterval(function () { if (NET && !isHost() && cur === 'game' && G) paintDock(); }, 5000);
 })();
