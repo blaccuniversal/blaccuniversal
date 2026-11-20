@@ -493,3 +493,18 @@ function frame(t){
 }
 requestAnimationFrame(frame);
 })();
+
+/* Dark mode toggle (remembered on this device) */
+(function(){
+  var root=document.documentElement,btn=document.getElementById('themeBtn'),tc=document.getElementById('themeColor');
+  if(!btn)return;
+  function paint(){var d=root.getAttribute('data-theme')==='dark';btn.setAttribute('aria-pressed',String(d));btn.setAttribute('aria-label',d?'Switch to light mode':'Switch to dark mode');if(tc)tc.setAttribute('content',d?'#050605':'#f3ebdf');}
+  btn.addEventListener('click',function(){
+    var d=root.getAttribute('data-theme')!=='dark';
+    root.classList.add('theme-anim');
+    if(d)root.setAttribute('data-theme','dark');else root.removeAttribute('data-theme');
+    try{localStorage.setItem('malimbe_theme',d?'dark':'light');}catch(e){}
+    paint();setTimeout(function(){root.classList.remove('theme-anim');},600);
+  });
+  paint();
+})();

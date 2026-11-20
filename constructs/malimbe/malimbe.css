@@ -345,3 +345,44 @@ footer .mud{margin-bottom:64px;opacity:.35}
   .person,.person+.person{padding:20px 0}
   footer,.s-black{padding-top:44px}
 }
+
+/* ---------- Dark mode (Noir): premium black, same Afro-earthy identity ---------- */
+.theme-btn{display:grid;place-items:center;width:40px;height:40px;margin-left:14px;border:1px solid rgba(36,24,15,.25);border-radius:50%;color:inherit;transition:border-color .25s,background .25s,transform .4s}
+.theme-btn:hover{border-color:currentColor}
+.theme-btn:active{transform:rotate(-30deg) scale(.94)}
+.theme-btn svg{width:18px;height:18px}
+.theme-btn .i-sun{display:none}
+.nav .wrap{gap:6px}
+@media (max-width:980px){.theme-btn{margin-left:auto;margin-right:4px}}
+.theme-anim,.theme-anim *{transition:background-color .5s,color .5s,border-color .5s!important}
+
+html[data-theme=dark]{
+  --cream:#050605; --cream-2:#0a0c0a; --espresso:#0d0f0d; --espresso-2:#141714; --black:#030403;
+  --bg:var(--cream); --fg:#f3ebdf; --muted:rgba(243,235,223,.84); --faint:rgba(243,235,223,.62); --line:rgba(243,235,223,.11); --line-2:rgba(243,235,223,.24); --accent:var(--clay); --label:var(--sand);
+  color-scheme:dark;
+}
+html[data-theme=dark] body{background:#050605;color:#f3ebdf}
+html[data-theme=dark] .s-cream,html[data-theme=dark] .s-sand{--fg:#f3ebdf; --muted:rgba(243,235,223,.84); --faint:rgba(243,235,223,.62); --line:rgba(243,235,223,.11); --line-2:rgba(243,235,223,.24); --accent:var(--clay); --label:var(--sand)}
+html[data-theme=dark] .s-sand{background:radial-gradient(90% 60% at 85% 0%,rgba(127,154,92,.07),transparent 70%),#0a0c0a}
+html[data-theme=dark] .s-cream + .s-cream,html[data-theme=dark] .s-sand + .s-sand{border-top:1px solid var(--line)}
+html[data-theme=dark] .mud{background-image:var(--mud-light);opacity:.35}
+html[data-theme=dark] .nav{color:#f3ebdf}
+html[data-theme=dark] .nav.scrolled{background:rgba(5,6,5,.86);border-color:rgba(243,235,223,.1)}
+html[data-theme=dark] .brand small{color:rgba(243,235,223,.6)}
+html[data-theme=dark] .nav-links a{color:rgba(243,235,223,.78)}
+html[data-theme=dark] .nav-links a:hover{color:#fff}
+html[data-theme=dark] .pill,html[data-theme=dark] .theme-btn{border-color:rgba(243,235,223,.25)}
+html[data-theme=dark] .theme-btn .i-sun{display:block}
+html[data-theme=dark] .theme-btn .i-moon{display:none}
+html[data-theme=dark] .burger span{background:#f3ebdf}
+html[data-theme=dark] .mobile-menu{background:#050605}
+html[data-theme=dark] .mobile-menu a{border-color:rgba(243,235,223,.12)}
+html[data-theme=dark] .btn-primary{background:#f3ebdf;color:#0a0a0a;box-shadow:0 12px 40px -18px rgba(243,235,223,.45)}
+html[data-theme=dark] .btn-primary:hover{background:#fff}
+html[data-theme=dark] .s-rust{--bg:#7e3517}
+html[data-theme=dark] .s-rust .btn-primary{background:#050605;color:#f3ebdf}
+html[data-theme=dark] .arch{box-shadow:0 30px 70px -30px rgba(0,0,0,.9)}
+html[data-theme=dark] .disc{border-color:#050605}
+html[data-theme=dark] .partner{background:#0d0f0d;border:1px solid rgba(243,235,223,.1)}
+html[data-theme=dark] footer,html[data-theme=dark] .s-black{background:#030403}
+html[data-theme=dark] ::selection{background:var(--clay)}
