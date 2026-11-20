@@ -8,7 +8,8 @@
   var CONSTRUCTS = [
     { name: 'ÀṢÀ Bar & Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/asa/', img: '/constructs/asa/img/bar-s.webp', logo: '/constructs/asa/img/logo.png' },
     { name: 'Cinema D Hybrid', tag: 'Cinema · Ibadan', path: '/constructs/cinema/', img: '/constructs/cinema/img/cover.webp', logo: '/constructs/cinema/img/logo.png', ar: '103/94', lw: '34%' },
-    { name: 'Mcrystal Cinemas', tag: 'Cinema · Lagos', path: '/constructs/mcrystal/', img: '/constructs/mcrystal/img/cover.webp?v=2', logo: '/constructs/mcrystal/img/logo.png', ar: '824/759', lw: '40%' }
+    { name: 'Mcrystal Cinemas', tag: 'Cinema · Lagos', path: '/constructs/mcrystal/', img: '/constructs/mcrystal/img/cover.webp?v=2', logo: '/constructs/mcrystal/img/logo.png', ar: '824/759', lw: '40%' },
+    { name: 'Brava Hotel', tag: 'Hotel · Ibadan', path: '/constructs/brava/', img: '/constructs/brava/img/cover.webp', logo: '/constructs/brava/img/logo.png', ar: '820/600', lw: '46%' }
   ];
 
   // tool rotation
