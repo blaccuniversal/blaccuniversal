@@ -13,7 +13,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/brava/img/favicon.png?v=2">
-<link rel="stylesheet" href="/constructs/brava/brava.css?v=2">
+<link rel="preload" as="image" href="/constructs/brava/img/exterior.webp" fetchpriority="high">
+<link rel="stylesheet" href="/constructs/brava/brava.css?v=3">
 </head>
 <body>
 
@@ -54,39 +55,10 @@
   <!-- HERO -->
   <section class="hero" data-hero>
     <div class="scene" aria-hidden="true">
-      <div class="sky"></div>
+      <picture><source media="(max-width:700px)" srcset="/constructs/brava/img/exterior-s.webp"><img class="hero__img" data-heroimg src="/constructs/brava/img/exterior.webp" alt="" fetchpriority="high"></picture>
       <div class="stars" data-stars></div>
-      <div class="sun"></div>
-      <svg class="hills" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
-        <defs>
-          <linearGradient id="h1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2a33"/><stop offset="1" stop-color="#1a1418"/></linearGradient>
-          <linearGradient id="h2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1f24"/><stop offset="1" stop-color="#110d10"/></linearGradient>
-          <linearGradient id="h3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16110f"/><stop offset="1" stop-color="#070605"/></linearGradient>
-          <linearGradient id="h4" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b0908"/><stop offset="1" stop-color="#030303"/></linearGradient>
-          <radialGradient id="win" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffcf8a" stop-opacity=".9"/><stop offset="1" stop-color="#ffcf8a" stop-opacity="0"/></radialGradient>
-        </defs>
-        <g class="layer" data-depth="0.08"><path fill="url(#h1)" d="M0 560 C160 470 260 430 390 470 S640 380 760 420 S1020 360 1160 430 S1420 400 1600 470 V900 H0z"/></g>
-        <g class="layer" data-depth="0.16"><path fill="url(#h2)" d="M0 640 C140 590 300 560 420 600 S700 540 860 590 S1150 560 1300 610 S1500 580 1600 600 V900 H0z"/></g>
-        <g class="layer" data-depth="0.28">
-          <path fill="url(#h3)" d="M0 720 C200 660 380 650 560 690 S900 640 1100 680 S1420 650 1600 690 V900 H0z"/>
-          <!-- the hotel on the ridge, lit from inside -->
-          <g class="hotel" transform="translate(1040 560)">
-            <circle cx="70" cy="70" r="90" fill="url(#win)" class="glow"/>
-            <rect x="0" y="34" width="150" height="92" fill="#0d0a09"/>
-            <path d="M-8 36 L75 4 L158 36z" fill="#0d0a09"/>
-            <rect x="160" y="64" width="70" height="62" fill="#0d0a09"/>
-            <g fill="#ffc77a" class="wins">
-              <rect x="14" y="50" width="14" height="18"/><rect x="40" y="50" width="14" height="18" opacity=".35"/><rect x="66" y="50" width="14" height="18"/><rect x="92" y="50" width="14" height="18"/><rect x="118" y="50" width="14" height="18" opacity=".35"/>
-              <rect x="14" y="84" width="14" height="18" opacity=".35"/><rect x="40" y="84" width="14" height="18"/><rect x="66" y="84" width="14" height="18" opacity=".5"/><rect x="92" y="84" width="14" height="18"/><rect x="118" y="84" width="14" height="18"/>
-              <rect x="174" y="78" width="16" height="14"/><rect x="200" y="78" width="16" height="14" opacity=".4"/>
-            </g>
-          </g>
-          <g fill="#0a0807"><path d="M300 690 c-6-40 4-70 22-86 18 16 26 48 18 86z"/><path d="M262 700 c-4-28 4-48 16-60 13 12 18 34 13 60z"/><path d="M1340 676 c-8-46 6-80 26-98 20 18 30 54 20 98z"/></g>
-        </g>
-        <g class="layer" data-depth="0.45"><path fill="url(#h4)" d="M0 800 C260 760 520 770 800 790 S1340 760 1600 790 V900 H0z"/></g>
-      </svg>
       <div class="flies" data-flies></div>
-      <div class="haze"></div>
+      <div class="shade"></div>
     </div>
     <div class="hero__in">
       <p class="chip rise" style="--d:1"><span class="dot"></span>Samonda, Ibadan · Open 24/7</p>
@@ -133,6 +105,13 @@
     </ul>
   </section>
 
+  <!-- INSIDE -->
+  <section class="gal wrap" aria-label="Inside Brava">
+    <figure class="gal__i gal__i--a reveal"><img src="/constructs/brava/img/suite-lounge-s.webp" alt="Double-height lounge with a balcony and wood-panelled TV wall" loading="lazy"><figcaption>Lounge</figcaption></figure>
+    <figure class="gal__i reveal"><img src="/constructs/brava/img/nook-s.webp" alt="Two rattan chairs and plants in a lit nook under the stairs" loading="lazy"><figcaption>Quiet corners</figcaption></figure>
+    <figure class="gal__i reveal"><img src="/constructs/brava/img/restaurant-s.webp" alt="Dining room with cream booths, marble floor and warm strip lighting" loading="lazy"><figcaption>Dining room</figcaption></figure>
+  </section>
+
   <!-- ROOMS -->
   <section class="rooms" id="rooms">
     <div class="wrap">
@@ -147,7 +126,7 @@
       <div class="head reveal"><div><p class="eyebrow">Eat &amp; drink</p><h2 class="h2">Stay in. Dine well.</h2></div></div>
       <div class="dgrid">
         <article class="venue reveal" id="zuri">
-          <div class="venue__art venue__art--zuri" aria-hidden="true"><span>Z</span></div>
+          <div class="venue__art venue__art--photo"><img src="/constructs/brava/img/restaurant-s.webp" alt="Zuri Restaurant dining room" loading="lazy"></div>
           <div class="venue__b">
             <p class="eyebrow">Restaurant</p>
             <h3>Zuri Restaurant</h3>
@@ -234,6 +213,6 @@
 </div>
 
 <div class="toast" data-toast hidden></div>
-<script src="/constructs/brava/brava.js?v=1" defer></script>
+<script src="/constructs/brava/brava.js?v=2" defer></script>
 </body>
 </html>

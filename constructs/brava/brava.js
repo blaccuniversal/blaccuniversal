@@ -7,13 +7,13 @@
 
   /* Rooms and rates as published by Brava Hotel. Put real photos in photo: '/constructs/brava/img/…' */
   var ROOMS = [
-    { id: 'standard', kind: 'Room', name: 'Standard Room', price: 95000, photo: '',
+    { id: 'standard', kind: 'Room', name: 'Standard Room', price: 95000, photo: '/constructs/brava/img/room-standard-s.webp',
       desc: 'A warm, inviting bedroom perfect for relaxing after a busy day.',
       feats: [['i-wifi', 'Free WiFi'], ['i-ac', 'Air conditioning'], ['i-tv', '65" flat screen']] },
-    { id: 'deluxe', kind: 'Room', name: 'Deluxe Room', price: 115000, photo: '',
+    { id: 'deluxe', kind: 'Room', name: 'Deluxe Room', price: 115000, photo: '/constructs/brava/img/room-deluxe-s.webp', pos: '50% 62%',
       desc: 'Bright and spacious room designed for comfort and style.',
       feats: [['i-fridge', 'Mini fridge'], ['i-coffee', 'Coffee maker'], ['i-bell', 'Room service'], ['i-wifi', 'Free WiFi']] },
-    { id: 'presidential', kind: 'Suite · 2 bedrooms', name: 'Presidential Suite', price: 300000, photo: '',
+    { id: 'presidential', kind: 'Suite · 2 bedrooms', name: 'Presidential Suite', price: 300000, photo: '/constructs/brava/img/suite-lounge-s.webp', pos: '50% 55%',
       desc: 'A warm, inviting two-bedroom suite perfect for relaxing after a busy day.',
       feats: [['i-wifi', 'Free WiFi'], ['i-ac', 'Air conditioning'], ['i-tv', '65" flat screen'], ['i-bed', '2 bedrooms']] }
   ];
@@ -23,7 +23,7 @@
 
   /* line drawings of each room, until the hotel's own photos are added */
   function art(r) {
-    if (r.photo) return '<div class="art"><img src="' + r.photo + '" alt="' + r.name + ' at Brava Hotel" loading="lazy"></div>';
+    if (r.photo) return '<div class="art art--photo"><img src="' + r.photo + '" alt="' + r.name + ' at Brava Hotel" loading="lazy"' + (r.pos ? ' style="object-position:' + r.pos + '"' : '') + '></div>';
     var s = 'stroke="rgba(255,226,190,.55)" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"';
     var bed = '<path ' + s + ' d="M70 205 V160 h260 v45 M70 190 h260 M90 160 v-30 a10 10 0 0 1 10 -10 h200 a10 10 0 0 1 10 10 v30"/><rect ' + s + ' x="110" y="138" width="70" height="22" rx="8"/><rect ' + s + ' x="220" y="138" width="70" height="22" rx="8"/><path ' + s + ' d="M70 205 v10 M330 205 v10"/>';
     var lamp = '<g class="lamp"><circle cx="355" cy="112" r="30" fill="rgba(255,199,122,.16)"/></g><path ' + s + ' d="M345 120 h20 l-5 -18 h-10z M355 120 v50 M343 170 h24"/>';
@@ -147,10 +147,10 @@
     for (var j = 0; j < 22; j++) h += '<i style="left:' + (Math.random() * 100).toFixed(1) + '%;top:' + (30 + Math.random() * 60).toFixed(1) + '%;--t:' + (7 + Math.random() * 7).toFixed(1) + 's;--dl:-' + (Math.random() * 10).toFixed(1) + 's;--x:' + (Math.random() * 80 - 40).toFixed(0) + 'px;--y:' + (-20 - Math.random() * 60).toFixed(0) + 'px"></i>';
     fl.innerHTML = h;
   })();
-  var layers = $$('.layer'), mx = 0, hero = $('[data-hero]');
+  var heroImg = $('[data-heroimg]'), mx = 0, hero = $('[data-hero]');
   function parallax(y) {
     if (reduce || y > window.innerHeight * 1.2) return;
-    layers.forEach(function (l) { var d = +l.getAttribute('data-depth'); l.style.transform = 'translate(' + (mx * d * 40).toFixed(1) + 'px,' + (y * d * 0.9).toFixed(1) + 'px)'; });
+    heroImg.style.transform = 'translate(' + (mx * -8).toFixed(1) + 'px,' + (y * 0.25).toFixed(1) + 'px) scale(' + (1.04 + y / window.innerHeight * 0.06).toFixed(3) + ')';
   }
   if (!reduce) hero.addEventListener('pointermove', function (e) { if (e.pointerType !== 'mouse') return; mx = (e.clientX / window.innerWidth - 0.5) * 2; parallax(window.pageYOffset); });
 
