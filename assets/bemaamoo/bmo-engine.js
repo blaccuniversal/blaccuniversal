@@ -3,7 +3,7 @@
 (function (root) {
   'use strict';
 
-  var MAX_LEN = 20;          // longest entry (letters)
+  var MAX_LEN = 0;           // no letter limit: any correct word counts
   var MIN_LEN = 2;           // shortest entry
   var MAV_MIN = 3;           // shortest Maverick
   var MAV_FIRST_COL = 2;     // Mavericks are read from the 2nd letter column onwards
@@ -12,6 +12,7 @@
   var KEYSTONE = 5;          // bonus when one word sets off a Maverick and a Concord
 
   var CATS = [
+    { g: 'Words', c: [['words_en', 'Words (English)'], ['words_fr', 'Words (French)'], ['words_es', 'Words (Spanish)'], ['words_pt', 'Words (Portuguese)'], ['words_de', 'Words (German)'], ['words_it', 'Words (Italian)'], ['words_nl', 'Words (Dutch)'], ['words_sw', 'Words (Swahili)']] },
     { g: 'Names', c: [['names_all', 'Names (All)'], ['names_english', 'Names (English)'], ['names_african', 'Names (African)'], ['names_arabic', 'Names (Arabic)'], ['names_biblical', 'Names (Biblical)'], ['names_latin', 'Names (Latin)']] },
     { g: 'Places', c: [['countries', 'Countries'], ['capitals', 'Capitals'], ['cities', 'Cities'], ['rivers', 'Rivers'], ['mountains', 'Mountains'], ['oceans', 'Oceans & Seas'], ['islands', 'Islands'], ['deserts', 'Deserts'], ['continents', 'Continents']] },
     { g: 'Nature', c: [['animals', 'Animals'], ['birds', 'Birds'], ['fish', 'Fish & Sea Life'], ['insects', 'Insects'], ['reptiles', 'Reptiles'], ['trees', 'Trees'], ['flowers', 'Flowers'], ['fruits', 'Fruits'], ['vegetables', 'Vegetables'], ['gems', 'Gems & Minerals'], ['weather', 'Weather'], ['planets', 'Planets & Stars']] },
@@ -24,7 +25,7 @@
   var CAT_NAME = {};
   CATS.forEach(function (g) { g.c.forEach(function (c) { CAT_NAME[c[0]] = c[1]; }); });
   // Names and cities lists are big, so Mavericks use a shorter list of well-known ones.
-  var MAV_LIST = { names_all: 1, names_english: 1, names_african: 1, names_arabic: 1, cities: 1 };
+  var MAV_LIST = { words_en: 1, words_fr: 1, words_es: 1, words_pt: 1, words_de: 1, words_it: 1, words_nl: 1, words_sw: 1, names_all: 1, names_english: 1, names_african: 1, names_arabic: 1, cities: 1 };
 
   function tri(n) { return n * (n + 1) / 2; }
 
@@ -82,7 +83,7 @@
     if (!w) return { ok: false, why: 'empty', w: w };
     if (R.done) return { ok: false, why: 'done', w: w };
     if (w.length < MIN_LEN) return { ok: false, why: 'short', w: w };
-    if (w.length > MAX_LEN) return { ok: false, why: 'long', w: w };
+    if (MAX_LEN && w.length > MAX_LEN) return { ok: false, why: 'long', w: w };
     for (var i = 0; i < R.entries.length; i++) if (R.entries[i].w === w) return { ok: false, why: 'repeat', w: w };
     if (dict && !dict.has(w)) return { ok: false, why: 'unknown', w: w };
     return { ok: true, w: w };
