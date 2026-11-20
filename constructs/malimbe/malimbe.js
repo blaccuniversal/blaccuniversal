@@ -360,7 +360,7 @@ async function enableSensors(){
 }
 function start(){
   if(state.mode==='demo')stop();
-  (mobile()?stage:document.getElementById('top')).scrollIntoView({behavior:'smooth',block:mobile()?'center':'start'});
+  (mobile()?stage:document.getElementById('wayfinder')).scrollIntoView({behavior:'smooth',block:mobile()?'center':'start'});
   enableSensors();
   if(!('geolocation' in navigator)){blocked('This browser can’t share its location.');return}
   state.mode='locating'; setStatus('scan','Acquiring signal'); setToast('Acquiring your position…','Allow location access when your browser asks',[],0);
@@ -407,7 +407,7 @@ function startDemo(){
   state.route=route(toW(DEMO_START)); state.prog=0; state.demoT=0; state.arrivedAt=0;
   const p=pointAt(state.route,0); state.userW={x:p.x,y:p.y}; state.user=DEMO_START; state.heading=p.dir; state.acc=null;
   setStatus('demo','Demo · Simulated drive');
-  (mobile()?stage:document.getElementById('top')).scrollIntoView({behavior:'smooth',block:mobile()?'center':'start'});
+  (mobile()?stage:document.getElementById('wayfinder')).scrollIntoView({behavior:'smooth',block:mobile()?'center':'start'});
   updateHud(performance.now(),true);
 }
 document.getElementById('guideBtn').addEventListener('click',start);
@@ -417,7 +417,10 @@ ambient=route({x:900,y:3600});
 stop();
 let last=performance.now();
 const lerpA=(a,b,k)=>a+angDiff(a,b)*k;
+let onScreen=false;
+new IntersectionObserver(es=>{onScreen=es[0].isIntersecting;if(onScreen){last=performance.now();requestAnimationFrame(frame)}}).observe(canvas);
 function frame(t){
+  if(!onScreen)return;
   const dt=Math.min(64,t-last); last=t;
   if(W===0||H===0){requestAnimationFrame(frame);return}
   // demo motion
