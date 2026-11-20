@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611202250, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611202330, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -258,6 +258,7 @@ function pqtMain() {
       if (!changed) main.firstChild.style.animation = 'none';
       fitQ(main);
       if (v === 'answers') { tileKey = S.feud && S.feud.key; updateFeud(true); }
+      fitStage(); setTimeout(fitStage, 650);
       if (window.PQTStar) { var stp = v === 'star' && S.star && S.star.phase === 'play'; if (stp) { var sh = $('[data-sst]', main); if (sh) window.PQTStar.mount(sh, { key: S.star.seed, team: S.star.team, preset: S.star.preset, bpm: S.star.bpm, level: S.star.level, bars: S.star.bars, seed: S.star.seed }); } else window.PQTStar.stop(); }
       if (v === 'scores') {
         $$('.sc-score', main).forEach(function (el, i) { if (prevScores[i] != null && S.teams[i] && S.teams[i].score > prevScores[i]) el.classList.add('is-bump'); });
@@ -424,7 +425,19 @@ function pqtMain() {
       var a = $('[data-award]', main); if (a) a.textContent = f.awardedTo != null && S.teams[f.awardedTo] ? pl(f.awardedPts, 'point') + ' to ' + S.teams[f.awardedTo].name : '';
       $$('[data-x] i', main).forEach(function (x, i) { x.classList.toggle('is-on', i < f.strikes); });
       var st = $('[data-steal]', main); if (st) st.hidden = !(f.strikes >= 3 && f.awardedTo == null);
+      fitStage();
     }
+    // Keep every view inside the stage: if it is taller than the space between the header and the
+    // code/footer line, shrink the whole view to fit, so nothing ever covers the code or the logo.
+    function fitStage() {
+      var v = main.firstElementChild; if (!v) return;
+      v.style.zoom = '';
+      var cs = getComputedStyle(main), avail = main.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom), need = v.scrollHeight;
+      if (need > avail + 1) v.style.zoom = Math.max(0.55, (avail / need) * 0.97).toFixed(3);
+    }
+    var fitT = null;
+    function fitSoon() { clearTimeout(fitT); fitT = setTimeout(fitStage, 80); }
+    window.addEventListener('resize', fitSoon);
     function showSplash(text, sub) {
       var d = document.createElement('div'); d.className = 'sc-splash';
       d.innerHTML = '<div><p class="sc-splash__t">' + esc(text) + '</p>' + (sub ? '<p class="sc-splash__s">' + esc(sub) + '</p>' : '') + '</div>';
