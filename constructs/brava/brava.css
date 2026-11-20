@@ -255,3 +255,15 @@ svg{display:block}
 .gal__i figcaption{position:absolute;left:12px;bottom:12px;padding:6px 12px;border:1px solid var(--ln);border-radius:999px;background:rgba(0,0,0,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:12px;font-weight:600}
 @media (max-width:760px){.gal{grid-template-columns:repeat(3,72%);overflow-x:auto;scroll-snap-type:x mandatory;padding-right:18px;scrollbar-width:none}.gal::-webkit-scrollbar{display:none}.gal__i{scroll-snap-align:start}}
 @media (min-width:761px){.gal__i{aspect-ratio:auto;height:clamp(340px,38vw,520px)}.hero__img{object-position:50% 50%}}
+
+/* Orbit brand + plates */
+.venue__art--orbit{background:radial-gradient(80% 90% at 50% 50%,#7a0a06,#4a0503 70%,#2a0302)}
+.venue__art--orbit i{border-color:rgba(255,255,255,.18)}
+.venue__art--orbit i:nth-child(2){border-color:rgba(255,255,255,.12)}
+.venue__logo{position:relative;z-index:1;width:min(64%,360px);height:auto;filter:drop-shadow(0 6px 24px rgba(0,0,0,.35))}
+.venue:hover .venue__logo{transform:scale(1.03);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.plates{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.plate{margin:0;aspect-ratio:4/5;overflow:hidden;border:1px solid var(--ln);border-radius:var(--r);background:#0b0908}
+.plate img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.plate:hover img{transform:scale(1.05)}
+@media (max-width:760px){.plates{grid-template-columns:repeat(3,72%);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.plates::-webkit-scrollbar{display:none}.plate{scroll-snap-align:start}}
