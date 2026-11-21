@@ -505,12 +505,13 @@
   function netLink() {
     var T = NTOPIC + NET.code + '/', host = isHost(), me = NET;
     me.cls = [];
+    keepAwake();
     BROKERS.forEach(function (url) {
       var c; try { c = window.mqtt.connect(url, { clientId: 'bmo_' + DEV + '_' + Math.random().toString(16).slice(2, 6), clean: true, connectTimeout: 8000, reconnectPeriod: 1500, keepalive: 20 }); } catch (e) { return; }
       me.cls.push(c);
-      c.on('connect', function () { if (NET !== me) return; c.subscribe(host ? T + 'in' : [T + 'state', T + 'in']); if (host) pubNow(); else sendIn({ t: 'join', name: me.name }); netPaint(); });
+      c.on('connect', function () { if (NET !== me) return; c.subscribe(host ? [T + 'in', T + 'j/+'] : [T + 'state', T + 'in']); me.wasOn = true; if (host) pubNow(); else sendIn({ t: 'join', name: me.name }); netPaint(); });
       c.on('close', function () { if (NET === me) netPaint(); });
-      c.on('message', function (tp, pl) { if (NET !== me) return; var m; try { m = JSON.parse(pl.toString()); } catch (e) { return; } if (host) hostMsg(m); else if (tp === T + 'in') guestMove(m); else guestMsg(m); });
+      c.on('message', function (tp, pl) { if (NET !== me) return; var m; try { m = JSON.parse(pl.toString()); } catch (e) { return; } if (host) { if (tp.indexOf(T + 'j/') === 0 && (!m.ts || Math.abs(Date.now() - m.ts) > 900000)) return; hostMsg(m); } else if (tp === T + 'in') guestMove(m); else guestMsg(m); });
       c.on('error', function () {});
     });
     clearInterval(me.beatT);
@@ -522,8 +523,29 @@
   }
   function netSend(topic, obj, retain) { if (!NET || !NET.cls) return; var t = JSON.stringify(obj); NET.cls.forEach(function (c) { if (c.connected) try { c.publish(topic, t, { qos: 0, retain: !!retain }); } catch (e) {} }); }
   function netOn() { return !!(NET && NET.cls && NET.cls.some(function (c) { return c.connected; })); }
-  function sendIn(m) { if (!NET) return; m.dev = DEV; netSend(NTOPIC + NET.code + '/in', m); }
-  function netClose() { if (!NET) return; clearInterval(NET.beatT); (NET.cls || []).forEach(function (c) { try { c.end(true); } catch (e) {} }); NET = null; document.title = baseTitle; }
+  function sendIn(m) {
+    if (!NET) return; m.dev = DEV; netSend(NTOPIC + NET.code + '/in', m);
+    if (!isHost() && m.t === 'join') { m.ts = Date.now(); netSend(NTOPIC + NET.code + '/j/' + DEV, m, true); NET.jq = true; }
+  }
+  function clearJoin() { if (!NET || !NET.jq || !NET.cls) return; NET.jq = false; NET.cls.forEach(function (c) { if (c.connected) try { c.publish(NTOPIC + NET.code + '/j/' + DEV, '', { qos: 0, retain: true }); } catch (e) {} }); }
+  /* phones pause a page that is minimised or locked: reconnect the moment it is back, and keep the screen awake while a room is open */
+  var wl = null, hiddenAt = 0;
+  function keepAwake() { try { if (NET && !document.hidden && navigator.wakeLock && !wl) navigator.wakeLock.request('screen').then(function (l) { wl = l; l.addEventListener('release', function () { wl = null; }); }, function () {}); } catch (e) {} }
+  function relink() {
+    if (!NET || !window.mqtt) return;
+    var me = NET; (me.cls || []).forEach(function (c) { try { c.end(true); } catch (e) {} });
+    me.cls = []; netLink(); netPaint();
+  }
+  function resumeNet() {
+    if (!NET) return; keepAwake();
+    var away = hiddenAt ? Date.now() - hiddenAt : 0; hiddenAt = 0;
+    if (away > 6000 || !netOn()) relink();
+  }
+  document.addEventListener('visibilitychange', function () { if (document.hidden) hiddenAt = Date.now(); else resumeNet(); });
+  window.addEventListener('pageshow', function () { resumeNet(); });
+  window.addEventListener('online', function () { if (NET) relink(); });
+  window.addEventListener('focus', function () { if (NET && !netOn()) relink(); });
+  function netClose() { if (!NET) return; clearJoin(); clearInterval(NET.beatT); (NET.cls || []).forEach(function (c) { try { c.end(true); } catch (e) {} }); NET = null; document.title = baseTitle; }
   function netPaint() { if (cur === 'room') paintRoom(); else if (cur === 'game' && G) { paintDock(); paintStrip(); } }
   function storeRoom() {
     if (!NET) return;
@@ -588,6 +610,7 @@
     if (!st || st.v !== 1 || st.code !== NET.code || !st.lobby) return;
     if (st.hs === NET.hs && st.seq <= NET.lastSeq) return;
     NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {};
+    if (NET.jq && st.lobby.players.some(function (p) { return p.dev === DEV; })) clearJoin();
     clearTimeout(NET.noRoomT);
     if (!st.G) {
       G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
@@ -730,7 +753,7 @@
     if (!NET) return;
     var host = isHost(), L = NET.lobby;
     $('[data-rcode]').textContent = NET.code;
-    $('[data-rnet]').textContent = netOn() ? 'Online' : 'Connecting…';
+    $('[data-rnet]').textContent = netOn() ? (host ? 'Online · keep this page open' : (hostStale() ? 'Host is away' : 'Online')) : (NET.wasOn ? 'Reconnecting…' : 'Connecting…');
     $('[data-rnet]').classList.toggle('is-on', netOn());
     if (!L) { $('[data-rplayers]').innerHTML = ''; $('[data-rhost]').hidden = true; $('[data-rguest]').hidden = false; $('[data-rwait]').textContent = 'Connecting to room ' + NET.code + '…'; $('[data-ostart]').hidden = true; return; }
     var list = L.players.slice();
@@ -747,7 +770,7 @@
     } else {
       $('[data-ostart]').hidden = true;
       var tl = function (a, v) { for (var i = 0; i < a.length; i++) if (a[i][0] === v) return a[i][1]; return v; };
-      $('[data-rwait]').textContent = 'Waiting for ' + hostName() + ' to start. ' + B.catName(L.cat) + ' · timer ' + tl(TIMERS, L.timer) + ' · words per round ' + tl(LIMITS, L.limit) + '.';
+      $('[data-rwait]').textContent = (hostStale() ? hostName() + ' looks to be away. You are in the queue and will join as soon as they are back. ' : 'Waiting for ' + hostName() + ' to start. ') + B.catName(L.cat) + ' · timer ' + tl(TIMERS, L.timer) + ' · words per round ' + tl(LIMITS, L.limit) + '.';
     }
   }
 
