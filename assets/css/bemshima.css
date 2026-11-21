@@ -184,3 +184,8 @@ body.bm-player .hg{bottom:calc(100px + env(safe-area-inset-bottom))}
 .bm .bm-sort button:hover{color:#fff}
 .bm .bm-sort button[aria-pressed="true"]{background:#fff;color:#000}
 .bm .bm-sort button:focus-visible{outline:1px solid #fff;outline-offset:-3px}
+
+/* free music: real heading, options on the same row, list aligned left (all widths) */
+.bm #music .mus-sec__grid{grid-template-columns:minmax(0,1fr);gap:10px}
+.bm #music .bm-sorthead{margin-bottom:4px}
+.bm #music .bm-h2{margin:0;font-size:clamp(22px,2.2vw,28px);font-weight:600;letter-spacing:-.01em;text-transform:none;line-height:1.1;color:#fff}
