@@ -360,3 +360,14 @@ body[data-locked] .scr,body[data-locked] .sheet,body[data-locked] .ov{display:no
 .pchip small{display:block;font-size:10px;opacity:.65;font-weight:500;line-height:1}
 .sum__d + .sum small{opacity:.8}
 .sum__rr{display:flex;gap:8px;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid var(--bd)}.sum__rr b{margin-left:auto}
+
+/* smooth + responsive on every device */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a,input,.pick,.prow,.seg>*{touch-action:manipulation}
+body.in-game{overscroll-behavior:none}
+.board{contain:layout paint;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.pstrip{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none}.pstrip::-webkit-scrollbar{display:none}
+.sheet__card,.chat__log{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.cell.is-new,.flash__i,.row{will-change:auto}
+input,textarea{font-size:max(16px,1em)}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.01s!important;transition-duration:.01s!important}}

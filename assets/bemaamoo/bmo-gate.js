@@ -107,7 +107,7 @@
     '89ca14c9dd4c637c089ad13051615b5e493c6128ca2db4a2d74ffced08151562' /* key 100 */
   ];
   var KEY = 'bmo_pass', DAYS = 30, body = document.body;
-  var FREE_KEY = 'bmo_free', FREE_MS = 60 * 60 * 1000;   // free play: 1 hour a day per device, resets at midnight
+  var FREE_KEY = 'bmo_free', FREE_MS = 3 * 60 * 60 * 1000;   // free play: 3 hours a day per device, resets at midnight
   function hex(buf) { return [].map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join(''); }
   function hash(s) { return crypto.subtle.digest('SHA-256', new TextEncoder().encode('blaccbmo:' + s)).then(hex); }
   function saved() { try { var v = JSON.parse(localStorage.getItem(KEY) || 'null'); return v && v.until > Date.now() && PASSES.indexOf(v.h) > -1; } catch (e) { return false; } }
@@ -115,7 +115,7 @@
   function freeRead() { var v = null; try { v = JSON.parse(localStorage.getItem(FREE_KEY) || 'null'); } catch (e) {} if (!v || v.d !== today()) v = { d: today(), used: 0, on: false }; return v; }
   function freeWrite(v) { try { localStorage.setItem(FREE_KEY, JSON.stringify(v)); } catch (e) {} }
   function freeLeft() { return Math.max(0, FREE_MS - freeRead().used); }
-  function mins(ms) { var m = Math.ceil(ms / 60000); return m + ' min'; }
+  function mins(ms) { var m = Math.ceil(ms / 60000); if (m >= 60) { var h = Math.floor(m / 60), r = m % 60; return h + (h === 1 ? ' hour' : ' hours') + (r ? ' ' + r + ' min' : ''); } return m + ' min'; }
   if (saved()) return;
 
   var g = null, meter = null, badge = null;
@@ -126,11 +126,11 @@
     g.className = 'gate';
     var left = freeLeft(), up = mode === 'up' || left <= 0;
     g.innerHTML = '<form class="gate__card" novalidate>' +
-      '<p class="eyebrow">' + (up ? 'Free hour used' : 'Word game') + '</p>' +
+      '<p class="eyebrow">' + (up ? 'Free play used' : 'Word game') + '</p>' +
       '<h1 class="gate__t">Bemaamoo</h1>' +
-      (up ? '<p class="gate__p">That’s your free hour for today. Your game is saved. Come back tomorrow for another free hour, or enter a passkey to keep playing.</p>'
-          : '<p class="gate__p">Play free for 1 hour every day, or enter a passkey for unlimited play.</p>' +
-            '<button class="btn btn--big btn--full gate__free" type="button" data-free>Play free · ' + (left >= FREE_MS ? '1 hour' : mins(left)) + ' left today</button>' +
+      (up ? '<p class="gate__p">That’s your 3 free hours for today. Your game is saved. Come back tomorrow for another 3 hours, or enter a passkey to keep playing.</p>'
+          : '<p class="gate__p">Play free for 3 hours every day, or enter a passkey for unlimited play.</p>' +
+            '<button class="btn btn--big btn--full gate__free" type="button" data-free>Play free · ' + mins(left) + ' left today</button>' +
             '<p class="gate__or"><span>or</span></p>') +
       '<input class="gate__in" type="password" autocomplete="current-password" autocapitalize="characters" spellcheck="false" placeholder="Passkey" aria-label="Passkey" required>' +
       '<p class="gate__err" role="alert" hidden>That passkey didn’t work. Check it and try again.</p>' +
@@ -153,7 +153,7 @@
     });
   }
 
-  /* free hour: counts only while the page is open and in front */
+  /* free play: counts only while the page is open and in front */
   function startFree() {
     var v = freeRead(); if (v.used >= FREE_MS) { lock('up'); return; }
     v.on = true; freeWrite(v);

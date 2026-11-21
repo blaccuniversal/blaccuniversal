@@ -45,6 +45,9 @@
     return p;
   }
 
+  /* warm a category's word list in the background so Start is instant (skipped on data saver) */
+  function warm(cat) { try { var c = navigator.connection; if (c && c.saveData) return; getList(cat).catch(function () {}); } catch (e) {} }
+
   /* ---------- screens ---------- */
   var cur = 'home';
   function show(name) {
@@ -1143,6 +1146,7 @@
 
   show('home');
   setTimeout(function () { loadMqtt().catch(function () {}); }, 1200);
+  (window.requestIdleCallback || function (f) { setTimeout(f, 2500); })(function () { warm(S.cat); }, { timeout: 4000 });
   if (location.hash === '#new') show('setup');
   (function () {   // back into a room after a refresh, or open the join screen from a room link
     var q = (new URLSearchParams(location.search).get('room') || '').toUpperCase(), rm = load(KEY_ROOM);
