@@ -90,14 +90,26 @@
     try { var C = window.AudioContext || window.webkitAudioContext; if (!AC && C) AC = new C(); if (AC && AC.state === 'suspended') AC.resume(); } catch (e) {}
     return AC;
   }
+  var NB = null;
+  function noise() {
+    if (NB) return NB;
+    var n = Math.floor(AC.sampleRate * 0.08), buf = AC.createBuffer(1, n, AC.sampleRate), d = buf.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    return (NB = buf);
+  }
+  /* wall-clock tick: a dry, woody click (filtered noise) plus a short low knock; "tock" is a touch lower */
   function tickSound() {
     if (!snd || !AC || AC.state !== 'running') return;
-    var t = AC.currentTime, f = tock ? 780 : 1040; tock = !tock;
-    var o = AC.createOscillator(), g = AC.createGain(), hp = AC.createBiquadFilter();
-    o.type = 'square'; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * .55, t + .035);
-    hp.type = 'highpass'; hp.frequency.value = 500;
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(.09, t + .002); g.gain.exponentialRampToValueAtTime(.0001, t + .05);
-    o.connect(hp); hp.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + .06);
+    var t = AC.currentTime, lo = tock; tock = !tock;
+    var src = AC.createBufferSource(); src.buffer = noise();
+    var bp = AC.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = lo ? 1900 : 2600; bp.Q.value = 1.4;
+    var g = AC.createGain();
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(lo ? .85 : 1, t + .001); g.gain.exponentialRampToValueAtTime(.0001, t + .028);
+    src.connect(bp); bp.connect(g); g.connect(AC.destination); src.start(t); src.stop(t + .04);
+    var o = AC.createOscillator(), og = AC.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(lo ? 150 : 190, t); o.frequency.exponentialRampToValueAtTime(70, t + .03);
+    og.gain.setValueAtTime(0.0001, t); og.gain.exponentialRampToValueAtTime(.5, t + .002); og.gain.exponentialRampToValueAtTime(.0001, t + .045);
+    o.connect(og); og.connect(AC.destination); o.start(t); o.stop(t + .06);
   }
   var tick = null, last = null;
   function pad(n) { return (n < 10 ? '0' : '') + n; }
