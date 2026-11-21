@@ -240,7 +240,7 @@
       h = '<div class="pchip is-on"><span>' + (multi ? 'This round' : 'Score') + '</span><b>' + s.total + '</b>' + (multi ? '<small>Overall ' + ov_[0].total + '</small>' : '') + '</div>' +
         '<div class="pchip pchip--part"><span class="c-mav">Maverick</span><b>' + s.mav + '</b></div>' +
         '<div class="pchip pchip--part"><span class="c-con">Concord</span><b>' + s.con + '</b></div>' +
-        '<div class="pchip pchip--part"><span class="c-acc">Accord</span><b>' + s.acc + '</b></div>' +
+        '<div class="pchip pchip--part"><span class="c-acc">Regen</span><b>' + s.acc + '</b></div>' +
         '<div class="pchip pchip--part"><span class="c-key">Keystone</span><b>' + s.key + '</b></div>';
     } else {
       t.forEach(function (s, i) {
@@ -305,7 +305,7 @@
       var tags = '';
       if (e.mavs.length) tags += '<span class="tag tag--mav" title="Maverick">M</span>';
       if (e.con) tags += '<span class="tag tag--con" title="Concord">C</span>';
-      if (e.acc) tags += '<span class="tag tag--acc" title="Accord">A</span>';
+      if (e.acc) tags += '<span class="tag tag--acc" title="Regen">R</span>';
       if (e.key) tags += '<span class="tag tag--key" title="Keystone">K</span>';
       if (e.forced) tags += '<span class="tag tag--f" title="Counted by the table">table</span>';
       h += '<span class="row__pts">+' + e.total + tags + '</span></div>';
@@ -361,7 +361,7 @@
     r.entries.forEach(function (e) {
       e.mavs.forEach(function (m) { f.push('<li><span class="tag tag--mav">M</span><span>' + esc(m.w) + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + m.pts + '</em></li>'); });
       if (e.con) f.push('<li><span class="tag tag--con">C</span><span>' + e.streak + ' × ' + e.w.length + ' letters' + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + e.con + '</em></li>');
-      if (e.acc) f.push('<li><span class="tag tag--acc">A</span><span>Accord · ' + esc(e.w) + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + e.acc + '</em></li>');
+      if (e.acc) f.push('<li><span class="tag tag--acc">R</span><span>Regen · ' + esc(e.w) + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + e.acc + '</em></li>');
       if (e.key) f.push('<li><span class="tag tag--key">K</span><span>Keystone · ' + esc(e.w) + '</span><em>+' + e.key + '</em></li>');
     });
     $('[data-feed]').innerHTML = f.length ? f.reverse().slice(0, 30).join('') : '<li class="feed__none">None yet</li>';
@@ -418,7 +418,7 @@
     var who = solo() ? '' : ' · ' + pname(e.p);
     e.mavs.forEach(function (m) { flashQ.push({ c: 'var(--mav)', t: 'Maverick', s: m.w + ' · +' + m.pts + who }); });
     if (e.con) flashQ.push({ c: 'var(--con)', t: e.streak === B.RULES.CON_STREAK ? 'Concord' : 'Concord × ' + e.streak, s: e.w.length + '-letter streak · +' + e.con + who });
-    if (e.acc) flashQ.push({ c: 'var(--acc)', t: 'Accord', s: 'Same letters as the word above · +' + e.acc + who });
+    if (e.acc) flashQ.push({ c: 'var(--acc)', t: 'Regen', s: 'Same letters as the word above · +' + e.acc + who });
     if (e.key) flashQ.push({ c: 'var(--key)', t: 'Keystone', s: '+' + e.key + who });
     if (flashQ.length) { buzz([20, 40, 30]); runFlash(); } else buzz(12);
   }
@@ -453,12 +453,12 @@
     ov('summary', true);
   }
   function sumRows(list, compact) {
-    var head = compact ? '' : '<div class="sum__h"><span></span><span>Player</span><span title="Word points">W</span><span class="c-mav" title="Maverick">M</span><span class="c-con" title="Concord">C</span><span class="c-acc" title="Accord">A</span><span class="c-key" title="Keystone">K</span><span>Total</span></div>';
+    var head = compact ? '' : '<div class="sum__h"><span></span><span>Player</span><span title="Word points">W</span><span class="c-mav" title="Maverick">M</span><span class="c-con" title="Concord">C</span><span class="c-acc" title="Regen">R</span><span class="c-key" title="Keystone">K</span><span>Total</span></div>';
     var rows = list.map(function (s) {
       var st = compact ? '' : '<span>' + s.base + '</span><span class="c-mav">' + s.mav + '</span><span class="c-con">' + s.con + '</span><span class="c-acc">' + s.acc + '</span><span class="c-key">' + s.key + '</span>';
       return '<div class="sum__r' + (compact ? ' sum__r--c' : '') + (G.players[s.id] && G.players[s.id].out ? ' is-out' : '') + '"><span class="sum__p">' + s.place + '</span><span class="sum__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b></span>' + st + '<span class="sum__t">' + s.total + '</span></div>';
     }).join('');
-    var legend = compact ? '' : '<p class="sum__lg">W words · M Maverick · C Concord · A Accord · K Keystone</p>';
+    var legend = compact ? '' : '<p class="sum__lg">W words · M Maverick · C Concord · R Regen · K Keystone</p>';
     return '<div class="sum' + (list.length > 6 ? ' sum--scroll' : '') + '">' + head + rows + '</div>' + legend;
   }
 

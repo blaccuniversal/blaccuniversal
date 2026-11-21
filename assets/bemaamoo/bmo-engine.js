@@ -9,7 +9,7 @@
   var MAV_FIRST_COL = 2;     // Mavericks are read from the 2nd letter column onwards
   var CON_MIN_LEN = 3;       // Concord words need 3+ letters
   var CON_STREAK = 3;        // Concord starts at 3 same-length words in a row
-  var ACC_MIN_LEN = 3;       // Accord: a word with the same letters as the word above it (3+ letters)
+  var ACC_MIN_LEN = 3;       // Regen: a word with the same letters as the word above it (3+ letters)
   var KEYSTONE = 5;          // bonus when one word sets off a Maverick and a Concord
 
   var CATS = [
@@ -40,7 +40,7 @@
   function sorted(w) { return w.split('').sort().join(''); }
   function accordPts(w, prev) {
     if (!prev || w.length < ACC_MIN_LEN || prev.w === w || prev.w.length !== w.length) return 0;
-    return sorted(prev.w) === sorted(w) ? w.length : 0;   // an anagram of the word above earns its length
+    return sorted(prev.w) === sorted(w) ? w.length + 1 : 0;   // an anagram of the word above earns its length + 1 (3 letters = 4, 4 = 5, 5 = 6 ...)
   }
   function concordPts(len, streak) {
     if (len < CON_MIN_LEN || streak < CON_STREAK) return 0;
