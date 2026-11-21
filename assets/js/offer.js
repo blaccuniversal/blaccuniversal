@@ -46,6 +46,7 @@
   '.ofr__go svg{width:18px;height:18px;transition:transform .3s}' +
   '.ofr__go:hover svg{transform:translateX(3px)}' +
   '.ofr__fine{margin:14px 0 0;font-size:12px;color:#6f6f6f;text-align:center}' +
+  '.ofr__snd{position:absolute;top:10px;right:54px;width:44px;height:44px;display:grid;place-items:center;padding:0;border:0;background:none;color:#8a8a8a;cursor:pointer}.ofr__snd:hover{color:#fff}.ofr__snd .off{display:none}.ofr__snd[aria-pressed="false"] .on{display:none}.ofr__snd[aria-pressed="false"] .off{display:block}' +
   '@keyframes ofrFade{from{opacity:0}}' +
   '@keyframes ofrUp{from{opacity:0;transform:translateY(16px) scale(.96)}}' +
   '@media (prefers-reduced-motion:reduce){.hg,.hg::before,.hg::after,.hg svg,.hg .sand-t,.hg .sand-b,.hg .drip{animation:none}.hg::before,.hg::after{opacity:.35}}';
@@ -68,6 +69,7 @@
   box.className = 'ofr'; box.hidden = true;
   box.innerHTML = '<div class="ofr__card" role="dialog" aria-modal="true" aria-labelledby="ofr-t">' +
     '<button class="ofr__x" type="button" data-ofr-close aria-label="Close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>' +
+    '<button class="ofr__snd" type="button" data-ofr-snd aria-pressed="true" aria-label="Clock sound"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path class="on" d="M15.5 9a4 4 0 010 6M18 6.5a7.5 7.5 0 010 11"/><path class="off" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>' +
     '<p class="ofr__eye">' + GLASS + 'Offer ends 25 November</p>' +
     '<h2 class="ofr__t" id="ofr-t">Your website, built by BLACC.</h2>' +
     '<p class="ofr__p">We design and build your website, plus one year of hosting on your own domain.</p>' +
@@ -79,6 +81,24 @@
   document.body.appendChild(btn); document.body.classList.add('has-hg');
   document.body.appendChild(box);
 
+  /* clock tick: tiny synthesized tick/tock, only while the offer is open */
+  var AC = null, tock = false, snd = true;
+  try { snd = localStorage.getItem('blacc_offer_snd') !== '0'; } catch (e) {}
+  var sndBtn = box.querySelector('[data-ofr-snd]');
+  sndBtn.setAttribute('aria-pressed', snd);
+  function ensureAC() {
+    try { var C = window.AudioContext || window.webkitAudioContext; if (!AC && C) AC = new C(); if (AC && AC.state === 'suspended') AC.resume(); } catch (e) {}
+    return AC;
+  }
+  function tickSound() {
+    if (!snd || !AC || AC.state !== 'running') return;
+    var t = AC.currentTime, f = tock ? 780 : 1040; tock = !tock;
+    var o = AC.createOscillator(), g = AC.createGain(), hp = AC.createBiquadFilter();
+    o.type = 'square'; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * .55, t + .035);
+    hp.type = 'highpass'; hp.frequency.value = 500;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(.09, t + .002); g.gain.exponentialRampToValueAtTime(.0001, t + .05);
+    o.connect(hp); hp.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + .06);
+  }
   var tick = null, last = null;
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function draw() {
@@ -89,10 +109,11 @@
     box.querySelector('[data-cd="h"]').textContent = pad(Math.floor(s % 86400 / 3600));
     box.querySelector('[data-cd="m"]').textContent = pad(Math.floor(s % 3600 / 60));
     box.querySelector('[data-cd="s"]').textContent = pad(s % 60);
+    if (!box.hidden) tickSound();
   }
   function open() {
     last = document.activeElement;
-    draw(); box.hidden = false; document.body.classList.add('offer-open');
+    ensureAC(); draw(); box.hidden = false; document.body.classList.add('offer-open');
     clearInterval(tick); tick = setInterval(draw, 1000);
     setTimeout(function () { box.querySelector('[data-ofr-claim]').focus(); }, 60);
   }
@@ -103,6 +124,7 @@
   }
   btn.addEventListener('click', open);
   box.addEventListener('click', function (e) {
+    if (e.target.closest('[data-ofr-snd]')) { snd = !snd; sndBtn.setAttribute('aria-pressed', snd); try { localStorage.setItem('blacc_offer_snd', snd ? '1' : '0'); } catch (x) {} if (snd) { ensureAC(); tickSound(); } return; }
     if (e.target === box || e.target.closest('[data-ofr-close]')) return close();
     if (e.target.closest('[data-ofr-claim]')) {
       close();
