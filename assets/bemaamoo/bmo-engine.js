@@ -20,6 +20,7 @@
     { g: 'People & Culture', c: [['professions', 'Professions'], ['sports', 'Sports'], ['languages', 'Languages'], ['religions', 'Religions'], ['currencies', 'Currencies'], ['dances', 'Dances'], ['instruments', 'Instruments'], ['art_styles', 'Art Styles']] },
     { g: 'Science', c: [['elements', 'Elements'], ['diseases', 'Diseases'], ['anatomy', 'Anatomy'], ['chemicals', 'Chemicals'], ['physics', 'Physics Terms'], ['maths', 'Maths Terms']] },
     { g: 'Brands & Media', c: [['brands', 'Brands'], ['cars', 'Car Brands'], ['movies', 'Movie Genres'], ['genres', 'Music Genres'], ['sports_teams', 'Sports Teams']] },
+    { g: 'Franchises & Fandoms', c: [['fr_marvel', 'Marvel Comics'], ['fr_dc', 'DC Comics'], ['fr_starwars', 'Star Wars'], ['fr_startrek', 'Star Trek'], ['fr_harrypotter', 'Harry Potter'], ['fr_lotr', 'Lord of the Rings'], ['fr_got', 'Game of Thrones'], ['fr_pokemon', 'Pokémon'], ['fr_disney', 'Disney & Pixar'], ['fr_dragonball', 'Dragon Ball'], ['fr_naruto', 'Naruto'], ['fr_doctorwho', 'Doctor Who'], ['fr_transformers', 'Transformers'], ['fr_nintendo', 'Mario & Zelda (Nintendo)'], ['fr_avatar', 'Avatar: The Last Airbender']] },
     { g: 'Objects', c: [['clothing', 'Clothing'], ['furniture', 'Furniture'], ['tools', 'Tools'], ['weapons', 'Weapons'], ['transport', 'Transport'], ['fabrics', 'Fabrics'], ['shapes', 'Shapes'], ['colours', 'Colours']] }
   ];
   var CAT_NAME = {};
