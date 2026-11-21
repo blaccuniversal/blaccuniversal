@@ -409,3 +409,29 @@ input,textarea{font-size:max(16px,1em)}
 .sum__b small{white-space:normal;font-size:9px;letter-spacing:.03em}
 .wi .btn,.rshare .btn,.rtools .btn{padding-top:8px;padding-bottom:8px;word-break:normal;overflow-wrap:break-word}
 .pchip span,.score__n b{overflow:hidden;text-overflow:ellipsis}
+
+/* results table: one line per player so many players fit at a glance */
+.sum__h,.sum__r{display:grid;grid-template-columns:26px minmax(0,1fr) repeat(5,minmax(26px,34px)) minmax(40px,52px);align-items:center;gap:0 4px}
+.sum__r--c{grid-template-columns:26px minmax(0,1fr) minmax(40px,52px)}
+.sum__r{padding:7px 0;min-height:40px}
+.sum__h{position:sticky;top:0;z-index:1;background:#0b0b0b;padding:8px 0 6px;border-bottom:1px solid var(--bd2);font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx3);text-align:center}
+.sum__h span:nth-child(2){text-align:left}
+.sum__r>span{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;color:#e9e9e9;text-align:center;min-width:0}
+.sum__r>.sum__n{text-align:left}
+.sum__n b{font-size:15px}
+.sum__r>.sum__t{font-size:17px;font-weight:800;color:#fff}
+.sum__r>.c-mav,.sum__r>.c-con,.sum__r>.c-acc,.sum__r>.c-key{font-weight:700}
+.sum__r>span:is(.c-mav,.c-con,.c-acc,.c-key){opacity:.95}
+.sum__r.is-out{opacity:.5}
+.sum--scroll{max-height:min(54vh,480px);overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sum__lg{margin:8px 0 0;font-size:11px;color:var(--tx3);text-align:left;line-height:1.4}
+.ov__card--wide{max-width:560px}
+@media (max-width:360px){.sum__h,.sum__r{grid-template-columns:22px minmax(0,1fr) repeat(5,minmax(22px,28px)) minmax(34px,44px);gap:0 2px}.sum__r>span{font-size:13px}}
+.sum__h,.sum__r{grid-template-columns:24px minmax(0,1fr) repeat(5,24px) 40px;gap:0 3px}
+.sum__r--c{grid-template-columns:24px minmax(0,1fr) 44px}
+.sum__r>span{font-size:13.5px}
+.sum__n b{font-size:14.5px;gap:6px}
+.sum__r>.sum__t{font-size:16px}
+.sum__h{font-size:9px;letter-spacing:.02em}
+.sum:has(.sum__h){border-top:0;margin-top:12px}
+@media (max-width:360px){.sum__h,.sum__r{grid-template-columns:20px minmax(0,1fr) repeat(5,22px) 36px;gap:0 2px}.sum__r>span{font-size:12.5px}}

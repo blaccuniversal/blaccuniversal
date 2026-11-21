@@ -445,10 +445,13 @@
     ov('summary', true);
   }
   function sumRows(list, compact) {
-    return '<div class="sum">' + list.map(function (s) {
-      var parts = compact ? '' : '<span class="sum__b"><span><small>' + pl(s.words, 'word') + '</small>' + s.base + '</span><span><small class="c-mav">Maverick</small>' + s.mav + '</span><span><small class="c-con">Concord</small>' + s.con + '</span><span><small class="c-acc">Accord</small>' + s.acc + '</span><span><small class="c-key">Keystone</small>' + s.key + '</span></span>';
-      return '<div class="sum__r"><span class="sum__p">' + s.place + '</span><span class="sum__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b></span><span class="sum__t">' + s.total + '</span>' + parts + '</div>';
-    }).join('') + '</div>';
+    var head = compact ? '' : '<div class="sum__h"><span></span><span>Player</span><span title="Word points">W</span><span class="c-mav" title="Maverick">M</span><span class="c-con" title="Concord">C</span><span class="c-acc" title="Accord">A</span><span class="c-key" title="Keystone">K</span><span>Total</span></div>';
+    var rows = list.map(function (s) {
+      var st = compact ? '' : '<span>' + s.base + '</span><span class="c-mav">' + s.mav + '</span><span class="c-con">' + s.con + '</span><span class="c-acc">' + s.acc + '</span><span class="c-key">' + s.key + '</span>';
+      return '<div class="sum__r' + (compact ? ' sum__r--c' : '') + (G.players[s.id] && G.players[s.id].out ? ' is-out' : '') + '"><span class="sum__p">' + s.place + '</span><span class="sum__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b></span>' + st + '<span class="sum__t">' + s.total + '</span></div>';
+    }).join('');
+    var legend = compact ? '' : '<p class="sum__lg">W words · M Maverick · C Concord · A Accord · K Keystone</p>';
+    return '<div class="sum' + (list.length > 6 ? ' sum--scroll' : '') + '">' + head + rows + '</div>' + legend;
   }
 
   function nextRound(cat) {
