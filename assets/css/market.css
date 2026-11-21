@@ -309,3 +309,4 @@ body.has-gf .footer{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 .gf-fine{margin:12px 0 0 !important;font-size:12px !important;color:#6f6f6f !important;text-align:center}
 .gf-done{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding-top:6px}
 .gf-done[hidden]{display:none}
+.page--screen.page--dark .tl__play{background:#fff;color:#000}
