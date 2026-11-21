@@ -198,6 +198,23 @@
   var ev = $('[data-event]');
   if (ev) ev.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hi Bujatos! I’d like to plan catering for an event.\n\nDate:\nNumber of guests:\nLocation:\nMeals:');
 
+
+  /* manifesto slider */
+  (function () {
+    var s = $('[data-slider]'); if (!s) return;
+    var track = $('[data-track]', s), slides = $$('.mcard', track), dotsEl = $('[data-dots]', s), cur = 0, hold = 0, vis = false;
+    dotsEl.innerHTML = slides.map(function (_, i) { return '<button type="button" role="tab" aria-label="Slide ' + (i + 1) + '"></button>'; }).join('');
+    var dots = $$('button', dotsEl);
+    function mark(i) { cur = i; dots.forEach(function (d, k) { d.classList.toggle('on', k === i); d.setAttribute('aria-selected', k === i); }); }
+    function go(i) { track.scrollTo({ left: slides[i].offsetLeft - track.offsetLeft, behavior: 'smooth' }); mark(i); }
+    dots.forEach(function (d, i) { d.addEventListener('click', function () { hold = Date.now() + 9000; go(i); }); });
+    track.addEventListener('scroll', function () { var i = Math.round(track.scrollLeft / (slides[0].offsetWidth + 14)); if (i !== cur && i >= 0 && i < slides.length) mark(i); }, { passive: true });
+    ['pointerdown', 'touchstart', 'wheel'].forEach(function (e) { track.addEventListener(e, function () { hold = Date.now() + 9000; }, { passive: true }); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { vis = en[0].isIntersecting; }, { threshold: .4 }).observe(s); else vis = true;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduce) setInterval(function () { if (!vis || document.hidden || Date.now() < hold) return; go((cur + 1) % slides.length); }, 4500);
+    mark(0);
+  })();
   renderMenu(); renderDays(); renderHours(); renderCart();
   setInterval(renderHours, 60000);
 })();
