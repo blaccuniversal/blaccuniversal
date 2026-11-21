@@ -560,3 +560,19 @@ a.ct:hover{border-color:var(--yel);background:rgba(255,193,7,.05)}
 .more__l .step{height:38px}
 .more__l .step button{width:30px;height:38px}
 .more__l .step b{min-width:16px;font-size:14px}
+
+/* specials, compact */
+.spec{padding:clamp(56px,7vw,90px) 0}
+.sp{max-width:760px}
+.sp__tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:10px}
+.sp__tabs button{position:relative;height:46px;border:1px solid var(--ln);border-radius:2px;background:none;color:var(--tx3);font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;transition:.2s}
+.sp__tabs button:hover{color:var(--tx);border-color:var(--ln2)}
+.sp__tabs button.on{background:var(--yel);border-color:var(--yel);color:#0b0908}
+.sp__tabs button.is-today:not(.on)::after{content:"";position:absolute;top:6px;right:6px;width:5px;height:5px;border-radius:50%;background:var(--red)}
+.sp__card{display:flex;flex-direction:column;align-items:flex-start;gap:12px;padding:clamp(22px,4vw,34px);border:1px solid var(--ln);border-radius:2px;background:linear-gradient(160deg,rgba(255,193,7,.07),transparent 65%),var(--bg2);animation:spin-in .4s cubic-bezier(.2,.7,.2,1)}
+.sp__card.from-l{animation-name:spin-inl}
+@keyframes spin-in{from{opacity:0;transform:translateX(28px)}}
+@keyframes spin-inl{from{opacity:0;transform:translateX(-28px)}}
+.sp__d{display:flex;align-items:center;gap:10px;font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--yel)}
+.sp__d em{font-style:normal;padding:3px 8px;border-radius:2px;background:var(--red);color:#fff;letter-spacing:.2em;font-size:9.5px}
+.sp__n{margin:0;font-size:clamp(24px,3.6vw,38px);font-weight:300;letter-spacing:-.03em;line-height:1.15}

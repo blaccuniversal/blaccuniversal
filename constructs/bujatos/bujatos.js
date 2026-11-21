@@ -175,14 +175,22 @@
 
   /* specials */
   var daysEl = $('[data-days]');
+  var spDay = null, spDir = 1;
   function renderDays() {
     var today = lagosNow().getDay();
-    daysEl.innerHTML = SPECIALS.map(function (d, i) {
-      if (!d) return '';
-      var on = i === today;
-      return '<li class="day' + (on ? ' day--on' : '') + '"><span class="day__d">' + DAYS[i] + (on ? '<em>Today</em>' : '') + '</span><p class="day__n">' + d.name + '</p><span data-ctrl="' + d.id + '">' + ctrl(d.id) + '</span></li>';
-    }).join('');
+    if (spDay === null) spDay = SPECIALS[today] ? today : 1;
+    var d = SPECIALS[spDay];
+    daysEl.innerHTML = '<div class="sp__tabs" role="tablist">' + [1, 2, 3, 4, 5, 6].map(function (i) {
+      return '<button type="button" role="tab" data-sd="' + i + '" class="' + (i === spDay ? 'on' : '') + (i === today ? ' is-today' : '') + '" aria-selected="' + (i === spDay) + '"><span>' + DAYS[i].slice(0, 3) + '</span></button>';
+    }).join('') + '</div>' +
+      '<div class="sp__card ' + (spDir > 0 ? 'from-r' : 'from-l') + '"><span class="sp__d">' + DAYS[spDay] + (spDay === today ? '<em>Today</em>' : '') + '</span><p class="sp__n">' + d.name + '</p><span data-ctrl="' + d.id + '">' + ctrl(d.id) + '</span></div>';
   }
+  function setSpDay(n) { n = Math.max(1, Math.min(6, n)); if (n === spDay) return; spDir = n > spDay ? 1 : -1; spDay = n; renderDays(); }
+  daysEl.addEventListener('click', function (e) { var b = e.target.closest('[data-sd]'); if (b) setSpDay(+b.getAttribute('data-sd')); });
+  (function () { var x0 = null, y0 = 0;
+    daysEl.addEventListener('touchstart', function (e) { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    daysEl.addEventListener('touchend', function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null; if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) setSpDay(spDay + (dx < 0 ? 1 : -1)); }, { passive: true });
+  })();
 
   /* hours + open status */
   function renderHours() {
