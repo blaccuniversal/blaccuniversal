@@ -5,7 +5,7 @@
    Turn on by setting URL to the deployed Apps Script web app (see pqt-vault.gs in the PQT project doc). */
 (function () {
   'use strict';
-  var URL = '';   // e.g. 'https://script.google.com/macros/s/XXXX/exec'
+  var URL = 'https://script.google.com/macros/s/AKfycbyjO2znz2BztMEstpWNIs6HJRt1m_f21UpZFGiZnt_tvG2ZLlYGZGtrk35MQh9cMvrz/exec';   // e.g. 'https://script.google.com/macros/s/XXXX/exec'
   var q = new URLSearchParams(location.search).get('vault');
   if (q && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(q)) URL = q;
   var enc = new TextEncoder();
