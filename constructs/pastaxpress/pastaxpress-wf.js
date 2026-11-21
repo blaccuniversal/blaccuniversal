@@ -1,10 +1,10 @@
-/* Pasta Xpress · Wayfinder · construct by BLACC Universal */
+/* PastaXpress · Wayfinder · construct by BLACC Universal */
 (()=>{
 const LODGE = { lat: 7.4287, lng: 3.9137 };        // 10 Osuntokun Avenue, Bodija (approximate pin: swap for the exact one)
 const IBADAN = { lat: 7.3775, lng: 3.9470 };
 const IBADAN_RADIUS_M = 35000;
 const DEMO_START = { lat: 7.4060, lng: 3.9290 };    // simulated start, towards the city centre
-const GMAPS='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent("Pasta Xpress, 10 Osuntokun Avenue, Bodija, Ibadan");
+const GMAPS='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent("PastaXpress, 10 Osuntokun Avenue, Bodija, Ibadan");
 const canvas=document.getElementById('map'); if(!canvas) return;
 const ctx=canvas.getContext('2d');
 const stage=document.getElementById('stage');
@@ -244,13 +244,13 @@ function updateHud(t,force){
   $('hudMeter').style.width=r?`${Math.max(4,Math.min(100,state.prog/r.len*100))}%`:'8%';
   $('hudCoord').textContent=`${state.user.lat.toFixed(4)}° N · ${state.user.lng.toFixed(4)}° E`;
   const delta=angDiff(state.heading,b);
-  if(straight<70){setToast('You’ve arrived. Welcome to Pasta Xpress.','Osuntokun Avenue · Bodija',state.mode==='demo'?[A_STOP]:[],0);return}
+  if(straight<70){setToast('You’ve arrived. Welcome to PastaXpress.','Osuntokun Avenue · Bodija',state.mode==='demo'?[A_STOP]:[],0);return}
   let txt,sub;
   const nt=r&&nextTurn(r,state.prog);
   if(nt&&nt.dist<1200) txt=`In ${fmtDist(Math.max(10,nt.dist))}, turn ${nt.dir}`;
-  else if(r&&r.len-state.prog<400) txt=`Pasta Xpress is ${Math.abs(delta)<25?'just ahead':delta>0?'ahead on your right':'ahead on your left'}`;
-  else txt=`Continue ${fmtDist(nt?nt.dist:rem)} towards Pasta Xpress`;
-  const look=state.headSrc==='none'?`Pasta Xpress bears ${Math.round(b)}° ${card(b)}`:Math.abs(delta)<12?'Pasta Xpress is dead ahead':`Pasta Xpress: ${Math.round(Math.abs(delta))}° to your ${delta>0?'right':'left'}`;
+  else if(r&&r.len-state.prog<400) txt=`PastaXpress is ${Math.abs(delta)<25?'just ahead':delta>0?'ahead on your right':'ahead on your left'}`;
+  else txt=`Continue ${fmtDist(nt?nt.dist:rem)} towards PastaXpress`;
+  const look=state.headSrc==='none'?`PastaXpress bears ${Math.round(b)}° ${card(b)}`:Math.abs(delta)<12?'PastaXpress is dead ahead':`PastaXpress: ${Math.round(Math.abs(delta))}° to your ${delta>0?'right':'left'}`;
   sub=`${look} · ${fmtDist(straight)} as the crow flies`;
   const arrow=nt&&nt.dist<1200?(nt.dir==='right'?90:-90):(state.headSrc==='none'?b:delta);
   setToast(txt,sub,state.mode==='demo'?[A_STOP,A_MAPS]:[A_MAPS],arrow);

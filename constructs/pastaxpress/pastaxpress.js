@@ -1,4 +1,4 @@
-/* Pasta Xpress by Chef Kabs · construct by BLACC Universal (built on the Bujatos construct) */
+/* PastaXpress by Chef Kabs · construct by BLACC Universal (built on the Bujatos construct) */
 (function () {
   'use strict';
   var WA = '2347063873047', IMG = '/constructs/pastaxpress/img/', KEY = 'pastaxpress_order_v2';
@@ -6,7 +6,7 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var naira = function (n) { return '₦' + n.toLocaleString('en-NG'); };
 
-  /* Prices come from Pasta Xpress' own menu posts. */
+  /* Prices come from PastaXpress' own menu posts. */
   function o(a) { var r = []; for (var i = 0; i < a.length; i += 2) r.push({ n: a[i], p: a[i + 1] }); return r; }
   var EVERY = [0, 1, 2, 3, 4, 5, 6];
   var DISHES = [
@@ -121,7 +121,7 @@
   sendBtn.addEventListener('click', function () {
     var name = $('[data-in="name"]').value.trim(), addr = $('[data-in="addr"]').value.trim(), note = $('[data-in="note"]').value.trim();
     if (mode === 'delivery' && !addr) { toast('Add a delivery address'); $('[data-in="addr"]').focus(); return; }
-    var t = totals(), L = ['Hi Pasta Xpress! I’d like to order:', ''];
+    var t = totals(), L = ['Hi PastaXpress! I’d like to order:', ''];
     Object.keys(cart).forEach(function (k) { var d = item(k); L.push('• ' + cart[k] + ' × ' + d.name + (d.sub ? ' (' + d.sub + ')' : '') + ' — ' + naira(d.price * cart[k])); });
     L.push('', 'Subtotal: ' + naira(t.sum));
     L.push(mode === 'delivery' ? 'Delivery to: ' + addr : mode === 'sitin' ? 'Sit-in at 10 Osuntokun Avenue, Bodija' : 'Pickup at 10 Osuntokun Avenue, Bodija');
