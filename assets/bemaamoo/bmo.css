@@ -391,3 +391,5 @@ input,textarea{font-size:max(16px,1em)}
 .wrap{box-sizing:border-box}
 @media (max-width:360px){.rshare .btn{padding:0 12px}.seg button{font-size:12.5px}}
 @media (max-width:380px){.rshare{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0}.rshare .btn{padding:0 4px;font-size:13px;min-width:0}}
+
+[data-reclaim]{margin:0 0 12px}

@@ -621,14 +621,14 @@
     if (!cp || !r.run || r.done || cp.dev === DEV || isOn(cp.dev)) return;
     B.skip(G); save(); msg(''); paintGame(); toast(cp.name + ' is away, skipped'); notifyTurn();
   }
-  function promote() {
+  function promote(back) {
     var me = NET, L = me.lobby, T = NTOPIC + me.code + '/';
     var old = (L.players.filter(function (p) { return p.dev === L.hd; })[0] || L.players[0] || {}).name || 'The host';
     me.role = 'host'; me.ep = (me.ep || 0) + 1; me.hs = newHs(); me.seq = (me.lastSeq || 0) + 1; me.hold = 0; me.lastPub = 0; me.rej = null;
     me.seen = {}; L.players.forEach(function (p) { me.seen[p.dev] = Date.now(); });
     me.seen[L.hd] = 0; L.hd = DEV;
     me.cls.forEach(function (c) { if (c.connected) try { c.subscribe(T + 'j/+'); } catch (e) {} });
-    storeRoom(); toast(old + ' went quiet. You are hosting now.'); buzz(25);
+    storeRoom(); toast(back ? 'You are hosting again.' : old + ' went quiet. You are hosting now.'); buzz(25);
     if (G && !G.over) { var r = R(); if (r.done) roundOver(); else if (!r.run) { running = false; readyScreen(); } else { running = true; startClock(); } }
     pubNow(); netPaint(); if (cur === 'game') paintGame();
   }
@@ -907,7 +907,7 @@
   function createRoom() {
     var name = oName();
     netClose();
-    NET = { role: 'host', code: newCode(), name: name, hs: newHs(), ep: 0, fresh: true, seq: 0, seen: {}, lobby: { hd: DEV, players: [{ dev: DEV, name: name }], cat: S.cat, timer: S.timer, limit: S.limit, tl: S.tl, sh: S.sh } };
+    NET = { role: 'host', code: newCode(), name: name, hs: newHs(), ep: 0, fresh: true, seq: 0, seen: {}, lobby: { hd: DEV, cr: DEV, players: [{ dev: DEV, name: name }], cat: S.cat, timer: S.timer, limit: S.limit, tl: S.tl, sh: S.sh } };
     G = null; storeRoom(); show('room');
     loadMqtt().then(netLink, function () { toast('Couldn’t go online. Check your connection.'); });
   }
@@ -927,6 +927,7 @@
     netClose();
     NET = { role: 'host', code: rm.code, name: rm.name, hs: newHs(), ep: rm.ep || 0, seq: 0, seen: {}, lobby: rm.lobby };
     if (NET.lobby && !NET.lobby.hd) NET.lobby.hd = DEV;
+    if (NET.lobby && !NET.lobby.cr && NET.lobby.hd === DEV) NET.lobby.cr = DEV;
     if (NET.lobby && NET.lobby.tl === 15) NET.lobby.tl = 20;
     G = rm.G || null;
     if (G) {
@@ -989,9 +990,11 @@
     $$('[data-bdgc]').forEach(function (b) { b.hidden = !nc; b.textContent = nc > 9 ? '9+' : nc; });
     $$('[data-bdgp]').forEach(function (b) { b.hidden = !np; b.textContent = np > 9 ? '9+' : np; });
   }
+  function canReclaim() { var L = NET && NET.lobby; return !!(L && L.cr === DEV && !isHost() && L.players.some(function (p) { return p.dev === DEV; }) && netOn()); }
   function paintPeople() {
     if (!NET) return;
     var L = NET.lobby, w = (L && L.wait) || [];
+    $$('[data-reclaim]').forEach(function (b) { b.hidden = !canReclaim(); });
     var list = L ? L.players.slice() : [];
     if (L && !isHost() && !G && !NET.live && !list.some(function (p) { return p.dev === DEV; })) list.push({ dev: DEV, name: NET.name, joining: 1 });
     $$('[data-pcount]').forEach(function (e) { e.textContent = L ? list.length + (list.length === 1 ? ' person in the room' : ' people in the room') : 'Connecting…'; });
@@ -1086,6 +1089,7 @@
         paintRoomBtns(); openSheet('menu'); break;
       case 'people': if (!NET) break; openSheet('people'); paintPeople(); paintWait(); break;
       case 'chat': if (!NET) break; NET.unread = 0; openSheet('chat'); $$('[data-chatlog]').forEach(function (e) { e._seen = false; }); vvFit(); paintBadge(); paintChat(); setTimeout(function () { var i = $('[data-sheet="chat"] [data-chatin]'); if (i) i.focus(); }, 60); break;
+      case 'reclaim': if (canReclaim()) { promote(true); closeSheets(); } break;
       case 'kick': kick(t.getAttribute('data-dev'), t); break;
       case 'rsave': saveRoomToggle(); break;
       case 'rdel': deleteRoom(t); break;
