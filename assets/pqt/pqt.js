@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611211810, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611211830, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -636,7 +636,8 @@ function pqtMain() {
 
   /* actions */
   function team(i) { return H.teams[i]; }
-  function fp(n) { return Math.ceil((+n || 0) / 10); }   // Quests Feud: survey points ÷ 10, rounded up
+  var FEUD_DIV = 15;   // Quests Feud: survey points ÷ this, rounded up
+  function fp(n) { return Math.ceil((+n || 0) / FEUD_DIV); }
   function pts(i, d, kind) { var t = team(i); if (!t || !d) return; t.score += d; H.ledger.push([i, d]); var r = kind === 'pen' ? 'pen' : String(H.round || 0); H.byRound = H.byRound || {}; var br = H.byRound[r] = H.byRound[r] || {}; br[i] = (br[i] || 0) + d; }
   function roundPts(i) { var br = H.byRound || {}, out = [], jn = (H.teams[i] || {}).joined || 0; for (var r = 1; r <= Math.max(H.round, 0); r++) out.push(r < jn ? null : (br[r] || {})[i] || 0); return { rounds: out, extra: (br['0'] || {})[i] || 0, pen: (br.pen || {})[i] || 0 }; }
   function addScore(i, d) { snap(); pts(i, d); push(); renderTeams(); if (H.tab === 'quiz') renderTab(); }
@@ -1325,7 +1326,7 @@ function pqtMain() {
         }).join('') + '</div>' +
         '<div class="hc-row" style="margin-top:12px;justify-content:space-between"><div class="hc-row"><button class="pbtn pbtn--bad" data-fx>✕ Strike</button><div class="strikes">' + [0, 1, 2].map(function (i) { return '<i class="' + (i < f.strikes ? 'is-on' : '') + '">✕</i>'; }).join('') + '</div><button class="pbtn pbtn--sm pbtn--ghost" data-fxclear>Clear</button></div>' +
         '<button class="pbtn pbtn--sm" data-fall>Reveal rest</button></div>' +
-        '<h2 style="margin:18px 0 8px">' + (f.awardedTo != null ? 'Awarded ' + f.awardedPts + ' to ' + esc(H.teams[f.awardedTo] ? H.teams[f.awardedTo].name : '') : 'Bank: ' + bank + ' ÷ 10 = ' + fp(bank) + ' — give to') + '</h2>' +
+        '<h2 style="margin:18px 0 8px">' + (f.awardedTo != null ? 'Awarded ' + f.awardedPts + ' to ' + esc(H.teams[f.awardedTo] ? H.teams[f.awardedTo].name : '') : 'Bank: ' + bank + ' ÷ ' + FEUD_DIV + ' = ' + fp(bank) + ' — give to') + '</h2>' +
         (f.awardedTo != null ? '' : '<div class="hc-row">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-faw="' + i + '"' + (bank ? '' : ' disabled') + '><i style="width:8px;height:8px;border-radius:50%;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '</div>') +
         '<p class="hc-note">Tap an answer to reveal it on the screen (tap again to hide). Points count towards the bank until you award them. “Reveal rest” shows the remaining answers without adding points.</p>';
     } else if (tab === 'quiz') {
