@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=11">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=12">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -228,7 +228,8 @@
         <dl class="key">
           <div><dt>Word</dt><dd>1 + 2 + 3 … one for each letter. 5 letters = 15</dd></div>
           <div><dt class="c-mav">Maverick</dt><dd>A word reading down a column, 3+ rows</dd></div>
-          <div><dt class="c-con">Concord</dt><dd>5+ words in a row with the same length</dd></div>
+          <div><dt class="c-con">Concord</dt><dd>3+ words in a row with the same length</dd></div>
+          <div><dt class="c-acc">Accord</dt><dd>Same letters as the word above. Scores its length</dd></div>
           <div><dt class="c-key">Keystone</dt><dd>+5 when one word sets off both</dd></div>
         </dl>
       </section>
@@ -253,10 +254,11 @@
       <li><b>Pick a category.</b> Take turns adding one word from it. Each word goes on its own row, one letter per box.</li>
       <li><b>Every word scores.</b> 1 point for the first letter, 2 for the second, and so on. 3 letters = 6, 5 letters = 15, 8 letters = 36.</li>
       <li><b><em class="c-mav">Maverick.</em></b> Read straight down any column from the 2nd letter onwards. If 3 or more rows in a row spell a word from the same category, the player who finished it scores it like a word.</li>
-      <li><b><em class="c-con">Concord.</em></b> 5 or more words in a row with the same length (3+ letters). Each word in the streak scores (length − 1) + (streak − 5), so it grows while the streak lasts.</li>
+      <li><b><em class="c-con">Concord.</em></b> 3 or more words in a row with the same length (3+ letters). Each word in the streak scores (length − 1) + (streak − 3), so it grows while the streak lasts.</li>
+      <li><b><em class="c-acc">Accord.</em></b> Spell a word with exactly the same letters as the word above yours (an anagram, 3+ letters, like STAR after RATS). It scores its length in bonus points, on top of the normal word score.</li>
       <li><b><em class="c-key">Keystone.</em></b> If one word sets off a Maverick and a Concord at the same time, it earns 5 extra points.</li>
       <li><b>Checking.</b> Words are checked against the category's word list. If a real word isn't in the list, the table can agree to count it anyway. A word can only be used once per round.</li>
-      <li><b>Rounds.</b> A round ends when the timer runs out, the word limit is reached or you end it. Scores carry over between rounds.</li>
+      <li><b>Rounds.</b> A round ends when the timer runs out, the word limit is reached or you end it. Every round starts at zero, and the game total adds up all the rounds.</li>
     </ol>
   </div>
 </div>
@@ -332,7 +334,7 @@
 <div class="toast" data-toast hidden></div>
 
 <script src="/assets/bemaamoo/bmo-gate.js?v=4"></script>
-<script src="/assets/bemaamoo/bmo-engine.js?v=5"></script>
-<script src="/assets/bemaamoo/bmo.js?v=15"></script>
+<script src="/assets/bemaamoo/bmo-engine.js?v=6"></script>
+<script src="/assets/bemaamoo/bmo.js?v=16"></script>
 </body>
 </html>

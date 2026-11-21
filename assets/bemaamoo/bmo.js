@@ -239,6 +239,7 @@
       h = '<div class="pchip is-on"><span>' + (multi ? 'This round' : 'Score') + '</span><b>' + s.total + '</b>' + (multi ? '<small>Overall ' + ov_[0].total + '</small>' : '') + '</div>' +
         '<div class="pchip pchip--part"><span class="c-mav">Maverick</span><b>' + s.mav + '</b></div>' +
         '<div class="pchip pchip--part"><span class="c-con">Concord</span><b>' + s.con + '</b></div>' +
+        '<div class="pchip pchip--part"><span class="c-acc">Accord</span><b>' + s.acc + '</b></div>' +
         '<div class="pchip pchip--part"><span class="c-key">Keystone</span><b>' + s.key + '</b></div>';
     } else {
       t.forEach(function (s, i) {
@@ -300,6 +301,7 @@
       var tags = '';
       if (e.mavs.length) tags += '<span class="tag tag--mav" title="Maverick">M</span>';
       if (e.con) tags += '<span class="tag tag--con" title="Concord">C</span>';
+      if (e.acc) tags += '<span class="tag tag--acc" title="Accord">A</span>';
       if (e.key) tags += '<span class="tag tag--key" title="Keystone">K</span>';
       if (e.forced) tags += '<span class="tag tag--f" title="Counted by the table">table</span>';
       h += '<span class="row__pts">+' + e.total + tags + '</span></div>';
@@ -346,13 +348,14 @@
     var t = B.ranking(G, R()), h = '', ovl = B.tally(G), multi = G.rounds.length > 1;
     t.forEach(function (s) {
       if (G.players[s.id] && G.players[s.id].out) return;
-      h += '<div class="score' + (s.id === G.turn && !solo() ? ' is-on' : '') + '"><span class="score__p">' + s.place + '</span><span class="score__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b><small>' + pl(s.words, 'word') + ' · M ' + s.mav + ' · C ' + s.con + ' · K ' + s.key + (multi ? ' · overall ' + ovl[s.id].total : '') + '</small></span><span class="score__t">' + s.total + '</span></div>';
+      h += '<div class="score' + (s.id === G.turn && !solo() ? ' is-on' : '') + '"><span class="score__p">' + s.place + '</span><span class="score__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b><small>' + pl(s.words, 'word') + ' · M ' + s.mav + ' · C ' + s.con + ' · A ' + s.acc + ' · K ' + s.key + (multi ? ' · overall ' + ovl[s.id].total : '') + '</small></span><span class="score__t">' + s.total + '</span></div>';
     });
     $('[data-scores]').innerHTML = h;
     var f = [], r = R();
     r.entries.forEach(function (e) {
       e.mavs.forEach(function (m) { f.push('<li><span class="tag tag--mav">M</span><span>' + esc(m.w) + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + m.pts + '</em></li>'); });
       if (e.con) f.push('<li><span class="tag tag--con">C</span><span>' + e.streak + ' × ' + e.w.length + ' letters' + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + e.con + '</em></li>');
+      if (e.acc) f.push('<li><span class="tag tag--acc">A</span><span>Accord · ' + esc(e.w) + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + e.acc + '</em></li>');
       if (e.key) f.push('<li><span class="tag tag--key">K</span><span>Keystone · ' + esc(e.w) + '</span><em>+' + e.key + '</em></li>');
     });
     $('[data-feed]').innerHTML = f.length ? f.reverse().slice(0, 30).join('') : '<li class="feed__none">None yet</li>';
@@ -408,6 +411,7 @@
     var who = solo() ? '' : ' · ' + pname(e.p);
     e.mavs.forEach(function (m) { flashQ.push({ c: 'var(--mav)', t: 'Maverick', s: m.w + ' · +' + m.pts + who }); });
     if (e.con) flashQ.push({ c: 'var(--con)', t: e.streak === B.RULES.CON_STREAK ? 'Concord' : 'Concord × ' + e.streak, s: e.w.length + '-letter streak · +' + e.con + who });
+    if (e.acc) flashQ.push({ c: 'var(--acc)', t: 'Accord', s: 'Same letters as the word above · +' + e.acc + who });
     if (e.key) flashQ.push({ c: 'var(--key)', t: 'Keystone', s: '+' + e.key + who });
     if (flashQ.length) { buzz([20, 40, 30]); runFlash(); } else buzz(12);
   }
@@ -442,7 +446,7 @@
   }
   function sumRows(list, compact) {
     return '<div class="sum">' + list.map(function (s) {
-      var parts = compact ? '' : '<span class="sum__b"><span><small>' + pl(s.words, 'word') + '</small>' + s.base + '</span><span><small class="c-mav">Maverick</small>' + s.mav + '</span><span><small class="c-con">Concord</small>' + s.con + '</span><span><small class="c-key">Keystone</small>' + s.key + '</span></span>';
+      var parts = compact ? '' : '<span class="sum__b"><span><small>' + pl(s.words, 'word') + '</small>' + s.base + '</span><span><small class="c-mav">Maverick</small>' + s.mav + '</span><span><small class="c-con">Concord</small>' + s.con + '</span><span><small class="c-acc">Accord</small>' + s.acc + '</span><span><small class="c-key">Keystone</small>' + s.key + '</span></span>';
       return '<div class="sum__r"><span class="sum__p">' + s.place + '</span><span class="sum__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b></span><span class="sum__t">' + s.total + '</span>' + parts + '</div>';
     }).join('') + '</div>';
   }

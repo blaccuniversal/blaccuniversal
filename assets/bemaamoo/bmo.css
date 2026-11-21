@@ -1,6 +1,6 @@
 /* Bemaamoo · BLACC Universal */
 :root{--bg:#000;--bg2:#0b0b0b;--bg3:#111;--bd:#1f1f1f;--bd2:#2e2e2e;--tx:#fff;--tx2:#a3a3a3;--tx3:#5e5e5e;
-  --mav:#ffd23f;--con:#5aaeff;--key:#ff7a59;--c:36px;--gap:4px;--appH:100vh}
+  --mav:#ffd23f;--con:#5aaeff;--key:#ff7a59;--acc:#c792ff;--c:36px;--gap:4px;--appH:100vh}
 @supports (height:100dvh){:root{--appH:100dvh}}
 *{box-sizing:border-box}
 html,body{margin:0;background:#000;color:#fff;font-family:'Open Sans',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
@@ -10,7 +10,7 @@ button:disabled{cursor:default;opacity:.4}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #9a9a9a;outline-offset:2px}
 [hidden]{display:none!important}
 svg{display:block}
-.c-mav{color:var(--mav)!important}.c-con{color:var(--con)!important}.c-key{color:var(--key)!important}
+.c-mav{color:var(--mav)!important}.c-con{color:var(--con)!important}.c-key{color:var(--key)!important}.c-acc{color:var(--acc)!important}
 
 .wrap{width:100%;max-width:760px;margin:0 auto;padding-left:clamp(18px,5vw,32px);padding-right:clamp(18px,5vw,32px)}
 .scr{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
@@ -117,7 +117,7 @@ svg{display:block}
 .sum__n{display:flex;flex-direction:column;gap:4px;min-width:0}
 .sum__n b{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sum__n b i{width:9px;height:9px;border-radius:50%;flex:none}
-.sum__b{grid-column:2/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:-4px}
+.sum__b{grid-column:2/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(62px,1fr));gap:8px 6px;margin-top:-4px}
 .sum__b span{display:flex;flex-direction:column;gap:1px;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:#e9e9e9}
 .sum__b small{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--tx3);white-space:nowrap}
 .sum__t{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
@@ -177,6 +177,7 @@ svg{display:block}
 .tag{display:inline-flex;align-items:center;height:18px;padding:0 5px;border-radius:2px;font-size:10px;font-weight:800;letter-spacing:.06em}
 .tag--mav{color:#000;background:var(--mav)}
 .tag--con{color:#000;background:var(--con)}
+.tag--acc{color:#000;background:var(--acc)}
 .tag--key{color:#000;background:var(--key)}
 .tag--f{color:var(--tx2);border:1px dashed #444;font-weight:600;letter-spacing:0}
 .row.is-con .row__n{color:var(--con)}
@@ -399,3 +400,12 @@ input,textarea{font-size:max(16px,1em)}
 .bdg[data-bdgc]:not([hidden]){display:inline-block}
 @keyframes bdgbreathe{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,59,59,.55),0 0 6px 1px rgba(255,59,59,.6)}50%{transform:scale(1.14);box-shadow:0 0 0 6px rgba(255,59,59,0),0 0 14px 4px rgba(255,59,59,.85)}}
 @media (prefers-reduced-motion:reduce){.bdg[data-bdgc]{animation:none!important}}
+
+/* buttons: text wraps inside instead of falling out */
+.btn,.pick,.seg button,.cats__g button,.prow,.kick,.lnk{white-space:normal;overflow-wrap:anywhere;text-align:center;line-height:1.25;max-width:100%;box-sizing:border-box}
+.btn{padding-top:10px;padding-bottom:10px;height:auto}
+.pick,.prow,.cats__g button{text-align:left}
+.seg button{padding:8px 4px;min-width:0;height:auto}
+.sum__b small{white-space:normal;font-size:9px;letter-spacing:.03em}
+.wi .btn,.rshare .btn,.rtools .btn{padding-top:8px;padding-bottom:8px;word-break:normal;overflow-wrap:break-word}
+.pchip span,.score__n b{overflow:hidden;text-overflow:ellipsis}

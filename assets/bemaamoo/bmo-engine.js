@@ -8,7 +8,8 @@
   var MAV_MIN = 3;           // shortest Maverick
   var MAV_FIRST_COL = 2;     // Mavericks are read from the 2nd letter column onwards
   var CON_MIN_LEN = 3;       // Concord words need 3+ letters
-  var CON_STREAK = 5;        // Concord starts at 5 same-length words in a row
+  var CON_STREAK = 3;        // Concord starts at 3 same-length words in a row
+  var ACC_MIN_LEN = 3;       // Accord: a word with the same letters as the word above it (3+ letters)
   var KEYSTONE = 5;          // bonus when one word sets off a Maverick and a Concord
 
   var CATS = [
@@ -36,6 +37,11 @@
     return s.toUpperCase().replace(/ß/g, 'SS').replace(/Æ/g, 'AE').replace(/Œ/g, 'OE').replace(/Ø/g, 'O').replace(/[^A-Z]/g, '');
   }
 
+  function sorted(w) { return w.split('').sort().join(''); }
+  function accordPts(w, prev) {
+    if (!prev || w.length < ACC_MIN_LEN || prev.w === w || prev.w.length !== w.length) return 0;
+    return sorted(prev.w) === sorted(w) ? w.length : 0;   // an anagram of the word above earns its length
+  }
   function concordPts(len, streak) {
     if (len < CON_MIN_LEN || streak < CON_STREAK) return 0;
     return (len - 1) + (streak - CON_STREAK);
@@ -142,6 +148,7 @@
     var words = R.entries.map(function (e) { return e.w; }).concat([w]);
     var mavs = findMavericks(words, opts.mav);
     var con = concordPts(w.length, streak);
+    var acc = accordPts(w, prev);
     var e = {
       w: w,
       p: G.turn,
@@ -149,11 +156,12 @@
       base: tri(w.length),
       streak: streak,
       con: con,
+      acc: acc,
       mavs: mavs,
       key: (mavs.length && con) ? KEYSTONE : 0
     };
     e.mav = mavs.reduce(function (s, m) { return s + m.pts; }, 0);
-    e.total = e.base + e.mav + e.con + e.key;
+    e.total = e.base + e.mav + e.con + e.acc + e.key;
     R.entries.push(e);
     R.started = true;
     G.turn = nextTurn(G);
@@ -184,12 +192,12 @@
   function endRound(G) { round(G).done = true; }
 
   function tally(G, onlyRound) {
-    var t = G.players.map(function (p) { return { id: p.id, name: p.name, base: 0, mav: 0, con: 0, key: 0, total: 0, words: 0, mavs: 0, cons: 0, keys: 0 }; });
+    var t = G.players.map(function (p) { return { id: p.id, name: p.name, base: 0, mav: 0, con: 0, acc: 0, key: 0, total: 0, words: 0, mavs: 0, cons: 0, keys: 0 }; });
     var rounds = onlyRound ? [onlyRound] : G.rounds;
     rounds.forEach(function (R) {
       R.entries.forEach(function (e) {
         var s = t[e.p]; if (!s) return;
-        s.base += e.base; s.mav += e.mav; s.con += e.con; s.key += e.key; s.total += e.total; s.words++;
+        s.base += e.base; s.mav += e.mav; s.con += e.con; s.acc += e.acc || 0; s.key += e.key; s.total += e.total; s.words++;
         s.mavs += e.mavs.length; if (e.con) s.cons++; if (e.key) s.keys++;
       });
     });
@@ -227,11 +235,11 @@
   function hasMavList(k) { return !!MAV_LIST[k]; }
 
   var api = {
-    CATS: CATS, tri: tri, norm: norm, concordPts: concordPts,
+    CATS: CATS, tri: tri, norm: norm, concordPts: concordPts, accordPts: accordPts,
     create: create, newRound: newRound, round: round, check: check, add: add, skip: skip, undo: undo, endRound: endRound,
     tally: tally, ranking: ranking, concords: concords, live: live, findMavericks: findMavericks,
     catName: catName, listFile: listFile, hasMavList: hasMavList,
-    RULES: { MAX_LEN: MAX_LEN, MIN_LEN: MIN_LEN, MAV_MIN: MAV_MIN, MAV_FIRST_COL: MAV_FIRST_COL, CON_MIN_LEN: CON_MIN_LEN, CON_STREAK: CON_STREAK, KEYSTONE: KEYSTONE }
+    RULES: { MAX_LEN: MAX_LEN, MIN_LEN: MIN_LEN, MAV_MIN: MAV_MIN, MAV_FIRST_COL: MAV_FIRST_COL, CON_MIN_LEN: CON_MIN_LEN, CON_STREAK: CON_STREAK, ACC_MIN_LEN: ACC_MIN_LEN, KEYSTONE: KEYSTONE }
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BMO = api;
 })(this);
