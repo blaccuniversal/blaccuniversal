@@ -4,23 +4,28 @@
 .bm .mus-hero{padding-top:clamp(12px,1.6vw,18px);padding-bottom:0}
 .bm .mus-card{display:block;min-height:0;border-radius:12px}
 .bm .mus-card__me,.bm .mus-ring,.bm .mus-card__circle,.bm .mus-links{display:none!important}
-.bm .mus-card__text{width:auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:center;gap:12px clamp(20px,3vw,44px);padding:clamp(14px,1.8vw,20px) clamp(16px,2.2vw,28px);box-sizing:border-box;background:transparent}
-.bm .mus-head{gap:2px}
-.bm .mus-head .mus-eyebrow{font-size:10px}
-.bm .mus-card .mus-title{font-size:clamp(24px,2.6vw,34px);line-height:1.05}
-.bm .mus-by{font-size:14px}
-.bm .mus-plays{margin:0}
-.bm .mus-card .mus-player{max-width:none;gap:clamp(12px,1.6vw,18px)}
-.bm .mus-card .mus-cover{width:72px;height:72px}
-.bm .mus-cover__play{width:28px;height:28px;right:4px;bottom:4px}
-.bm .mus-card .mus-meta{gap:6px}
-.bm .mus-meta .mus-time{margin:0}
-.bm .mus-nav{margin-left:-10px}
-.bm .mus-nav .icon-btn{width:34px;height:34px}
+.bm .mus-card__text{width:auto;min-height:0;display:grid;grid-template-columns:64px minmax(0,.9fr) minmax(0,1.3fr) auto;grid-template-areas:"cover head line nav" "cover head time nav";align-items:center;column-gap:clamp(14px,2vw,24px);row-gap:4px;padding:clamp(12px,1.6vw,16px) clamp(14px,2vw,22px);box-sizing:border-box;background:transparent}
+.bm .mus-player,.bm .mus-meta{display:contents}
+.bm .mus-card .mus-cover{grid-area:cover;width:64px;height:64px;border-radius:8px;overflow:hidden;box-shadow:none}
+.bm .mus-cover__play{inset:0;right:auto;bottom:auto;width:100%;height:100%;border-radius:0;background:rgba(0,0,0,.38);color:#fff;transition:background .2s}
+.bm .mus-cover:hover .mus-cover__play{background:rgba(0,0,0,.2)}
+.bm .mus-cover__play svg{width:22px;height:22px;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5))}
+.bm .mus-head{grid-area:head;gap:2px;min-width:0}
+.bm .mus-head .mus-eyebrow{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm .mus-card .mus-title{font-size:clamp(20px,2vw,26px);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm .mus-by{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm .mus-plays{display:none}
+.bm .mus-line{grid-area:line;align-self:end}
+.bm .mus-time{grid-area:time;margin:0;align-self:start}
+.bm .mus-nav{grid-area:nav;margin:0;gap:0}
+.bm .mus-nav .icon-btn{width:40px;height:40px}
 @media (max-width:760px){
-  .bm .mus-card__text{grid-template-columns:minmax(0,1fr);gap:12px;padding:14px 16px 16px}
-  .bm .mus-card .mus-title{font-size:24px}
-  .bm .mus-card .mus-cover{width:64px;height:64px}
+  .bm .mus-card__text{grid-template-columns:56px minmax(0,1fr) auto;grid-template-areas:"cover head nav" "line line line" "time time time";row-gap:6px;padding:12px 14px 14px}
+  .bm .mus-card .mus-cover{width:56px;height:56px}
+  .bm .mus-line{margin-top:8px}
+  .bm .mus-card .mus-title{font-size:19px}
+  .bm .mus-count{display:none}
+  .bm .mus-nav .icon-btn{width:38px;height:38px}
 }
 /* tighter sections below */
 .bm .mk-info{padding-top:clamp(18px,2.4vw,28px);padding-bottom:clamp(20px,3vw,36px)}
