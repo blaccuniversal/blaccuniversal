@@ -195,24 +195,26 @@
       if (!running || r.done) { last = now; return; }
       r.left = Math.max(0, r.left - (now - last) / 1000); last = now;
       paintClock();
-      if (isHost() && now - lastClockPub > 1000) { lastClockPub = now; pubNow(); }
+      if (isHost() && now - lastClockPub > 2000) { lastClockPub = now; pubNow(); }
       if (r.left <= 0) { B.endRound(G); save(); roundOver(); }
-      else if (Math.floor(r.left) % 5 === 0) save();
+      else if (now - lastClockSave > 5000) { lastClockSave = now; save(); }
     }, 250);
   }
-  var lastClockPub = 0;
+  var lastClockPub = 0, lastClockSave = 0;
   function stopClock() { if (tick) clearInterval(tick); tick = null; }
   function paintClock() {
     var c = $('[data-clock]');
-    if (!G.settings.timer) { c.hidden = true; return; }
-    c.hidden = false;
-    var left = R().left;
-    $('[data-clocktx]').textContent = fmt(left);
-    c.classList.toggle('is-low', left <= 15 && !R().done);
-    c.classList.toggle('is-paused', !running);
-    c.disabled = !!(NET && !isHost());
-    c.querySelector('use').setAttribute('href', running ? '#i-pause' : '#i-play');
-    c.setAttribute('aria-label', running ? 'Pause timer' : 'Resume timer');
+    if (!G.settings.timer) { setp(c, 'hidden', true); return; }
+    setp(c, 'hidden', false);
+    var left = R().left, low = left <= 15 && !R().done;
+    tx($('[data-clocktx]'), fmt(left));
+    if (c._low !== low) { c._low = low; c.classList.toggle('is-low', low); }
+    if (c._run !== running) {
+      c._run = running; c.classList.toggle('is-paused', !running);
+      c.querySelector('use').setAttribute('href', running ? '#i-pause' : '#i-play');
+      c.setAttribute('aria-label', running ? 'Pause timer' : 'Resume timer');
+    }
+    setp(c, 'disabled', !!(NET && !isHost()));
   }
 
   function paintGame() {
@@ -356,7 +358,7 @@
       if (G.players[s.id] && G.players[s.id].out) return;
       h += '<div class="score' + (s.id === G.turn && !solo() ? ' is-on' : '') + '"><span class="score__p">' + s.place + '</span><span class="score__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b><small>' + pl(s.words, 'word') + ' · M ' + s.mav + ' · C ' + s.con + ' · A ' + s.acc + ' · K ' + s.key + (multi ? ' · overall ' + ovl[s.id].total : '') + '</small></span><span class="score__t">' + s.total + '</span></div>';
     });
-    $('[data-scores]').innerHTML = h;
+    var sc = $('[data-scores]'); if (sc._h !== h) { sc._h = h; sc.innerHTML = h; }
     var f = [], r = R();
     r.entries.forEach(function (e) {
       e.mavs.forEach(function (m) { f.push('<li><span class="tag tag--mav">M</span><span>' + esc(m.w) + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + m.pts + '</em></li>'); });
@@ -816,20 +818,29 @@
     if (m.t === 'vreq') {
       if (!cp || cp.dev !== m.dev || r.done || !r.run || m.n !== r.entries.length) { pubSoon(); return; }
       var c = B.check(G, m.w, null); if (!c.ok) { pubSoon(); return; }
-      NET.vq = { w: c.w, n: r.entries.length, dev: m.dev, name: cp.name, k: Date.now(), no: [] };
-      NET.turnAt = Date.now(); paintVq(); pubNow(); return;
+      NET.vq = { w: c.w, n: r.entries.length, dev: m.dev, name: cp.name, k: Date.now(), no: [], yes: [] };
+      vqTally(NET.vq); NET.turnAt = Date.now(); paintVq(); pubNow(); return;
     }
     if (!vq) return;
     if (m.t === 'vcancel') { if (m.dev === vq.dev) { NET.vq = null; paintVq(); pubNow(); } return; }
     if (m.dev === vq.dev || m.k !== vq.k) return;
     if (!G.players.some(function (p) { return p.dev === m.dev && !p.out; })) return;
-    if (m.t === 'vouch') { vouchAccept(); return; }
-    if (m.t === 'vno') {
-      if (vq.no.indexOf(m.dev) < 0) vq.no.push(m.dev);
-      var voters = G.players.filter(function (p) { return p.dev && p.dev !== vq.dev && !p.out && isOn(p.dev); }).length;
-      if (vq.no.length >= Math.max(1, voters)) { NET.rej = { dev: vq.dev, w: vq.w, why: 'vno', k: Date.now() }; NET.vq = null; if (vq.dev === DEV) vouchDenied(vq.w); }
-      paintVq(); pubNow();
-    }
+    if (m.t !== 'vouch' && m.t !== 'vno') return;
+    vq.yes = vq.yes || []; vq.no = vq.no || [];
+    vq.yes = vq.yes.filter(function (d) { return d !== m.dev; }); vq.no = vq.no.filter(function (d) { return d !== m.dev; });
+    (m.t === 'vouch' ? vq.yes : vq.no).push(m.dev);
+    var t = vqTally(vq);
+    if (t.yes >= t.need) { vouchAccept(); return; }
+    if (t.no > t.voters - t.need) { NET.rej = { dev: vq.dev, w: vq.w, why: 'vno', k: Date.now() }; NET.vq = null; if (vq.dev === DEV) vouchDenied(vq.w); }
+    paintVq(); pubNow();
+  }
+  /* a word outside the list counts only when at least 60% of the other players in the room vouch for it */
+  function vqTally(vq) {
+    var voters = G.players.filter(function (p) { return p.dev && p.dev !== vq.dev && !p.out && isOn(p.dev); }).map(function (p) { return p.dev; });
+    vq.yes = (vq.yes || []).filter(function (d) { return voters.indexOf(d) > -1; });
+    vq.no = (vq.no || []).filter(function (d) { return voters.indexOf(d) > -1; });
+    vq.voters = voters.length; vq.need = Math.max(1, Math.ceil(voters.length * 0.6 - 1e-9));
+    return { voters: voters.length, need: vq.need, yes: vq.yes.length, no: vq.no.length };
   }
   function vouchDenied(w) { NET.lastRej = null; msg('<span>The room didn’t vouch for <b>' + esc(w) + '</b>.</span><button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); }
   function vouchAccept() {
@@ -851,18 +862,20 @@
     var el = $('[data-vq]'); if (!el) return;
     var vq = NET && NET.vq;
     if (!vq || cur !== 'game' || !G || G.over) { if (!el.hidden) { el.hidden = true; el.innerHTML = ''; el._k = ''; } return; }
-    var mine = vq.dev === DEV, voted = (vq.no || []).indexOf(DEV) > -1;
-    var k = vq.k + ':' + (mine ? 'm' : voted ? 'v' : 'o'); if (el._k === k && !el.hidden) return; el._k = k;
+    var mine = vq.dev === DEV, voted = (vq.no || []).indexOf(DEV) > -1 || (vq.yes || []).indexOf(DEV) > -1, said = (vq.yes || []).indexOf(DEV) > -1 ? 'yes' : 'no';
+    var cnt = (vq.yes || []).length + ' of ' + (vq.need || 1) + ' needed';
+    var k = vq.k + ':' + (mine ? 'm' : voted ? 'v' + said : 'o') + ':' + (vq.yes || []).length + ':' + (vq.need || 1); if (el._k === k && !el.hidden) return; el._k = k;
     el.hidden = false;
-    if (mine) el.innerHTML = '<span>Waiting for someone to vouch for <b>' + esc(vq.w) + '</b>…</span><button type="button" data-act="vcancel">Cancel</button>';
-    else if (voted) el.innerHTML = '<span>You said no to <b>' + esc(vq.w) + '</b>. Waiting for the others.</span>';
-    else el.innerHTML = '<span><b>' + esc(vq.name) + '</b> played <b>' + esc(vq.w) + '</b>, which isn’t in our list. Is it right?</span><span class="vq__b"><button type="button" class="is-pri" data-act="vouch">Vouch for it</button><button type="button" data-act="vno">Not right</button></span>';
+    if (mine) el.innerHTML = '<span>Waiting for the room to vouch for <b>' + esc(vq.w) + '</b> · ' + cnt + ' (60% must agree)</span><button type="button" data-act="vcancel">Cancel</button>';
+    else if (voted) el.innerHTML = '<span>You said ' + said + ' to <b>' + esc(vq.w) + '</b> · ' + cnt + '. Waiting for the others.</span>';
+    else el.innerHTML = '<span><b>' + esc(vq.name) + '</b> played <b>' + esc(vq.w) + '</b>, which isn’t in our list. Is it a real word? ' + cnt + '. 60% must agree.</span><span class="vq__b"><button type="button" class="is-pri" data-act="vouch">Vouch for it</button><button type="button" data-act="vno">Not right</button></span>';
   }
   function vouchSend(t) {
     var vq = NET && NET.vq; if (!vq) return;
     var m = { t: t, k: vq.k };
     if (isHost()) { m.dev = DEV; vouchMsg(m); } else sendIn(m);
-    if (t !== 'vouch') { if (t === 'vno' && !isHost()) { vq.no = (vq.no || []).concat(DEV); } el_vqRefresh(); }
+    if (!isHost()) { if (t === 'vno') vq.no = (vq.no || []).concat(DEV); else vq.yes = (vq.yes || []).concat(DEV); }
+    el_vqRefresh();
   }
   function el_vqRefresh() { var el = $('[data-vq]'); if (el) el._k = ''; paintVq(); }
   function hostAdd(m, Lst) {
@@ -955,6 +968,7 @@
     lastAdded = r.entries.length - 1;
     if (m.dev === DEV) { $('[data-in]').value = ''; msg(''); }
     celebrate(e); paintGame(); lastAdded = -1;
+    if (NET && !isHost()) NET.gsig = gsig(G);   // the host's echo of this same move then changes nothing on screen
     if (!r.done) notifyTurn();
     return true;
   }
@@ -1073,34 +1087,36 @@
   function paintWait() {
     var L = NET && NET.lobby, w = (L && L.wait) || [], host = isHost();
     $$('[data-wl]').forEach(function (ul) {
-      ul.innerHTML = w.map(function (x) {
+      var wh = w.map(function (x) {
         return '<li class="wi"><b>' + esc(x.name) + '</b><span>' + (host && G ? '<button class="btn" type="button" data-act="wadd" data-dev="' + esc(x.dev) + '">Add to game</button><button class="lnk" type="button" data-act="wno" data-dev="' + esc(x.dev) + '">Not now</button>' : '<small>waiting</small>') + '</span></li>';
-      }).join('');
-      var sec = ul.closest('[data-wlsec]'); if (sec) sec.hidden = !w.length;
+      }).join('') + (host && G ? 'h' : 'g');
+      if (ul._h !== wh) { ul._h = wh; ul.innerHTML = wh.slice(0, -1); }
+      var sec = ul.closest('[data-wlsec]'); if (sec) setp(sec, 'hidden', !w.length);
     });
     paintBadge();
   }
   function paintBadge() {
     var nc = NET && NET.unread || 0, np = isHost() && NET && NET.lobby && NET.lobby.wait ? NET.lobby.wait.length : 0;
-    $$('[data-bdgc]').forEach(function (b) { b.hidden = !nc; b.textContent = nc > 9 ? '9+' : nc; });
-    $$('[data-bdgp]').forEach(function (b) { b.hidden = !np; b.textContent = np > 9 ? '9+' : np; });
+    $$('[data-bdgc]').forEach(function (b) { setp(b, 'hidden', !nc); tx(b, String(nc > 9 ? '9+' : nc)); });
+    $$('[data-bdgp]').forEach(function (b) { setp(b, 'hidden', !np); tx(b, String(np > 9 ? '9+' : np)); });
   }
   function canReclaim() { var L = NET && NET.lobby; return !!(L && L.cr === DEV && !isHost() && L.players.some(function (p) { return p.dev === DEV; }) && netOn()); }
   function paintPeople() {
     if (!NET) return;
     var L = NET.lobby, w = (L && L.wait) || [];
-    $$('[data-reclaim]').forEach(function (b) { b.hidden = !canReclaim(); });
+    var rc = !canReclaim(); $$('[data-reclaim]').forEach(function (b) { setp(b, 'hidden', rc); });
     var list = L ? L.players.slice() : [];
     if (L && !isHost() && !G && !NET.live && !list.some(function (p) { return p.dev === DEV; })) list.push({ dev: DEV, name: NET.name, joining: 1 });
-    $$('[data-pcount]').forEach(function (e) { e.textContent = L ? list.length + (list.length === 1 ? ' person in the room' : ' people in the room') : 'Connecting…'; });
-    $$('[data-wcount]').forEach(function (e) { e.textContent = w.length ? w.length + ' waiting to join' : 'Tap to see who is here'; });
-    $$('[data-ppl-n]').forEach(function (e) { e.textContent = list.length; });
+    $$('[data-pcount]').forEach(function (e) { tx(e, L ? list.length + (list.length === 1 ? ' person in the room' : ' people in the room') : 'Connecting…'); });
+    $$('[data-wcount]').forEach(function (e) { tx(e, w.length ? w.length + ' waiting to join' : 'Tap to see who is here'); });
+    $$('[data-ppl-n]').forEach(function (e) { tx(e, String(list.length)); });
     var sh = $('[data-sheet="people"]'); if (!sh || sh.hidden || !L) return;
     var hd = L.hd || L.players[0].dev;
-    $('[data-ptitle]').textContent = 'Room ' + NET.code + ' · ' + list.length + (list.length === 1 ? ' person' : ' people');
-    $('[data-lplayers]').innerHTML = list.map(function (p, i) {
+    tx($('[data-ptitle]'), 'Room ' + NET.code + ' · ' + list.length + (list.length === 1 ? ' person' : ' people'));
+    var lp = $('[data-lplayers]'), lh = list.map(function (p, i) {
       return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '"><i style="background:' + color(i) + '"></i><b>' + esc(p.name) + '</b><small>' + (p.dev === hd ? 'Host' : '') + (p.dev === DEV ? (p.dev === hd ? ' · you' : 'You') : '') + (p.joining ? ' · joining…' : '') + (isOn(p.dev) ? '' : ' · away') + '</small>' + (isHost() && p.dev !== DEV && !p.joining ? '<button class="kick' + (armed === 'k' + p.dev ? ' is-arm' : '') + '" type="button" data-act="kick" data-dev="' + esc(p.dev) + '">' + (armed === 'k' + p.dev ? 'Tap to confirm' : 'Remove') + '</button>' : '') + '</li>';
     }).join('');
+    if (lp._h !== lh) { lp._h = lh; lp.innerHTML = lh; }
   }
   function chatOpen() { var sh = $('[data-sheet="chat"]'); return !!(sh && !sh.hidden); }
   function chatIn(m, quiet) {
@@ -1119,6 +1135,8 @@
     var list = NET.chat || [];
     $$('[data-chatlog]').forEach(function (el) {
       if (!el.offsetParent && el.getClientRects().length === 0) return;
+      var ck = list.length + ':' + (list.length ? list[list.length - 1].id : '');
+      if (el._ck === ck) return; el._ck = ck;
       var near = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
       el.innerHTML = list.length ? list.map(function (x) { return '<div class="cm' + (x.dev === DEV ? ' is-me' : '') + '"><small>' + (x.dev === DEV ? 'You' : esc(x.name)) + '</small><p>' + esc(x.txt) + '</p></div>'; }).join('') : '<p class="cm__e">No messages yet. Say hi.</p>';
       if (near || !el._seen) el.scrollTop = el.scrollHeight; el._seen = true;
@@ -1183,7 +1201,7 @@
         $('[data-act="home"]', $('[data-sheet="menu"]')).textContent = NET ? (isHost() ? 'Leave (the room stays saved on this phone)' : 'Leave the room') : 'Leave (your game is saved)';
         paintRoomBtns(); openSheet('menu'); break;
       case 'people': if (!NET) break; openSheet('people'); paintPeople(); paintWait(); break;
-      case 'chat': if (!NET) break; NET.unread = 0; openSheet('chat'); $$('[data-chatlog]').forEach(function (e) { e._seen = false; }); vvFit(); paintBadge(); paintChat(); setTimeout(function () { var i = $('[data-sheet="chat"] [data-chatin]'); if (i) i.focus(); }, 60); break;
+      case 'chat': if (!NET) break; NET.unread = 0; openSheet('chat'); $$('[data-chatlog]').forEach(function (e) { e._seen = false; e._ck = null; }); vvFit(); paintBadge(); paintChat(); setTimeout(function () { var i = $('[data-sheet="chat"] [data-chatin]'); if (i) i.focus(); }, 60); break;
       case 'reclaim': if (canReclaim()) { promote(true); closeSheets(); } break;
       case 'kick': kick(t.getAttribute('data-dev'), t); break;
       case 'rsave': saveRoomToggle(); break;
