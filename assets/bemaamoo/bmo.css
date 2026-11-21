@@ -435,3 +435,9 @@ input,textarea{font-size:max(16px,1em)}
 .sum__h{font-size:9px;letter-spacing:.02em}
 .sum:has(.sum__h){border-top:0;margin-top:12px}
 @media (max-width:360px){.sum__h,.sum__r{grid-template-columns:20px minmax(0,1fr) repeat(5,22px) 36px;gap:0 2px}.sum__r>span{font-size:12.5px}}
+
+.vq{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 8px;padding:10px 12px;border:1px solid #6b5a1e;background:rgba(255,210,63,.08);border-radius:10px;font-size:13.5px;line-height:1.4}
+.vq[hidden]{display:none}
+.vq b{font-weight:700}.vq__b{display:flex;gap:8px;flex-wrap:wrap}
+.vq button{min-height:36px;padding:0 14px;border:1px solid #5a5a5a;border-radius:8px;font-size:13px;font-weight:600;color:#fff;background:transparent}
+.vq button.is-pri{background:#fff;color:#000;border-color:#fff}

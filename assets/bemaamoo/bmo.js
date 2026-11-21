@@ -228,6 +228,7 @@
     paintBoard();
     paintDock();
     paintSide();
+    paintVq();
   }
 
   function paintStrip() {
@@ -384,7 +385,8 @@
     var c = B.check(G, raw, forced || !L ? null : L.full);
     if (!c.ok) {
       if (c.why === 'unknown' && NET) {
-        msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span><button type="button" class="is-pri" data-act="retry">Try another</button>', true);
+        NET.lastRej = { w: c.w, n: r.entries.length };
+        msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span><button type="button" data-act="vreq">Ask the room to vouch</button><button type="button" class="is-pri" data-act="retry">Try another</button>', true);
       } else if (c.why === 'unknown') {
         pending = raw;
         msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span><button type="button" data-act="force">Count it anyway</button><button type="button" class="is-pri" data-act="retry">Try another</button>', true);
@@ -749,11 +751,12 @@
     if (!isHost()) return;
     if (NET.hold && Date.now() < NET.hold) return;
     var on = {};
+    if (NET.vq && (!G || G.over || R().entries.length !== NET.vq.n || !G.players[G.turn] || G.players[G.turn].dev !== NET.vq.dev)) NET.vq = null;
     var w = NET.lobby.wait; if (w && w.length) NET.lobby.wait = w.filter(function (x) { return Date.now() - (NET.seen[x.dev] || x.ts || 0) < 120000; });
     syncTurn(); NET.lastPub = Date.now();
     NET.lobby.players.forEach(function (p) { on[p.dev] = isOn(p.dev); });
     NET.seq = (NET.seq || 0) + 1;
-    netSend(NTOPIC + NET.code + '/state', { v: 1, code: NET.code, hs: NET.hs, ep: NET.ep || 0, seq: NET.seq, lobby: NET.lobby, G: G, rej: NET.rej || null, on: on, td: turnLeftMs(), cl: (NET.chat || []).slice(-15) }, true);
+    netSend(NTOPIC + NET.code + '/state', { v: 1, code: NET.code, hs: NET.hs, ep: NET.ep || 0, seq: NET.seq, lobby: NET.lobby, G: G, rej: NET.rej || null, vq: NET.vq || null, on: on, td: turnLeftMs(), cl: (NET.chat || []).slice(-15) }, true);
   }
   function syncLobby() { if (!isHost()) return; NET.lobby.cat = S.cat; NET.lobby.timer = S.timer; NET.lobby.limit = S.limit; NET.lobby.tl = S.tl; NET.lobby.sh = S.sh; storeRoom(); pubSoon(); }
   function hostMsg(m) {
@@ -784,6 +787,7 @@
       storeRoom(); netPaint(); pubSoon(); return;
     }
     if (!G) return;
+    if (m.t === 'vreq' || m.t === 'vouch' || m.t === 'vno' || m.t === 'vcancel') { vouchMsg(m); return; }
     var r = R(), cp = G.players[G.turn];
     if (!cp || cp.dev !== m.dev || r.done || !r.run) { pubSoon(); return; }
     if (m.t === 'skip') { if (m.n != null && m.n !== r.entries.length) { pubSoon(); return; } B.skip(G); save(); msg(''); paintGame(); toast(cp.name + ' skipped'); notifyTurn(); return; }
@@ -791,6 +795,62 @@
       getList(r.cat).then(function (Lst) { hostAdd(m, Lst); }, function () { hostAdd(m, null); });
     }
   }
+  /* vouching: a word that isn't in the list counts if another player vouches for it */
+  function vouchMsg(m) {
+    if (!isHost() || !G || G.over) return;
+    var r = R(), cp = G.players[G.turn], vq = NET.vq;
+    if (m.t === 'vreq') {
+      if (!cp || cp.dev !== m.dev || r.done || !r.run || m.n !== r.entries.length) { pubSoon(); return; }
+      var c = B.check(G, m.w, null); if (!c.ok) { pubSoon(); return; }
+      NET.vq = { w: c.w, n: r.entries.length, dev: m.dev, name: cp.name, k: Date.now(), no: [] };
+      NET.turnAt = Date.now(); paintVq(); pubNow(); return;
+    }
+    if (!vq) return;
+    if (m.t === 'vcancel') { if (m.dev === vq.dev) { NET.vq = null; paintVq(); pubNow(); } return; }
+    if (m.dev === vq.dev || m.k !== vq.k) return;
+    if (!G.players.some(function (p) { return p.dev === m.dev && !p.out; })) return;
+    if (m.t === 'vouch') { vouchAccept(); return; }
+    if (m.t === 'vno') {
+      if (vq.no.indexOf(m.dev) < 0) vq.no.push(m.dev);
+      var voters = G.players.filter(function (p) { return p.dev && p.dev !== vq.dev && !p.out && isOn(p.dev); }).length;
+      if (vq.no.length >= Math.max(1, voters)) { NET.rej = { dev: vq.dev, w: vq.w, why: 'vno', k: Date.now() }; NET.vq = null; if (vq.dev === DEV) vouchDenied(vq.w); }
+      paintVq(); pubNow();
+    }
+  }
+  function vouchDenied(w) { NET.lastRej = null; msg('<span>The room didn’t vouch for <b>' + esc(w) + '</b>.</span><button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); }
+  function vouchAccept() {
+    var vq = NET.vq; if (!vq) return;
+    var r = R(), cp = G.players[G.turn];
+    if (!cp || cp.dev !== vq.dev || r.done || r.entries.length !== vq.n) { NET.vq = null; pubNow(); return; }
+    NET.vq = null; NET.rej = null;
+    getList(r.cat).then(function (L) { return L; }, function () { return null; }).then(function (L) {
+      if (R() !== r || r.done || r.entries.length !== vq.n) return;
+      var e = B.add(G, vq.w, { mav: L ? L.mav : null, forced: true });
+      lastAdded = r.entries.length - 1;
+      if (vq.dev === DEV) { $('[data-in]').value = ''; msg(''); }
+      save(); celebrate(e); paintVq(); paintGame(); lastAdded = -1; toast('Vouched: ' + vq.w + ' counts');
+      if (r.done) { setTimeout(roundOver, 900); pubNow(); return; }
+      pubNow(); notifyTurn();
+    });
+  }
+  function paintVq() {
+    var el = $('[data-vq]'); if (!el) return;
+    var vq = NET && NET.vq;
+    if (!vq || cur !== 'game' || !G || G.over) { if (!el.hidden) { el.hidden = true; el.innerHTML = ''; el._k = ''; } return; }
+    var mine = vq.dev === DEV, voted = (vq.no || []).indexOf(DEV) > -1;
+    var k = vq.k + ':' + (mine ? 'm' : voted ? 'v' : 'o'); if (el._k === k && !el.hidden) return; el._k = k;
+    el.hidden = false;
+    if (mine) el.innerHTML = '<span>Waiting for someone to vouch for <b>' + esc(vq.w) + '</b>…</span><button type="button" data-act="vcancel">Cancel</button>';
+    else if (voted) el.innerHTML = '<span>You said no to <b>' + esc(vq.w) + '</b>. Waiting for the others.</span>';
+    else el.innerHTML = '<span><b>' + esc(vq.name) + '</b> played <b>' + esc(vq.w) + '</b>, which isn’t in our list. Is it right?</span><span class="vq__b"><button type="button" class="is-pri" data-act="vouch">Vouch for it</button><button type="button" data-act="vno">Not right</button></span>';
+  }
+  function vouchSend(t) {
+    var vq = NET && NET.vq; if (!vq) return;
+    var m = { t: t, k: vq.k };
+    if (isHost()) { m.dev = DEV; vouchMsg(m); } else sendIn(m);
+    if (t !== 'vouch') { if (t === 'vno' && !isHost()) { vq.no = (vq.no || []).concat(DEV); } el_vqRefresh(); }
+  }
+  function el_vqRefresh() { var el = $('[data-vq]'); if (el) el._k = ''; paintVq(); }
   function hostAdd(m, Lst) {
     var r = R(), cp = G.players[G.turn];
     if (!cp || cp.dev !== m.dev || r.done || m.n !== r.entries.length) { pubSoon(); return; }
@@ -818,7 +878,7 @@
     if (sep === (NET.ep || 0) && NET.hs && st.hs !== NET.hs && String(st.hs) < String(NET.hs)) return;
     if (st.hs === NET.hs && st.seq <= NET.lastSeq) return;
     NET.ep = sep; chatMerge(st.cl); NET.turnEnds = st.td != null ? Date.now() + st.td : 0;
-    NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {};
+    NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {}; NET.vq = st.vq || null; paintVq();
     if (NET.jq && st.lobby.players.some(function (p) { return p.dev === DEV; })) clearJoin();
     clearTimeout(NET.noRoomT);
     if (!st.G) {
@@ -850,8 +910,9 @@
     if (NET.pend && (r.entries.length > NET.pend.n || !myTurn())) NET.pend = null;
     if (st.rej && st.rej.dev === DEV && st.rej.k !== NET.rejSeen) {
       NET.rejSeen = st.rej.k; NET.pend = null;
-      var t = { unknown: '<b>' + esc(st.rej.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(st.rej.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.' }[st.rej.why] || 'Try another word.';
-      msg('<span>' + t + '</span>', true); shake();
+      var t = { unknown: '<b>' + esc(st.rej.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(st.rej.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.', vno: 'The room didn’t vouch for <b>' + esc(st.rej.w) + '</b>.' }[st.rej.why] || 'Try another word.';
+      if (st.rej.why === 'unknown') NET.lastRej = { w: st.rej.w, n: r.entries.length };
+      msg('<span>' + t + '</span>' + (st.rej.why === 'unknown' ? '<button type="button" data-act="vreq">Ask the room to vouch</button>' : '') + (st.rej.why === 'unknown' || st.rej.why === 'vno' ? '<button type="button" class="is-pri" data-act="retry">Try another</button>' : ''), true); shake();
     }
     running = !!(r.run && !r.done);
     if (same && !G.over && !r.done) {   // a heartbeat with nothing new: refresh clock, chips and presence only, so nothing flickers or loses focus
@@ -903,7 +964,8 @@
       var c = B.check(G, raw, L.full);
       if (!c.ok) {
         var t = { unknown: '<b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(c.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.' }[c.why] || 'Try another word.';
-        msg('<span>' + t + '</span><button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); return;
+        if (c.why === 'unknown') NET.lastRej = { w: c.w, n: r.entries.length };
+        msg('<span>' + t + '</span>' + (c.why === 'unknown' ? '<button type="button" data-act="vreq">Ask the room to vouch</button>' : '') + '<button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); return;
       }
       send(c.w);
     }, function () { send(B.norm(raw)); });
@@ -1145,6 +1207,10 @@
       case 'again':
         if (NET) { if (!isHost()) break; ov('final', false); G = null; var Lw = NET.lobby; (Lw.wait || []).forEach(function (w) { if (Lw.players.length < MAXP) Lw.players.push({ dev: w.dev, name: w.name }); }); Lw.wait = []; Lw.dec = []; storeRoom(); pubNow(); show('room'); break; }
         ov('final', false); store(KEY_GAME, null); G = null; show('setup'); break;
+      case 'vreq': if (NET && NET.lastRej && myTurn()) { var lr = NET.lastRej; msg('<span>Asking the room to vouch for <b>' + esc(lr.w) + '</b>…</span>'); if (isHost()) vouchMsg({ t: 'vreq', dev: DEV, w: lr.w, n: lr.n }); else sendIn({ t: 'vreq', w: lr.w, n: lr.n }); } break;
+      case 'vouch': vouchSend('vouch'); break;
+      case 'vno': vouchSend('vno'); break;
+      case 'vcancel': if (isHost()) vouchMsg({ t: 'vcancel', dev: DEV }); else sendIn({ t: 'vcancel' }); msg(''); break;
       case 'force': if (pending != null) getList(R().cat).then(function (L) { tryAdd(pending, L, true); }, function () { tryAdd(pending, null, true); }); break;
       case 'retry': msg(''); $('[data-in]').select(); focusIn(); break;
     }
