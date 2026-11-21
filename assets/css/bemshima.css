@@ -32,3 +32,22 @@
 .bm .mus-sec{padding-top:clamp(28px,4vw,52px);padding-bottom:clamp(28px,4vw,52px)}
 .bm .tl__row{padding-top:10px;padding-bottom:10px}
 .bm .ic-pause{display:none}
+
+/* no shell, no artwork: a plain control row */
+.bm .mus-card{background:none!important;border:0!important;box-shadow:none!important;border-radius:0}
+.bm .mus-card__text{padding:14px 0;border-top:1px solid #1f1f1f;border-bottom:1px solid #1f1f1f;grid-template-columns:48px minmax(0,.9fr) minmax(0,1.3fr) auto}
+.bm .mus-card .mus-cover{width:48px;height:48px;border-radius:50%;background:#fff;overflow:hidden}
+.bm .mus-cover img{display:none}
+.bm .mus-cover__play{background:none;color:#000}
+.bm .mus-cover:hover .mus-cover__play{background:rgba(0,0,0,.08)}
+.bm .mus-cover__play svg{width:18px;height:18px;filter:none}
+@media (max-width:760px){.bm .mus-card__text{grid-template-columns:48px minmax(0,1fr) auto;padding:12px 0}.bm .mus-card .mus-cover{width:48px;height:48px}}
+/* bio */
+.bm .mk-teaser{display:block;-webkit-line-clamp:unset;overflow:visible}
+.bm .mk-bio{display:none;flex-direction:column;gap:12px;max-width:34em;font-size:clamp(15px,1.3vw,17px);line-height:1.7;color:#c9c9c9}
+.bm .mk-bio p{margin:0}
+.bm .mk-info__l.is-open .mk-bio{display:flex}
+.bm .mk-info__l.is-open .mk-teaser{display:none}
+.bm .mk-biobtn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px;background:none;border:1px solid #2a2a2a;color:#fff;font:inherit;font-size:14px;cursor:pointer}
+.bm .mk-biobtn:hover{background:#fff;color:#000}
+.bm .mk-idrow{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
