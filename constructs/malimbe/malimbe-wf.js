@@ -390,7 +390,7 @@ function frame(t){
   ctx.textBaseline='alphabetic';
   if(view.s>.05){
     const il=warp(g2w(8*C,-2*C)), ilq=W2S(il), lq=W2S({x:0,y:0});
-    if(Math.hypot(ilq.x-lq.x,ilq.y-lq.y)>150) drawLabel(il,'IITA FOREST','1,000-acre research reserve','rgba(200,215,170,.8)');
+    if(Math.hypot(ilq.x-lq.x,ilq.y-lq.y)>150) drawLabel(il,'IITA','1,000-acre research reserve','rgba(200,215,170,.8)');
     const oy=warp(g2w(1*C,-9*C)); const q=W2S(oy); ctx.save();ctx.translate(q.x+10,q.y);ctx.rotate(-view.rot+(-15*D2R)+Math.PI/2);ctx.font='600 9px "Open Sans",sans-serif';ctx.fillStyle='rgba(246,243,238,.4)';ctx.textAlign='center';ctx.fillText('OYO ROAD',0,0);ctx.restore();
   }
   if(state.mode==='idle'||state.mode==='blocked'||state.mode==='outside'){

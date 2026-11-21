@@ -9,7 +9,7 @@
   var ROOMS = [1, 2, 3, 4, 5, 6].map(function (n) {
     return { id: 'room-' + n, kind: 'Culture-themed suite', name: 'Room ' + (n < 10 ? '0' + n : n), photo: '/constructs/malimbe/img/bedroom-' + n + '.webp',
       desc: 'A culture-themed room with hand-finished walls, warm light and the forest outside.',
-      feats: [['i-bed', 'Culture-themed design'], ['i-pin', '6,000 sqm forest setting'], ['i-bell', 'Opening December 2026']] };
+      feats: [['i-bed', 'Culture-themed design'], ['i-pin', '6,000 sqm natural setting'], ['i-bell', 'Opening December 2026']] };
   });
   function byId(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return ROOMS[0]; }
   function ic(id) { return '<svg><use href="#' + id + '"/></svg>'; }
