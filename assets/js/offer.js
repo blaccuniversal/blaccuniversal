@@ -87,8 +87,15 @@
   var sndBtn = box.querySelector('[data-ofr-snd]');
   sndBtn.setAttribute('aria-pressed', snd);
   function ensureAC() {
-    try { var C = window.AudioContext || window.webkitAudioContext; if (!AC && C) AC = new C(); if (AC && AC.state === 'suspended') AC.resume(); } catch (e) {}
+    try { var C = window.AudioContext || window.webkitAudioContext; if (!AC && C) AC = new C(); if (AC && AC.state === 'suspended') AC.resume(); loadTick(); } catch (e) {}
     return AC;
+  }
+  var TICK = null, tickReq = false;
+  function loadTick() {
+    if (TICK || tickReq || !AC || !window.fetch) return; tickReq = true;
+    fetch('/assets/audio/tick.mp3').then(function (r) { return r.arrayBuffer(); })
+      .then(function (a) { return new Promise(function (ok, no) { var p = AC.decodeAudioData(a, ok, no); if (p && p.catch) p.catch(no); }); })
+      .then(function (b) { TICK = b; }).catch(function () {});
   }
   var NB = null;
   function noise() {
@@ -100,6 +107,10 @@
   /* wall-clock tick: a dry, woody click (filtered noise) plus a short low knock; "tock" is a touch lower */
   function tickSound() {
     if (!snd || !AC || AC.state !== 'running') return;
+    if (TICK) {
+      var s0 = AC.createBufferSource(), g0 = AC.createGain(); s0.buffer = TICK; g0.gain.value = 1.2;
+      s0.connect(g0); g0.connect(AC.destination); s0.start(); return;
+    }
     var t = AC.currentTime, lo = tock; tock = !tock;
     var src = AC.createBufferSource(); src.buffer = noise();
     var bp = AC.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = lo ? 1900 : 2600; bp.Q.value = 1.4;
