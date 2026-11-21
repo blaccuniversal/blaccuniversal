@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/pastaxpress/img/logo.png">
 <link rel="preload" as="image" href="/constructs/pastaxpress/img/spag.webp" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/pastaxpress/pastaxpress.css?v=3">
+<link rel="stylesheet" href="/constructs/pastaxpress/pastaxpress.css?v=5">
 </head>
 <body id="top">
 
@@ -93,14 +93,18 @@
       <h2>What’s cooking, <em>today.</em></h2>
       <p class="sub">Some dishes belong to certain days. Pick a day to see what’s on, then fill your basket.</p>
     </div>
+    <div class="panel">
+    <div class="panel__top">
     <div class="tabs" role="tablist" data-tabs>
       <button type="button" role="tab" data-tab="plates" aria-selected="true">Pasta &amp; rice</button>
       <button type="button" role="tab" data-tab="sides" aria-selected="false">Proteins &amp; sides</button>
       <button type="button" role="tab" data-tab="drinks" aria-selected="false">Drinks &amp; bar</button>
     </div>
     <div class="days" data-days role="group" aria-label="Day of the week"></div>
+    </div>
     <div class="menu" data-menu aria-live="polite"></div>
     <p class="fine">Trays feed 3 to 4 people. Plates come without plantain unless stated. Prices in naira.</p>
+    </div>
   </div>
 </section>
 
@@ -150,10 +154,9 @@
 
 <!-- STORY -->
 <section class="sec story" id="story">
-  <div class="wrap story__in">
-    <div class="story__copy">
-      <p class="eyebrow">The story</p>
-      <h2>From ₦5,000 and a <em>craving.</em></h2>
+  <div class="wrap">
+    <div class="story__top">
+      <div><p class="eyebrow">The story</p><h2>From ₦5,000 and a <em>craving.</em></h2></div>
       <p class="sub">Kabira Ilo, Chef Kabs, started by taking stir-fry pasta orders on WhatsApp while still at the University of Ibadan. Today her kitchen runs from a restaurant in Bodija, with Kabs Bar, Kabs Diner and Sunday at Kabs alongside it.</p>
     </div>
     <ol class="steps">
@@ -223,6 +226,6 @@
 </div>
 <div class="toast" data-toast role="status" aria-live="polite"></div>
 
-<script src="/constructs/pastaxpress/pastaxpress.js?v=2" defer></script>
+<script src="/constructs/pastaxpress/pastaxpress.js?v=3" defer></script>
 </body>
 </html>
