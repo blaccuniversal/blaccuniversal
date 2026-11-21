@@ -3,8 +3,6 @@
   'use strict';
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
-  // Paste a form endpoint (e.g. Formspree / Google Apps Script URL) to collect sign-ups.
-  var FORM_ENDPOINT = '';
 
   /* The six rooms shown so far. Malimbe has 11 culture-themed rooms; images are design renders. */
   var NAMES = ['Terracotta', 'Woven', 'Carved', 'Canopy', 'Clay', 'Weaver'];
@@ -26,6 +24,28 @@
       '<div class="room__foot"><span class="room__p"><small>Rates at opening</small></span><span class="room__go">Details' + ic('i-arrow') + '</span></div></div></button>';
   }).join('');
 
+  (function () {
+    var tr = $('[data-rooms]'), dots = $('[data-rdots]'), cards = $$('.room', tr), n = cards.length, dir = 1, hold = 0, vis = false;
+    dots.innerHTML = cards.map(function (c, i) { return '<button type="button" aria-label="Room ' + (i + 1) + '"></button>'; }).join('');
+    var ds = $$('button', dots);
+    function step() { return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : tr.clientWidth; }
+    function max() { return tr.scrollWidth - tr.clientWidth; }
+    function cur() { var m = max(); if (tr.scrollLeft >= m - 4) return n - 1; return Math.min(n - 1, Math.round(tr.scrollLeft / step())); }
+    function paint() { var c = cur(); ds.forEach(function (d, i) { d.classList.toggle('on', i === c); }); }
+    function go(i) { tr.scrollTo({ left: Math.max(0, Math.min(max(), i * step())), behavior: 'smooth' }); }
+    ds.forEach(function (d, i) { d.addEventListener('click', function () { hold = Date.now() + 9000; go(i); }); });
+    tr.addEventListener('scroll', paint, { passive: true });
+    ['pointerdown', 'touchstart', 'wheel'].forEach(function (ev) { tr.addEventListener(ev, function () { hold = Date.now() + 9000; }, { passive: true }); });
+    window.addEventListener('resize', paint); paint();
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { vis = en[0].isIntersecting; }, { threshold: .35 }).observe(tr); else vis = true;
+    if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) setInterval(function () {
+      if (!vis || document.hidden || Date.now() < hold) return;
+      var m = max(), s = tr.scrollLeft;
+      if (dir > 0 && s >= m - 4) dir = -1; else if (dir < 0 && s <= 4) dir = 1;
+      go(Math.round(s / step()) + dir);
+    }, 4500);
+  })();
+
   var sheet = $('[data-sheet]'), sheetRoom = null, lastFocus = null;
   function openRoom(id) {
     var r = byId(id); sheetRoom = r; lastFocus = document.activeElement;
@@ -46,14 +66,17 @@
   function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   fIn.min = iso(start);
   function nice(v) { var p = v.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); }
-  function toJoin(interest, note) {
+  var mdl = $('[data-mdl]'), WA = '233599718830';
+  function openMdl(interest, note) {
     closeSheet(); closeDrawer();
     var sel = $('#f-int'); if (interest) { for (var i = 0; i < sel.options.length; i++) if (sel.options[i].text === interest) sel.selectedIndex = i; }
     var msg = $('#f-msg'); if (note && !msg.value) msg.value = note;
-    var j = $('#join');
-    window.scrollTo({ top: j.getBoundingClientRect().top + window.pageYOffset - 20, behavior: 'smooth' });
-    setTimeout(function () { try { $('#f-name').focus({ preventScroll: true }); } catch (e) {} }, 650);
+    fm.className = 'jf__msg'; fm.textContent = 'We’ll only contact you about Malimbe Lodge.';
+    mdl.hidden = false; document.body.style.overflow = 'hidden';
+    setTimeout(function () { try { $('#f-name').focus(); } catch (e) {} }, 60);
   }
+  function closeMdl() { mdl.hidden = true; document.body.style.overflow = ''; }
+  var toJoin = openMdl;
   $('[data-bk]').addEventListener('click', function (e) {
     var b = e.target.closest('[data-g]'); if (!b) return;
     guests = Math.max(1, Math.min(12, guests + +b.getAttribute('data-g')));
@@ -61,19 +84,20 @@
   });
   $('[data-bk]').addEventListener('submit', function (e) {
     e.preventDefault();
-    var note = (fIn.value ? 'Preferred arrival: ' + nice(fIn.value) + '. ' : '') + 'Guests: ' + guests + '.';
-    toJoin(fInt.value, note);
+    openMdl(fInt.value, (fIn.value ? 'Preferred arrival: ' + nice(fIn.value) + '. ' : '') + 'Guests: ' + guests + '.');
   });
+  mdl.addEventListener('click', function (e) { if (e.target === mdl || e.target.closest('[data-mclose]')) closeMdl(); });
 
   var joinForm = $('#joinForm'), fm = $('#formMsg');
   joinForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    var name = $('#f-name').value.trim(), email = $('#f-email').value.trim();
-    if (!name || !/^\S+@\S+\.\S+$/.test(email)) { fm.className = 'jf__msg err'; fm.textContent = 'Please add your name and a valid email.'; return; }
-    if (!FORM_ENDPOINT) { fm.className = 'jf__msg'; fm.textContent = 'Sign-ups open soon. The list isn’t connected yet.'; return; }
-    fetch(FORM_ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' }, body: new FormData(joinForm) })
-      .then(function (r) { if (!r.ok) throw 0; joinForm.reset(); fm.className = 'jf__msg ok'; fm.textContent = 'You’re on the list. Welcome, ' + name.split(' ')[0] + '.'; })
-      .catch(function () { fm.className = 'jf__msg err'; fm.textContent = 'Something went wrong. Please try again.'; });
+    var name = $('#f-name').value.trim(), email = $('#f-email').value.trim(), phone = $('#f-phone').value.trim();
+    var okMail = /^\S+@\S+\.\S+$/.test(email);
+    if (!name || !(okMail || phone.replace(/\D/g, '').length >= 7)) { fm.className = 'jf__msg err'; fm.textContent = 'Please add your name and a phone number or email.'; return; }
+    var msg = 'Hello Malimbe Lodge, I’d like to join the wait list.\nName: ' + name + (phone ? '\nPhone: ' + phone : '') + (email ? '\nEmail: ' + email : '') +
+      '\nInterested in: ' + $('#f-int').value + ($('#f-msg').value.trim() ? '\nNote: ' + $('#f-msg').value.trim() : '');
+    window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+    fm.className = 'jf__msg ok'; fm.textContent = 'Almost done. Press send in the message that opens to complete your enquiry.';
   });
 
   /* ---------- nav ---------- */
@@ -111,11 +135,11 @@
   if (railEl) { railEl.addEventListener('scroll', railBtns, { passive: true }); window.addEventListener('resize', railBtns); railBtns(); }
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    if (!lbx.hidden) closeLbx(); else if (!sheet.hidden) closeSheet(); else if (!drawer.hidden) closeDrawer();
+    if (!lbx.hidden) closeLbx(); else if (!mdl.hidden) closeMdl(); else if (!sheet.hidden) closeSheet(); else if (!drawer.hidden) closeDrawer();
   });
 
   // nav state + active section
-  var secs = ['rooms', 'eat', 'grounds', 'cinema', 'visit'].map(function (id) { return document.getElementById(id); });
+  var secs = ['rooms', 'eat', 'grounds', 'visit'].map(function (id) { return document.getElementById(id); });
   var links = $$('.nav__links a');
   function onScroll() {
     var y = window.pageYOffset;
