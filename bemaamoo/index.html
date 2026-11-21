@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=4">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=5">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -138,6 +138,14 @@
       <h2 class="eyebrow">Players</h2>
       <ol class="rplayers" data-rplayers></ol>
     </section>
+    <section class="fs" data-wlsec hidden>
+      <h2 class="eyebrow">Waiting to join</h2>
+      <ul class="wl" data-wl></ul>
+    </section>
+    <section class="fs">
+      <h2 class="eyebrow">Chat</h2>
+      <div class="chat"><div class="chat__log" data-chatlog></div><form class="chat__f" data-chatform autocomplete="off"><input data-chatin maxlength="300" placeholder="Message the room" aria-label="Message the room" enterkeyhint="send" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>
+    </section>
     <div data-rhost hidden>
       <section class="fs">
         <h2 class="eyebrow">Category</h2>
@@ -170,6 +178,7 @@
     </button>
     <div class="gtop__r">
       <button class="clock" data-act="clock" data-clock hidden aria-label="Pause timer"><span data-clocktx>5:00</span><svg><use href="#i-pause"/></svg></button>
+      <button class="ic ic--b" data-act="lobby" data-lobbybtn hidden aria-label="Room: players, waiting list and chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg><i class="bdg" data-bdg hidden></i></button>
       <button class="ic" data-act="help" aria-label="How to play"><svg><use href="#i-help"/></svg></button>
     </div>
   </header>
@@ -239,6 +248,19 @@
   </div>
 </div>
 
+<div class="sheet" data-sheet="lobby" hidden>
+  <div class="sheet__card sheet__card--tall sheet__card--lobby" role="dialog" aria-modal="true" aria-label="Room">
+    <div class="sheet__head"><b>Room <span data-lcode></span></b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+    <section class="fs" data-wlsec hidden>
+      <h2 class="eyebrow">Waiting to join</h2>
+      <ul class="wl" data-wl></ul>
+    </section>
+    <ol class="rplayers" data-lplayers></ol>
+    <h2 class="eyebrow" style="margin:18px 0 10px">Chat</h2>
+    <div class="chat"><div class="chat__log" data-chatlog></div><form class="chat__f" data-chatform autocomplete="off"><input data-chatin maxlength="300" placeholder="Message the room" aria-label="Message the room" enterkeyhint="send" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>
+  </div>
+</div>
+
 <div class="sheet" data-sheet="menu" hidden>
   <div class="sheet__card" role="dialog" aria-modal="true" aria-label="Game menu">
     <div class="sheet__head"><b>Game</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
@@ -290,6 +312,6 @@
 
 <script src="/assets/bemaamoo/bmo-gate.js?v=3"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=2"></script>
-<script src="/assets/bemaamoo/bmo.js?v=8"></script>
+<script src="/assets/bemaamoo/bmo.js?v=9"></script>
 </body>
 </html>

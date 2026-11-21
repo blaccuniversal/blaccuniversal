@@ -53,7 +53,7 @@
     if (name === 'setup') paintSetup();
     if (name === 'game') { fitVh(); paintGame(); }
     if (name === 'online') paintOnline();
-    if (name === 'room') paintRoom();
+    if (name === 'room') { if (NET) NET.unread = 0; paintRoom(); }
   }
   function openSheet(n) { $('[data-sheet="' + n + '"]').hidden = false; }
   function closeSheets() { $$('[data-sheet]').forEach(function (s) { s.hidden = true; }); }
@@ -176,7 +176,7 @@
     paintGame();
     focusIn();
   }
-  function focusIn() { var i = $('[data-in]'); if (i && !R().done) { try { i.focus({ preventScroll: true }); } catch (e) { i.focus(); } } }
+  function focusIn() { var ae = document.activeElement; if (ae && ae.hasAttribute && ae.hasAttribute('data-chatin')) return; var i = $('[data-in]'); if (i && !R().done) { try { i.focus({ preventScroll: true }); } catch (e) { i.focus(); } } }
 
   /* clock */
   function startClock() {
@@ -209,6 +209,7 @@
   }
 
   function paintGame() {
+    var lbn = $('[data-lobbybtn]'); if (lbn) lbn.hidden = !NET;
     if (!G) return;
     var r = R();
     $('[data-gcat]').textContent = B.catName(r.cat);
@@ -491,7 +492,7 @@
   function isHost() { return !!(NET && NET.role === 'host'); }
   function meIdx() { if (!G) return -1; for (var i = 0; i < G.players.length; i++) if (G.players[i].dev === DEV) return i; return -1; }
   function myTurn() { return !NET || (G && G.players[G.turn] && G.players[G.turn].dev === DEV); }
-  function hostName() { if (!NET || !NET.lobby) return 'the host'; var h = NET.lobby.players[0]; return h ? h.name : 'the host'; }
+  function hostName() { if (!NET || !NET.lobby) return 'the host'; var L = NET.lobby, h = L.players.filter(function (p) { return p.dev === L.hd; })[0] || L.players[0]; return h ? h.name : 'the host'; }
   function hostStale() { return !!(NET && !isHost() && NET.gotAt && Date.now() - NET.gotAt > 25000); }
   function isOn(dev) { if (!NET || dev === DEV) return true; if (isHost()) return Date.now() - (NET.seen[dev] || 0) < 30000; return !NET.on || NET.on[dev] !== false; }
   function cleanName(n) { return String(n || '').replace(/\s+/g, ' ').trim().slice(0, 18) || 'Player'; }
@@ -502,24 +503,90 @@
     if (!mqP) mqP = new Promise(function (ok, no) { var sc = document.createElement('script'); sc.src = '/assets/bemaamoo/mqtt.min.js?v=1'; sc.onload = ok; sc.onerror = function () { mqP = null; no(); }; document.head.appendChild(sc); });
     return mqP;
   }
+  function newHs() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
   function netLink() {
-    var T = NTOPIC + NET.code + '/', host = isHost(), me = NET;
+    var T = NTOPIC + NET.code + '/', me = NET;
     me.cls = [];
     keepAwake();
     BROKERS.forEach(function (url) {
       var c; try { c = window.mqtt.connect(url, { clientId: 'bmo_' + DEV + '_' + Math.random().toString(16).slice(2, 6), clean: true, connectTimeout: 8000, reconnectPeriod: 1500, keepalive: 20 }); } catch (e) { return; }
       me.cls.push(c);
-      c.on('connect', function () { if (NET !== me) return; c.subscribe(host ? [T + 'in', T + 'j/+'] : [T + 'state', T + 'in']); me.wasOn = true; if (host) pubNow(); else sendIn({ t: 'join', name: me.name }); netPaint(); });
+      c.on('connect', function () {
+        if (NET !== me) return;
+        me.upAt = Date.now(); me.wasOn = true;
+        c.subscribe([T + 'state', T + 'in', T + 'chat']);
+        if (isHost()) {
+          c.subscribe(T + 'j/+');
+          // a host that comes back first listens for a newer host before it speaks, so it never overwrites the room with stale state
+          if (me.fresh) { me.fresh = false; pubNow(); } else { me.hold = Date.now() + 1500; setTimeout(function () { if (NET === me) pubNow(); }, 1600); }
+        } else sendIn({ t: 'join', name: me.name });
+        netPaint();
+      });
       c.on('close', function () { if (NET === me) netPaint(); });
-      c.on('message', function (tp, pl) { if (NET !== me) return; var m; try { m = JSON.parse(pl.toString()); } catch (e) { return; } if (host) { if (tp.indexOf(T + 'j/') === 0 && (!m.ts || Math.abs(Date.now() - m.ts) > 900000)) return; hostMsg(m); } else if (tp === T + 'in') guestMove(m); else guestMsg(m); });
+      c.on('message', function (tp, pl) {
+        if (NET !== me) return; var m; try { m = JSON.parse(pl.toString()); } catch (e) { return; }
+        if (tp === T + 'chat') { chatIn(m); return; }
+        if (isHost()) {
+          if (tp === T + 'state') { hostSawState(m); return; }
+          if (tp.indexOf(T + 'j/') === 0 && (!m.ts || Math.abs(Date.now() - m.ts) > 900000)) return;
+          hostMsg(m);
+        } else if (tp === T + 'in') { if (m && m.dev) { me.gseen = me.gseen || {}; me.gseen[m.dev] = Date.now(); } guestMove(m); }
+        else if (tp === T + 'state') guestMsg(m);
+      });
       c.on('error', function () {});
     });
     clearInterval(me.beatT);
     me.beatT = setInterval(function () {
       if (NET !== me) return;
-      if (host) pubNow(); else { sendIn({ t: 'here', name: me.name }); if (!me.lobby || (!G && !me.lobby.players.some(function (p) { return p.dev === DEV; }))) sendIn({ t: 'join', name: me.name }); }
+      if (isHost()) { if (Date.now() - (me.lastPub || 0) >= 2900) pubNow(); autoSkip(); }
+      else {
+        sendIn({ t: 'here', name: me.name });
+        if (!me.lobby || (!G && !me.lobby.players.some(function (p) { return p.dev === DEV; }))) sendIn({ t: 'join', name: me.name });
+        failoverCheck();
+      }
       netPaint();
-    }, host ? 10000 : 3000);
+    }, 3000);
+  }
+  /* If the host's phone goes quiet (minimised, locked, offline) the first player still online takes over, so the game carries on. */
+  function failoverCheck() {
+    if (!NET || isHost() || !NET.lobby || !netOn()) return;
+    var r = G && !G.over ? R() : null, lim = (r && r.run && !r.done && G.settings.timer) ? 8000 : 11000, now = Date.now();
+    if (now - Math.max(NET.gotAt || 0, NET.upAt || 0) < lim) return;
+    var L = NET.lobby, hd = L.hd || (L.players[0] || {}).dev;
+    if (!L.players.some(function (p) { return p.dev === DEV; })) return;
+    var cands = L.players.filter(function (p) { return p.dev !== hd && (p.dev === DEV || now - ((NET.gseen || {})[p.dev] || 0) < 9000); });
+    if (cands.length && cands[0].dev === DEV) promote();
+  }
+  /* a player whose phone has gone quiet is skipped, so the others are never stuck waiting for their turn */
+  function autoSkip() {
+    if (!isHost() || !G || G.over) return;
+    var r = R(), cp = G.players[G.turn];
+    if (!cp || !r.run || r.done || cp.dev === DEV || isOn(cp.dev)) return;
+    B.skip(G); save(); msg(''); paintGame(); toast(cp.name + ' is away, skipped'); notifyTurn();
+  }
+  function promote() {
+    var me = NET, L = me.lobby, T = NTOPIC + me.code + '/';
+    var old = (L.players.filter(function (p) { return p.dev === L.hd; })[0] || L.players[0] || {}).name || 'The host';
+    me.role = 'host'; me.ep = (me.ep || 0) + 1; me.hs = newHs(); me.seq = (me.lastSeq || 0) + 1; me.hold = 0; me.lastPub = 0; me.rej = null;
+    me.seen = {}; L.players.forEach(function (p) { me.seen[p.dev] = Date.now(); });
+    me.seen[L.hd] = 0; L.hd = DEV;
+    me.cls.forEach(function (c) { if (c.connected) try { c.subscribe(T + 'j/+'); } catch (e) {} });
+    storeRoom(); toast(old + ' went quiet. You are hosting now.'); buzz(25);
+    if (G && !G.over) { var r = R(); if (r.done) roundOver(); else if (!r.run) { running = false; readyScreen(); } else { running = true; startClock(); } }
+    pubNow(); netPaint(); if (cur === 'game') paintGame();
+  }
+  function hostSawState(st) {
+    if (!st || st.v !== 1 || st.code !== NET.code || !st.lobby || st.hs === NET.hs) return;
+    var ep = st.ep || 0, mine = NET.ep || 0;
+    if (ep > mine || (ep === mine && String(st.hs) > String(NET.hs))) demote(st);
+  }
+  function demote(st) {
+    var me = NET; stopClock(); running = false;
+    me.role = 'guest'; me.lastSeq = 0; me.ep = 0; me.hs = ''; me.gotAt = 0; me.seen = null; me.lobby = st.lobby;
+    storeRoom();
+    var h = (st.lobby.players.filter(function (p) { return p.dev === st.lobby.hd; })[0] || {}).name || 'another player';
+    toast('Hosting moved to ' + h);
+    guestMsg(st);
   }
   function netSend(topic, obj, retain) { if (!NET || !NET.cls) return; var t = JSON.stringify(obj); NET.cls.forEach(function (c) { if (c.connected) try { c.publish(topic, t, { qos: 0, retain: !!retain }); } catch (e) {} }); }
   function netOn() { return !!(NET && NET.cls && NET.cls.some(function (c) { return c.connected; })); }
@@ -546,10 +613,10 @@
   window.addEventListener('online', function () { if (NET) relink(); });
   window.addEventListener('focus', function () { if (NET && !netOn()) relink(); });
   function netClose() { if (!NET) return; clearJoin(); clearInterval(NET.beatT); (NET.cls || []).forEach(function (c) { try { c.end(true); } catch (e) {} }); NET = null; document.title = baseTitle; }
-  function netPaint() { if (cur === 'room') paintRoom(); else if (cur === 'game' && G) { paintDock(); paintStrip(); } }
+  function netPaint() { if (cur === 'room') paintRoom(); else if (cur === 'game' && G) { paintDock(); paintStrip(); } paintWait(); paintLobbySheet(); }
   function storeRoom() {
     if (!NET) return;
-    if (isHost()) store(KEY_ROOM, { role: 'host', code: NET.code, name: NET.name, hs: NET.hs, seq: NET.seq, lobby: NET.lobby, G: G });
+    if (isHost()) store(KEY_ROOM, { role: 'host', code: NET.code, name: NET.name, hs: NET.hs, ep: NET.ep || 0, seq: NET.seq, lobby: NET.lobby, G: G });
     else store(KEY_ROOM, { role: 'guest', code: NET.code, name: NET.name });
   }
 
@@ -558,10 +625,13 @@
   function pubSoon() { if (!isHost() || pubT) return; pubT = setTimeout(function () { pubT = null; pubNow(); }, 0); }
   function pubNow() {
     if (!isHost()) return;
+    if (NET.hold && Date.now() < NET.hold) return;
     var on = {};
+    var w = NET.lobby.wait; if (w && w.length) NET.lobby.wait = w.filter(function (x) { return Date.now() - (NET.seen[x.dev] || x.ts || 0) < 120000; });
+    NET.lastPub = Date.now();
     NET.lobby.players.forEach(function (p) { on[p.dev] = isOn(p.dev); });
     NET.seq = (NET.seq || 0) + 1;
-    netSend(NTOPIC + NET.code + '/state', { v: 1, code: NET.code, hs: NET.hs, seq: NET.seq, lobby: NET.lobby, G: G, rej: NET.rej || null, on: on }, true);
+    netSend(NTOPIC + NET.code + '/state', { v: 1, code: NET.code, hs: NET.hs, ep: NET.ep || 0, seq: NET.seq, lobby: NET.lobby, G: G, rej: NET.rej || null, on: on, cl: (NET.chat || []).slice(-15) }, true);
   }
   function syncLobby() { if (!isHost()) return; NET.lobby.cat = S.cat; NET.lobby.timer = S.timer; NET.lobby.limit = S.limit; storeRoom(); pubSoon(); }
   function hostMsg(m) {
@@ -569,6 +639,12 @@
     var wasOn = isOn(m.dev); NET.seen[m.dev] = Date.now();
     var L = NET.lobby, p = L.players.filter(function (x) { return x.dev === m.dev; })[0];
     if (m.t === 'join' || m.t === 'here') {
+      if (!p && m.t === 'join' && G) {
+        if ((L.dec || []).indexOf(m.dev) > -1) { pubSoon(); return; }
+        L.wait = L.wait || [];
+        if (!L.wait.some(function (x) { return x.dev === m.dev; })) { L.wait.push({ dev: m.dev, name: cleanName(m.name), ts: Date.now() }); toast(cleanName(m.name) + ' wants to join'); buzz(20); storeRoom(); netPaint(); pubSoon(); }
+        return;
+      }
       if (!p && m.t === 'join' && !G) {
         if (L.players.length >= 8) return;
         L.players.push({ dev: m.dev, name: cleanName(m.name) }); toast(cleanName(m.name) + ' joined'); buzz(15);
@@ -608,18 +684,27 @@
   /* guest: follow the host's game */
   function guestMsg(st) {
     if (!st || st.v !== 1 || st.code !== NET.code || !st.lobby) return;
+    var sep = st.ep || 0;
+    if (sep < (NET.ep || 0)) return;
+    if (sep === (NET.ep || 0) && NET.hs && st.hs !== NET.hs && String(st.hs) < String(NET.hs)) return;
     if (st.hs === NET.hs && st.seq <= NET.lastSeq) return;
+    NET.ep = sep; chatMerge(st.cl);
     NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {};
     if (NET.jq && st.lobby.players.some(function (p) { return p.dev === DEV; })) clearJoin();
     clearTimeout(NET.noRoomT);
     if (!st.G) {
-      G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
+      NET.live = false; G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
       if (cur !== 'room') show('room'); else paintRoom();
       return;
     }
     if (!st.G.players.some(function (p) { return p.dev === DEV; })) {
-      netClose(); store(KEY_ROOM, null); G = null; show('online'); toast('That game started without you. Ask for a new room.'); return;
+      NET.live = true; G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
+      if ((st.lobby.dec || []).indexOf(DEV) > -1) { netClose(); store(KEY_ROOM, null); show('online'); toast('The host couldn’t add you to this game.'); return; }
+      if (cur !== 'room') show('room'); else paintRoom();
+      return;
     }
+    NET.live = false;
+    if (NET.jq) clearJoin();
     var prev = G, wasMine = prev && myTurn();
     var pr = prev && prev.rounds.length === st.G.rounds.length ? prev.rounds[prev.rounds.length - 1] : null;
     G = st.G;
@@ -707,7 +792,7 @@
   function createRoom() {
     var name = oName();
     netClose();
-    NET = { role: 'host', code: newCode(), name: name, hs: Math.random().toString(36).slice(2, 8), seq: 0, seen: {}, lobby: { players: [{ dev: DEV, name: name }], cat: S.cat, timer: S.timer, limit: S.limit } };
+    NET = { role: 'host', code: newCode(), name: name, hs: newHs(), ep: 0, fresh: true, seq: 0, seen: {}, lobby: { hd: DEV, players: [{ dev: DEV, name: name }], cat: S.cat, timer: S.timer, limit: S.limit } };
     G = null; storeRoom(); show('room');
     loadMqtt().then(netLink, function () { toast('Couldn’t go online. Check your connection.'); });
   }
@@ -725,7 +810,8 @@
     var rm = load(KEY_ROOM); if (!rm || !rm.code) return;
     if (rm.role === 'guest') { joinRoom(rm.code, rm.name); return; }
     netClose();
-    NET = { role: 'host', code: rm.code, name: rm.name, hs: Math.random().toString(36).slice(2, 8), seq: 0, seen: {}, lobby: rm.lobby };
+    NET = { role: 'host', code: rm.code, name: rm.name, hs: newHs(), ep: rm.ep || 0, seq: 0, seen: {}, lobby: rm.lobby };
+    if (NET.lobby && !NET.lobby.hd) NET.lobby.hd = DEV;
     G = rm.G || null;
     if (G) {
       if (G.over) { G = null; }
@@ -757,9 +843,9 @@
     $('[data-rnet]').classList.toggle('is-on', netOn());
     if (!L) { $('[data-rplayers]').innerHTML = ''; $('[data-rhost]').hidden = true; $('[data-rguest]').hidden = false; $('[data-rwait]').textContent = 'Connecting to room ' + NET.code + '…'; $('[data-ostart]').hidden = true; return; }
     var list = L.players.slice();
-    if (!host && !G && !list.some(function (p) { return p.dev === DEV; })) list.push({ dev: DEV, name: NET.name, joining: 1 });
+    if (!host && !G && !NET.live && !list.some(function (p) { return p.dev === DEV; })) list.push({ dev: DEV, name: NET.name, joining: 1 });
     $('[data-rplayers]').innerHTML = list.map(function (p, i) {
-      return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '"><i style="background:' + color(i) + '"></i><b>' + esc(p.name) + '</b><small>' + (i === 0 ? 'Host' : '') + (p.dev === DEV ? (i === 0 ? ' · you' : 'You') : '') + (p.joining ? ' · joining…' : '') + (isOn(p.dev) ? '' : ' · away') + '</small></li>';
+      return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '"><i style="background:' + color(i) + '"></i><b>' + esc(p.name) + '</b><small>' + (p.dev === (L.hd || L.players[0].dev) ? 'Host' : '') + (p.dev === DEV ? (p.dev === (L.hd || L.players[0].dev) ? ' · you' : 'You') : '') + (p.joining ? ' · joining…' : '') + (isOn(p.dev) ? '' : ' · away') + '</small></li>';
     }).join('');
     $('[data-rhost]').hidden = !host; $('[data-rguest]').hidden = host;
     if (host) {
@@ -770,8 +856,75 @@
     } else {
       $('[data-ostart]').hidden = true;
       var tl = function (a, v) { for (var i = 0; i < a.length; i++) if (a[i][0] === v) return a[i][1]; return v; };
-      $('[data-rwait]').textContent = (hostStale() ? hostName() + ' looks to be away. You are in the queue and will join as soon as they are back. ' : 'Waiting for ' + hostName() + ' to start. ') + B.catName(L.cat) + ' · timer ' + tl(TIMERS, L.timer) + ' · words per round ' + tl(LIMITS, L.limit) + '.';
+      $('[data-rwait]').textContent = NET.live ? 'A game is in progress. ' + hostName() + ' can add you, and you jump in on the next turn. You can chat while you wait.' : (hostStale() ? hostName() + ' looks to be away. You are in the queue and will join as soon as they are back. ' : 'Waiting for ' + hostName() + ' to start. ') + B.catName(L.cat) + ' · timer ' + tl(TIMERS, L.timer) + ' · words per round ' + tl(LIMITS, L.limit) + '.';
     }
+    paintWait(); paintChat();
+  }
+
+  /* ---------- waiting list, lobby sheet and chat ---------- */
+  function paintWait() {
+    var L = NET && NET.lobby, w = (L && L.wait) || [], host = isHost();
+    $$('[data-wl]').forEach(function (ul) {
+      ul.innerHTML = w.map(function (x) {
+        return '<li class="wi"><b>' + esc(x.name) + '</b><span>' + (host && G ? '<button class="btn" type="button" data-act="wadd" data-dev="' + esc(x.dev) + '">Add to game</button><button class="lnk" type="button" data-act="wno" data-dev="' + esc(x.dev) + '">Not now</button>' : '<small>waiting</small>') + '</span></li>';
+      }).join('');
+      var sec = ul.closest('[data-wlsec]'); if (sec) sec.hidden = !w.length;
+    });
+    paintBadge();
+  }
+  function paintBadge() {
+    var n = (NET && NET.unread || 0) + (isHost() && NET && NET.lobby && NET.lobby.wait ? NET.lobby.wait.length : 0);
+    $$('[data-bdg]').forEach(function (b) { b.hidden = !n; b.textContent = n > 9 ? '9+' : n; });
+  }
+  function paintLobbySheet() {
+    var sh = $('[data-sheet="lobby"]'); if (!sh || sh.hidden || !NET || !NET.lobby) return;
+    var L = NET.lobby, hd = L.hd || L.players[0].dev;
+    $('[data-lcode]').textContent = NET.code;
+    $('[data-lplayers]').innerHTML = L.players.map(function (p, i) {
+      return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '"><i style="background:' + color(i) + '"></i><b>' + esc(p.name) + '</b><small>' + (p.dev === hd ? 'Host' : '') + (p.dev === DEV ? (p.dev === hd ? ' · you' : 'You') : '') + (isOn(p.dev) ? '' : ' · away') + '</small></li>';
+    }).join('');
+  }
+  function chatOpen() { var sh = $('[data-sheet="lobby"]'); return cur === 'room' || (sh && !sh.hidden); }
+  function chatIn(m, quiet) {
+    if (!NET || !m || !m.id || !m.txt || !m.dev) return;
+    NET.chat = NET.chat || [];
+    for (var i = 0; i < NET.chat.length; i++) if (NET.chat[i].id === m.id) return;
+    NET.chat.push({ id: String(m.id).slice(0, 40), dev: String(m.dev).slice(0, 20), name: String(m.name || 'Player').slice(0, 18), txt: String(m.txt).slice(0, 300), ts: +m.ts || Date.now() });
+    NET.chat.sort(function (a, b) { return a.ts - b.ts; });
+    if (NET.chat.length > 60) NET.chat.shift();
+    if (!quiet && m.dev !== DEV && !chatOpen()) NET.unread = (NET.unread || 0) + 1;
+    if (!quiet) { paintChat(); paintBadge(); }
+  }
+  function chatMerge(arr) { if (!arr || !arr.length) return; var n = NET.chat ? NET.chat.length : 0; arr.forEach(function (m) { chatIn(m, true); }); if (NET.chat && NET.chat.length !== n) paintChat(); }
+  function paintChat() {
+    if (!NET) return;
+    var list = NET.chat || [];
+    $$('[data-chatlog]').forEach(function (el) {
+      if (!el.offsetParent && el.getClientRects().length === 0) return;
+      var near = el.scrollHeight - el.scrollTop - el.clientHeight < 60;
+      el.innerHTML = list.length ? list.map(function (x) { return '<div class="cm' + (x.dev === DEV ? ' is-me' : '') + '"><small>' + (x.dev === DEV ? 'You' : esc(x.name)) + '</small><p>' + esc(x.txt) + '</p></div>'; }).join('') : '<p class="cm__e">No messages yet. Say hi.</p>';
+      if (near || !el._seen) el.scrollTop = el.scrollHeight; el._seen = true;
+    });
+  }
+  function chatSend(txt) {
+    if (!NET) return; txt = String(txt || '').replace(/\s+/g, ' ').trim().slice(0, 300); if (!txt) return;
+    var now = Date.now(); if (now - (NET.lastChat || 0) < 600) return; NET.lastChat = now;
+    var m = { id: DEV + now.toString(36) + Math.random().toString(36).slice(2, 4), dev: DEV, name: NET.name, txt: txt, ts: now };
+    netSend(NTOPIC + NET.code + '/chat', m); chatIn(m);
+  }
+  function addMid(dev) {
+    if (!isHost() || !G || G.over) return;
+    var L = NET.lobby, w = (L.wait || []).filter(function (x) { return x.dev === dev; })[0]; if (!w) return;
+    if (G.players.length >= 8) { toast('The room is full (8 players).'); return; }
+    L.wait = L.wait.filter(function (x) { return x.dev !== dev; });
+    L.players.push({ dev: w.dev, name: w.name });
+    G.players.push({ id: G.players.length, name: w.name, dev: w.dev });
+    NET.seen[dev] = Date.now(); save(); toast(w.name + ' added to the game'); paintGame(); netPaint();
+  }
+  function declineWait(dev) {
+    if (!isHost()) return; var L = NET.lobby;
+    L.wait = (L.wait || []).filter(function (x) { return x.dev !== dev; }); L.dec = (L.dec || []).concat(dev);
+    storeRoom(); pubSoon(); netPaint();
   }
 
   /* ---------- events ---------- */
@@ -801,6 +954,9 @@
         $$('[data-ho]').forEach(function (b) { b.hidden = !!(NET && !isHost()); });
         $('[data-act="home"]', $('[data-sheet="menu"]')).textContent = NET ? (isHost() ? 'Leave (the room stays saved on this phone)' : 'Leave the room') : 'Leave (your game is saved)';
         openSheet('menu'); break;
+      case 'lobby': if (!NET) break; NET.unread = 0; openSheet('lobby'); paintLobbySheet(); paintWait(); paintChat(); break;
+      case 'wadd': addMid(t.getAttribute('data-dev')); break;
+      case 'wno': declineWait(t.getAttribute('data-dev')); break;
       case 'online': show('online'); break;
       case 'ocreate': createRoom(); break;
       case 'ojoin': joinRoom($('[data-ocode]').value, oName()); break;
@@ -828,7 +984,7 @@
       case 'next': if (NET && !isHost()) break; nextRound(); break;
       case 'nextcat': openCats('round'); break;
       case 'again':
-        if (NET) { if (!isHost()) break; ov('final', false); G = null; storeRoom(); pubNow(); show('room'); break; }
+        if (NET) { if (!isHost()) break; ov('final', false); G = null; var Lw = NET.lobby; (Lw.wait || []).forEach(function (w) { if (Lw.players.length < 8) Lw.players.push({ dev: w.dev, name: w.name }); }); Lw.wait = []; Lw.dec = []; storeRoom(); pubNow(); show('room'); break; }
         ov('final', false); store(KEY_GAME, null); G = null; show('setup'); break;
       case 'force': if (pending != null) getList(R().cat).then(function (L) { tryAdd(pending, L, true); }, function () { tryAdd(pending, null, true); }); break;
       case 'retry': msg(''); $('[data-in]').select(); focusIn(); break;
@@ -841,6 +997,7 @@
     if (t.hasAttribute('data-in') && $('[data-msg]').innerHTML) { msg(''); pending = null; }
   });
   $('[data-entry]').addEventListener('submit', function (ev) { ev.preventDefault(); submit(); });
+  document.addEventListener('submit', function (ev) { var f = ev.target; if (f && f.hasAttribute && f.hasAttribute('data-chatform')) { ev.preventDefault(); var i = f.querySelector('[data-chatin]'); chatSend(i.value); i.value = ''; } });
   document.addEventListener('keydown', function (ev) {
     if (ev.key === 'Escape') { if (!$$('[data-sheet]').every(function (s) { return s.hidden; })) { closeSheets(); ev.preventDefault(); } }
   });

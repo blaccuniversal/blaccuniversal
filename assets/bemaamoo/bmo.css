@@ -306,3 +306,26 @@ body[data-locked] .scr,body[data-locked] .sheet,body[data-locked] .ov{display:no
 .gate__or{width:100%;display:flex;align-items:center;gap:12px;margin:12px 0 14px;color:var(--tx3);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
 .gate__or::before,.gate__or::after{content:"";flex:1;height:1px;background:var(--bd2)}
 .freebadge{position:fixed;left:50%;top:calc(78px + env(safe-area-inset-top));transform:translateX(-50%);z-index:90;padding:7px 12px;border:1px solid rgba(255,122,89,.5);border-radius:2px;background:rgba(0,0,0,.88);color:#ffb3a7;font-size:12.5px;font-weight:600;white-space:nowrap;pointer-events:none}
+
+/* online: waiting list, chat, lobby sheet */
+.ic--b{position:relative}
+.bdg{position:absolute;top:5px;right:3px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#fff;color:#000;font:700 11px/17px 'Open Sans',system-ui,sans-serif;text-align:center;font-style:normal}
+.wl{margin:0;padding:0;list-style:none;border-top:1px solid var(--bd)}
+.wi{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:56px;border-bottom:1px solid var(--bd)}
+.wi b{font-weight:600;font-size:16px}
+.wi>span{display:flex;align-items:center;gap:6px}
+.wi .btn{min-height:40px;padding:0 14px;font-size:14px}
+.wi small{color:var(--tx3);font-size:12.5px}
+.chat{display:flex;flex-direction:column;border:1px solid var(--bd);border-radius:2px;background:var(--bg2);min-height:0}
+.chat__log{height:200px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;overscroll-behavior:contain}
+.sheet__card--lobby .chat{flex:1;min-height:180px}
+.sheet__card--lobby .chat__log{flex:1;height:auto}
+.cm{max-width:82%;align-self:flex-start}
+.cm small{display:block;margin:0 0 2px;font-size:11.5px;color:var(--tx3)}
+.cm p{margin:0;padding:8px 11px;background:#161616;border:1px solid var(--bd2);border-radius:2px;font-size:14.5px;line-height:1.4;overflow-wrap:anywhere}
+.cm.is-me{align-self:flex-end;text-align:right}
+.cm.is-me p{background:#fff;color:#000;border-color:#fff;text-align:left}
+.cm__e{margin:auto;color:var(--tx3);font-size:13.5px}
+.chat__f{display:flex;gap:8px;padding:8px;border-top:1px solid var(--bd)}
+.chat__f input{flex:1;min-width:0;height:44px;padding:0 12px;background:#000;border:1px solid var(--bd2);border-radius:2px;color:#fff;font:inherit;font-size:16px}
+.chat__f .btn{min-height:44px;padding:0 18px}
