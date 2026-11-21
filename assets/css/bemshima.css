@@ -150,3 +150,27 @@ body.bm-player .hg{bottom:calc(100px + env(safe-area-inset-bottom))}
 .bm .mus-hero.show-x .mus-x,.bm .mus-x:focus-visible{opacity:1;transform:none;pointer-events:auto}
 .bm .mus-card__text{padding-right:14px}
 @media (max-width:760px){.bm .mus-x{top:-46px;right:14px;transform:translateY(6px)}.bm .mus-hero.show-x .mus-x{transform:none}.bm .mus-card__text{padding-right:12px}}
+
+/* BLACC finish: square edges, hairlines, tracked caps, tidy alignment */
+.bm .mus-card{border-radius:2px!important;border:1px solid rgba(255,255,255,.22)!important;background:rgba(14,14,15,.72)!important;box-shadow:0 18px 50px rgba(0,0,0,.55)!important}
+.bm .mus-card__text{grid-template-columns:auto auto auto minmax(0,1fr) minmax(180px,1.1fr);grid-template-areas:"prev cover next head line" "prev cover next head time";column-gap:4px;row-gap:6px;padding:14px 22px 14px 12px;align-items:center}
+.bm .mus-card__text>.mus-head,.bm .mus-card__text .mus-line{margin:0}
+.bm .mus-card__text>.mus-head{padding:0 28px 0 18px;margin-left:12px;border-left:1px solid rgba(255,255,255,.16);align-self:stretch;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.bm .mus-card .mus-title{font-size:clamp(16px,1.5vw,19px);font-weight:600;letter-spacing:-.01em;line-height:1.15}
+.bm .mus-by{margin:4px 0 0;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#9a9a9a}
+.bm .mus-line{height:2px;border-radius:0;background:rgba(255,255,255,.2);align-self:end}
+.bm .mus-line [data-knob],.bm .mus-line i{border-radius:0}
+.bm .mus-time{align-self:start;display:flex;justify-content:space-between;font-size:10.5px;letter-spacing:.1em;color:#9a9a9a;font-variant-numeric:tabular-nums}
+.bm .mus-nav .icon-btn{width:36px;height:36px;border-radius:0}
+.bm .mus-card .mus-cover{width:44px;height:44px}
+.bm .mus-x{border-radius:2px;background:rgba(14,14,15,.75);border-color:rgba(255,255,255,.22);width:32px;height:32px;top:-40px}
+.bm-sheet__p{border-radius:2px}.bm-sheet__x{border-radius:2px}
+.bm-sheet dt{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;align-self:center}
+@media (max-width:760px){
+  .bm .mus-hero{padding:0 10px}
+  .bm .mus-card__text{grid-template-columns:auto auto auto minmax(0,1fr);grid-template-areas:"prev cover next head" "line line line line" "time time time time";column-gap:2px;row-gap:6px;padding:12px 14px 12px 6px}
+  .bm .mus-card__text>.mus-head{margin-left:8px;padding:0 0 0 14px}
+  .bm .mus-card__text .mus-line{margin:6px 0 0 8px;width:calc(100% - 8px)}
+  .bm .mus-time{margin-left:8px}
+  .bm .mus-x{top:-38px;right:10px}
+}
