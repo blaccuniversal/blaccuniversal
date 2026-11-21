@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611211830, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611211900, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -1195,6 +1195,7 @@ function pqtMain() {
     var nx = nextPlanned();
     return prog + '<p class="hc-note hc-lead">Quests Feud is done. The round totals are on the screen.</p><button class="pbtn pbtn--white pbtn--lg pbtn--block" data-gonext type="button">' + (nx ? 'Start round ' + (H.round + 1) + ' →' : 'Finish game · show winner') + '</button>';
   }
+  function skipBtn() { return (H.round > 0 && !H.ended && H.roundType) ? '<button class="hc-skip" type="button" data-m="skip">' + (nextPlanned() ? 'Skip this round · go to round ' + (H.round + 1) : 'Skip this round · finish game') + '</button>' : ''; }
   function renderQuiz() {
     if (isFresh()) return '<div class="hc-fresh"><b>No rounds yet</b><span>Tap “Set up a game” above. Your rounds show up here once the game is set up.</span></div>';
     var html = renderQuizInner();
@@ -1311,9 +1312,9 @@ function pqtMain() {
         '<div class="hc-wset"' + (H.view === 'words' ? ' hidden' : '') + '><label><span>Team</span><select class="hc-sel" data-wteam>' + teamOpts(w.team) + '</select></label><div class="hc-wset__t"><span>Turn</span>' + [30000, 60000, 90000, 120000].map(function (ms) { return '<button class="pbtn pbtn--sm' + (H.timer.total === ms ? ' is-on' : '') + '" data-tset="' + ms + '" type="button">' + (ms < 120000 ? ms / 1000 + 's' : '2m') + '</button>'; }).join('') + '</div><label class="hc-wset__b"><input type="checkbox" data-buzzcost' + (w.buzzCost ? ' checked' : '') + '> Buzz costs a point</label></div>' +
         (c ? '<div class="card card--white wcard"><p class="eyebrow" style="color:#666">Only the clue giver sees this</p><div class="wcard__word">' + esc(c.w) + '</div><ul class="wcard__x">' + c.x.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>' : '<p class="mute">Add words in the Cards tab.</p>') +
         '<div class="w-actions"><button class="pbtn pbtn--good pbtn--lg" data-w="ok">✓ Got it</button><button class="pbtn pbtn--lg" data-w="skip">Skip</button><button class="pbtn pbtn--bad pbtn--lg" data-w="buzz">✕ Buzz</button></div>' +
-        '<div class="w-stats"><span>' + esc(t ? t.name : '') + '</span><span>✓ ' + w.correct + ' · Skip ' + w.skipped + ' · ✕ ' + w.buzzed + '</span></div>';
+        '<div class="w-stats"><span>' + esc(t ? t.name : '') + '</span><span>✓ ' + w.correct + ' · Skip ' + w.skipped + ' · ✕ ' + w.buzzed + '</span></div>' + skipBtn();
     } else if (tab === 'answers' && H.fm && H.roundType === 'answers') {
-      $('[data-fpane]').innerHTML = renderFM();
+      $('[data-fpane]').innerHTML = renderFM() + skipBtn();
     } else if (tab === 'answers') {
       var b = BOARDS[H.feud.qi], f = H.feud, bank = feudBank();
       $('[data-fpane]').innerHTML = !b ? '<p class="mute">Add questions in the Cards tab.</p>' :
@@ -1328,7 +1329,7 @@ function pqtMain() {
         '<button class="pbtn pbtn--sm" data-fall>Reveal rest</button></div>' +
         '<h2 style="margin:18px 0 8px">' + (f.awardedTo != null ? 'Awarded ' + f.awardedPts + ' to ' + esc(H.teams[f.awardedTo] ? H.teams[f.awardedTo].name : '') : 'Bank: ' + bank + ' ÷ ' + FEUD_DIV + ' = ' + fp(bank) + ' — give to') + '</h2>' +
         (f.awardedTo != null ? '' : '<div class="hc-row">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-faw="' + i + '"' + (bank ? '' : ' disabled') + '><i style="width:8px;height:8px;border-radius:50%;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '</div>') +
-        '<p class="hc-note">Tap an answer to reveal it on the screen (tap again to hide). Points count towards the bank until you award them. “Reveal rest” shows the remaining answers without adding points.</p>';
+        '<p class="hc-note">Tap an answer to reveal it on the screen (tap again to hide). Points count towards the bank until you award them. “Reveal rest” shows the remaining answers without adding points.</p>' + skipBtn();
     } else if (tab === 'quiz') {
       $('[data-qpane]').innerHTML = renderQuiz(); var qh = $('[data-pane="quiz"] h2'); if (qh) qh.textContent = (QA_TYPES[H.roundType] || H.roundType === 'star' || H.roundType === 'race' || H.roundType === 'pw') && !H.ended ? GNAME[H.roundType] : 'Games';
       paintRace();
