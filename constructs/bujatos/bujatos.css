@@ -496,3 +496,4 @@ body.is-lock .cxg-dock,body.is-lock .obar{display:none!important}
 .more__l li{min-height:48px}
 @media (max-width:420px){.dish__img{width:96px}}
 .dish .price--ask{font-size:11px;letter-spacing:.16em}
+.evgrid{grid-template-columns:1fr}
