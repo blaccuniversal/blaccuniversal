@@ -496,7 +496,7 @@ body.is-lock .cxg-dock,body.is-lock .obar{display:none!important}
 .more__l li{min-height:48px}
 @media (max-width:420px){.dish__img{width:96px}}
 .dish .price--ask{font-size:11px;letter-spacing:.16em}
-.evgrid{grid-template-columns:1fr}
+.evgrid{grid-template-columns:1.2fr 1fr;align-items:end}
 .hero__plate img{transform:none;animation:spin4 70s linear infinite}
 @keyframes spin4{to{transform:rotate(360deg)}}
 
@@ -576,3 +576,26 @@ a.ct:hover{border-color:var(--yel);background:rgba(255,193,7,.05)}
 .sp__d{display:flex;align-items:center;gap:10px;font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--yel)}
 .sp__d em{font-style:normal;padding:3px 8px;border-radius:2px;background:var(--red);color:#fff;letter-spacing:.2em;font-size:9.5px}
 .sp__n{margin:0;font-size:clamp(24px,3.6vw,38px);font-weight:300;letter-spacing:-.03em;line-height:1.15}
+
+/* tighten pass */
+.hero{padding-bottom:clamp(44px,6vw,80px)}
+.menu,.deals,.feed,.spec,.events,.mani{padding-top:clamp(48px,6vw,84px);padding-bottom:clamp(48px,6vw,84px)}
+.feed{padding-bottom:clamp(40px,5vw,64px)}
+.head{margin-bottom:clamp(20px,3vw,34px)}
+.lead{margin-top:16px}
+.spec .head,.events .lead{margin-bottom:0}
+.mtrack .mcard{height:clamp(360px,46vw,540px)}
+@media (max-width:760px){.mtrack .mcard{height:400px}}
+.ticket{padding:22px 22px}
+.ticket__s{margin:6px 0 16px}
+.ft{padding:44px 0 calc(110px + env(safe-area-inset-bottom))}
+.visit{padding-top:clamp(48px,6vw,84px);padding-bottom:clamp(48px,6vw,84px)}
+.wf__info{padding-bottom:clamp(44px,6vw,80px)}
+@media (max-width:420px){
+  .ct{display:grid;grid-template-columns:18px 1fr;column-gap:9px;row-gap:6px;align-items:center;padding:13px 14px}
+  .ct__t{display:contents}
+  .ct__i{width:18px;height:18px;border:0;border-radius:0}
+  .ct__i svg{width:16px;height:16px}
+  .ct__t small{grid-column:2;grid-row:1}
+  .ct__t b,.ct .chips{grid-column:1/-1;grid-row:2;margin:0}
+}
