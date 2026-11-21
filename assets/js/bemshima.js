@@ -12,7 +12,18 @@
   var x = document.createElement('button');
   x.type = 'button'; x.className = 'mus-x'; x.setAttribute('aria-label', 'Close player');
   x.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-  card.appendChild(x);
+  hero.appendChild(x);
+  var tm;
+  function place() { var r = card.getBoundingClientRect(); x.style.right = Math.max(0, hero.getBoundingClientRect().right - r.right) + 'px'; }
+  window.addEventListener('resize', place);
+  function showX(keep) { place(); hero.classList.add('show-x'); clearTimeout(tm); if (!keep) tm = setTimeout(function () { hero.classList.remove('show-x'); }, 3500); }
+  card.addEventListener('mouseenter', function () { showX(true); });
+  x.addEventListener('mouseenter', function () { showX(true); });
+  card.addEventListener('mouseleave', function () { showX(false); });
+  x.addEventListener('mouseleave', function () { showX(false); });
+  card.addEventListener('click', function (e) { if (e.target.closest('button,input,[data-seek]')) { if (hero.classList.contains('show-x')) showX(false); return; } showX(false); });
+  card.addEventListener('touchstart', function () { showX(false); }, { passive: true });
+  x.addEventListener('focus', function () { showX(true); });
   function up(on) { hero.classList.toggle('is-up', on); document.body.classList.toggle('bm-player', on); }
   new MutationObserver(function () { if (card.classList.contains('is-playing')) up(true); }).observe(card, { attributes: true, attributeFilter: ['class'] });
   x.addEventListener('click', function () {
