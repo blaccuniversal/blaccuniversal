@@ -51,8 +51,17 @@
 
   /* ---------- screens ---------- */
   var cur = 'home';
+  /* keep the screen awake during a room or game, so a locked phone doesn't freeze play for everyone */
+  var wl = null;
+  function wake() {
+    var want = (cur === 'game' || (cur === 'room' && NET)) && !document.hidden;
+    if (!want) { if (wl) { try { wl.release(); } catch (e) {} wl = null; } return; }
+    if (wl || !navigator.wakeLock) return;
+    navigator.wakeLock.request('screen').then(function (l) { wl = l; l.addEventListener('release', function () { if (wl === l) wl = null; }); if (!(cur === 'game' || cur === 'room')) wake(); }, function () {});
+  }
+  document.addEventListener('visibilitychange', function () { if (!document.hidden) wake(); });
   function show(name) {
-    cur = name;
+    cur = name; setTimeout(wake, 0);
     $$('[data-scr]').forEach(function (s) { s.hidden = s.getAttribute('data-scr') !== name; });
     document.body.classList.toggle('in-game', name === 'game');
     window.scrollTo(0, 0);
@@ -587,6 +596,7 @@
       else {
         sendIn({ t: 'here', name: me.name });
         if (!me.lobby || (!G && !me.lobby.players.some(function (p) { return p.dev === DEV; }))) sendIn({ t: 'join', name: me.name });
+        failoverCheck(); autoReclaim();
       }
       netPaint();
     }, 3000);
@@ -595,12 +605,20 @@
   function failoverCheck() {
     if (!NET || isHost() || !NET.lobby || !netOn()) return;
     if (G && G.over) return;   // nothing left to run, and a stale copy must never be re-published over the results
-    var r = G ? R() : null, lim = (r && r.run && !r.done && G.settings.timer) ? 8000 : (r && r.done ? 45000 : 11000), now = Date.now();
+    var r = G ? R() : null, lim = (r && r.done) ? 45000 : 15000, now = Date.now();   // a stand-in steps in after 15s of silence (45s on a scoreboard)
     if (now - Math.max(NET.gotAt || 0, NET.upAt || 0) < lim) return;
     var L = NET.lobby, hd = L.hd || (L.players[0] || {}).dev;
     if (!L.players.some(function (p) { return p.dev === DEV; })) return;
     var cands = L.players.filter(function (p) { return p.dev !== hd && (p.dev === DEV || now - ((NET.gseen || {})[p.dev] || 0) < 9000); });
+    var cr = L.cr; cands.sort(function (a, b) { return (b.dev === cr) - (a.dev === cr); });   // the creator always comes first
     if (cands.length && cands[0].dev === DEV) promote();
+  }
+  /* the creator owns the room: as soon as they are back, hosting returns to them, with no button to press */
+  function autoReclaim() {
+    var L = NET && NET.lobby;
+    if (!L || !L.so || document.hidden || !canReclaim() || Date.now() - (NET.gotAt || 0) > 6000) return;
+    if (G && !G.over && R().done && cur !== 'game') return;
+    promote(true);
   }
   /* turn limit: a player who does not play within the limit is skipped (the host keeps the clock; everyone sees the warning) */
   function syncTurn() {
@@ -658,9 +676,9 @@
     var old = (L.players.filter(function (p) { return p.dev === L.hd; })[0] || L.players[0] || {}).name || 'The host';
     me.role = 'host'; me.ep = (me.ep || 0) + 1; me.hs = newHs(); me.seq = (me.lastSeq || 0) + 1; me.hold = 0; me.lastPub = 0; me.rej = null;
     me.seen = {}; L.players.forEach(function (p) { me.seen[p.dev] = Date.now(); });
-    me.seen[L.hd] = 0; L.hd = DEV;
+    me.seen[L.hd] = 0; L.hd = DEV; L.so = back ? 0 : 1;   // so = a stand-in is hosting for the creator
     me.cls.forEach(function (c) { if (c.connected) try { c.subscribe(T + 'j/+'); } catch (e) {} });
-    storeRoom(); toast(back ? 'You are hosting again.' : old + ' went quiet. You are hosting now.'); buzz(25);
+    storeRoom(); toast(back ? 'You are hosting again.' : old + ' went quiet. You are hosting until they are back.'); buzz(25);
     if (G && !G.over) { var r = R(); if (r.done) roundOver(); else if (!r.run) { running = false; readyScreen(); } else { running = true; startClock(); } }
     pubNow(); netPaint(); if (cur === 'game') paintGame();
   }
@@ -674,8 +692,8 @@
     me.role = 'guest'; me.lastSeq = 0; me.ep = 0; me.hs = ''; me.gotAt = 0; me.seen = null; me.lobby = st.lobby;
     storeRoom();
     var h = (st.lobby.players.filter(function (p) { return p.dev === st.lobby.hd; })[0] || {}).name || 'another player';
-    toast('Hosting moved to ' + h);
-    guestMsg(st);
+    toast(st.lobby.so ? h + ' is hosting for now' : 'Hosting moved to ' + h);
+    guestMsg(st); autoReclaim();
   }
   function netSend(topic, obj, retain) { if (!NET || !NET.cls) return; var t = JSON.stringify(obj); NET.cls.forEach(function (c) { if (c.connected) try { c.publish(topic, t, { qos: 0, retain: !!retain }); } catch (e) {} }); }
   function netOn() { return !!(NET && NET.cls && NET.cls.some(function (c) { return c.connected; })); }
@@ -917,7 +935,7 @@
     if (sep === (NET.ep || 0) && NET.hs && st.hs !== NET.hs && String(st.hs) < String(NET.hs)) return;
     if (st.hs === NET.hs && st.seq <= NET.lastSeq) return;
     NET.ep = sep; chatMerge(st.cl); NET.turnEnds = st.td != null ? Date.now() + st.td : 0;
-    NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {}; NET.vq = st.vq || null; NET.vs = st.vs || null; paintVq();
+    NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {}; NET.vq = st.vq || null; NET.vs = st.vs || null; paintVq(); setTimeout(autoReclaim, 0);
     if (NET.jq && st.lobby.players.some(function (p) { return p.dev === DEV; })) clearJoin();
     clearTimeout(NET.noRoomT);
     if (!st.G) {
