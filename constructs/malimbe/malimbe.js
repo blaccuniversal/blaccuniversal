@@ -34,12 +34,39 @@ ROOMS.forEach((r,i)=>{
   rail.appendChild(el);
 });
 const bento=document.getElementById('bento');
+bento.className='cascade';
 SPACES.forEach(s=>{
-  const el=document.createElement('div'); el.className='frame rv '+s.cls;
-  el.innerHTML=`<img src="${s.src}" alt="${s.label} render" loading="lazy"><span class="tag mono">${s.label}</span>`;
-  el.addEventListener('click',()=>openLB(ALL.indexOf(s)));
+  const el=document.createElement('div'); el.className='frame cc';
+  el.innerHTML=`<img src="${s.src}" alt="${s.label} render" loading="lazy" draggable="false"><span class="tag mono">${s.label}</span>`;
   bento.appendChild(el);
 });
+(function(){
+  const cards=[].slice.call(bento.children), bd=document.getElementById('bdots'), n=cards.length;
+  let cur=0,dir=1,hold=0,vis=false,x0=null,moved=false;
+  bd.innerHTML=cards.map(()=>'<button type="button" aria-label="Show image"></button>').join('');
+  const ds=[].slice.call(bd.children); ds.forEach((d,i)=>d.addEventListener('click',()=>{hold=Date.now()+9000;go(i)}));
+  function lay(){
+    const w=bento.clientWidth, step=w<720?w*.17:w*.2;
+    cards.forEach((c,i)=>{const d=i-cur,ad=Math.abs(d);
+      c.style.transform=`translateX(${d*step}px) scale(${1-ad*.09}) `;
+      c.style.zIndex=String(20-ad);
+      c.style.opacity=ad>2?0:1-ad*.18;
+      c.style.filter=ad?`brightness(${1-ad*.2})`:'none';
+      c.style.pointerEvents=ad>2?'none':'auto';
+      c.classList.toggle('is-c',!d);});
+    ds.forEach((d,k)=>d.classList.toggle('on',k===cur));
+  }
+  function go(i){cur=Math.max(0,Math.min(n-1,i));lay()}
+  cards.forEach((c,i)=>c.addEventListener('click',()=>{if(moved)return;hold=Date.now()+9000;if(i===cur)openLB(ALL.indexOf(SPACES[i]));else go(i)}));
+  bento.addEventListener('pointerdown',e=>{x0=e.clientX;moved=false;hold=Date.now()+9000});
+  window.addEventListener('pointerup',e=>{if(x0===null)return;const dx=e.clientX-x0;x0=null;if(Math.abs(dx)>36){moved=true;go(cur+(dx<0?1:-1));setTimeout(()=>moved=false,60)}});
+  bento.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+  bento.tabIndex=0; bento.setAttribute('aria-label','Spaces gallery');
+  window.addEventListener('resize',lay);
+  if('IntersectionObserver' in window)new IntersectionObserver(en=>{vis=en[0].isIntersecting},{threshold:.4}).observe(bento);else vis=true;
+  if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(()=>{if(!vis||document.hidden||Date.now()<hold)return;let k=cur+dir;if(k>=n||k<0){dir=-dir;k=cur+dir}go(k)},4200);
+  lay();
+})();
 const step=()=>Math.min(rail.clientWidth*0.8,640);
 document.getElementById('railPrev').onclick=()=>rail.scrollBy({left:-step(),behavior:'smooth'});
 document.getElementById('railNext').onclick=()=>rail.scrollBy({left:step(),behavior:'smooth'});
