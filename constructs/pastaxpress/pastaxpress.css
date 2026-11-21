@@ -694,3 +694,18 @@ a.ct:hover{border-color:var(--acc);background:rgba(244,177,60,.05)}
 @media (max-width:860px){.wf__stage{height:auto;min-height:0}#map{height:min(96vw,400px)}}
 .dslider .mtrack{align-items:flex-start}
 .dslider .deal img{aspect-ratio:16/8}
+.brand__word{height:40px}
+
+/* tightest pass */
+.menu,.deals,.feed{padding:clamp(40px,5vw,64px) 0}
+.mani,.spec,.events,.visit{padding:clamp(36px,4.5vw,60px) 0}
+.head{margin-bottom:clamp(14px,2vw,22px)}
+.kick{margin-bottom:12px}
+.h2{font-size:clamp(30px,4.4vw,52px)}
+.h1{font-size:clamp(44px,6.6vw,92px)}
+.hero{padding-bottom:clamp(16px,2.5vw,32px)}
+.wf__info{padding-bottom:clamp(32px,4vw,56px)}
+.filters{margin-bottom:12px}
+.sp__tabs{margin-bottom:8px}
+@media (max-width:760px){.dslider .deal__b{padding:14px 16px}.ticket{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}}
+.dslider .mtrack{flex:none}

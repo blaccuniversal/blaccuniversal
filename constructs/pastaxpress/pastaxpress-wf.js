@@ -183,7 +183,7 @@ function drawLodge(t){
   ctx.restore();
   ctx.beginPath();ctx.arc(q.x,q.y,3.2,0,7);ctx.fillStyle='#fff';ctx.fill();
   ctx.beginPath();ctx.arc(q.x,q.y,6,0,7);ctx.strokeStyle='#c9372c';ctx.lineWidth=1.5;ctx.stroke();
-  ctx.letterSpacing='3px';ctx.textAlign='center';ctx.font='600 11px "Open Sans",sans-serif';ctx.fillStyle='#2e0d0d';ctx.fillText('PASTA XPRESS',q.x,q.y+26);
+  ctx.letterSpacing='3px';ctx.textAlign='center';ctx.font='600 11px "Open Sans",sans-serif';ctx.fillStyle='#2e0d0d';ctx.fillText('PASTAXPRESS',q.x,q.y+26);
 }
 function drawCompass(t){
   const u=W2S(state.userW), R=mobile()?62:78;
