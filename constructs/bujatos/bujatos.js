@@ -126,7 +126,7 @@
   });
 
   /* feed */
-  var POSTS = [['p-specials', 'Our special meals, Monday to Saturday'], ['p-respect', 'Respect yourself. Eat good jollof!'], ['p-jollof', 'Bujatos Jollof small plate, ₦3k'], ['p-combo', 'We didn’t invent the shawarma combo, but we perfected it'], ['p-chicken', 'Executive plate: chicken and chips, ₦5k'], ['p-spagh', 'Stir-fried spagh, worth the walk over, ₦3k'], ['p-yogurt', 'Strawberry yogurt drink, ₦2,500'], ['p-ontime', 'Food that actually shows up on time'], ['p-barqly-jollof', 'Jollof, done right, on Barqly'], ['p-barqly-stirfry', 'Your stir-fry combo, for less, on Barqly'], ['p-barqly-free', 'Free delivery on your first Barqly order']];
+  var POSTS = [['p-respect', 'Respect yourself. Eat good jollof!'], ['p-jollof', 'Bujatos Jollof small plate, ₦3k'], ['p-combo', 'We didn’t invent the shawarma combo, but we perfected it'], ['p-chicken', 'Executive plate: chicken and chips, ₦5k'], ['p-spagh', 'Stir-fried spagh, worth the walk over, ₦3k'], ['p-yogurt', 'Strawberry yogurt drink, ₦2,500'], ['p-ontime', 'Food that actually shows up on time'], ['p-barqly-jollof', 'Jollof, done right, on Barqly'], ['p-barqly-stirfry', 'Your stir-fry combo, for less, on Barqly'], ['p-barqly-free', 'Free delivery on your first Barqly order']];
   var rail = $('[data-rail]');
   rail.innerHTML = POSTS.map(function (p) { return '<button class="post" type="button" data-zoom="' + IMG + p[0] + '.webp"><img src="' + IMG + p[0] + '.webp" alt="' + p[1] + '" loading="lazy"></button>'; }).join('');
   var prev = $('[data-go="-1"]'), next = $('[data-go="1"]');
