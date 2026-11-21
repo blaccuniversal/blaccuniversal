@@ -547,3 +547,16 @@ a.ct:hover{border-color:var(--yel);background:rgba(255,193,7,.05)}
 .dslider .deal__k{max-width:260px;font-size:16px}
 .dslider .deal__p b{font-size:36px}
 .dslider .mdots{margin-top:16px}
+
+/* more tab */
+.more{margin-top:0;padding-top:0;border-top:0}
+.more__h{margin-bottom:16px}
+.more__l{grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:980px){.more__l{grid-template-columns:1fr 1fr}}
+.more__l li{min-height:60px;padding:8px 8px 8px 14px;border:1px solid var(--ln);border-radius:2px;background:var(--bg2)}
+.more__l li span:first-child{font-size:14.5px;line-height:1.25}
+.more__l .add{width:38px;height:38px;padding:0;font-size:0;gap:0;border-radius:2px}
+.more__l .add svg{width:16px;height:16px}
+.more__l .step{height:38px}
+.more__l .step button{width:30px;height:38px}
+.more__l .step b{min-width:16px;font-size:14px}

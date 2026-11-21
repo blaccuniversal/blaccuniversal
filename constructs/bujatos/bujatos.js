@@ -54,11 +54,12 @@
 
   var dishesEl = $('[data-dishes]'), moreEl = $('[data-more]'), moreWrap = $('[data-more-wrap]');
   function renderMenu() {
-    dishesEl.innerHTML = DISHES.filter(function (d) { return filter === 'all' || d.cat === filter; }).map(function (d) {
+    dishesEl.innerHTML = DISHES.filter(function (d) { return filter !== 'more' && (filter === 'all' || d.cat === filter); }).map(function (d) {
       return '<article class="dish"><div class="dish__img"><img src="' + IMG + d.img + '" alt="' + d.name + '" loading="lazy">' + (d.tag ? '<span class="dish__tag">' + d.tag + '</span>' : '') + '</div>' +
         '<div class="dish__b"><h3 class="dish__n">' + d.name + '</h3><p class="dish__d">' + d.desc + '</p><div class="dish__f">' + priceHTML(d) + '<span data-ctrl="' + d.id + '">' + ctrl(d.id) + '</span></div></div></article>';
     }).join('');
-    var more = MORE.filter(function (d) { return filter === 'all' || d.cat === filter; });
+    var more = filter === 'more' ? MORE : [];
+    dishesEl.hidden = filter === 'more';
     moreWrap.hidden = !more.length;
     moreEl.innerHTML = more.map(function (d) { return '<li><span>' + d.name + '</span><span data-ctrl="' + d.id + '">' + ctrl(d.id) + '</span></li>'; }).join('');
   }
@@ -212,7 +213,7 @@
 
   /* sliders */
   $$('[data-slider]').forEach(function (s) {
-    var track = $('[data-track]', s), slides = $$(':scope > *', track), dotsEl = $('[data-dots]', s), cur = 0, hold = 0, vis = false;
+    var track = $('[data-track]', s), slides = $$(':scope > *', track), dotsEl = $('[data-dots]', s), cur = 0, hold = 0, vis = false, dir = 1;
     dotsEl.innerHTML = slides.map(function (_, i) { return '<button type="button" role="tab" aria-label="Slide ' + (i + 1) + '"></button>'; }).join('');
     var dots = $$('button', dotsEl);
     function mark(i) { cur = i; dots.forEach(function (d, k) { d.classList.toggle('on', k === i); d.setAttribute('aria-selected', k === i); }); }
@@ -222,7 +223,7 @@
     ['pointerdown', 'touchstart', 'wheel'].forEach(function (e) { track.addEventListener(e, function () { hold = Date.now() + 9000; }, { passive: true }); });
     if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { vis = en[0].isIntersecting; }, { threshold: .4 }).observe(s); else vis = true;
     var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduce) setInterval(function () { if (!vis || document.hidden || Date.now() < hold) return; go((cur + 1) % slides.length); }, 4500);
+    if (!reduce) setInterval(function () { if (!vis || document.hidden || Date.now() < hold) return; var n = cur + dir; if (n >= slides.length || n < 0) { dir = -dir; n = cur + dir; } go(n); }, 4500);
     mark(0);
   });
   renderMenu(); renderDays(); renderHours(); renderCart();
