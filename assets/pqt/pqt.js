@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611211900, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611211930, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -636,8 +636,6 @@ function pqtMain() {
 
   /* actions */
   function team(i) { return H.teams[i]; }
-  var FEUD_DIV = 15;   // Quests Feud: survey points ÷ this, rounded up
-  function fp(n) { return Math.ceil((+n || 0) / FEUD_DIV); }
   function pts(i, d, kind) { var t = team(i); if (!t || !d) return; t.score += d; H.ledger.push([i, d]); var r = kind === 'pen' ? 'pen' : String(H.round || 0); H.byRound = H.byRound || {}; var br = H.byRound[r] = H.byRound[r] || {}; br[i] = (br[i] || 0) + d; }
   function roundPts(i) { var br = H.byRound || {}, out = [], jn = (H.teams[i] || {}).joined || 0; for (var r = 1; r <= Math.max(H.round, 0); r++) out.push(r < jn ? null : (br[r] || {})[i] || 0); return { rounds: out, extra: (br['0'] || {})[i] || 0, pen: (br.pen || {})[i] || 0 }; }
   function addScore(i, d) { snap(); pts(i, d); push(); renderTeams(); if (H.tab === 'quiz') renderTab(); }
@@ -1046,17 +1044,17 @@ function pqtMain() {
   function fmTeam() { var f = H.fm; return f.order[f.ti]; }
   function fmB(qi) { return BOARDS[H.fm.qs[qi]]; }
   function fmTakenBy(qi, a, except) { var f = H.fm, who = null; f.order.forEach(function (t) { if (t !== except && (f.picks[t] || {})[qi] === a) who = t; }); return who; }
-  function fmScore(t) { var f = H.fm, s = 0; f.qs.forEach(function (_, qi) { var a = (f.picks[t] || {})[qi], b = fmB(qi); if (a != null && a >= 0 && b && b.a[a]) s += fp(b.a[a].p); }); return s; }
+  function fmScore(t) { var f = H.fm, s = 0; f.qs.forEach(function (_, qi) { var a = (f.picks[t] || {})[qi], b = fmB(qi); if (a != null && a >= 0 && b && b.a[a]) s += b.a[a].p; }); return s; }
   var fmAutoT = null;
   function fmAuto() { clearTimeout(fmAutoT); var f = H.fm, key = f.ti + ':' + f.qi; fmAutoT = setTimeout(function () { var g = H.fm; if (g && g.phase === 'answer' && g.ti + ':' + g.qi === key) fmNextQ(); }, 1200); }
   function fmPick(a) {
     var f = H.fm, t = fmTeam(); snap(); fmAuto();
     var by = a >= 0 ? fmTakenBy(f.qi, a, t) : null;
     var pk = f.picks[t] = f.picks[t] || {}, old = pk[f.qi], b = fmB(f.qi);
-    if (old != null && old >= 0 && b && b.a[old]) pts(t, -fp(b.a[old].p));
+    if (old != null && old >= 0 && b && b.a[old]) pts(t, -b.a[old].p);
     if (by != null) { pk[f.qi] = -3; f.tb = f.tb || {}; f.tb[t + ':' + f.qi] = { by: by, a: a }; f.last = { qi: f.qi, msg: 'taken', by: by }; fx('buzz', { bigX: true }); toast('Already given by ' + ((H.teams[by] || {}).name || '') + ' · no points'); clearTimeout(fmAutoT); fmNextQ(); return; }
     pk[f.qi] = a;
-    if (a >= 0 && b && b.a[a]) { pts(t, fp(b.a[a].p)); f.last = { qi: f.qi, msg: 'hit', a: a }; fx('ok'); }
+    if (a >= 0 && b && b.a[a]) { pts(t, b.a[a].p); f.last = { qi: f.qi, msg: 'hit', a: a }; fx('ok'); }
     else { f.last = { qi: f.qi, msg: a === -2 ? 'pass' : 'miss' }; fx('buzz', a === -2 ? null : { bigX: true }); clearTimeout(fmAutoT); fmNextQ(); return; }
     push(); renderAll();
   }
@@ -1072,12 +1070,12 @@ function pqtMain() {
     if (f.phase === 'ready') o.qs = f.qs.map(function (qq) { var b = BOARDS[qq]; return b ? b.q : ''; });
     if (f.phase === 'answer') {
       var b = fmB(f.qi); o.qi = f.qi; o.q = b ? b.q : ''; o.na = b ? b.a.length : 0;
-      if (f.last && f.last.qi === f.qi) { o.msg = f.last.msg; if (f.last.msg === 'hit' && b) o.hit = { i: f.last.a, a: b.a[f.last.a].a, p: fp(b.a[f.last.a].p) }; if (f.last.msg === 'taken') o.takenBy = H.teams[f.last.by] ? H.teams[f.last.by].name : ''; }
+      if (f.last && f.last.qi === f.qi) { o.msg = f.last.msg; if (f.last.msg === 'hit' && b) o.hit = { i: f.last.a, a: b.a[f.last.a].a, p: b.a[f.last.a].p }; if (f.last.msg === 'taken') o.takenBy = H.teams[f.last.by] ? H.teams[f.last.by].name : ''; }
     }
     if (f.phase === 'recap') {
       o.qs = f.qs.map(function (qq) { var b = BOARDS[qq]; return b ? b.q : ''; });
-      o.items = f.qs.map(function (qq, qi) { if (qi >= f.rc) return null; var b = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && b ? b.a[a] : null; var tb = a === -3 && f.tb ? f.tb[t + ':' + qi] : null; return { q: b ? b.q : '', a: ans ? ans.a : '', p: ans ? fp(ans.p) : 0, miss: !ans, taken: a === -3, tbBy: tb && H.teams[tb.by] ? H.teams[tb.by].name : '', tbA: tb && b && b.a[tb.a] ? b.a[tb.a].a : '', out: a == null, pass: a === -2 }; });
-      o.total = o.items.reduce(function (s, x) { return s + (x ? fp(x.p) : 0); }, 0);
+      o.items = f.qs.map(function (qq, qi) { if (qi >= f.rc) return null; var b = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && b ? b.a[a] : null; var tb = a === -3 && f.tb ? f.tb[t + ':' + qi] : null; return { q: b ? b.q : '', a: ans ? ans.a : '', p: ans ? ans.p : 0, miss: !ans, taken: a === -3, tbBy: tb && H.teams[tb.by] ? H.teams[tb.by].name : '', tbA: tb && b && b.a[tb.a] ? b.a[tb.a].a : '', out: a == null, pass: a === -2 }; });
+      o.total = o.items.reduce(function (s, x) { return s + (x ? x.p : 0); }, 0);
     }
     if (f.phase === 'final') {
       var rb = fmB(f.rq); o.rq = f.rq; o.q = rb ? rb.q : '';
@@ -1117,7 +1115,7 @@ function pqtMain() {
   }
   function feudStrike() { snap(); var f = H.feud; f.strikes = Math.min(3, f.strikes + 1); fx('buzz', { bigX: true }); push(); renderTab(); }
   function feudBank() { var b = BOARDS[H.feud.qi], s = 0; if (b) Object.keys(H.feud.out).forEach(function (i) { if (H.feud.out[i] === 'p' && b.a[i]) s += b.a[i].p; }); return s; }
-  function feudAward(ti) { var p = fp(feudBank()); if (!p) return; snap(); pts(ti, p); H.feud.awardedTo = ti; H.feud.awardedPts = p; fx('win'); push(); renderTab(); toast(pl(p, 'point') + ' to ' + H.teams[ti].name); }
+  function feudAward(ti) { var p = feudBank(); if (!p) return; snap(); pts(ti, p); H.feud.awardedTo = ti; H.feud.awardedPts = p; fx('win'); push(); renderTab(); toast(pl(p, 'point') + ' to ' + H.teams[ti].name); }
   function feudRevealAll() { snap(); var b = BOARDS[H.feud.qi]; if (!b) return; b.a.forEach(function (_, i) { if (!H.feud.out[i]) H.feud.out[i] = 's'; }); fx('ding'); push(); renderTab(); }
   function feudGo(qi) { snap(); H.feud = { qi: (qi + BOARDS.length) % Math.max(1, BOARDS.length), out: {}, strikes: 0, awardedTo: null, awardedPts: 0 }; H.view = 'answers'; push(); renderAll(); }
   function setView(v) { H.view = v; push(); renderViews(); paintNow(); }
@@ -1183,7 +1181,7 @@ function pqtMain() {
       return out;
     }
     if (f.phase === 'recap') {
-      out += prog + '<div class="fm-head"><span>' + esc(tm.name) + '’s answers · recap</span></div><div class="fm-rev">' + f.qs.map(function (qq, qi) { var bb = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && bb ? bb.a[a] : null; return '<div class="' + (qi < f.rc ? 'is-on' : '') + '"><b>' + esc(bb ? bb.q : '') + '</b><span>' + (ans ? esc(ans.a) : a === -2 ? 'Passed' : a === -3 ? (function () { var tb = f.tb && f.tb[t + ':' + qi], tbb = tb && bb ? bb.a[tb.a] : null; return (tbb ? esc(tbb.a) + ' · ' : '') + esc(tb && H.teams[tb.by] ? H.teams[tb.by].name : 'another team') + ' said it first'; })() : a == null ? 'Out of time' : 'Not on the board') + '</span><em>' + (ans ? fp(ans.p) : 0) + '</em></div>'; }).join('') + '</div>';
+      out += prog + '<div class="fm-head"><span>' + esc(tm.name) + '’s answers · recap</span></div><div class="fm-rev">' + f.qs.map(function (qq, qi) { var bb = BOARDS[qq], a = (f.picks[t] || {})[qi], ans = a != null && a >= 0 && bb ? bb.a[a] : null; return '<div class="' + (qi < f.rc ? 'is-on' : '') + '"><b>' + esc(bb ? bb.q : '') + '</b><span>' + (ans ? esc(ans.a) : a === -2 ? 'Passed' : a === -3 ? (function () { var tb = f.tb && f.tb[t + ':' + qi], tbb = tb && bb ? bb.a[tb.a] : null; return (tbb ? esc(tbb.a) + ' · ' : '') + esc(tb && H.teams[tb.by] ? H.teams[tb.by].name : 'another team') + ' said it first'; })() : a == null ? 'Out of time' : 'Not on the board') + '</span><em>' + (ans ? ans.p : 0) + '</em></div>'; }).join('') + '</div>';
       var lastT = f.ti + 1 >= f.order.length;
       out += f.rc < f.qs.length ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-fm="recap" type="button">Reveal answer ' + (f.rc + 1) + '</button>' : '<button class="pbtn pbtn--white pbtn--lg pbtn--block" data-fm="afterrecap" type="button">' + (lastT ? 'Show all the answers →' : 'Next: ' + esc((H.teams[f.order[f.ti + 1]] || {}).name || '') + ' →') + '</button>';
       return out;
@@ -1327,7 +1325,7 @@ function pqtMain() {
         }).join('') + '</div>' +
         '<div class="hc-row" style="margin-top:12px;justify-content:space-between"><div class="hc-row"><button class="pbtn pbtn--bad" data-fx>✕ Strike</button><div class="strikes">' + [0, 1, 2].map(function (i) { return '<i class="' + (i < f.strikes ? 'is-on' : '') + '">✕</i>'; }).join('') + '</div><button class="pbtn pbtn--sm pbtn--ghost" data-fxclear>Clear</button></div>' +
         '<button class="pbtn pbtn--sm" data-fall>Reveal rest</button></div>' +
-        '<h2 style="margin:18px 0 8px">' + (f.awardedTo != null ? 'Awarded ' + f.awardedPts + ' to ' + esc(H.teams[f.awardedTo] ? H.teams[f.awardedTo].name : '') : 'Bank: ' + bank + ' ÷ ' + FEUD_DIV + ' = ' + fp(bank) + ' — give to') + '</h2>' +
+        '<h2 style="margin:18px 0 8px">' + (f.awardedTo != null ? 'Awarded ' + f.awardedPts + ' to ' + esc(H.teams[f.awardedTo] ? H.teams[f.awardedTo].name : '') : 'Bank: ' + bank + ' — give to') + '</h2>' +
         (f.awardedTo != null ? '' : '<div class="hc-row">' + H.teams.map(function (t, i) { return '<button class="pbtn pbtn--sm" data-faw="' + i + '"' + (bank ? '' : ' disabled') + '><i style="width:8px;height:8px;border-radius:50%;background:' + t.color + '"></i>' + esc(t.name) + '</button>'; }).join('') + '</div>') +
         '<p class="hc-note">Tap an answer to reveal it on the screen (tap again to hide). Points count towards the bank until you award them. “Reveal rest” shows the remaining answers without adding points.</p>' + skipBtn();
     } else if (tab === 'quiz') {
