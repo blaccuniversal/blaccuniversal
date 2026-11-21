@@ -530,3 +530,54 @@ a.ct:hover{border-color:var(--brown);transform:translateY(-1px)}
   .wf__info{grid-template-columns:1fr}
 }
 @media(max-width:560px){.shot figcaption{padding:50px 18px 16px}.wf__copy{padding-top:36px}}
+
+/* ---- shape + hero fixes ---- */
+:root{--card:6px;--r:2px;--sm:4px}
+.plate{inset:9%;border-radius:0;overflow:visible;background:none;box-shadow:none}
+.plate img{transform:none;object-position:50% 50%;border-radius:50%;filter:drop-shadow(0 22px 26px rgba(46,13,13,.28))}
+.ring text{font-size:9px}
+.sticker{display:grid;place-items:center;left:auto;right:2%;bottom:10%;top:auto;width:36%;height:auto;aspect-ratio:1;border-radius:0;background:none;box-shadow:none;transform:rotate(-8deg);animation:wob 6s ease-in-out infinite}
+.sticker svg{position:absolute;inset:0;width:100%;height:100%;fill:var(--gold);filter:drop-shadow(0 10px 18px rgba(46,13,13,.3))}
+.sticker span{position:relative;display:grid;gap:2px;text-align:center;color:var(--brown);line-height:1}
+.sticker b{font-size:clamp(17px,2vw,24px);font-weight:800;letter-spacing:-.04em}
+.sticker small{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+@keyframes wob{50%{transform:rotate(-3deg) scale(1.04)}}
+/* one shape language: pill nav, small-radius everything else */
+.tabs,.panel__top .tabs{border-radius:var(--card)}
+.tabs button,.panel__top .tabs button{border-radius:var(--sm)}
+.days button{border-radius:var(--sm)}
+.chip{border-radius:var(--sm)}
+.tick li,.chips span{border-radius:var(--sm)}
+.wk i{border-radius:3px;width:20px;height:20px}
+.wk i.now{outline-offset:1px}
+.add,.item .add{border-radius:var(--r)}
+.qty{border-radius:var(--sm)}
+.qty button{border-radius:var(--sm)}
+.arrows button{border-radius:var(--r)}
+.ct__i{border-radius:var(--sm)}
+.week span{border-radius:var(--sm)}
+.bar{border-radius:var(--card)}
+.bar__go{border-radius:var(--sm)}
+.toast{border-radius:var(--card)}
+.drawer__x,.x{border-radius:var(--r)}
+.sheet__box{border-radius:var(--card) var(--card) 0 0}
+.nav__cta{border-radius:999px}
+.nav__cta b{border-radius:var(--sm)}
+.panel,.ph,.shot,.combo__img,.hours,.ct,.wtoast,.show .slider{border-radius:var(--card)}
+.show .slider{overflow:hidden}
+.dots i{border-radius:2px;height:4px}
+.dots i.on{width:22px}
+.ticker__t span::after{border-radius:1px;transform:rotate(45deg)}
+.ft__brand img{height:40px}
+@media(max-width:560px){.sticker{width:38%;right:0}.sticker small{font-size:8px}}
+.plate{inset:11%}
+.sticker{right:9%;bottom:13%;width:31%}
+@media(max-width:560px){.sticker{right:7%;width:33%}}
+
+@media(max-width:560px){
+  .sticker{right:13%;bottom:15%;width:30%}
+  .pick{grid-template-columns:1fr 46px}
+  .pick .add{font-size:0;gap:0;padding:0;min-width:46px}
+  .sel select{font-size:13.5px;padding-left:12px}
+  .tabs button{padding:10px 14px}
+}

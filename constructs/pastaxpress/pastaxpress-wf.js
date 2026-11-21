@@ -391,7 +391,7 @@ function frame(t){
   if(view.s>.05){
     const lq=W2S({x:0,y:0});
     const il=warp(g2w(-8.5*C,-9*C)), ilq=W2S(il);
-    if(Math.hypot(ilq.x-lq.x,ilq.y-lq.y)>150) drawLabel(il,'UNIVERSITY OF IBADAN','Nearby','rgba(138,90,18,.95)');
+    if(false&&Math.hypot(ilq.x-lq.x,ilq.y-lq.y)>150) drawLabel(il,'UNIVERSITY OF IBADAN','Nearby','rgba(138,90,18,.95)');
     const vm=warp(g2w(7*C,9*C)), vq=W2S(vm);
     if(Math.hypot(vq.x-lq.x,vq.y-lq.y)>110){ctx.beginPath();ctx.arc(vq.x,vq.y,3,0,7);ctx.fillStyle='rgba(46,13,13,.75)';ctx.fill();drawLabel({x:vm.x,y:vm.y+18/view.s},'BODIJA','')}
     const oy=warp(g2w(1*C,-6*C)); const q=W2S(oy); ctx.save();ctx.translate(q.x+10,q.y);ctx.rotate(-view.rot+(-15*D2R)+Math.PI/2);ctx.font='600 9px "Open Sans",sans-serif';ctx.fillStyle='rgba(46,13,13,.4)';ctx.textAlign='center';ctx.fillText('OSUNTOKUN AVENUE',0,0);ctx.restore();
