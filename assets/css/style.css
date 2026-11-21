@@ -1409,3 +1409,6 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 .proj-list--grid .proj__art--as img:not(.ss-wm),.proj-list--slide .proj__art--as img:not(.ss-wm){width:auto;height:clamp(54px,6vw,72px)}
 .proj-list--grid .bm-art img:not(.ss-wm),.proj-list--slide .bm-art img:not(.ss-wm){width:auto}
 @media (max-width:600px){.proj-list--grid .proj__art--as img:not(.ss-wm){width:auto;height:46px}.proj-list--grid .bm-art img:not(.ss-wm){width:auto;height:40px}}
+
+/* wide hero on large screens */
+@media (min-width:1100px){.hero__photo{left:0;transform:none;width:100%;max-width:none;object-position:50% 40%}.hero__spot{--y:47%;--r:620px;background:radial-gradient(circle var(--r) at var(--x) var(--y),rgba(0,0,0,0) 0%,rgba(0,0,0,.15) 50%,rgba(0,0,0,.85) 100%)}}

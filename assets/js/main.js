@@ -50,7 +50,8 @@
         if (now - userAt < 2500 || now - last < 33) return;
         last = now;
         var t = (now - t0) / 1000;
-        setSpot(50 + 16 * Math.sin(t * 0.42), 36 + 12 * Math.sin(t * 0.67 + 1.2));
+        var wide = window.matchMedia('(min-width:1100px)').matches;
+        setSpot(50 + (wide ? 8 : 16) * Math.sin(t * 0.42), (wide ? 47 : 36) + (wide ? 6 : 12) * Math.sin(t * 0.67 + 1.2));
       })(t0);
     }
   }
