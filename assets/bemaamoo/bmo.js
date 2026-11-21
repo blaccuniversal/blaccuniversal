@@ -248,9 +248,9 @@
         h += '<div class="pchip' + (i === G.turn ? ' is-on' : '') + (NET && pd && !isOn(pd) ? ' is-off' : '') + '"><i style="background:' + color(i) + '"></i><span>' + esc(s.name) + (NET && pd === DEV ? ' (you)' : '') + '</span><b>' + s.total + '</b>' + (multi ? '<small>Overall ' + ov_[i].total + '</small>' : '') + '</div>';
       });
     }
-    el.innerHTML = h;
+    if (el._h !== h) { el._h = h; el.innerHTML = h; }
     var on = el.querySelector('.is-on');
-    if (on && !solo()) { var l = on.offsetLeft - el.clientWidth / 2 + on.clientWidth / 2; el.scrollTo({ left: l, behavior: 'smooth' }); }
+    if (on && !solo() && el._t !== G.turn + ':' + G.rounds.length) { el._t = G.turn + ':' + G.rounds.length; var l = on.offsetLeft - el.clientWidth / 2 + on.clientWidth / 2; el.scrollTo({ left: l, behavior: 'smooth' }); }
   }
 
   function sizeBoard() {
@@ -270,6 +270,9 @@
   function paintBoard() {
     var b = $('[data-board]'), r = R();
     sizeBoard();
+    var bk = [b.clientWidth, r.n, r.cat, r.entries.map(function (e) { return e.w; }).join(','), (r.gaps || []).map(function (g) { return g.a + ':' + g.p; }).join(','), G.players.map(function (p) { return p.name; }).join(','), r.entries.length ? '' : G.turn].join('|');
+    if (b._k === bk && lastAdded < 0 && !b._dirty) return;
+    b._k = bk;
     if (!r.entries.length && !(r.gaps || []).length) {
       b.innerHTML = '<div class="board__empty"><b>' + esc(B.catName(r.cat)) + '</b><span>' + (solo() ? 'Add your first word.' : esc(pname(G.turn)) + ' goes first.') + '<br>Long words score more.</span></div>';
       return;
@@ -802,6 +805,10 @@
   }
 
   /* guest: follow the host's game */
+  function gsig(g) {
+    var r = g.rounds[g.rounds.length - 1], l = r.entries[r.entries.length - 1];
+    return [g.rounds.length, r.n, r.cat, r.entries.length, l ? l.w : '', r.skips || 0, (r.gaps || []).length, g.turn, r.done ? 1 : 0, r.run ? 1 : 0, g.over ? 1 : 0, g.players.length, g.players.map(function (p) { return p.out ? 1 : 0; }).join(''), g.settings.limit || 0].join('|');
+  }
   function guestMsg(st) {
     if (!st || st.v !== 1 || st.code !== NET.code || !st.lobby) return;
     if (st.closed) { var cc = NET.code; dropSaved(cc); store(KEY_ROOM, null); netClose(); G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; }); show('online'); toast('Room ' + cc + ' was closed by the host.'); return; }
@@ -815,7 +822,7 @@
     if (NET.jq && st.lobby.players.some(function (p) { return p.dev === DEV; })) clearJoin();
     clearTimeout(NET.noRoomT);
     if (!st.G) {
-      NET.live = false; G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
+      NET.gsig = null; NET.live = false; G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
       if (cur !== 'room') show('room'); else paintRoom();
       return;
     }
@@ -828,6 +835,7 @@
     NET.live = false;
     if (NET.jq) clearJoin();
     var prev = G, wasMine = prev && myTurn();
+    var nsig = gsig(st.G), same = NET.gsig === nsig && !!prev && cur === 'game'; NET.gsig = nsig;
     var pr = prev && prev.rounds.length === st.G.rounds.length ? prev.rounds[prev.rounds.length - 1] : null;
     G = st.G;
     var r = R();
@@ -846,6 +854,10 @@
       msg('<span>' + t + '</span>', true); shake();
     }
     running = !!(r.run && !r.done);
+    if (same && !G.over && !r.done) {   // a heartbeat with nothing new: refresh clock, chips and presence only, so nothing flickers or loses focus
+      paintClock(); paintStrip(); paintBadge(); paintPeople(); lastAdded = -1;
+      return;
+    }
     paintGame(); lastAdded = -1;
     if (G.over) { if ($('[data-ov="final"]').hidden) finish(); return; }
     ov('final', false);
