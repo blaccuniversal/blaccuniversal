@@ -1,0 +1,29 @@
+/* /bemshima: market-style page with a compact player right under the name */
+.bm{--ember:#c94a1c}
+.bm .mk-hero{min-height:clamp(300px,44svh,430px);padding-top:96px;padding-bottom:clamp(22px,3vw,34px)}
+.bm .mus-hero{padding-top:clamp(12px,1.6vw,18px);padding-bottom:0}
+.bm .mus-card{display:block;min-height:0;border-radius:12px}
+.bm .mus-card__me,.bm .mus-ring,.bm .mus-card__circle,.bm .mus-links{display:none!important}
+.bm .mus-card__text{width:auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:center;gap:12px clamp(20px,3vw,44px);padding:clamp(14px,1.8vw,20px) clamp(16px,2.2vw,28px);box-sizing:border-box;background:transparent}
+.bm .mus-head{gap:2px}
+.bm .mus-head .mus-eyebrow{font-size:10px}
+.bm .mus-card .mus-title{font-size:clamp(24px,2.6vw,34px);line-height:1.05}
+.bm .mus-by{font-size:14px}
+.bm .mus-plays{margin:0}
+.bm .mus-card .mus-player{max-width:none;gap:clamp(12px,1.6vw,18px)}
+.bm .mus-card .mus-cover{width:72px;height:72px}
+.bm .mus-cover__play{width:28px;height:28px;right:4px;bottom:4px}
+.bm .mus-card .mus-meta{gap:6px}
+.bm .mus-meta .mus-time{margin:0}
+.bm .mus-nav{margin-left:-10px}
+.bm .mus-nav .icon-btn{width:34px;height:34px}
+@media (max-width:760px){
+  .bm .mus-card__text{grid-template-columns:minmax(0,1fr);gap:12px;padding:14px 16px 16px}
+  .bm .mus-card .mus-title{font-size:24px}
+  .bm .mus-card .mus-cover{width:64px;height:64px}
+}
+/* tighter sections below */
+.bm .mk-info{padding-top:clamp(18px,2.4vw,28px);padding-bottom:clamp(20px,3vw,36px)}
+.bm .mus-sec{padding-top:clamp(28px,4vw,52px);padding-bottom:clamp(28px,4vw,52px)}
+.bm .tl__row{padding-top:10px;padding-bottom:10px}
+.bm .ic-pause{display:none}
