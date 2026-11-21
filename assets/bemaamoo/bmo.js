@@ -10,6 +10,7 @@
   var MAXP = 50;
   var TURNS = [[0, 'Off'], [15, '15 sec'], [30, '30 sec'], [60, '1 min']];
   var ORDERS = [[0, 'Me first'], [1, 'Shuffle']];
+  var ALPHA = [[0, 'Off'], [1, 'Sorted'], [2, 'Ladder'], [3, 'Lap']];
   var KEY_ROOMS = 'bmo_rooms_v1';
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -101,7 +102,7 @@
 
   /* ---------- setup ---------- */
   var S = load(KEY_SETUP) || {};
-  S = { count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null && S.tl !== 20 ? S.tl : 15, sh: S.sh ? 1 : 0 };
+  S = { count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null && S.tl !== 20 ? S.tl : 15, sh: S.sh ? 1 : 0, al: +S.al || 0 };
   function saveSetup() { store(KEY_SETUP, S); }
   function paintSetup() {
     var pc = $('[data-pcount]'), h = '';
@@ -115,7 +116,7 @@
     $('[data-catname]').textContent = B.catName(S.cat);
     $('[data-catgroup]').textContent = groupOf(S.cat);
     seg('[data-opt="timer"]', TIMERS, S.timer, 'timer');
-    seg('[data-opt="limit"]', LIMITS, S.limit, 'limit');
+    seg('[data-opt="limit"]', LIMITS, S.limit, 'limit'); seg('[data-opt="alpha"]', ALPHA, S.al, 'al');
   }
   function seg(sel, opts, val, key) {
     $(sel).innerHTML = opts.map(function (o) { return '<button type="button" data-set="' + key + '" data-v="' + o[0] + '" aria-pressed="' + (val === o[0]) + '">' + o[1] + '</button>'; }).join('');
@@ -154,7 +155,7 @@
       var n = (S.names[i] || '').trim();
       players.push({ name: n || (S.count === 1 ? 'You' : 'Player ' + (i + 1)) });
     }
-    G = B.create({ players: players, category: S.cat, timer: S.timer, limit: S.limit });
+    G = B.create({ players: players, category: S.cat, timer: S.timer, limit: S.limit, alpha: +S.al || 0 });
     save();
     getList(S.cat);
     show('game');
@@ -238,6 +239,7 @@
     $('[data-gcat]').textContent = B.catName(r.cat);
     var sub = 'Round ' + r.n + ' · ' + pl(r.entries.length, 'word');
     if (G.settings.limit) sub = 'Round ' + r.n + ' · ' + r.entries.length + ' of ' + G.settings.limit + ' words';
+    if (G.settings.alpha) sub += ' · ' + alphaTag();
     $('[data-gsub]').textContent = sub;
     paintClock();
     paintStrip();
@@ -332,6 +334,12 @@
     requestAnimationFrame(function () { b.scrollTop = b.scrollHeight; });
   }
 
+  function lastWord() { var e = G ? R().entries : null; return e && e.length ? e[e.length - 1].w : ''; }
+  function orderMsg() {
+    var h = B.alphaHint(G);
+    return h.mode === 1 ? 'Sorted play is on. Play a word that comes after <b>' + esc(h.after) + '</b> in the alphabet.' : 'The next word must start with <b>' + esc(h.letter) + '</b>.';
+  }
+  function alphaTag() { var h = G ? B.alphaHint(G) : { mode: 0 }; return h.mode === 1 ? 'A to Z' : h.mode === 2 ? 'Ladder' : h.mode === 3 ? 'Lap' : ''; }
   function tx(el, v) { if (el.textContent !== v) el.textContent = v; }
   function setp(el, k, v) { if (el[k] !== v) el[k] = v; }
   function paintDock() {
@@ -349,7 +357,7 @@
     setp($('[data-act="skip"]'), 'hidden', solo());
     setp($('[data-act="undo"]'), 'disabled', !r.entries.length || r.done);
     var inp = $('[data-in]'), goB = $('.entry__go');
-    setp(inp, 'placeholder', 'Type ' + (/^names/.test(r.cat) ? 'a name' : 'a word') + ' · ' + B.catName(r.cat));
+    setp(inp, 'placeholder', 'Type ' + (/^names/.test(r.cat) ? 'a name' : 'a word') + (function () { var h = B.alphaHint(G); return h.mode === 1 && h.after ? ' after ' + h.after : h.letter ? ' starting with ' + h.letter : ''; })() + ' · ' + B.catName(r.cat));
     if (NET) {
       var mine = myTurn(), cp = pname(G.turn), stale = !isHost() && hostStale();
       tx($('[data-turn]'), stale ? 'Waiting for ' + hostName() + ' to reconnect…' : r.done ? 'Round over' : (mine ? 'Your turn' : cp + '’s turn'));
@@ -409,7 +417,7 @@
         pending = raw;
         msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span><button type="button" data-act="force">Count it anyway</button><button type="button" class="is-pri" data-act="retry">Try another</button>', true);
       } else {
-        var t = { short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.', long: 'That’s too long. ' + B.RULES.MAX_LEN + ' letters at most.', repeat: '<b>' + esc(c.w) + '</b> is already on the board.', done: 'This round is over.' }[c.why] || 'Try another word.';
+        var t = { short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.', long: 'That’s too long. ' + B.RULES.MAX_LEN + ' letters at most.', repeat: '<b>' + esc(c.w) + '</b> is already on the board.', order: orderMsg(), letter: orderMsg(), done: 'This round is over.' }[c.why] || 'Try another word.';
         msg('<span>' + t + '</span>', true);
       }
       shake();
@@ -796,7 +804,7 @@
     NET.seq = (NET.seq || 0) + 1;
     netSend(NTOPIC + NET.code + '/state', { v: 1, code: NET.code, hs: NET.hs, ep: NET.ep || 0, seq: NET.seq, lobby: NET.lobby, G: G, rej: NET.rej || null, vq: NET.vq || null, vs: (NET.vstrk && G && !G.over && NET.vstrk.k === vkey()) ? { dev: NET.vstrk.dev, n: NET.vstrk.n } : null, on: on, td: turnLeftMs(), cl: (NET.chat || []).slice(-15) }, true);
   }
-  function syncLobby() { if (!isHost()) return; NET.lobby.cat = S.cat; NET.lobby.timer = S.timer; NET.lobby.limit = S.limit; NET.lobby.tl = S.tl; NET.lobby.sh = S.sh; storeRoom(); pubSoon(); }
+  function syncLobby() { if (!isHost()) return; NET.lobby.cat = S.cat; NET.lobby.timer = S.timer; NET.lobby.limit = S.limit; NET.lobby.tl = S.tl; NET.lobby.sh = S.sh; NET.lobby.al = S.al; storeRoom(); pubSoon(); }
   function hostMsg(m) {
     if (!m || !m.dev || m.dev === DEV) return;
     var wasOn = isOn(m.dev); NET.seen[m.dev] = Date.now();
@@ -969,7 +977,7 @@
     if (NET.pend && (r.entries.length > NET.pend.n || !myTurn())) NET.pend = null;
     if (st.rej && st.rej.dev === DEV && st.rej.k !== NET.rejSeen) {
       NET.rejSeen = st.rej.k; NET.pend = null;
-      var t = { unknown: '<b>' + esc(st.rej.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(st.rej.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.', vno: 'The room didn’t vouch for <b>' + esc(st.rej.w) + '</b>. Strike ' + (st.rej.n || myStrikes()) + ' of ' + VMAX + '.', vmax: 'No vouches left this turn. Play a word from the list or your turn can be skipped.' }[st.rej.why] || 'Try another word.';
+      var t = { unknown: '<b>' + esc(st.rej.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(st.rej.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.', order: orderMsg(), letter: orderMsg(), vno: 'The room didn’t vouch for <b>' + esc(st.rej.w) + '</b>. Strike ' + (st.rej.n || myStrikes()) + ' of ' + VMAX + '.', vmax: 'No vouches left this turn. Play a word from the list or your turn can be skipped.' }[st.rej.why] || 'Try another word.';
       if (st.rej.why === 'unknown') NET.lastRej = { w: st.rej.w, n: r.entries.length };
       msg('<span>' + t + '</span>' + (st.rej.why === 'vno' && (st.rej.n || 0) >= VMAX ? '<span class="vq__x">No vouches left this turn. Play a word from the list or your turn can be skipped.</span>' : '') + (st.rej.why === 'unknown' ? vreqBtn() : '') + (st.rej.why === 'unknown' || st.rej.why === 'vno' || st.rej.why === 'vmax' ? '<button type="button" class="is-pri" data-act="retry">Try another</button>' : ''), true); shake();
     }
@@ -1024,7 +1032,7 @@
       L0 = L;
       var c = B.check(G, raw, L.full);
       if (!c.ok) {
-        var t = { unknown: '<b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(c.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.' }[c.why] || 'Try another word.';
+        var t = { unknown: '<b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(c.w) + '</b> is already on the board.', order: orderMsg(), letter: orderMsg(), short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.' }[c.why] || 'Try another word.';
         if (c.why === 'unknown') NET.lastRej = { w: c.w, n: r.entries.length };
         msg('<span>' + t + '</span>' + (c.why === 'unknown' ? vreqBtn() : '') + '<button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); return;
       }
@@ -1049,7 +1057,7 @@
   function createRoom() {
     var name = oName();
     netClose();
-    NET = { role: 'host', code: newCode(), name: name, hs: newHs(), ep: 0, fresh: true, seq: 0, seen: {}, lobby: { hd: DEV, cr: DEV, players: [{ dev: DEV, name: name }], cat: S.cat, timer: S.timer, limit: S.limit, tl: S.tl, sh: S.sh } };
+    NET = { role: 'host', code: newCode(), name: name, hs: newHs(), ep: 0, fresh: true, seq: 0, seen: {}, lobby: { hd: DEV, cr: DEV, players: [{ dev: DEV, name: name }], cat: S.cat, timer: S.timer, limit: S.limit, tl: S.tl, sh: S.sh, al: S.al } };
     G = null; storeRoom(); show('room');
     loadMqtt().then(netLink, function () { toast('Couldn’t go online. Check your connection.'); });
   }
@@ -1082,7 +1090,7 @@
   function startOnline() {
     if (!isHost() || NET.lobby.players.length < 2) return;
     syncLobby();
-    G = B.create({ players: NET.lobby.players.map(function (p) { return { name: p.name }; }), category: S.cat, timer: S.timer, limit: S.limit, fixed: true, shuffle: !!NET.lobby.sh });
+    G = B.create({ players: NET.lobby.players.map(function (p) { return { name: p.name }; }), category: S.cat, timer: S.timer, limit: S.limit, fixed: true, shuffle: !!NET.lobby.sh, alpha: +NET.lobby.al || 0 });
     G.players.forEach(function (p, i) { p.dev = NET.lobby.players[i].dev; });
     G.settings.turn = NET.lobby.tl != null && NET.lobby.tl !== 20 ? NET.lobby.tl : 15;
     NET.rej = null;
@@ -1105,7 +1113,7 @@
     $('[data-rhost]').hidden = !host; $('[data-rguest]').hidden = host;
     if (host) {
       $('[data-rcatname]').textContent = B.catName(S.cat); $('[data-rcatgroup]').textContent = groupOf(S.cat);
-      seg('[data-ropt="timer"]', TIMERS, S.timer, 'timer'); seg('[data-ropt="limit"]', LIMITS, S.limit, 'limit'); seg('[data-ropt="turn"]', TURNS, S.tl, 'tl'); seg('[data-ropt="order"]', ORDERS, S.sh ? 1 : 0, 'sh');
+      seg('[data-ropt="timer"]', TIMERS, S.timer, 'timer'); seg('[data-ropt="limit"]', LIMITS, S.limit, 'limit'); seg('[data-ropt="turn"]', TURNS, S.tl, 'tl'); seg('[data-ropt="order"]', ORDERS, S.sh ? 1 : 0, 'sh'); seg('[data-ropt="alpha"]', ALPHA, +S.al || 0, 'al');
       var st = $('[data-ostart]'); st.hidden = false; st.disabled = L.players.length < 2;
       st.textContent = L.players.length < 2 ? 'Waiting for players to join' : 'Start game · ' + pl(L.players.length, 'player');
     } else {

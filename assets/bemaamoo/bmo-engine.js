@@ -62,6 +62,7 @@
       settings: {
         timer: opts.timer || 0,         // seconds per round, 0 = off
         limit: opts.limit || 0,         // words per round, 0 = off
+        alpha: +opts.alpha || 0,        // letter rule: 0 off, 1 sorted (each word after the one above), 2 ladder (next letter each word), 3 lap (everyone on a letter, then the next)
         fixed: !!opts.fixed,            // online rooms: every round starts with the room's creator
         shuffle: !!opts.shuffle         // online rooms: random first player and a fresh order each round
       }
@@ -109,6 +110,20 @@
     return R;
   }
 
+  function nextLetter(c) { return c === 'Z' ? 'A' : String.fromCharCode(c.charCodeAt(0) + 1); }
+  // What the letter rule asks of the next word: { mode, after } for sorted play, { mode, letter } for ladder and lap (empty on the first word, which is free).
+  function alphaHint(G) {
+    var mode = (G.settings && G.settings.alpha) | 0, R = round(G), e = R.entries, h = { mode: mode, after: '', letter: '' };
+    if (!mode || !e.length) return h;
+    var last = e[e.length - 1].w;
+    if (mode === 1) { h.after = last; return h; }
+    var c = last.charAt(0);
+    if (mode === 2) { h.letter = nextLetter(c); return h; }
+    var n = 0; G.players.forEach(function (p) { if (!p.out) n++; });
+    var run = 0; for (var i = e.length - 1; i >= 0 && e[i].w.charAt(0) === c; i--) run++;
+    h.letter = run >= Math.max(1, n) ? nextLetter(c) : c;   // a lap: every player plays this letter, then the room moves on
+    return h;
+  }
   function check(G, raw, dict) {
     var w = norm(raw), R = round(G);
     if (!w) return { ok: false, why: 'empty', w: w };
@@ -116,6 +131,9 @@
     if (w.length < MIN_LEN) return { ok: false, why: 'short', w: w };
     if (MAX_LEN && w.length > MAX_LEN) return { ok: false, why: 'long', w: w };
     for (var i = 0; i < R.entries.length; i++) if (R.entries[i].w === w) return { ok: false, why: 'repeat', w: w };
+    var ah = alphaHint(G);
+    if (ah.mode === 1 && ah.after && w < ah.after) return { ok: false, why: 'order', w: w };
+    if ((ah.mode === 2 || ah.mode === 3) && ah.letter && w.charAt(0) !== ah.letter) return { ok: false, why: 'letter', w: w };
     if (dict && !dict.has(w)) return { ok: false, why: 'unknown', w: w };
     return { ok: true, w: w };
   }
@@ -236,7 +254,7 @@
 
   var api = {
     CATS: CATS, tri: tri, norm: norm, concordPts: concordPts, accordPts: accordPts,
-    create: create, newRound: newRound, round: round, check: check, add: add, skip: skip, undo: undo, endRound: endRound,
+    create: create, newRound: newRound, round: round, check: check, alphaHint: alphaHint, add: add, skip: skip, undo: undo, endRound: endRound,
     tally: tally, ranking: ranking, concords: concords, live: live, findMavericks: findMavericks,
     catName: catName, listFile: listFile, hasMavList: hasMavList,
     RULES: { MAX_LEN: MAX_LEN, MIN_LEN: MIN_LEN, MAV_MIN: MAV_MIN, MAV_FIRST_COL: MAV_FIRST_COL, CON_MIN_LEN: CON_MIN_LEN, CON_STREAK: CON_STREAK, ACC_MIN_LEN: ACC_MIN_LEN, KEYSTONE: KEYSTONE }

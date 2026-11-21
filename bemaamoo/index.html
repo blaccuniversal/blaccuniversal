@@ -84,6 +84,11 @@
         <div class="seg" role="group" aria-label="Words per round" data-opt="limit"></div>
       </div>
     </section>
+    <section class="fs">
+      <h2 class="eyebrow">Letter rule</h2>
+      <div class="seg" role="group" aria-label="Letter rule" data-opt="alpha"></div>
+      <p class="onote" style="margin-top:8px">Sorted: each word comes after the word above it in the alphabet. Ladder: if one word starts with A, the next starts with B, then C, and so on. Lap: everyone plays a word starting with the same letter, then the whole room moves to the next letter.</p>
+    </section>
     <button class="btn btn--big btn--full" data-act="start">Start game</button>
   </main>
 </section>
@@ -166,6 +171,11 @@
         <h2 class="eyebrow">Who starts each round</h2>
         <div class="seg" role="group" aria-label="Who starts each round" data-ropt="order"></div>
         <p class="onote" style="margin-top:8px">You start every round. Choose Shuffle to pick a random first player and mix the order each round.</p>
+      </section>
+      <section class="fs">
+        <h2 class="eyebrow">Letter rule</h2>
+        <div class="seg" role="group" aria-label="Letter rule" data-ropt="alpha"></div>
+        <p class="onote" style="margin-top:8px">Sorted: each word comes after the word above it in the alphabet. Ladder: if one word starts with A, the next starts with B, then C, and so on. Lap: everyone plays a word starting with the same letter, then the whole room moves to the next letter.</p>
       </section>
     </div>
     <button class="btn btn--full" data-act="reclaim" data-reclaim type="button" hidden>Take back hosting</button>
@@ -255,6 +265,7 @@
       <li><b>Pick a category.</b> Take turns adding one word from it. Each word goes on its own row, one letter per box.</li>
       <li><b>Every word scores.</b> 1 point for the first letter, 2 for the second, and so on. 3 letters = 6, 5 letters = 15, 8 letters = 36.</li>
       <li><b><em class="c-mav">Maverick.</em></b> Read straight down any column from the 2nd letter onwards. If 3 or more rows in a row spell a word from the same category, the player who finished it scores it like a word.</li>
+      <li><b>Letter rule (optional).</b> Switch one on before the game. <em>Sorted</em>: each word comes after the word above it in the alphabet. <em>Ladder</em>: the next word must start with the next letter (A, then B, then C, and back to A after Z). <em>Lap</em>: every player plays a word starting with the same letter, then everyone moves on to the next letter. The first word of a round is free.</li>
       <li><b><em class="c-con">Concord.</em></b> 3 or more words in a row with the same length (3+ letters). Each word in the streak scores (length − 1) + (streak − 3), so it grows while the streak lasts.</li>
       <li><b><em class="c-acc">Regen.</em></b> Spell a word with exactly the same letters as the word above yours (an anagram, 3+ letters, like STAR after RATS). It scores its length plus 1 in bonus points (3 letters = 4, 4 = 5, 5 = 6, and so on), on top of the normal word score.</li>
       <li><b><em class="c-key">Keystone.</em></b> If one word sets off a Maverick and a Concord at the same time, it earns 5 extra points.</li>
@@ -335,7 +346,7 @@
 <div class="toast" data-toast hidden></div>
 
 <script src="/assets/bemaamoo/bmo-gate.js?v=4"></script>
-<script src="/assets/bemaamoo/bmo-engine.js?v=7"></script>
-<script src="/assets/bemaamoo/bmo.js?v=29"></script>
+<script src="/assets/bemaamoo/bmo-engine.js?v=9"></script>
+<script src="/assets/bemaamoo/bmo.js?v=31"></script>
 </body>
 </html>
