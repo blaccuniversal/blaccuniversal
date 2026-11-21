@@ -174,3 +174,13 @@ body.bm-player .hg{bottom:calc(100px + env(safe-area-inset-bottom))}
   .bm .mus-time{margin-left:8px}
   .bm .mus-x{top:-38px;right:10px}
 }
+
+/* order control */
+.bm .bm-sorthead{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.bm .bm-sorthead .mus-eyebrow{margin:0}
+.bm .bm-sort{display:flex;border:1px solid rgba(255,255,255,.22);border-radius:2px;overflow:hidden}
+.bm .bm-sort button{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border:0;border-left:1px solid rgba(255,255,255,.22);background:none;color:#8c8c8c;font:inherit;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .2s,color .2s}
+.bm .bm-sort button:first-child{border-left:0}
+.bm .bm-sort button:hover{color:#fff}
+.bm .bm-sort button[aria-pressed="true"]{background:#fff;color:#000}
+.bm .bm-sort button:focus-visible{outline:1px solid #fff;outline-offset:-3px}

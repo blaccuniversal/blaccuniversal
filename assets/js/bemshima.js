@@ -72,3 +72,27 @@
   sh.addEventListener('click', function (e) { if (e.target === sh || e.target.closest('.bm-sheet__x')) close(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && sh.classList.contains('is-open')) close(); });
 })();
+
+/* free music: order — original / A–Z / shuffle */
+(function () {
+  var list = document.querySelector('.bm .tl'), eb = document.getElementById('tl-h');
+  if (!list || !eb) return;
+  var rows = [].slice.call(list.children);
+  var idx = function (r) { return +r.querySelector('[data-tl]').getAttribute('data-tl'); };
+  var title = function (r) { return (r.querySelector('.tl__t').firstChild.textContent || '').trim(); };
+  var orig = rows.slice();
+  var head = document.createElement('div'); head.className = 'bm-sorthead';
+  eb.parentNode.insertBefore(head, eb); head.appendChild(eb);
+  var bar = document.createElement('div'); bar.className = 'bm-sort'; bar.setAttribute('role', 'group'); bar.setAttribute('aria-label', 'Order songs');
+  bar.innerHTML = '<button type="button" data-o="def" aria-pressed="true">Default</button><button type="button" data-o="az" aria-pressed="false">A–Z</button><button type="button" data-o="shuf" aria-pressed="false"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>Shuffle</button>';
+  head.appendChild(bar);
+  function apply(mode) {
+    var r = orig.slice();
+    if (mode === 'az') r.sort(function (a, b) { return title(a).localeCompare(title(b), undefined, { numeric: true, sensitivity: 'base' }); });
+    if (mode === 'shuf') for (var i = r.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = r[i]; r[i] = r[j]; r[j] = t; }
+    r.forEach(function (row, n) { list.appendChild(row); var num = row.querySelector('.tl__n'); if (num) num.textContent = ('0' + (n + 1)).slice(-2); });
+    window.BM_ORDER = mode === 'def' ? null : r.map(idx);
+    [].forEach.call(bar.children, function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-o') === mode ? 'true' : 'false'); });
+  }
+  bar.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) apply(b.getAttribute('data-o')); });
+})();

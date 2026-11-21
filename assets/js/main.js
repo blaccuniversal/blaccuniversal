@@ -845,11 +845,16 @@
       if (keepPlaying) au.play().catch(function () {});
       paint();
     }
+    function step(d) {
+      var o = window.BM_ORDER;
+      if (!o || o.length !== mt.length) return mi + d;
+      return o[(o.indexOf(mi) + d + o.length) % o.length];
+    }
     function toggle() { if (au.paused) au.play().catch(function () {}); else au.pause(); }
     q('[data-count-n]').textContent = (mt.length < 10 ? '0' : '') + mt.length;
     if (mt.length < 2) mus.classList.add('is-single');
-    q('[data-prev-t]').addEventListener('click', function () { show(mi - 1, !au.paused); });
-    q('[data-next-t]').addEventListener('click', function () { show(mi + 1, !au.paused); });
+    q('[data-prev-t]').addEventListener('click', function () { show(step(-1), !au.paused); });
+    q('[data-next-t]').addEventListener('click', function () { show(step(1), !au.paused); });
     q('[data-cover-btn]').addEventListener('click', toggle);
     q('[data-ring]').addEventListener('click', toggle);
     tlBtns.forEach(function (b) {
@@ -866,7 +871,7 @@
       setPct(au.currentTime / au.duration * 100);
     });
     au.addEventListener('ended', function () {
-      if (mt.length > 1) show(mi + 1, true); else { au.currentTime = 0; setPct(0); q('[data-cur]').textContent = '0:00'; paint(); }
+      if (mt.length > 1) show(step(1), true); else { au.currentTime = 0; setPct(0); q('[data-cur]').textContent = '0:00'; paint(); }
     });
     function seekTo(e) {
       var b = seekEl.getBoundingClientRect(), x = (e.touches ? e.touches[0] : e).clientX;
