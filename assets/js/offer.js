@@ -34,6 +34,7 @@
   '.ofr__p{text-wrap:pretty;margin:0 0 24px;font-size:16px;line-height:1.6;color:#b5b5b5}' +
   '.ofr__price{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 14px;margin:0 0 26px;padding:18px 0;border-top:1px solid #1f1f1f;border-bottom:1px solid #1f1f1f}' +
   '.ofr__price b{font-size:clamp(36px,8vw,48px);font-weight:600;letter-spacing:-.03em;line-height:1}' +
+  '.ofr__off{flex-basis:100%;align-self:flex-start;width:max-content;margin:0 0 4px;padding:5px 10px;border-radius:2px;background:#fff;color:#000;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase}' +
   '.ofr__price s{font-size:18px;color:#6f6f6f}' +
   '.ofr__price span{flex-basis:100%;font-size:13px;color:#8a8a8a}' +
   '.ofr__cd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 26px}' +
@@ -59,7 +60,7 @@
 
   var btn = document.createElement('button');
   btn.type = 'button'; btn.className = 'hg';
-  btn.setAttribute('aria-label', 'Website offer: ends 25 November');
+  btn.setAttribute('aria-label', 'Website offer: over 70% off, ends 25 November');
   btn.setAttribute('aria-haspopup', 'dialog');
   btn.innerHTML = GLASS;
 
@@ -70,7 +71,7 @@
     '<p class="ofr__eye">' + GLASS + 'Offer ends 25 November</p>' +
     '<h2 class="ofr__t" id="ofr-t">Your website, built by BLACC.</h2>' +
     '<p class="ofr__p">We design and build your website, plus one year of hosting on your own domain.</p>' +
-    '<p class="ofr__price"><b>₦123,456</b><s>₦450,000</s><span>One-off price. You save ₦326,544.</span></p>' +
+    '<p class="ofr__price"><em class="ofr__off">Over 70% off</em><b>₦123,456</b><s>₦450,000</s><span>One-off price. You save ₦326,544.</span></p>' +
     '<div class="ofr__cd" aria-live="off"><div><b data-cd="d">00</b><small>Days</small></div><div><b data-cd="h">00</b><small>Hours</small></div><div><b data-cd="m">00</b><small>Mins</small></div><div><b data-cd="s">00</b><small>Secs</small></div></div>' +
     '<button class="ofr__go" type="button" data-ofr-claim>Claim this offer' + ARROW + '</button>' +
     '<p class="ofr__fine">Ends 25 November 2026, 12:00 AM (Lagos time).</p></div>';
