@@ -575,3 +575,40 @@ body:has(.drawer:not([hidden])) .cxg-dock,body:has(.mdl:not([hidden])) .cxg-dock
 .bk__f input[type=date]{text-align:left;min-height:30px;display:block}
 .bk__f input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
 @media (max-width:900px){.bk__bar{grid-template-columns:1fr 1fr}.bk__f--r{grid-column:1/-1;border-right:0!important}.bk__f:nth-child(1){border-right:1px solid var(--ln)}}
+
+/* ---------- tighter rhythm, smoother scroll ---------- */
+html{scroll-padding-top:88px;-webkit-text-size-adjust:100%}
+body{overscroll-behavior-y:none}
+.hero.is-off .stars i,.hero.is-off .flies i{animation-play-state:paused}
+.hero__p{max-width:none}
+.intro{padding:clamp(56px,8vw,100px) clamp(18px,5vw,40px) clamp(36px,5vw,64px)}
+.intro .lead{margin-top:14px;max-width:none}
+.facts{margin-top:34px}
+.facts li{padding:24px 12px}
+.rooms{padding:clamp(28px,4vw,56px) 0 clamp(56px,7vw,90px)}
+.dining,.grounds,.moments,.people{padding-top:clamp(52px,7vw,88px);padding-bottom:clamp(52px,7vw,88px)}
+.head{margin-bottom:clamp(20px,3vw,34px)}
+.note{max-width:none}
+.room__b{padding:18px 18px 18px;gap:6px}
+.room__art{aspect-ratio:3/2}
+.room__f{flex-wrap:nowrap}
+.room__foot{padding-top:12px;margin-top:8px}
+.room__d,.room__t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.venue__b{padding:20px 20px 22px;gap:8px}
+.venue__btns{padding-top:8px}
+.ft{padding:40px 0 calc(100px + env(safe-area-inset-bottom))}
+.ft small{display:block;line-height:1.6}
+@media (max-width:760px){
+  .h2{font-size:clamp(28px,8.2vw,36px);white-space:nowrap}
+  .hero__t{font-size:clamp(40px,12.4vw,54px)}
+  .head{gap:10px}
+  .head .note{text-align:left}
+  .gal{padding-bottom:32px}
+  .wf__copy{padding-top:70px}
+  .mo{width:70vw}
+  .person{padding:16px 0}
+  .partner{margin-top:26px}
+  .glist li{padding:12px 0}
+}
+@media (min-width:761px){.h2{white-space:normal}}
+@media (max-width:760px){.hero__p{font-size:16px}.wf .h2{white-space:normal}}

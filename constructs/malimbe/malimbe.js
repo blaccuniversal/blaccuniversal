@@ -8,8 +8,8 @@
   var NAMES = ['Terracotta', 'Woven', 'Carved', 'Canopy', 'Clay', 'Weaver'];
   var ROOMS = [1, 2, 3, 4, 5, 6].map(function (n) {
     return { id: 'room-' + n, kind: 'Culture-themed suite', name: 'Room ' + (n < 10 ? '0' + n : n), photo: '/constructs/malimbe/img/bedroom-' + n + '.webp',
-      desc: 'A culture-themed room with hand-finished walls, warm light and the forest outside.',
-      feats: [['i-bed', 'Culture-themed design'], ['i-pin', '6,000 sqm natural setting'], ['i-bell', 'Opening December 2026']] };
+      desc: 'Hand-finished walls and warm light.',
+      feats: [['i-bed', 'Culture-themed'], ['i-bell', 'Opens Dec 2026']] };
   });
   function byId(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return ROOMS[0]; }
   function ic(id) { return '<svg><use href="#' + id + '"/></svg>'; }
@@ -52,7 +52,7 @@
     $('[data-sart]').innerHTML = art(r);
     $('[data-skind]').textContent = r.kind;
     $('[data-st]').textContent = r.name;
-    $('[data-sprice]').innerHTML = '<small>Rates announced at opening</small>';
+    $('[data-sprice]').innerHTML = '<small>Rates at opening</small>';
     $('[data-sdesc]').textContent = r.desc;
     $('[data-sfeats]').innerHTML = r.feats.map(function (f) { return '<li>' + ic(f[0]) + f[1] + '</li>'; }).join('');
     sheet.hidden = false; document.body.style.overflow = 'hidden';
@@ -71,7 +71,7 @@
     closeSheet(); closeDrawer();
     var sel = $('#f-int'); if (interest) { for (var i = 0; i < sel.options.length; i++) if (sel.options[i].text === interest) sel.selectedIndex = i; }
     var msg = $('#f-msg'); if (note && !msg.value) msg.value = note;
-    fm.className = 'jf__msg'; fm.textContent = 'We’ll only contact you about Malimbe Lodge.';
+    fm.className = 'jf__msg'; fm.textContent = 'Only for Malimbe updates.';
     mdl.hidden = false; document.body.style.overflow = 'hidden';
     setTimeout(function () { try { $('#f-name').focus(); } catch (e) {} }, 60);
   }
@@ -166,8 +166,10 @@
     heroImg.style.transform = 'translate(' + (mx * -8).toFixed(1) + 'px,' + (y * 0.25).toFixed(1) + 'px) scale(' + (1.04 + y / window.innerHeight * 0.06).toFixed(3) + ')';
   }
   if (!reduce) hero.addEventListener('pointermove', function (e) { if (e.pointerType !== 'mouse') return; mx = (e.clientX / window.innerWidth - 0.5) * 2; parallax(window.pageYOffset); });
-  window.addEventListener('scroll', onScroll, { passive: true });
+  var tick = false;
+  window.addEventListener('scroll', function () { if (tick) return; tick = true; requestAnimationFrame(function () { tick = false; onScroll(); }); }, { passive: true });
   onScroll();
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { hero.classList.toggle('is-off', !en[0].isIntersecting); }, { threshold: 0 }).observe(hero);
 
   /* ---------- reveal on scroll ---------- */
   if ('IntersectionObserver' in window) {
