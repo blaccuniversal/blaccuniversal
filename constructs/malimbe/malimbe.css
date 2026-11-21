@@ -483,7 +483,6 @@ html[data-theme=dark] ::selection{background:var(--clay)}
 html{scroll-padding-top:84px}
 h1,h2,h3{text-wrap:balance}
 p,.lede,.sub{text-wrap:pretty}
-.nav{padding-top:env(safe-area-inset-top)}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--rust);outline-offset:3px;border-radius:2px}
 .s-dark a:focus-visible,.s-dark button:focus-visible,.s-rust a:focus-visible,.s-rust button:focus-visible,.s-rust input:focus-visible,.s-rust select:focus-visible,.s-rust textarea:focus-visible,.lb button:focus-visible{outline-color:#f3ebdf}
 img.fade{opacity:0;transition:opacity .9s ease}
@@ -513,3 +512,16 @@ html[data-theme=dark] .nav-links a.active{color:#fff}
 /* hero rhythm */
 .hero-copy .sub{max-width:34ch}
 @media (min-width:981px){.hero{min-height:min(100svh,860px)}}
+
+/* form alignment */
+.s-rust .btn-primary{background:#f3ebdf;color:#24180f}.s-rust .btn-primary:hover{background:#fff}
+@media (max-width:720px){
+  form{gap:6px}
+  .field{gap:2px}
+  .field input,.field select,.field textarea{font-size:16px;padding:10px 0 9px;min-height:44px}
+  .field textarea{min-height:84px}
+  .form-foot{flex-direction:column-reverse;align-items:stretch;gap:14px;margin-top:14px}
+  .form-foot .btn{width:100%;justify-content:center;height:56px}
+  .form-msg{text-align:center;font-size:12.5px}
+  .join{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+}
