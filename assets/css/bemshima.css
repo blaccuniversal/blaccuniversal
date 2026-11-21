@@ -35,7 +35,7 @@
 
 /* no shell, no artwork: a plain control row */
 .bm .mus-card{background:none!important;border:0!important;box-shadow:none!important;border-radius:0}
-.bm .mus-card__text{padding:14px 0;border-top:1px solid #1f1f1f;border-bottom:1px solid #1f1f1f;grid-template-columns:48px minmax(0,.9fr) minmax(0,1.3fr) auto}
+.bm .mus-card__text{padding:14px 0;border:0;grid-template-columns:48px minmax(0,.9fr) minmax(0,1.3fr) auto}
 .bm .mus-card .mus-cover{width:48px;height:48px;border-radius:50%;background:#fff;overflow:hidden}
 .bm .mus-cover img{display:none}
 .bm .mus-cover__play{background:none;color:#000}
