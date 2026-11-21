@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611211620, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611211735, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -1091,8 +1091,9 @@ function pqtMain() {
   function allPlayed() { var d = wDone(); return H.teams.every(function (_, i) { return d.indexOf(i) > -1; }); }
   function turnStart() { snap(); var dn = wDone(); if (dn.indexOf(H.words.team) < 0) dn.push(H.words.team); if (H.view !== 'words') resetTally(); H.view = 'words'; H.timer.running = false; H.timer.remaining = H.timer.total; push(); timerStart(); renderAll(); }
   function nextTeam() { if (H.view === 'words') { snap(); H.timer.running = false; H.timer.remaining = 0; H.view = 'turnend'; push(); renderAll(); if (allPlayed()) return; } if (allPlayed()) { renderAll(); return; } snap(); var dn2 = wDone(), n = H.teams.length, nt = H.words.team; for (var s = 1; s <= n; s++) { var c2 = (H.words.team + s) % n; if (dn2.indexOf(c2) < 0) { nt = c2; break; } } H.words.team = nt; resetTally(); H.timer.running = false; H.timer.remaining = H.timer.total; H.view = 'turn'; push(); renderAll(); }
-  function curCard() { var w = H.words; return WORDS[w.deck[w.pos % Math.max(1, w.deck.length)]]; }
-  function nextCard() { var w = H.words; w.pos++; if (w.pos >= w.deck.length) { w.deck = shuffle(w.deck); w.pos = 0; } }
+  function ensureDeck() { var w = H.words; if (!w.deck || w.deck.length !== WORDS.length || w.pos >= w.deck.length || w.pos < 0) { w.deck = shuffle(WORDS.map(function (_, i) { return i; })); w.pos = 0; } return w; }
+  function curCard() { var w = ensureDeck(); return WORDS[w.deck[w.pos]]; }
+  function nextCard() { var w = ensureDeck(); w.pos++; if (w.pos >= w.deck.length) { w.deck = shuffle(w.deck); w.pos = 0; } }
   function wordAct(kind) {
     var c = curCard(); if (!c) return;
     snap();
@@ -1482,7 +1483,7 @@ function pqtMain() {
     Object.keys(H).forEach(function (k) { delete H[k]; });
     Object.keys(d).forEach(function (k) { H[k] = d[k]; });
     Object.keys(keep).forEach(function (k) { H[k] = keep[k]; });
-    H.ready = false; H.gameId = Date.now().toString(36); H.ended = false; H.byRound = {}; H.planPh = []; H.devs = {}; H.ph = null;
+    H.ready = false; H.gameId = Date.now().toString(36); H.ended = false; H.byRound = {}; H.planPh = []; H.devs = {}; H.ph = null; ensureDeck();
   }
   function resumeGame(id) {
     var g = saves().filter(function (x) { return x.id === id; })[0]; if (!g) return;
@@ -1492,7 +1493,7 @@ function pqtMain() {
     var d = JSON.parse(JSON.stringify(DEF)); Object.keys(d).forEach(function (k) { H[k] = d[k]; });
     var gm = JSON.parse(JSON.stringify(g.game)); Object.keys(gm).forEach(function (k) { H[k] = gm[k]; });
     Object.keys(keep).forEach(function (k) { H[k] = keep[k]; });
-    H.ready = true; H.timer.running = false; closeSheets(); push(); renderAll(); splash('Game resumed', H.title || g.name); toast('Resumed · ' + g.name);
+    H.ready = true; H.timer.running = false; ensureDeck(); closeSheets(); push(); renderAll(); splash('Game resumed', H.title || g.name); toast('Resumed · ' + g.name);
   }
   function reuseGame(id) {
     var g = saves().filter(function (x) { return x.id === id; })[0]; if (!g) return;
