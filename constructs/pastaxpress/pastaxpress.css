@@ -657,3 +657,17 @@ a.ct:hover{border-color:var(--acc);background:rgba(244,177,60,.05)}
 .dish__f .price{font-size:17px}
 .hero__plate{inset:5%}
 @media (max-width:860px){.hero__art{max-width:520px}}
+
+/* one-line rows */
+.dishes{gap:8px}
+.dish__b{padding:10px 12px}
+.dish__d{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-line-clamp:unset;margin:2px 0 0}
+.dish__f{margin-top:8px;gap:8px}
+.dish__f .dopt{flex:1;min-width:0;width:auto;margin:0;height:34px;font-size:12.5px;padding-left:10px}
+.dish__f .price{margin-left:auto;font-size:16px;white-space:nowrap}
+.dish__f .dopt+.price{margin-left:0}
+.dish .add,.dish .step{height:34px}
+.menu{padding:clamp(56px,7vw,90px) 0}
+.mani{padding:clamp(48px,6vw,80px) 0}
+.deals,.feed{padding:clamp(56px,7vw,90px) 0}
+.spec,.events,.visit{padding:clamp(48px,6vw,80px) 0}
