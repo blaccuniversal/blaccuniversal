@@ -154,7 +154,7 @@ img{display:block;max-width:100%}
 @media (max-width:980px){.deal-grid{grid-template-columns:1fr 1fr}.ticket{grid-column:1/-1}}
 @media (max-width:600px){.deal-grid{grid-template-columns:1fr}}
 .deal{border-radius:6px;overflow:hidden;background:var(--mar);color:var(--tx);display:flex;flex-direction:column;box-shadow:0 30px 60px -36px rgba(94,11,22,.8)}
-.deal img{width:100%;aspect-ratio:16/10;object-fit:cover}
+.deal img{width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:center 45%}
 .deal__b{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;padding:18px 20px 20px;flex:1}
 .deal__k{margin:0;max-width:200px;font-size:15px;font-weight:600;line-height:1.35}
 .deal__p{margin:0;text-align:right;line-height:1}
