@@ -75,3 +75,28 @@
 .bm .mus-follow,.bm .mus-work .follow{display:none}
 .bm .mus-work .contact__actions{margin-bottom:0}
 .bm .footer{padding-top:22px;padding-bottom:22px}
+
+/* glass pop-up player, docked at the bottom, slides up when music plays */
+.bm .mus-hero{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));z-index:60;padding:0 14px;pointer-events:none;transform:translateY(calc(100% + 40px));opacity:0;transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .35s ease}
+.bm .mus-hero.is-up{transform:none;opacity:1}
+.bm .mus-hero .wrap{max-width:760px;margin:0 auto}
+.bm .mus-card{pointer-events:auto;position:relative;background:rgba(24,24,26,.52)!important;-webkit-backdrop-filter:blur(26px) saturate(1.6);backdrop-filter:blur(26px) saturate(1.6);border:1px solid rgba(255,255,255,.16)!important;border-radius:20px!important;box-shadow:0 24px 60px -18px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.12)!important;overflow:hidden}
+.bm .mus-card__text{border:0!important;padding:12px 52px 12px 14px;grid-template-columns:46px minmax(0,.9fr) minmax(0,1.2fr) auto;column-gap:clamp(12px,2vw,20px)}
+.bm .mus-card .mus-cover{width:46px;height:46px}
+.bm .mus-head .mus-eyebrow{font-size:9.5px}
+.bm .mus-card .mus-title{font-size:clamp(17px,1.8vw,20px)}
+.bm .mus-by{font-size:12.5px}
+.bm .mus-nav .icon-btn{width:36px;height:36px}
+.bm .mus-line{background:rgba(255,255,255,.2)}
+.bm .mus-x{z-index:5;position:absolute;top:50%;right:8px;transform:translateY(-50%);width:36px;height:36px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#fff;cursor:pointer}
+.bm .mus-x:hover{background:rgba(255,255,255,.18)}
+.bm .footer{padding-bottom:calc(22px + 92px + env(safe-area-inset-bottom))}
+body.bm-player .hg{bottom:calc(100px + env(safe-area-inset-bottom))}
+@media (max-width:760px){
+  .bm .mus-hero{padding:0 10px}
+  .bm .mus-card__text{grid-template-columns:46px minmax(0,1fr) auto;grid-template-areas:"cover head nav" "line line line" "time time time";padding:12px 50px 12px 12px;row-gap:4px}
+  .bm .mus-line{margin-top:6px}
+  .bm .mus-x{top:22px;transform:none;right:8px}
+  .bm .footer{padding-bottom:calc(22px + 128px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){.bm .mus-hero{transition:none}}
