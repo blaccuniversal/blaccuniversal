@@ -65,11 +65,9 @@
     dishesEl.innerHTML = list.map(function (d) {
       var tagOn = d.days.length < 7 && d.days.indexOf(today) > -1;
       var tag = d.days.length < 7 ? '<span class="dish__tag' + (tagOn ? ' is-on' : '') + '">' + dayText(d) + '</span>' : '';
-      var img = d.img || d.pic;
-      var pic = img ? '<div class="dish__img"><img src="' + IMG + img + '" alt="' + d.name + '" style="object-position:' + (d.pos || '50% 50%') + '" loading="lazy">' + tag + '</div>' : '<div class="dish__img dish__img--ph"><img src="' + IMG + 'logo.png" alt="" loading="lazy">' + tag + '</div>';
       var sel = d.opts ? '<select class="dopt" data-opt="' + d.id + '" aria-label="Choose ' + d.name + '">' + d.opts.map(function (x, i) { return '<option value="' + i + '">' + x.n + ' · ' + naira(x.p) + '</option>'; }).join('') + '</select>' : '';
       var k = keyOf(d, 0), price = d.opts ? d.opts[0].p : d.price;
-      return '<article class="dish"' + (d.opts ? ' data-dish="' + d.id + '"' : '') + '>' + pic + '<div class="dish__b"><h3 class="dish__n">' + d.name + '</h3><p class="dish__d">' + d.desc + '</p>' + sel +
+      return '<article class="dish"' + (d.opts ? ' data-dish="' + d.id + '"' : '') + '><div class="dish__b"><div class="dish__h"><h3 class="dish__n">' + d.name + '</h3>' + tag + '</div><p class="dish__d">' + d.desc + '</p>' + sel +
         '<div class="dish__f"><span class="price" data-price>' + naira(price) + '</span><span data-ctrl="' + k + '">' + ctrl(k) + '</span></div></div></article>';
     }).join('') || '<p class="cart__empty" style="grid-column:1/-1">Nothing on that day in this group.</p>';
   }
