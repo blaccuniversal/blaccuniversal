@@ -599,3 +599,6 @@ a.ct:hover{border-color:var(--yel);background:rgba(255,193,7,.05)}
   .ct__t small{grid-column:2;grid-row:1}
   .ct__t b,.ct .chips{grid-column:1/-1;grid-row:2;margin:0}
 }
+.evr .lead{margin-top:0}
+.evr .btns{margin-top:20px}
+@media (max-width:860px){.evgrid{grid-template-columns:1fr;gap:0}.evr .lead{margin-top:16px}.evr .btns{margin-top:22px}}
