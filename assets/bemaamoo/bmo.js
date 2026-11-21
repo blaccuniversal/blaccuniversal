@@ -202,11 +202,16 @@
   }
   var lastClockPub = 0, lastClockSave = 0;
   function stopClock() { if (tick) clearInterval(tick); tick = null; }
+  function clockLeft() {
+    var r = R(), c = NET && !isHost() ? NET.clk : null;
+    if (c && c.n === r.n && running && !r.done) return Math.max(0, c.left - (Date.now() - c.at) / 1000);
+    return r.left;
+  }
   function paintClock() {
     var c = $('[data-clock]');
     if (!G.settings.timer) { setp(c, 'hidden', true); return; }
     setp(c, 'hidden', false);
-    var left = R().left, low = left <= 15 && !R().done;
+    var left = clockLeft(), low = left <= 15 && !R().done;
     tx($('[data-clocktx]'), fmt(left));
     if (c._low !== low) { c._low = low; c.classList.toggle('is-low', low); }
     if (c._run !== running) {
@@ -590,7 +595,8 @@
   /* If the host's phone goes quiet (minimised, locked, offline) the first player still online takes over, so the game carries on. */
   function failoverCheck() {
     if (!NET || isHost() || !NET.lobby || !netOn()) return;
-    var r = G && !G.over ? R() : null, lim = (r && r.run && !r.done && G.settings.timer) ? 8000 : 11000, now = Date.now();
+    if (G && G.over) return;   // nothing left to run, and a stale copy must never be re-published over the results
+    var r = G ? R() : null, lim = (r && r.run && !r.done && G.settings.timer) ? 8000 : (r && r.done ? 45000 : 11000), now = Date.now();
     if (now - Math.max(NET.gotAt || 0, NET.upAt || 0) < lim) return;
     var L = NET.lobby, hd = L.hd || (L.players[0] || {}).dev;
     if (!L.players.some(function (p) { return p.dev === DEV; })) return;
@@ -628,7 +634,7 @@
     var k = G.turn + ':' + r.entries.length + ':' + (r.skips || 0);
     if (mine && NET.twk !== k) { NET.twk = k; buzz([60, 40, 60]); }
   }
-  setInterval(function () { turnWatch(); paintTurnWarn(); }, 400);
+  setInterval(function () { turnWatch(); paintTurnWarn(); if (NET && !isHost() && cur === 'game' && G && running && G.settings.timer && !document.hidden) paintClock(); }, 400);
   /* the turn clock is an idle clock: any typing or touching by the player on turn starts it over */
   var lastAct = 0;
   function noteActivity() {
@@ -909,12 +915,14 @@
     if (NET.jq && st.lobby.players.some(function (p) { return p.dev === DEV; })) clearJoin();
     clearTimeout(NET.noRoomT);
     if (!st.G) {
-      NET.gsig = null; NET.live = false; G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
+      var hadG = !!G; NET.gsig = null; NET.live = false; G = null;
+      if (hadG) { closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; }); }   // only when a game has just ended; a heartbeat must never close the chat box
       if (cur !== 'room') show('room'); else paintRoom();
       return;
     }
     if (!st.G.players.some(function (p) { return p.dev === DEV; })) {
-      NET.live = true; G = null; closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; });
+      var wasLive = NET.live || !!G; NET.live = true; G = null;
+      if (!wasLive) { closeSheets(); $$('[data-ov]').forEach(function (o) { o.hidden = true; }); }
       if ((st.lobby.dec || []).indexOf(DEV) > -1) { netClose(); store(KEY_ROOM, null); show('online'); toast('The host couldn’t add you to this game.'); return; }
       if (cur !== 'room') show('room'); else paintRoom();
       return;
@@ -942,6 +950,7 @@
       msg('<span>' + t + '</span>' + (st.rej.why === 'unknown' ? '<button type="button" data-act="vreq">Ask the room to vouch</button>' : '') + (st.rej.why === 'unknown' || st.rej.why === 'vno' ? '<button type="button" class="is-pri" data-act="retry">Try another</button>' : ''), true); shake();
     }
     running = !!(r.run && !r.done);
+    NET.clk = { n: r.n, left: r.left, at: Date.now() };
     if (same && !G.over && !r.done) {   // a heartbeat with nothing new: refresh clock, chips and presence only, so nothing flickers or loses focus
       paintClock(); paintStrip(); paintBadge(); paintPeople(); lastAdded = -1;
       return;
