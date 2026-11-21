@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Doomsday · 18 December 2026</title>
+<meta name="description" content="A fan-made countdown to Doomsday. Thunder, breathing runes and a clock that will not stop.">
+<meta name="theme-color" content="#040504">
+<script src="/assets/js/cx-codes.js?v=6"></script>
+<script src="/assets/js/cx-gate.js?v=2" data-id="doomsday" data-name="Doomsday Countdown"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..100,300..800;1,75..100,300..800&amp;display=swap" rel="stylesheet">
+<link rel="icon" href="/constructs/doomsday/img/favicon.png" type="image/png">
+<link rel="preload" as="image" href="/constructs/doomsday/img/throne2.webp" fetchpriority="high">
+<link rel="stylesheet" href="/constructs/doomsday/doomsday.css?v=1">
+</head>
+<body>
+
+<!-- entry -->
+<div class="veil" data-veil>
+  <svg class="veil__seal" viewBox="-300 -300 600 600" aria-hidden="true" data-rune-mini></svg>
+  <div class="veil__in">
+    <p class="eyebrow">Avengers: Doomsday &middot; 18 December 2026</p>
+    <h1 class="veil__h">The clock has <em>started.</em></h1>
+    <p class="veil__w">Contains loud sound and flashing light.</p>
+    <div class="veil__b">
+      <button class="btn btn--w" type="button" data-begin="sound">Tap to begin</button>
+      <button class="btn btn--g" type="button" data-begin="silent">Enter silent</button>
+    </div>
+  </div>
+</div>
+
+<canvas class="fx" data-fx aria-hidden="true"></canvas>
+<div class="flash" data-flash aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="nav__b" href="#top">Doomsday</a>
+  <span class="nav__t" data-mini aria-hidden="true">&nbsp;</span>
+  <div class="nav__r">
+    <button class="ibtn" type="button" data-mute aria-label="Sound" aria-pressed="false"><svg viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z"/><path data-w1 d="M15.5 9a4 4 0 0 1 0 6"/><path data-w2 d="M18 6.5a8 8 0 0 1 0 11"/></g></svg></button>
+  </div>
+</header>
+
+<main class="world" data-world id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero__bg"><img src="/constructs/doomsday/img/throne2.webp" alt="" width="941" height="1672" fetchpriority="high"></div>
+    <div class="hero__shade"></div>
+    <svg class="runes" viewBox="-300 -300 600 600" aria-hidden="true" data-runes></svg>
+    <div class="hero__in">
+      <p class="eyebrow">18 &middot; 12 &middot; 2026</p>
+      <div class="clock" data-clock role="timer" aria-label="Time until 18 December 2026">
+        <div class="cell"><b data-d>00</b><span>Days</span></div>
+        <div class="cell"><b data-h>00</b><span>Hours</span></div>
+        <div class="cell"><b data-m>00</b><span>Minutes</span></div>
+        <div class="cell cell--s"><b data-s>00</b><span>Seconds</span></div>
+      </div>
+      <p class="hero__l" data-line>Until Doomsday.</p>
+    </div>
+    <a class="hero__sc" href="#i" aria-label="Scroll"><i></i></a>
+  </section>
+
+  <!-- CHAPTERS -->
+  <section class="chap" id="i">
+    <img class="chap__img" src="/constructs/doomsday/img/throne.webp" alt="A hooded figure seated alone on a throne beneath towering stained glass" width="950" height="1900" loading="lazy">
+    <div class="chap__t rv"><p class="eyebrow">I</p><h2 class="h2">The <em>throne.</em></h2><p class="chap__p">He does not rush. He waits, and the world comes to him.</p></div>
+  </section>
+  <section class="chap">
+    <img class="chap__img" src="/constructs/doomsday/img/army.webp" alt="A hooded figure with arms open before towering iron giants under a burning sky" width="1069" height="1900" loading="lazy">
+    <div class="chap__t rv"><p class="eyebrow">II</p><h2 class="h2">The <em>army.</em></h2><p class="chap__p">Iron giants kneel in the ash. Nothing here was left standing by accident.</p></div>
+  </section>
+  <section class="chap chap--b">
+    <img class="chap__img" src="/constructs/doomsday/img/storm.webp" alt="A hooded figure watching blue lightning split a dark sky" width="1050" height="1900" loading="lazy">
+    <div class="chap__t rv"><p class="eyebrow">III</p><h2 class="h2">The <em>storm.</em></h2><p class="chap__p">Thunder answers. For a moment the sky is the only thing that is not afraid.</p></div>
+  </section>
+  <section class="chap">
+    <img class="chap__img" src="/constructs/doomsday/img/fall.webp" alt="A hooded figure rising through shattered rock and drifting rings" width="1069" height="1900" loading="lazy">
+    <div class="chap__t rv"><p class="eyebrow">IV</p><h2 class="h2">The <em>fall.</em></h2><p class="chap__p">Everything you built is already falling. The only question is who is still standing.</p></div>
+  </section>
+
+  <!-- ARRIVAL -->
+  <section class="arr">
+    <div class="wrap">
+      <div class="head rv"><div><p class="eyebrow">The arrival</p><h2 class="h2">Eight ways to <em>meet him.</em></h2></div></div>
+    </div>
+    <div class="slider" data-slider>
+      <div class="track" data-track>
+        <figure><img src="/constructs/doomsday/img/hood.webp" alt="A hooded mask in green mist" width="1200" height="1800" loading="lazy"></figure>
+        <figure><img src="/constructs/doomsday/img/teaser.webp" alt="A cloaked figure walking out of green smoke" width="1086" height="1610" loading="lazy"></figure>
+        <figure><img src="/constructs/doomsday/img/rise.webp" alt="A towering armoured figure seen from below" width="1200" height="1800" loading="lazy"></figure>
+        <figure><img src="/constructs/doomsday/img/walk.webp" alt="A hooded figure leading three masked attendants through smoke" width="1200" height="1589" loading="lazy"></figure>
+        <figure><img src="/constructs/doomsday/img/hall.webp" alt="A small figure in a vast hall of light and stained glass" width="941" height="1672" loading="lazy"></figure>
+        <figure><img src="/constructs/doomsday/img/low.webp" alt="A masked figure flanked by two iron giants" width="1036" height="1900" loading="lazy"></figure>
+        <figure><img src="/constructs/doomsday/img/host.webp" alt="A cloaked figure facing an army of giants in a dark field" width="1069" height="1900" loading="lazy"></figure>
+        <figure><img src="/constructs/doomsday/img/throne2.webp" alt="A throne room in green and gold light" width="941" height="1672" loading="lazy"></figure>
+      </div>
+      <div class="dots" data-dots role="tablist" aria-label="Slides"></div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="fin">
+    <div class="wrap fin__in rv">
+      <p class="eyebrow">Save the date</p>
+      <h2 class="h2 fin__h">18 December <em>2026.</em></h2>
+      <p class="fin__p">Put it in your calendar before the sky does it for you.</p>
+      <div class="btns"><button class="btn btn--w" type="button" data-ics>Add to calendar</button></div>
+    </div>
+  </section>
+
+  <footer class="ft"><div class="wrap">
+    <p class="ft__s">A construct by <a href="/">BLACC Universal</a>. Fan-made and not official. Artwork belongs to its artists and Marvel Studios.</p>
+  </div></footer>
+</main>
+
+<script src="/constructs/doomsday/doomsday.js?v=1" defer></script>
+</body>
+</html>
