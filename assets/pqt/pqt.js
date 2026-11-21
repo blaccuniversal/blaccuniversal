@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611202330, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611211620, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -1369,7 +1369,7 @@ function pqtMain() {
     else if (d.suPh != null) { e.preventDefault(); SU.ph = SU.ph || []; SU.ph[+d.suPh] = !SU.ph[+d.suPh]; paintSetup(); }
     else if (d.svGo) { resumeGame(d.svGo); }
     else if (d.svReuse) { reuseGame(d.svReuse); }
-    else if (d.svDel) { if (!confirmTwice(b)) return; store('pqt_saves', saves().filter(function (g) { return g.id !== d.svDel; })); renderSaves(); toast('Deleted'); }
+    else if (d.svDel) { if (!confirmTwice(b)) return; store('pqt_saves', saves().filter(function (g) { return g.id !== d.svDel; })); var dl = store('pqt_savedel') || {}; dl[d.svDel] = Date.now(); store('pqt_savedel', dl); renderSaves(); toast('Deleted'); vaultSoon(); }
     else if (d.planPh != null) { var pi = +d.planPh; if (pi >= H.round - 1) { snap(); H.planPh = H.planPh || []; H.planPh[pi] = !H.planPh[pi]; push(); renderAll(); } }
     else if (b.hasAttribute('data-phsw')) { snap(); H.planPh = H.planPh || []; H.planPh[H.round - 1] = !H.planPh[H.round - 1]; push(); renderAll(); toast(phOn() ? 'Phones on for this round' : 'This round is on paper'); }
     else if (d.planI != null) { var k = +d.planI; if (k >= H.round) { var order = GORDER; H.plan[k] = order[(order.indexOf(H.plan[k]) + 1) % order.length]; push(); renderPlan(); paintMenu(); } }
@@ -1469,8 +1469,13 @@ function pqtMain() {
     var list = all.filter(function (g) { return g.id !== H.gameId; });
     var rec = { id: H.gameId, name: (name || H.title || 'PQT game').slice(0, 60), at: Date.now(), auto: !!auto, round: H.round, rounds: H.plan.length, ended: !!H.ended,
       teams: H.teams.map(function (t) { return { name: t.name, color: t.color, score: t.score }; }), game: gameSnap() };
-    list.unshift(rec); store('pqt_saves', list.slice(0, 30)); return rec;
+    list.unshift(rec); store('pqt_saves', list.slice(0, 30)); vaultSoon(); return rec;
   }
+  var vio = { get: function () { return saves(); }, getDel: function () { return store('pqt_savedel') || {}; }, set: function (g, d) { store('pqt_saves', g); store('pqt_savedel', d); } };
+  function vaultSoon() { if (window.PQT_VAULT) window.PQT_VAULT.soon(vio, 4000); }
+  function vaultSync() { if (!window.PQT_VAULT) return; window.PQT_VAULT.sync(vio).then(function () { var sh = $('[data-saves]'); if (sh && !sh.hidden) renderSaves(); paintVault(); }); }
+  function paintVault() { var el = $('[data-vault]'); if (!el || !window.PQT_VAULT) return; var V = window.PQT_VAULT, m = { off: '', sync: 'Syncing your games…', ok: 'Synced to your code · available on any device', fail: 'Could not sync · will retry. Games are safe on this device.', locked: 'This code’s games are locked to another key. Contact BLACC.' }; el.textContent = m[V.state] || ''; el.hidden = !el.textContent; el.className = 'hc-note hc-vault is-' + V.state; }
+  if (window.PQT_VAULT) { window.PQT_VAULT.onState = paintVault; setTimeout(vaultSync, 800); setInterval(vaultSync, 90000); document.addEventListener('visibilitychange', function () { if (!document.hidden) vaultSync(); }); }
   function freshGame() {
     var keep = {}; Object.keys(KEEP).forEach(function (k) { if (H[k] !== undefined) keep[k] = H[k]; });
     var d = JSON.parse(JSON.stringify(DEF));
@@ -1507,7 +1512,7 @@ function pqtMain() {
         '<button class="pbtn pbtn--sm" type="button" data-sv-reuse="' + g.id + '">Reuse setup</button><button class="pbtn pbtn--sm pbtn--ghost hc-sv__x" type="button" data-sv-del="' + g.id + '" aria-label="Delete">Delete</button></div></li>';
     }).join('') : '<li class="hc-sv__empty">No saved games yet. Use “Save game” in the menu to keep one for later.</li>';
   }
-  function openSaves() { closeSheets(); renderSaves(); $('[data-saves]').hidden = false; }
+  function openSaves() { closeSheets(); renderSaves(); $('[data-saves]').hidden = false; paintVault(); vaultSync(); }
   function isFresh() { return H.ready === false && !H.round && !H.ended; }
   function inPlay() { return H.round > 0 && !H.ended && H.teams.some(function (t) { return t.score; }); }
   function openSetup(fresh) {
