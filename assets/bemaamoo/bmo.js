@@ -4,10 +4,11 @@
   var B = window.BMO;
   var WORDS_V = 4;
   var KEY_GAME = 'bmo_game_v1', KEY_SETUP = 'bmo_setup_v1';
-  var COLORS = ['#ffffff', '#3ddc97', '#c792ff', '#ff7ab6', '#5ee0e0', '#ffb347', '#a3e635', '#8fa2ff'];
+  var COLORS = ['#ffffff', '#3ddc97', '#c792ff', '#ff7ab6', '#5ee0e0', '#ffb347', '#a3e635', '#8fa2ff', '#ff6b6b', '#ffd23f', '#4dabf7', '#e599f7', '#63e6be', '#ff922b', '#b2f2bb', '#d0bfff'];
   var TIMERS = [[0, 'Off'], [60, '1m'], [120, '2m'], [180, '3m'], [300, '5m'], [600, '10m']];
   var LIMITS = [[0, 'Off'], [10, '10'], [20, '20'], [30, '30'], [50, '50']];
-  var TURNS = [[0, 'Off'], [15, '15 sec'], [30, '30 sec'], [60, '1 min']];
+  var MAXP = 50;
+  var TURNS = [[0, 'Off'], [20, '20 sec'], [30, '30 sec'], [60, '1 min']];
   var ORDERS = [[0, 'Me first'], [1, 'Shuffle']];
   var KEY_ROOMS = 'bmo_rooms_v1';
 
@@ -91,7 +92,7 @@
 
   /* ---------- setup ---------- */
   var S = load(KEY_SETUP) || {};
-  S = { count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null ? S.tl : 15, sh: S.sh ? 1 : 0 };
+  S = { count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null && S.tl !== 15 ? S.tl : 20, sh: S.sh ? 1 : 0 };
   function saveSetup() { store(KEY_SETUP, S); }
   function paintSetup() {
     var pc = $('[data-pcount]'), h = '';
@@ -758,7 +759,7 @@
         return;
       }
       if (!p && m.t === 'join' && !G) {
-        if (L.players.length >= 8) return;
+        if (L.players.length >= MAXP) return;
         L.players.push({ dev: m.dev, name: cleanName(m.name) }); toast(cleanName(m.name) + ' joined'); buzz(15);
         storeRoom(); paintRoom(); pubSoon(); return;
       }
@@ -926,6 +927,7 @@
     netClose();
     NET = { role: 'host', code: rm.code, name: rm.name, hs: newHs(), ep: rm.ep || 0, seq: 0, seen: {}, lobby: rm.lobby };
     if (NET.lobby && !NET.lobby.hd) NET.lobby.hd = DEV;
+    if (NET.lobby && NET.lobby.tl === 15) NET.lobby.tl = 20;
     G = rm.G || null;
     if (G) {
       if (G.over) { G = null; }
@@ -939,7 +941,7 @@
     syncLobby();
     G = B.create({ players: NET.lobby.players.map(function (p) { return { name: p.name }; }), category: S.cat, timer: S.timer, limit: S.limit, fixed: true, shuffle: !!NET.lobby.sh });
     G.players.forEach(function (p, i) { p.dev = NET.lobby.players[i].dev; });
-    G.settings.turn = NET.lobby.tl != null ? NET.lobby.tl : 15;
+    G.settings.turn = NET.lobby.tl != null && NET.lobby.tl !== 15 ? NET.lobby.tl : 20;
     NET.rej = null;
     getList(S.cat); save(); show('game'); readyScreen();
   }
@@ -1033,7 +1035,7 @@
   function addMid(dev) {
     if (!isHost() || !G || G.over) return;
     var L = NET.lobby, w = (L.wait || []).filter(function (x) { return x.dev === dev; })[0]; if (!w) return;
-    if (G.players.length >= 8) { toast('The room is full (8 players).'); return; }
+    if (G.players.length >= MAXP) { toast('The room is full (' + MAXP + ' players).'); return; }
     L.wait = L.wait.filter(function (x) { return x.dev !== dev; });
     L.players.push({ dev: w.dev, name: w.name });
     G.players.push({ id: G.players.length, name: w.name, dev: w.dev });
@@ -1118,7 +1120,7 @@
       case 'next': if (NET && !isHost()) break; nextRound(); break;
       case 'nextcat': openCats('round'); break;
       case 'again':
-        if (NET) { if (!isHost()) break; ov('final', false); G = null; var Lw = NET.lobby; (Lw.wait || []).forEach(function (w) { if (Lw.players.length < 8) Lw.players.push({ dev: w.dev, name: w.name }); }); Lw.wait = []; Lw.dec = []; storeRoom(); pubNow(); show('room'); break; }
+        if (NET) { if (!isHost()) break; ov('final', false); G = null; var Lw = NET.lobby; (Lw.wait || []).forEach(function (w) { if (Lw.players.length < MAXP) Lw.players.push({ dev: w.dev, name: w.name }); }); Lw.wait = []; Lw.dec = []; storeRoom(); pubNow(); show('room'); break; }
         ov('final', false); store(KEY_GAME, null); G = null; show('setup'); break;
       case 'force': if (pending != null) getList(R().cat).then(function (L) { tryAdd(pending, L, true); }, function () { tryAdd(pending, null, true); }); break;
       case 'retry': msg(''); $('[data-in]').select(); focusIn(); break;
