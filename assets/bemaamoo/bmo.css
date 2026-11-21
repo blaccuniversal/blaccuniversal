@@ -441,3 +441,5 @@ input,textarea{font-size:max(16px,1em)}
 .vq b{font-weight:700}.vq__b{display:flex;gap:8px;flex-wrap:wrap}
 .vq button{min-height:36px;padding:0 14px;border:1px solid #5a5a5a;border-radius:8px;font-size:13px;font-weight:600;color:#fff;background:transparent}
 .vq button.is-pri{background:#fff;color:#000;border-color:#fff}
+
+.row.is-acc .cell:not(.is-mav){border-color:rgba(199,146,255,.8);background:rgba(199,146,255,.14);color:var(--acc)}

@@ -8,7 +8,7 @@
   var TIMERS = [[0, 'Off'], [60, '1m'], [120, '2m'], [180, '3m'], [300, '5m'], [600, '10m']];
   var LIMITS = [[0, 'Off'], [10, '10'], [20, '20'], [30, '30'], [50, '50']];
   var MAXP = 50;
-  var TURNS = [[0, 'Off'], [20, '20 sec'], [30, '30 sec'], [60, '1 min']];
+  var TURNS = [[0, 'Off'], [15, '15 sec'], [30, '30 sec'], [60, '1 min']];
   var ORDERS = [[0, 'Me first'], [1, 'Shuffle']];
   var KEY_ROOMS = 'bmo_rooms_v1';
 
@@ -92,7 +92,7 @@
 
   /* ---------- setup ---------- */
   var S = load(KEY_SETUP) || {};
-  S = { count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null && S.tl !== 15 ? S.tl : 20, sh: S.sh ? 1 : 0 };
+  S = { count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null && S.tl !== 20 ? S.tl : 15, sh: S.sh ? 1 : 0 };
   function saveSetup() { store(KEY_SETUP, S); }
   function paintSetup() {
     var pc = $('[data-pcount]'), h = '';
@@ -295,7 +295,7 @@
     r.entries.forEach(function (e, i) {
       while (gi < gaps.length && gaps[gi].a <= i) { h += gapRow(gaps[gi]); gi++; }
       seq++;
-      var cls = 'row' + (conAt[i] != null ? ' is-con' + conAt[i] : '') + (i === r.entries.length - 1 ? ' is-last' : '');
+      var cls = 'row' + (conAt[i] != null ? ' is-con' + conAt[i] : '') + (i === r.entries.length - 1 ? ' is-last' : '') + (e.acc ? ' is-acc' : '');
       h += '<div class="' + cls + '" data-row="' + i + '"><span class="row__n">' + (solo() ? '' : '<i style="background:' + color(e.p) + '"></i>') + seq + '</span>';
       for (var c = 0; c < e.w.length; c++) {
         var k = i + ':' + (c + 1);
@@ -316,34 +316,36 @@
     requestAnimationFrame(function () { b.scrollTop = b.scrollHeight; });
   }
 
+  function tx(el, v) { if (el.textContent !== v) el.textContent = v; }
+  function setp(el, k, v) { if (el[k] !== v) el[k] = v; }
   function paintDock() {
     var r = R(), d = $('.dock');
-    d.classList.toggle('is-done', r.done);
-    $('[data-turndot]').style.background = color(G.turn);
-    $('[data-turndot]').hidden = solo();
-    $('[data-turn]').textContent = r.done ? 'Round over' : (solo() ? 'Your word' : pname(G.turn) + '’s turn');
+    d.classList.toggle('is-done', !!r.done);
+    var td = $('[data-turndot]'), tc = color(G.turn); if (td._c !== tc) { td._c = tc; td.style.background = tc; }
+    setp($('[data-turndot]'), 'hidden', solo());
+    tx($('[data-turn]'), r.done ? 'Round over' : (solo() ? 'Your word' : pname(G.turn) + '’s turn'));
     var lv = B.live(r), el = $('[data-live]');
     if (lv.streak >= 2 && lv.len >= B.RULES.CON_MIN_LEN) {
       var need = B.RULES.CON_STREAK - lv.streak;
-      el.textContent = need > 0 ? lv.streak + ' × ' + lv.len + ' letters · ' + need + ' more for Concord' : 'Concord × ' + lv.streak + ' · keep it at ' + lv.len + ' letters';
+      tx(el, need > 0 ? lv.streak + ' × ' + lv.len + ' letters · ' + need + ' more for Concord' : 'Concord × ' + lv.streak + ' · keep it at ' + lv.len + ' letters');
       el.classList.toggle('is-hot', need <= 1);
-    } else { el.textContent = ''; el.classList.remove('is-hot'); }
-    $('[data-act="skip"]').hidden = solo();
-    $('[data-act="undo"]').disabled = !r.entries.length || r.done;
+    } else { tx(el, ''); el.classList.remove('is-hot'); }
+    setp($('[data-act="skip"]'), 'hidden', solo());
+    setp($('[data-act="undo"]'), 'disabled', !r.entries.length || r.done);
     var inp = $('[data-in]'), goB = $('.entry__go');
-    inp.placeholder = 'Type ' + (/^names/.test(r.cat) ? 'a name' : 'a word') + ' · ' + B.catName(r.cat);
+    setp(inp, 'placeholder', 'Type ' + (/^names/.test(r.cat) ? 'a name' : 'a word') + ' · ' + B.catName(r.cat));
     if (NET) {
       var mine = myTurn(), cp = pname(G.turn), stale = !isHost() && hostStale();
-      $('[data-turn]').textContent = stale ? 'Waiting for ' + hostName() + ' to reconnect…' : r.done ? 'Round over' : (mine ? 'Your turn' : cp + '’s turn');
+      tx($('[data-turn]'), stale ? 'Waiting for ' + hostName() + ' to reconnect…' : r.done ? 'Round over' : (mine ? 'Your turn' : cp + '’s turn'));
       var off = r.done || !mine || !running || !!NET.pend || stale;
-      inp.disabled = off; goB.disabled = off;
-      if (!mine && !r.done) inp.placeholder = 'Waiting for ' + cp + '…';
-      if (NET.pend) inp.placeholder = 'Sending…';
-      var sk = $('[data-act="skip"]'); sk.hidden = r.done || !(mine || isHost()); sk.textContent = mine ? 'Skip turn' : 'Skip ' + cp;
-      $('[data-act="undo"]').hidden = !isHost(); $('[data-act="end"]').hidden = !isHost();
+      setp(inp, 'disabled', off); setp(goB, 'disabled', off);
+      if (!mine && !r.done) setp(inp, 'placeholder', 'Waiting for ' + cp + '…');
+      if (NET.pend) setp(inp, 'placeholder', 'Sending…');
+      var sk = $('[data-act="skip"]'); setp(sk, 'hidden', r.done || !(mine || isHost())); tx(sk, mine ? 'Skip turn' : 'Skip ' + cp);
+      setp($('[data-act="undo"]'), 'hidden', !isHost()); setp($('[data-act="end"]'), 'hidden', !isHost());
     } else {
-      inp.disabled = false; goB.disabled = false;
-      $('[data-act="undo"]').hidden = false; $('[data-act="end"]').hidden = false; $('[data-act="skip"]').textContent = 'Skip turn';
+      setp(inp, 'disabled', false); setp(goB, 'disabled', false);
+      setp($('[data-act="undo"]'), 'hidden', false); setp($('[data-act="end"]'), 'hidden', false); tx($('[data-act="skip"]'), 'Skip turn');
     }
   }
 
@@ -406,7 +408,7 @@
     celebrate(e);
     paintGame();
     lastAdded = -1;
-    if (r.done) { setTimeout(roundOver, 900); return; }
+    if (r.done) { roundOverSoon(r); return; }
     if (NET) { notifyTurn(); return; }
     focusIn();
   }
@@ -428,10 +430,11 @@
     setTimeout(function () { el.innerHTML = ''; flashing = false; runFlash(); }, 1450);
   }
 
+  function roundOverSoon(r) { setTimeout(function () { if (G && R() === r && r.done) roundOver(); }, 900); }
   function roundOver() {
+    if (!G || !R().done) return;   // only ever shows the scoreboard for a round that has really ended
     running = false; stopClock();
-    if (!G) return;
-    var r = R(); r.done = true; save();
+    var r = R(); save();
     paintGame();
     var rr = B.ranking(G, r), all = B.ranking(G);
     $('[data-sumround]').textContent = 'Round ' + r.n + ' over · ' + B.catName(r.cat);
@@ -619,11 +622,21 @@
     var cp = G.players[G.turn]; if (!cp) { el.hidden = true; return; }
     var sec = Math.max(1, Math.ceil(left / 1000)), mine = cp.dev === DEV, r = R();
     el.hidden = false; el.classList.toggle('is-me', mine);
-    el.textContent = mine ? 'Play a word in ' + sec + 's or your turn is skipped' : cp.name + ' will be skipped in ' + sec + 's';
+    tx(el, mine ? 'Type or tap within ' + sec + 's or your turn is skipped' : cp.name + ' will be skipped in ' + sec + 's');
     var k = G.turn + ':' + r.entries.length + ':' + (r.skips || 0);
     if (mine && NET.twk !== k) { NET.twk = k; buzz([60, 40, 60]); }
   }
   setInterval(function () { turnWatch(); paintTurnWarn(); }, 400);
+  /* the turn clock is an idle clock: any typing or touching by the player on turn starts it over */
+  var lastAct = 0;
+  function noteActivity() {
+    if (!NET || !G || G.over || cur !== 'game' || !running) return;
+    var tl = (G.settings.turn || 0) * 1000; if (!tl || !myTurn()) return;
+    var now = Date.now(); if (now - lastAct < 700) return; lastAct = now;
+    if (isHost()) { NET.turnAt = now; return; }
+    NET.turnEnds = now + tl; sendIn({ t: 'act' });
+  }
+  ['keydown', 'input', 'pointerdown', 'touchstart', 'touchmove', 'focusin', 'scroll'].forEach(function (ev) { document.addEventListener(ev, noteActivity, { passive: true, capture: true }); });
   /* a player whose phone has gone quiet is skipped, so the others are never stuck waiting for their turn (after a 15 second grace) */
   function autoSkip() {
     if (!isHost() || !G || G.over) return;
@@ -787,6 +800,7 @@
       storeRoom(); netPaint(); pubSoon(); return;
     }
     if (!G) return;
+    if (m.t === 'act') { var ca = G.players[G.turn]; if (ca && ca.dev === m.dev && !R().done) NET.turnAt = Date.now(); return; }
     if (m.t === 'vreq' || m.t === 'vouch' || m.t === 'vno' || m.t === 'vcancel') { vouchMsg(m); return; }
     var r = R(), cp = G.players[G.turn];
     if (!cp || cp.dev !== m.dev || r.done || !r.run) { pubSoon(); return; }
@@ -829,7 +843,7 @@
       lastAdded = r.entries.length - 1;
       if (vq.dev === DEV) { $('[data-in]').value = ''; msg(''); }
       save(); celebrate(e); paintVq(); paintGame(); lastAdded = -1; toast('Vouched: ' + vq.w + ' counts');
-      if (r.done) { setTimeout(roundOver, 900); pubNow(); return; }
+      if (r.done) { roundOverSoon(r); pubNow(); return; }
       pubNow(); notifyTurn();
     });
   }
@@ -860,7 +874,7 @@
     var e = B.add(G, c.w, { mav: Lst ? Lst.mav : null });
     lastAdded = r.entries.length - 1;
     save(); celebrate(e); paintGame(); lastAdded = -1;
-    if (r.done) { setTimeout(roundOver, 900); return; }
+    if (r.done) { roundOverSoon(r); return; }
     notifyTurn();
   }
 
@@ -1009,7 +1023,7 @@
     NET = { role: 'host', code: rm.code, name: rm.name, hs: newHs(), ep: rm.ep || 0, seq: 0, seen: {}, lobby: rm.lobby };
     if (NET.lobby && !NET.lobby.hd) NET.lobby.hd = DEV;
     if (NET.lobby && !NET.lobby.cr && NET.lobby.hd === DEV) NET.lobby.cr = DEV;
-    if (NET.lobby && NET.lobby.tl === 15) NET.lobby.tl = 20;
+    if (NET.lobby && NET.lobby.tl === 20) NET.lobby.tl = 15;
     G = rm.G || null;
     if (G) {
       if (G.over) { G = null; }
@@ -1023,7 +1037,7 @@
     syncLobby();
     G = B.create({ players: NET.lobby.players.map(function (p) { return { name: p.name }; }), category: S.cat, timer: S.timer, limit: S.limit, fixed: true, shuffle: !!NET.lobby.sh });
     G.players.forEach(function (p, i) { p.dev = NET.lobby.players[i].dev; });
-    G.settings.turn = NET.lobby.tl != null && NET.lobby.tl !== 15 ? NET.lobby.tl : 20;
+    G.settings.turn = NET.lobby.tl != null && NET.lobby.tl !== 20 ? NET.lobby.tl : 15;
     NET.rej = null;
     getList(S.cat); save(); show('game'); readyScreen();
   }
