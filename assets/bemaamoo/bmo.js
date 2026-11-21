@@ -395,7 +395,7 @@
     if (!c.ok) {
       if (c.why === 'unknown' && NET) {
         NET.lastRej = { w: c.w, n: r.entries.length };
-        msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span><button type="button" data-act="vreq">Ask the room to vouch</button><button type="button" class="is-pri" data-act="retry">Try another</button>', true);
+        msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span>' + vreqBtn() + '<button type="button" class="is-pri" data-act="retry">Try another</button>', true);
       } else if (c.why === 'unknown') {
         pending = raw;
         msg('<span><b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.</span><button type="button" data-act="force">Count it anyway</button><button type="button" class="is-pri" data-act="retry">Try another</button>', true);
@@ -587,7 +587,6 @@
       else {
         sendIn({ t: 'here', name: me.name });
         if (!me.lobby || (!G && !me.lobby.players.some(function (p) { return p.dev === DEV; }))) sendIn({ t: 'join', name: me.name });
-        failoverCheck();
       }
       netPaint();
     }, 3000);
@@ -777,7 +776,7 @@
     syncTurn(); NET.lastPub = Date.now();
     NET.lobby.players.forEach(function (p) { on[p.dev] = isOn(p.dev); });
     NET.seq = (NET.seq || 0) + 1;
-    netSend(NTOPIC + NET.code + '/state', { v: 1, code: NET.code, hs: NET.hs, ep: NET.ep || 0, seq: NET.seq, lobby: NET.lobby, G: G, rej: NET.rej || null, vq: NET.vq || null, on: on, td: turnLeftMs(), cl: (NET.chat || []).slice(-15) }, true);
+    netSend(NTOPIC + NET.code + '/state', { v: 1, code: NET.code, hs: NET.hs, ep: NET.ep || 0, seq: NET.seq, lobby: NET.lobby, G: G, rej: NET.rej || null, vq: NET.vq || null, vs: (NET.vstrk && G && !G.over && NET.vstrk.k === vkey()) ? { dev: NET.vstrk.dev, n: NET.vstrk.n } : null, on: on, td: turnLeftMs(), cl: (NET.chat || []).slice(-15) }, true);
   }
   function syncLobby() { if (!isHost()) return; NET.lobby.cat = S.cat; NET.lobby.timer = S.timer; NET.lobby.limit = S.limit; NET.lobby.tl = S.tl; NET.lobby.sh = S.sh; storeRoom(); pubSoon(); }
   function hostMsg(m) {
@@ -824,6 +823,7 @@
     if (m.t === 'vreq') {
       if (!cp || cp.dev !== m.dev || r.done || !r.run || m.n !== r.entries.length) { pubSoon(); return; }
       var c = B.check(G, m.w, null); if (!c.ok) { pubSoon(); return; }
+      if (vstrikes(m.dev) >= VMAX) { NET.rej = { dev: m.dev, w: c.w, why: 'vmax', k: Date.now() }; pubNow(); if (m.dev === DEV) vouchDenied(c.w); return; }
       NET.vq = { w: c.w, n: r.entries.length, dev: m.dev, name: cp.name, k: Date.now(), no: [], yes: [] };
       vqTally(NET.vq); NET.turnAt = Date.now(); paintVq(); pubNow(); return;
     }
@@ -837,7 +837,7 @@
     (m.t === 'vouch' ? vq.yes : vq.no).push(m.dev);
     var t = vqTally(vq);
     if (t.yes >= t.need) { vouchAccept(); return; }
-    if (t.no > t.voters - t.need) { NET.rej = { dev: vq.dev, w: vq.w, why: 'vno', k: Date.now() }; NET.vq = null; if (vq.dev === DEV) vouchDenied(vq.w); }
+    if (t.no > t.voters - t.need) { var vk = vkey(); NET.vstrk = { k: vk, dev: vq.dev, n: vstrikes(vq.dev) + 1 }; NET.rej = { dev: vq.dev, w: vq.w, why: 'vno', n: NET.vstrk.n, k: Date.now() }; NET.vq = null; if (vq.dev === DEV) vouchDenied(vq.w); }
     paintVq(); pubNow();
   }
   /* a word outside the list counts only when at least 60% of the other players in the room vouch for it */
@@ -848,7 +848,13 @@
     vq.voters = voters.length; vq.need = Math.max(1, Math.ceil(voters.length * 0.6 - 1e-9));
     return { voters: voters.length, need: vq.need, yes: vq.yes.length, no: vq.no.length };
   }
-  function vouchDenied(w) { NET.lastRej = null; msg('<span>The room didn’t vouch for <b>' + esc(w) + '</b>.</span><button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); }
+  /* three strikes: a player whose vouches are refused three times in one turn must play a word from the list (or risk being skipped) */
+  var VMAX = 3;
+  function vkey() { var r = R(); return r.n + ':' + r.entries.length + ':' + (r.skips || 0) + ':' + G.turn; }
+  function vstrikes(dev) { var v = NET && NET.vstrk; return v && G && v.k === vkey() && v.dev === dev ? v.n : 0; }
+  function myStrikes() { if (!NET || !G) return 0; if (isHost()) return vstrikes(DEV); return NET.vs && NET.vs.dev === DEV ? NET.vs.n : 0; }
+  function vreqBtn() { return myStrikes() >= VMAX ? '<span class="vq__x">No vouches left this turn. Play a word from the list or your turn can be skipped.</span>' : '<button type="button" data-act="vreq">Ask the room to vouch</button>'; }
+  function vouchDenied(w) { NET.lastRej = null; var n = myStrikes(); msg('<span>The room didn’t vouch for <b>' + esc(w) + '</b>. Strike ' + n + ' of ' + VMAX + '.</span>' + (n >= VMAX ? '<span class="vq__x">No vouches left this turn. Play a word from the list or your turn can be skipped.</span>' : '') + '<button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); }
   function vouchAccept() {
     var vq = NET.vq; if (!vq) return;
     var r = R(), cp = G.players[G.turn];
@@ -911,7 +917,7 @@
     if (sep === (NET.ep || 0) && NET.hs && st.hs !== NET.hs && String(st.hs) < String(NET.hs)) return;
     if (st.hs === NET.hs && st.seq <= NET.lastSeq) return;
     NET.ep = sep; chatMerge(st.cl); NET.turnEnds = st.td != null ? Date.now() + st.td : 0;
-    NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {}; NET.vq = st.vq || null; paintVq();
+    NET.hs = st.hs; NET.lastSeq = st.seq; NET.gotAt = Date.now(); NET.lobby = st.lobby; NET.on = st.on || {}; NET.vq = st.vq || null; NET.vs = st.vs || null; paintVq();
     if (NET.jq && st.lobby.players.some(function (p) { return p.dev === DEV; })) clearJoin();
     clearTimeout(NET.noRoomT);
     if (!st.G) {
@@ -945,9 +951,9 @@
     if (NET.pend && (r.entries.length > NET.pend.n || !myTurn())) NET.pend = null;
     if (st.rej && st.rej.dev === DEV && st.rej.k !== NET.rejSeen) {
       NET.rejSeen = st.rej.k; NET.pend = null;
-      var t = { unknown: '<b>' + esc(st.rej.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(st.rej.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.', vno: 'The room didn’t vouch for <b>' + esc(st.rej.w) + '</b>.' }[st.rej.why] || 'Try another word.';
+      var t = { unknown: '<b>' + esc(st.rej.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(st.rej.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.', vno: 'The room didn’t vouch for <b>' + esc(st.rej.w) + '</b>. Strike ' + (st.rej.n || myStrikes()) + ' of ' + VMAX + '.', vmax: 'No vouches left this turn. Play a word from the list or your turn can be skipped.' }[st.rej.why] || 'Try another word.';
       if (st.rej.why === 'unknown') NET.lastRej = { w: st.rej.w, n: r.entries.length };
-      msg('<span>' + t + '</span>' + (st.rej.why === 'unknown' ? '<button type="button" data-act="vreq">Ask the room to vouch</button>' : '') + (st.rej.why === 'unknown' || st.rej.why === 'vno' ? '<button type="button" class="is-pri" data-act="retry">Try another</button>' : ''), true); shake();
+      msg('<span>' + t + '</span>' + (st.rej.why === 'vno' && (st.rej.n || 0) >= VMAX ? '<span class="vq__x">No vouches left this turn. Play a word from the list or your turn can be skipped.</span>' : '') + (st.rej.why === 'unknown' ? vreqBtn() : '') + (st.rej.why === 'unknown' || st.rej.why === 'vno' || st.rej.why === 'vmax' ? '<button type="button" class="is-pri" data-act="retry">Try another</button>' : ''), true); shake();
     }
     running = !!(r.run && !r.done);
     NET.clk = { n: r.n, left: r.left, at: Date.now() };
@@ -1002,7 +1008,7 @@
       if (!c.ok) {
         var t = { unknown: '<b>' + esc(c.w) + '</b> isn’t in our ' + esc(B.catName(r.cat)) + ' list.', repeat: '<b>' + esc(c.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.' }[c.why] || 'Try another word.';
         if (c.why === 'unknown') NET.lastRej = { w: c.w, n: r.entries.length };
-        msg('<span>' + t + '</span>' + (c.why === 'unknown' ? '<button type="button" data-act="vreq">Ask the room to vouch</button>' : '') + '<button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); return;
+        msg('<span>' + t + '</span>' + (c.why === 'unknown' ? vreqBtn() : '') + '<button type="button" class="is-pri" data-act="retry">Try another</button>', true); shake(); return;
       }
       send(c.w);
     }, function () { send(B.norm(raw)); });
