@@ -100,3 +100,26 @@ body.bm-player .hg{bottom:calc(100px + env(safe-area-inset-bottom))}
   .bm .footer{padding-bottom:calc(22px + 128px + env(safe-area-inset-bottom))}
 }
 @media (prefers-reduced-motion:reduce){.bm .mus-hero{transition:none}}
+
+/* transport: prev · play · next, play on its own (no shape) */
+.bm .mus-nav{display:contents}
+.bm .mus-count{display:none}
+.bm .mus-card__text{grid-template-columns:auto auto auto minmax(0,.9fr) minmax(0,1.2fr);grid-template-areas:"prev cover next head line" "prev cover next head time";column-gap:clamp(6px,1vw,10px);padding:12px 54px 12px 14px;align-items:center}
+.bm .mus-card__text>.mus-head{margin-left:clamp(8px,1.4vw,16px)}
+.bm .mus-card__text .mus-line{margin-left:clamp(6px,1vw,10px)}
+.bm [data-prev-t]{grid-area:prev}
+.bm [data-next-t]{grid-area:next}
+.bm .mus-nav .icon-btn{width:40px;height:40px;color:#fff;opacity:.85}
+.bm .mus-nav .icon-btn:hover{opacity:1}
+.bm .mus-nav .icon-btn svg{width:22px;height:22px}
+.bm .mus-card .mus-cover{width:48px;height:48px;border-radius:0;background:none;box-shadow:none;overflow:visible}
+.bm .mus-cover__play{background:none!important;color:#fff;width:100%;height:100%}
+.bm .mus-cover__play svg{width:34px;height:34px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.45))}
+.bm .mus-cover:hover .mus-cover__play{transform:scale(1.08)}
+.bm .mus-cover__play{transition:transform .2s}
+@media (max-width:760px){
+  .bm .mus-card__text{grid-template-columns:auto auto auto minmax(0,1fr);grid-template-areas:"prev cover next head" "line line line line" "time time time time";padding:12px 52px 12px 8px}
+  .bm .mus-card__text>.mus-head{margin-left:8px}
+  .bm .mus-card__text .mus-line{margin-left:0}
+  .bm .mus-nav .icon-btn{width:38px;height:38px}
+}
