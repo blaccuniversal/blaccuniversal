@@ -264,7 +264,7 @@
       t.forEach(function (s, i) {
         var pd = G.players[i] && G.players[i].dev;
         if (G.players[i] && G.players[i].out) return;
-        h += '<div class="pchip' + (i === G.turn ? ' is-on' : '') + (NET && pd && !isOn(pd) ? ' is-off' : '') + '"><i style="background:' + color(i) + '"></i><span>' + esc(s.name) + (NET && pd === DEV ? ' (you)' : '') + '</span><b>' + s.total + '</b>' + (multi ? '<small>Overall ' + ov_[i].total + '</small>' : '') + '</div>';
+        h += '<div class="pchip' + (i === G.turn ? ' is-on' : '') + (NET && pd && !isOn(pd) ? ' is-off' : '') + '">' + dotHtml(G.players[i] && G.players[i].av, i) + '<span>' + esc(s.name) + (NET && pd === DEV ? ' (you)' : '') + '</span><b>' + s.total + '</b>' + (multi ? '<small>Overall ' + ov_[i].total + '</small>' : '') + '</div>';
       });
     }
     if (el._h !== h) { el._h = h; el.innerHTML = h; }
@@ -340,6 +340,28 @@
     return h.mode === 1 ? 'Sorted play is on. Play a word that comes after <b>' + esc(h.after) + '</b> in the alphabet.' : 'The next word must start with <b>' + esc(h.letter) + '</b>.';
   }
   function alphaTag() { var h = G ? B.alphaHint(G) : { mode: 0 }; return h.mode === 1 ? 'A to Z' : h.mode === 2 ? 'Ladder' : h.mode === 3 ? 'Lap' : ''; }
+  /* accounts (all optional: nothing here runs unless bmo-config.js has Supabase keys) */
+  function acctOn() { return !!(window.BMA && window.BMA.enabled); }
+  function okAv(u) { return acctOn() ? window.BMA.okAv(u) : ''; }
+  function guestGames() { var v = load('bmo_gg'); return Array.isArray(v) ? v : []; }
+  function needAcct() { return acctOn() && window.BMA.ready && !window.BMA.user && guestGames().length >= 1; }
+  function gateAcct() { if (!needAcct()) return false; window.BMA.open('You have played your free game. Create a free account to keep playing and save your scores.'); return true; }
+  function dotHtml(av, i) { var u = okAv(av); return u ? '<img class="av av--s" src="' + esc(u) + '" alt="" decoding="async">' : '<i style="background:' + color(i) + '"></i>'; }
+  var lastRes = null;
+  function afterGame(all) {
+    if (!acctOn()) return;
+    var A = window.BMA, fa = $('[data-finacct]'), idx = solo() ? 0 : (NET ? meIdx() : -1), me = null;
+    all.forEach(function (x) { if (x.id === idx) me = x; });
+    if (me) lastRes = { id: G.id, players: G.players.length, place: solo() ? 1 : me.place, points: me.total, rounds: G.rounds.length, category: G.rounds[0].cat, rule: G.settings.alpha | 0 };
+    if (!A.user) {
+      var gg = guestGames(); if (gg.indexOf(G.id) < 0) { gg.push(G.id); store('bmo_gg', gg.slice(-20)); }
+      if (fa) { fa.hidden = false; $('[data-finacct-t]').textContent = lastRes ? 'Create a free account to save this score and keep playing.' : 'Create a free account to keep your scores and play more games.'; }
+      return;
+    }
+    if (fa) fa.hidden = true;
+    if (lastRes && A.profile) { A.record(lastRes); lastRes = null; }
+  }
+  if (window.BMA && window.BMA.enabled) window.BMA.onChange(function (A) { if (A.user && A.profile && lastRes) { A.record(lastRes); lastRes = null; var fa = $('[data-finacct]'); if (fa) fa.hidden = true; } });
   function tx(el, v) { if (el.textContent !== v) el.textContent = v; }
   function setp(el, k, v) { if (el[k] !== v) el[k] = v; }
   function paintDock() {
@@ -517,6 +539,7 @@
     $('[data-fin]').innerHTML = fh;
     $('[data-act="again"]', $('[data-ov="final"]')).hidden = !!(NET && !isHost());
     $('[data-act="again"]', $('[data-ov="final"]')).textContent = NET ? 'Play again, same room' : 'Play again';
+    afterGame(all);
     ov('final', true);
   }
 
@@ -706,7 +729,7 @@
   function netSend(topic, obj, retain) { if (!NET || !NET.cls) return; var t = JSON.stringify(obj); NET.cls.forEach(function (c) { if (c.connected) try { c.publish(topic, t, { qos: 0, retain: !!retain }); } catch (e) {} }); }
   function netOn() { return !!(NET && NET.cls && NET.cls.some(function (c) { return c.connected; })); }
   function sendIn(m) {
-    if (!NET) return; m.dev = DEV; netSend(NTOPIC + NET.code + '/in', m);
+    if (!NET) return; m.dev = DEV; if (m.t === 'join' || m.t === 'here') m.av = acctOn() ? window.BMA.myAv() : ''; netSend(NTOPIC + NET.code + '/in', m);
     if (!isHost() && m.t === 'join') { m.ts = Date.now(); netSend(NTOPIC + NET.code + '/j/' + DEV, m, true); NET.jq = true; }
   }
   function clearJoin() { if (!NET || !NET.jq || !NET.cls) return; NET.jq = false; NET.cls.forEach(function (c) { if (c.connected) try { c.publish(NTOPIC + NET.code + '/j/' + DEV, '', { qos: 0, retain: true }); } catch (e) {} }); }
@@ -814,13 +837,16 @@
       if (!p && m.t === 'join' && G) {
         if ((L.dec || []).indexOf(m.dev) > -1) { pubSoon(); return; }
         L.wait = L.wait || [];
-        if (!L.wait.some(function (x) { return x.dev === m.dev; })) { L.wait.push({ dev: m.dev, name: cleanName(m.name), ts: Date.now() }); toast(cleanName(m.name) + ' wants to join'); buzz(20); storeRoom(); netPaint(); pubSoon(); }
+        if (!L.wait.some(function (x) { return x.dev === m.dev; })) { L.wait.push({ dev: m.dev, name: cleanName(m.name), av: okAv(m.av), ts: Date.now() }); toast(cleanName(m.name) + ' wants to join'); buzz(20); storeRoom(); netPaint(); pubSoon(); }
         return;
       }
       if (!p && m.t === 'join' && !G) {
         if (L.players.length >= MAXP) return;
-        L.players.push({ dev: m.dev, name: cleanName(m.name) }); toast(cleanName(m.name) + ' joined'); buzz(15);
+        L.players.push({ dev: m.dev, name: cleanName(m.name), av: okAv(m.av) }); toast(cleanName(m.name) + ' joined'); buzz(15);
         storeRoom(); paintRoom(); pubSoon(); return;
+      }
+      if (p && okAv(m.av) !== (p.av || '')) {
+        p.av = okAv(m.av); var gp = G ? G.players.filter(function (x) { return x.dev === m.dev; })[0] : null; if (gp) gp.av = p.av; storeRoom(); pubSoon();
       }
       if (p && !G && m.name && cleanName(m.name) !== p.name) { p.name = cleanName(m.name); paintRoom(); pubSoon(); return; }
       if (!wasOn || m.t === 'join') { pubSoon(); netPaint(); }
@@ -1048,7 +1074,7 @@
 
   /* screens: create / join, and the room lobby */
   function paintOnline() {
-    var n = $('[data-oname]'); if (!n.value) n.value = load('bmo_name') || (S.names[0] || '');
+    var n = $('[data-oname]'); if (!n.value) n.value = (acctOn() && window.BMA.profile && window.BMA.profile.name) || load('bmo_name') || (S.names[0] || '');
     var q = new URLSearchParams(location.search).get('room');
     if (q && !$('[data-ocode]').value) $('[data-ocode]').value = q.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 4);
     $('[data-oerr]').hidden = true;
@@ -1057,7 +1083,7 @@
   function createRoom() {
     var name = oName();
     netClose();
-    NET = { role: 'host', code: newCode(), name: name, hs: newHs(), ep: 0, fresh: true, seq: 0, seen: {}, lobby: { hd: DEV, cr: DEV, players: [{ dev: DEV, name: name }], cat: S.cat, timer: S.timer, limit: S.limit, tl: S.tl, sh: S.sh, al: S.al } };
+    NET = { role: 'host', code: newCode(), name: name, hs: newHs(), ep: 0, fresh: true, seq: 0, seen: {}, lobby: { hd: DEV, cr: DEV, players: [{ dev: DEV, name: name, av: acctOn() ? window.BMA.myAv() : '' }], cat: S.cat, timer: S.timer, limit: S.limit, tl: S.tl, sh: S.sh, al: S.al } };
     G = null; storeRoom(); show('room');
     loadMqtt().then(netLink, function () { toast('Couldn’t go online. Check your connection.'); });
   }
@@ -1091,7 +1117,7 @@
     if (!isHost() || NET.lobby.players.length < 2) return;
     syncLobby();
     G = B.create({ players: NET.lobby.players.map(function (p) { return { name: p.name }; }), category: S.cat, timer: S.timer, limit: S.limit, fixed: true, shuffle: !!NET.lobby.sh, alpha: +NET.lobby.al || 0 });
-    G.players.forEach(function (p, i) { p.dev = NET.lobby.players[i].dev; });
+    G.players.forEach(function (p, i) { p.dev = NET.lobby.players[i].dev; if (NET.lobby.players[i].av) p.av = NET.lobby.players[i].av; });
     G.settings.turn = NET.lobby.tl != null && NET.lobby.tl !== 20 ? NET.lobby.tl : 15;
     NET.rej = null;
     getList(S.cat); save(); show('game'); readyScreen();
@@ -1155,7 +1181,7 @@
     var hd = L.hd || L.players[0].dev;
     tx($('[data-ptitle]'), 'Room ' + NET.code + ' · ' + list.length + (list.length === 1 ? ' person' : ' people'));
     var lp = $('[data-lplayers]'), lh = list.map(function (p, i) {
-      return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '"><i style="background:' + color(i) + '"></i><b>' + esc(p.name) + '</b><small>' + (p.dev === hd ? 'Host' : '') + (p.dev === DEV ? (p.dev === hd ? ' · you' : 'You') : '') + (p.joining ? ' · joining…' : '') + (isOn(p.dev) ? '' : ' · away') + '</small>' + (isHost() && p.dev !== DEV && !p.joining ? '<button class="kick' + (armed === 'k' + p.dev ? ' is-arm' : '') + '" type="button" data-act="kick" data-dev="' + esc(p.dev) + '">' + (armed === 'k' + p.dev ? 'Tap to confirm' : 'Remove') + '</button>' : '') + '</li>';
+      return '<li class="rp' + (isOn(p.dev) ? '' : ' is-off') + '">' + dotHtml(p.av, i) + '<b>' + esc(p.name) + '</b><small>' + (p.dev === hd ? 'Host' : '') + (p.dev === DEV ? (p.dev === hd ? ' · you' : 'You') : '') + (p.joining ? ' · joining…' : '') + (isOn(p.dev) ? '' : ' · away') + '</small>' + (isHost() && p.dev !== DEV && !p.joining ? '<button class="kick' + (armed === 'k' + p.dev ? ' is-arm' : '') + '" type="button" data-act="kick" data-dev="' + esc(p.dev) + '">' + (armed === 'k' + p.dev ? 'Tap to confirm' : 'Remove') + '</button>' : '') + '</li>';
     }).join('');
     if (lp._h !== lh) { lp._h = lh; lp.innerHTML = lh; }
   }
@@ -1194,8 +1220,8 @@
     var L = NET.lobby, w = (L.wait || []).filter(function (x) { return x.dev === dev; })[0]; if (!w) return;
     if (G.players.length >= MAXP) { toast('The room is full (' + MAXP + ' players).'); return; }
     L.wait = L.wait.filter(function (x) { return x.dev !== dev; });
-    L.players.push({ dev: w.dev, name: w.name });
-    G.players.push({ id: G.players.length, name: w.name, dev: w.dev });
+    L.players.push({ dev: w.dev, name: w.name, av: w.av || '' });
+    G.players.push({ id: G.players.length, name: w.name, dev: w.dev, av: w.av || '' });
     var ro = R().order; if (ro) ro.push(G.players.length - 1);
     NET.seen[dev] = Date.now(); save(); toast(w.name + ' added to the game'); paintGame(); netPaint();
   }
@@ -1235,7 +1261,7 @@
       case 'home': leave(); break;
       case 'continue': resume(); break;
       case 'cats': openCats('setup'); break;
-      case 'start': startGame(); break;
+      case 'start': if (gateAcct()) break; startGame(); break;
       case 'go': go(); break;
       case 'menu':
         $$('[data-ho]').forEach(function (b) { b.hidden = !!(NET && !isHost()); });
@@ -1252,8 +1278,8 @@
       case 'wadd': addMid(t.getAttribute('data-dev')); break;
       case 'wno': declineWait(t.getAttribute('data-dev')); break;
       case 'online': show('online'); paintSaved(); break;
-      case 'ocreate': createRoom(); break;
-      case 'ojoin': joinRoom($('[data-ocode]').value, oName()); break;
+      case 'ocreate': if (gateAcct()) break; createRoom(); break;
+      case 'ojoin': if (gateAcct()) break; joinRoom($('[data-ocode]').value, oName()); break;
       case 'room': resumeRoom(); break;
       case 'oshare': shareRoom(); break;
       case 'ocopy': shareRoom('copy'); break;
@@ -1278,6 +1304,7 @@
       case 'next': if (NET && !isHost()) break; nextRound(); break;
       case 'nextcat': openCats('round'); break;
       case 'again':
+        if (gateAcct()) break;
         if (NET) { if (!isHost()) break; ov('final', false); G = null; var Lw = NET.lobby; (Lw.wait || []).forEach(function (w) { if (Lw.players.length < MAXP) Lw.players.push({ dev: w.dev, name: w.name }); }); Lw.wait = []; Lw.dec = []; storeRoom(); pubNow(); show('room'); break; }
         ov('final', false); store(KEY_GAME, null); G = null; show('setup'); break;
       case 'vreq': if (NET && NET.lastRej && myTurn()) { var lr = NET.lastRej; msg('<span>Asking the room to vouch for <b>' + esc(lr.w) + '</b>…</span>'); if (isHost()) vouchMsg({ t: 'vreq', dev: DEV, w: lr.w, n: lr.n }); else sendIn({ t: 'vreq', w: lr.w, n: lr.n }); } break;

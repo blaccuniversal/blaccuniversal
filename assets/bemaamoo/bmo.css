@@ -446,3 +446,37 @@ input,textarea{font-size:max(16px,1em)}
 
 .row.is-acc .cell:not(.is-mav){border-color:rgba(199,146,255,.8);background:rgba(199,146,255,.14);color:var(--acc)}
 .vq__x{display:block;font-size:12.5px;line-height:1.35;color:#ff8d8d;flex:1 1 100%}
+
+/* accounts */
+.chip{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;border:1px solid var(--bd2);border-radius:999px;font-size:13px;font-weight:600;color:#fff;max-width:150px}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av{display:block;border-radius:50%;object-fit:cover;background:#1a1a1a;flex:none}
+.av--i{display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:#fff;background:#2a2a2a}
+.av--s{width:24px;height:24px;font-size:12px}.av--m{width:34px;height:34px;font-size:15px}.av--l{width:84px;height:84px;font-size:34px}
+.acct{display:flex;flex-direction:column;gap:12px;min-width:0}
+.acct__p,.acct__sm{margin:0;color:var(--tx2);font-size:14px;line-height:1.45}
+.acct__sm{font-size:12.5px}
+.acct__why{margin:0;padding:10px 12px;border:1px solid var(--bd2);border-radius:10px;color:#fff;font-size:14px;line-height:1.4;background:rgba(255,210,63,.08)}
+.acct__err{margin:0;color:#ff8d8d;font-size:13px;line-height:1.35}
+.acct form{display:flex;flex-direction:column;gap:10px}
+.acct__in{width:100%;box-sizing:border-box;min-height:48px;padding:0 14px;border:1px solid var(--bd2);border-radius:10px;background:#0b0b0b;color:#fff;font-size:16px}
+.acct__in--code{text-align:center;letter-spacing:.35em;font-size:22px}
+.acct__or{display:flex;align-items:center;gap:10px;color:var(--tx2);font-size:12px}.acct__or:before,.acct__or:after{content:'';flex:1;height:1px;background:var(--bd)}
+.acct__me{display:flex;gap:14px;align-items:center}
+.acct__pic{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;flex:none;color:var(--tx2);font-size:11px}
+.acct__nm{flex:1;min-width:0}
+.acct__stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.acct__stats div{display:flex;flex-direction:column;align-items:center;padding:10px 4px;border:1px solid var(--bd);border-radius:10px}
+.acct__stats b{font-size:18px}.acct__stats span{font-size:11px;color:var(--tx2)}
+.acct__lb{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.acct__lb li{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;min-width:0}
+.acct__lb li.is-me{background:rgba(255,255,255,.07)}
+.acct__lb em{width:18px;font-style:normal;color:var(--tx2);font-size:12px;text-align:center}
+.acct__lb b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.acct__lb small{color:var(--tx2);font-size:11px}.acct__lb span{font-weight:700;min-width:36px;text-align:right}
+.crop__c{width:100%;max-width:280px;aspect-ratio:1;align-self:center;border-radius:12px;touch-action:none;cursor:grab;background:#000}
+.crop__z{width:100%}
+.sheet--top{z-index:90}
+.finacct{display:flex;flex-direction:column;gap:10px;margin:12px 0;padding:12px;border:1px solid var(--bd2);border-radius:12px;background:rgba(255,210,63,.07)}
+.finacct p{margin:0;font-size:14px;line-height:1.4}
+.pchip .av,.rp .av{margin-right:2px}

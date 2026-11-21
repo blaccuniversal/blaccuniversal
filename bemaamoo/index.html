@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=18">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=19">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -37,7 +37,7 @@
 <section class="scr" data-scr="home">
   <header class="top">
     <a class="top__brand" href="/projects/" aria-label="BLACC Universal projects"><svg><use href="#blacc"/></svg><span>BLACC Universal</span></a>
-    <div class="top__r"><button class="ic" data-act="help" aria-label="How to play"><svg><use href="#i-help"/></svg></button></div>
+    <div class="top__r"><button class="chip" type="button" data-acct-open data-acct-chip hidden aria-label="Account"></button><button class="ic" data-act="help" aria-label="How to play"><svg><use href="#i-help"/></svg></button></div>
   </header>
   <main class="home wrap">
     <div class="hero">
@@ -336,6 +336,7 @@
     <p class="eyebrow" data-finsub>Game over</p>
     <h2 class="ov__t" data-fint>Ada wins</h2>
     <div class="sum" data-fin></div>
+    <div class="finacct" data-finacct hidden><p data-finacct-t>Create a free account to keep your scores and play more games.</p><button class="btn btn--big btn--full" type="button" data-acct-open>Create account</button></div>
     <div class="ov__btns">
       <button class="btn btn--big" data-act="again">Play again</button>
       <button class="btn btn--big btn--ghost" data-act="home">Home</button>
@@ -343,10 +344,26 @@
   </div>
 </div>
 
+<div class="sheet" data-sheet="acct" hidden>
+  <div class="sheet__card" role="dialog" aria-modal="true" aria-label="Account">
+    <div class="sheet__head"><b data-acct-title>Sign in</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+    <div class="acct" data-acct></div>
+  </div>
+</div>
+
+<div class="sheet sheet--top" data-sheet="crop" hidden>
+  <div class="sheet__card" role="dialog" aria-modal="true" aria-label="Crop your picture">
+    <div class="sheet__head"><b>Your picture</b></div>
+    <div class="acct" data-crop></div>
+  </div>
+</div>
+
 <div class="toast" data-toast hidden></div>
 
 <script src="/assets/bemaamoo/bmo-gate.js?v=4"></script>
+<script src="/assets/bemaamoo/bmo-config.js?v=1"></script>
+<script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=9"></script>
-<script src="/assets/bemaamoo/bmo.js?v=31"></script>
+<script src="/assets/bemaamoo/bmo.js?v=32"></script>
 </body>
 </html>
