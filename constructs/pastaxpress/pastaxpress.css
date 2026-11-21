@@ -655,3 +655,5 @@ a.ct:hover{border-color:var(--acc);background:rgba(244,177,60,.05)}
 .dopt{height:36px;font-size:13px}
 .dish__f{margin-top:10px;padding-top:0}
 .dish__f .price{font-size:17px}
+.hero__plate{inset:5%}
+@media (max-width:860px){.hero__art{max-width:520px}}
