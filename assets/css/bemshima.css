@@ -123,3 +123,23 @@ body.bm-player .hg{bottom:calc(100px + env(safe-area-inset-bottom))}
   .bm .mus-card__text .mus-line{margin-left:0}
   .bm .mus-nav .icon-btn{width:38px;height:38px}
 }
+
+/* no "Music Fridays" label in the player */
+.bm .mus-head .mus-eyebrow{display:none}
+.bm .mus-card__text{row-gap:2px}
+
+/* 3-dot track menu + details sheet */
+.bm .tl__more{flex:none;width:36px;height:36px;margin-right:-8px;border:0;background:none;color:#8c8c8c;border-radius:50%;display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .2s,color .2s}
+.bm .tl__more:hover,.bm .tl__more:focus-visible{background:rgba(255,255,255,.1);color:#fff;outline:0}
+.bm .tl__more svg{width:20px;height:20px}
+.bm-sheet{position:fixed;inset:0;z-index:90;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .25s}
+.bm-sheet.is-open{opacity:1;pointer-events:auto}
+.bm-sheet__p{width:min(100%,460px);margin:0 12px calc(12px + env(safe-area-inset-bottom));padding:22px 22px 18px;border-radius:22px;color:#fff;background:rgba(28,28,30,.72);backdrop-filter:blur(26px) saturate(1.6);-webkit-backdrop-filter:blur(26px) saturate(1.6);border:1px solid rgba(255,255,255,.16);transform:translateY(30px);transition:transform .35s cubic-bezier(.2,.8,.2,1);position:relative}
+.bm-sheet.is-open .bm-sheet__p{transform:none}
+.bm-sheet h3{margin:0 40px 2px 0;font-size:22px;line-height:1.15}
+.bm-sheet__by{margin:0 0 14px;font-size:13px;color:#a8a8a8}
+.bm-sheet dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 18px;font-size:14px}
+.bm-sheet dt{color:#8c8c8c}
+.bm-sheet dd{margin:0;text-align:right}
+.bm-sheet__x{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;display:grid;place-items:center}
+@media (min-width:761px){.bm-sheet{align-items:center}}
