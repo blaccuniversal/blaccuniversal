@@ -497,3 +497,5 @@ body.is-lock .cxg-dock,body.is-lock .obar{display:none!important}
 @media (max-width:420px){.dish__img{width:96px}}
 .dish .price--ask{font-size:11px;letter-spacing:.16em}
 .evgrid{grid-template-columns:1fr}
+.hero__plate img{transform:none;animation:spin4 70s linear infinite}
+@keyframes spin4{to{transform:rotate(360deg)}}
