@@ -709,3 +709,42 @@ a.ct:hover{border-color:var(--acc);background:rgba(244,177,60,.05)}
 .sp__tabs{margin-bottom:8px}
 @media (max-width:760px){.dslider .deal__b{padding:14px 16px}.ticket{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}}
 .dslider .mtrack{flex:none}
+
+/* premium polish: touch, motion, rendering */
+html{scroll-padding-top:84px}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overflow-x:hidden}
+a,button,select,summary{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+img{-webkit-user-drag:none}
+.cart{overscroll-behavior:contain}
+.cart__body,.cart__l{-webkit-overflow-scrolling:touch}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+@media (hover:none){
+  .dish:hover,.post:hover,.btn:hover{transform:none}
+  .post:hover img{transform:none}
+}
+@media (pointer:coarse){
+  .filters button,.sp__tabs button,.wchip,.addr__copy,.nav__links a,.btn,.step button,.dish .add,.dish .step,.cart__x,.seg button,.mnav button,.slbtn{min-height:44px}
+  .step button{min-width:44px}
+  .dish .add,.dish .step{height:44px}
+  .dish .step button{width:44px;height:44px}
+  .dish__f .dopt{height:44px;font-size:16px}
+  .dopt,select{font-size:16px}
+  .addr__copy{display:inline-flex;align-items:center;padding:0 4px}
+  .wchip{min-height:44px}
+  .rail+*,.rail-nav button{min-width:44px;min-height:44px}
+  .mdots button{position:relative}
+  .mdots button::after{content:"";position:absolute;inset:-18px -8px}
+}
+@media (max-width:420px){
+  .dish__f{gap:6px}
+  .dish__f .price{font-size:15px}
+  .dish .add{padding:0 10px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+  .ring{animation:none!important}
+}
+.dslider .deal{height:clamp(250px,28vw,320px)}
+.dslider .deal>img{flex:1;min-height:0;height:0;aspect-ratio:auto}
+.dslider .deal--t .deal__big{flex:1;min-height:0}
+.dslider .mtrack{align-items:stretch}

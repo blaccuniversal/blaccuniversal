@@ -139,7 +139,7 @@
   /* feed */
   var POSTS = [['pasta-l', 'Lagos Girls, creamy pasta from Kabs Diner'], ['hotdog-l', 'Suya mayo hot dog'], ['wings-l', 'Yaaji spiced wings'], ['tacos-l', 'Pulled beef tacos'], ['ofada-l', 'Ofada asun trays'], ['jolly-l', 'Jolly box stir-fry pasta'], ['bar-l', 'Kabs Bar drinks'], ['bowl', 'Stir-fry spaghetti']];
   var rail = $('[data-rail]');
-  rail.innerHTML = POSTS.map(function (p) { return '<button class="post" type="button" data-zoom="' + IMG + p[0] + '.webp"><img src="' + IMG + p[0] + '.webp" alt="' + p[1] + '" loading="lazy"></button>'; }).join('');
+  rail.innerHTML = POSTS.map(function (p) { return '<button class="post" type="button" data-zoom="' + IMG + p[0] + '.webp"><img src="' + IMG + p[0] + '.webp" alt="' + p[1] + '" decoding="async"></button>'; }).join('');
   var prev = $('[data-go="-1"]'), next = $('[data-go="1"]');
   function railBtns() { prev.disabled = rail.scrollLeft < 8; next.disabled = rail.scrollLeft + rail.clientWidth > rail.scrollWidth - 8; }
   $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { rail.scrollBy({ left: +b.getAttribute('data-go') * Math.max(260, rail.clientWidth * .75), behavior: 'smooth' }); }); });
