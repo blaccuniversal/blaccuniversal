@@ -15,7 +15,7 @@
 <link rel="icon" type="image/png" href="/constructs/bujatos/img/favicon.png">
 <link rel="apple-touch-icon" href="/constructs/bujatos/img/apple-touch-icon.png">
 <link rel="preload" as="image" href="/constructs/bujatos/img/hero-jollof.webp?v=2" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/bujatos/bujatos.css?v=12">
+<link rel="stylesheet" href="/constructs/bujatos/bujatos.css?v=13">
 </head>
 <body>
 
@@ -196,16 +196,17 @@
     <div class="wrap wf__info">
       <div class="hours">
         <p class="hours__h"><svg><use href="#i-clock"/></svg>Opening hours</p>
+        <div class="week" data-week aria-hidden="true"></div>
         <ul class="hours__l" data-hours></ul>
       </div>
-      <dl class="vinfo">
-        <div><dt><svg><use href="#i-wa"/></svg>WhatsApp</dt><dd><a href="https://wa.me/2348060421977" target="_blank" rel="noopener">+234 806 042 1977</a></dd></div>
-        <div><dt><svg><use href="#i-phone"/></svg>Call</dt><dd><a href="tel:+2348060421977">0806 042 1977</a></dd></div>
-        <div><dt><svg><use href="#i-ig"/></svg>Instagram</dt><dd><a href="https://www.instagram.com/bujatoskitchen/" target="_blank" rel="noopener">@bujatoskitchen</a></dd></div>
-        <div><dt><svg><use href="#i-tt"/></svg>TikTok</dt><dd><a href="https://www.tiktok.com/@bujatoskitchen" target="_blank" rel="noopener">@bujatoskitchen</a></dd></div>
-        <div class="vinfo__w"><dt><svg><use href="#i-mail"/></svg>Email</dt><dd><a href="mailto:bujatoshawarma@gmail.com">bujatoshawarma@gmail.com</a></dd></div>
-        <div class="vinfo__w"><dt><svg><use href="#i-bag"/></svg>Delivery &amp; pickup</dt><dd>Order here on WhatsApp, or on <a href="https://www.barqlyapp.com" target="_blank" rel="noopener">Barqly</a> and <a href="https://glovoapp.com/ng/en/ibadan/stores/bujatos-meals-ibd" target="_blank" rel="noopener">Glovo</a>.</dd></div>
-      </dl>
+      <div class="contact">
+        <a class="ct" href="https://wa.me/2348060421977" target="_blank" rel="noopener"><span class="ct__i"><svg><use href="#i-wa"/></svg></span><span class="ct__t"><small>WhatsApp</small><b>+234 806 042 1977</b></span></a>
+        <a class="ct" href="tel:+2348060421977"><span class="ct__i"><svg><use href="#i-phone"/></svg></span><span class="ct__t"><small>Call</small><b>0806 042 1977</b></span></a>
+        <a class="ct" href="https://www.instagram.com/bujatoskitchen/" target="_blank" rel="noopener"><span class="ct__i"><svg><use href="#i-ig"/></svg></span><span class="ct__t"><small>Instagram</small><b>@bujatoskitchen</b></span></a>
+        <a class="ct" href="https://www.tiktok.com/@bujatoskitchen" target="_blank" rel="noopener"><span class="ct__i"><svg><use href="#i-tt"/></svg></span><span class="ct__t"><small>TikTok</small><b>@bujatoskitchen</b></span></a>
+        <a class="ct ct--w" href="mailto:bujatoshawarma@gmail.com"><span class="ct__i"><svg><use href="#i-mail"/></svg></span><span class="ct__t"><small>Email</small><b>bujatoshawarma@gmail.com</b></span></a>
+        <div class="ct ct--w ct--d"><span class="ct__i"><svg><use href="#i-bag"/></svg></span><span class="ct__t"><small>Delivery &amp; pickup</small><span class="chips"><a href="https://wa.me/2348060421977" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.barqlyapp.com" target="_blank" rel="noopener">Barqly</a><a href="https://glovoapp.com/ng/en/ibadan/stores/bujatos-meals-ibd" target="_blank" rel="noopener">Glovo</a></span></span></div>
+      </div>
     </div>
   </section>
 </main>
@@ -246,7 +247,7 @@
 <div class="lbx" data-lbx hidden><button class="lbx__x" type="button" data-lbx-close aria-label="Close"><svg><use href="#i-x"/></svg></button><img alt="" data-lbx-img></div>
 <div class="toast" data-toast hidden></div>
 
-<script src="/constructs/bujatos/bujatos.js?v=4" defer></script>
+<script src="/constructs/bujatos/bujatos.js?v=5" defer></script>
 <script src="/constructs/bujatos/bujatos-wf.js?v=1" defer></script>
 </body>
 </html>

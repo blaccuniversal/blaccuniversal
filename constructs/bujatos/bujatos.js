@@ -187,7 +187,18 @@
   function renderHours() {
     var now = lagosNow(), d = now.getDay(), mins = now.getHours() * 60 + now.getMinutes();
     var order = [1, 2, 3, 4, 5, 6, 0];
-    $('[data-hours]').innerHTML = order.map(function (i) { var h = HOURS[i]; return '<li' + (i === d ? ' class="on"' : '') + '><span>' + DAYS[i] + '</span><b>' + hm(h[0], h[1]) + ' – ' + hm(h[2], h[3]) + '</b></li>'; }).join('');
+    var ab = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    $('[data-week]').innerHTML = order.map(function (i) { return '<span' + (i === d ? ' class="on"' : '') + '>' + ab[i] + '</span>'; }).join('');
+    var groups = [];
+    order.forEach(function (i) {
+      var h = HOURS[i], t = hm(h[0], h[1]) + ' – ' + hm(h[2], h[3]), g = groups.filter(function (x) { return x.t === t; })[0];
+      if (!g) { g = { t: t, days: [] }; groups.push(g); } g.days.push(i);
+    });
+    $('[data-hours]').innerHTML = groups.map(function (g) {
+      var sh = g.days.map(function (i) { return DAYS[i].slice(0, 3); });
+      var lbl = g.days.length === 7 ? 'Every day' : sh.join(' · ');
+      return '<li' + (g.days.indexOf(d) > -1 ? ' class="on"' : '') + '><span>' + lbl + '</span><b>' + g.t + '</b></li>';
+    }).join('');
     var h = HOURS[d], o = h[0] * 60 + h[1], c = h[2] * 60 + h[3], st = $('[data-status]'), t;
     if (mins >= o && mins < c) { t = 'Open now · until ' + hm(h[2], h[3]); st.classList.add('is-open'); }
     else if (mins < o) { t = 'Opens today at ' + hm(h[0], h[1]); st.classList.remove('is-open'); }

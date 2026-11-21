@@ -512,3 +512,28 @@ body.is-lock .cxg-dock,body.is-lock .obar{display:none!important}
 .mdots button{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:var(--ln2);transition:width .35s,background .35s;cursor:pointer}
 .mdots button.on{width:28px;background:var(--yel)}
 @media (max-width:760px){.mtrack .mcard{height:480px}}
+
+/* visit info redesign */
+.wf__info{grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px);align-items:start}
+.hours{border:1px solid var(--ln);border-radius:2px;padding:6px 20px 8px;background:var(--bg2)}
+.hours__h{padding:16px 0 14px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+.week span{display:grid;place-items:center;height:36px;border:1px solid var(--ln);border-radius:2px;font-size:12px;font-weight:600;color:var(--tx3)}
+.week span.on{background:var(--yel);border-color:var(--yel);color:#0b0908}
+.hours__l li{padding:14px 0;font-size:14.5px;align-items:baseline}
+.hours__l li:last-child{border-bottom:0}
+.hours__l li span{letter-spacing:.02em}
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ct{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--ln);border-radius:2px;background:var(--bg2);text-decoration:none;color:var(--tx);min-width:0;transition:border-color .25s,background .25s}
+a.ct:hover{border-color:var(--yel);background:rgba(255,193,7,.05)}
+.ct--w{grid-column:1/-1}
+.ct__i{flex:none;display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--ln2);border-radius:50%;color:var(--yel)}
+.ct__i svg{width:18px;height:18px}
+.ct__t{display:flex;flex-direction:column;gap:3px;min-width:0}
+.ct__t small{font-size:10px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--tx3)}
+.ct__t b{font-size:14.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chips a{padding:7px 14px;border:1px solid var(--ln2);border-radius:999px;font-size:13px;color:var(--tx);text-decoration:none;transition:.2s}
+.chips a:hover{border-color:var(--yel);color:var(--yel)}
+@media (max-width:860px){.wf__info{grid-template-columns:1fr}}
+@media (max-width:420px){.ct{flex-direction:column;align-items:flex-start;gap:10px}}
