@@ -537,3 +537,13 @@ a.ct:hover{border-color:var(--yel);background:rgba(255,193,7,.05)}
 .chips a:hover{border-color:var(--yel);color:var(--yel)}
 @media (max-width:860px){.wf__info{grid-template-columns:1fr}}
 @media (max-width:420px){.ct{flex-direction:column;align-items:flex-start;gap:10px}}
+
+.dslider{grid-column:span 2;min-width:0;display:flex;flex-direction:column}
+@media (max-width:980px){.dslider{grid-column:1/-1}}
+.dslider .mtrack{flex:1}
+.dslider .deal{flex:none;width:100%;scroll-snap-align:center;scroll-snap-stop:always}
+.dslider .deal img{aspect-ratio:16/9}
+.dslider .deal__b{padding:20px 22px 22px}
+.dslider .deal__k{max-width:260px;font-size:16px}
+.dslider .deal__p b{font-size:36px}
+.dslider .mdots{margin-top:16px}
