@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/pastaxpress/img/logo.png">
 <link rel="preload" as="image" href="/constructs/pastaxpress/img/spag.webp" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/pastaxpress/pastaxpress.css?v=5">
+<link rel="stylesheet" href="/constructs/pastaxpress/pastaxpress.css?v=9">
 </head>
 <body id="top">
 
@@ -68,22 +68,16 @@
       <ul class="facts">
         <li><b data-today>Today</b><span data-today-note>Fresh daily</span></li>
         <li><b>9am – 8pm</b><span>Every day</span></li>
-        <li><b>From ₦2,700</b><span>Pasta &amp; rice plates</span></li>
+        <li><b>From ₦2,700</b><span>Pasta &amp; rice</span></li>
       </ul>
     </div>
-    <div class="hero__art" aria-hidden="false">
-      <figure class="ph ph--a"><img src="/constructs/pastaxpress/img/spag.webp" alt="Native spaghetti in a bowl, Pasta Xpress" width="728" height="664" fetchpriority="high"></figure>
-      <figure class="ph ph--b"><img src="/constructs/pastaxpress/img/jolly.webp" alt="Stir-fry pasta with grilled chicken" width="900" height="1277" loading="eager"></figure>
-      <figure class="ph ph--c"><img src="/constructs/pastaxpress/img/ofada.webp" alt="Ofada rice with sauce, plantain and asun" width="900" height="1276" loading="eager"></figure>
-      <div class="sticker"><b>₦12,500</b><span>Weekend combo<br>Fri – Sun</span></div>
+    <div class="hero__art">
+      <div class="ring" aria-hidden="true"><svg viewBox="0 0 200 200"><defs><path id="rp" d="M100 100m-93 0a93 93 0 1 1 186 0a93 93 0 1 1-186 0"/></defs><text><textPath href="#rp">STIR-FRY PASTA · OFADA · JOLLOF · NATIVE RICE · KABS BAR · </textPath></text></svg></div>
+      <figure class="plate"><img src="/constructs/pastaxpress/img/spag.webp" alt="Native spaghetti in a bowl, Pasta Xpress" width="728" height="664" fetchpriority="high"></figure>
+      <div class="sticker"><b>₦12,500</b><span>Weekend combo</span></div>
     </div>
   </div>
 </section>
-
-<div class="ticker" aria-hidden="true"><div class="ticker__t">
-  <span>Stir-fry pasta</span><span>Asun rice</span><span>Ofada &amp; sauce</span><span>Jollof penne</span><span>Suya pasta</span><span>Native rice</span><span>Boujee trays</span><span>Kabs Bar</span>
-  <span>Stir-fry pasta</span><span>Asun rice</span><span>Ofada &amp; sauce</span><span>Jollof penne</span><span>Suya pasta</span><span>Native rice</span><span>Boujee trays</span><span>Kabs Bar</span>
-</div></div>
 
 <!-- MENU -->
 <section class="sec" id="menu">
@@ -91,7 +85,7 @@
     <div class="sec__head">
       <p class="eyebrow">The menu</p>
       <h2>What’s cooking, <em>today.</em></h2>
-      <p class="sub">Some dishes belong to certain days. Pick a day to see what’s on, then fill your basket.</p>
+      <p class="sub">Some dishes belong to certain days. Pick a day, then fill your basket.</p>
     </div>
     <div class="panel">
     <div class="panel__top">
@@ -108,6 +102,29 @@
   </div>
 </section>
 
+<!-- SHOWCASE -->
+<section class="show" id="kitchen">
+  <div class="wrap show__head">
+    <div><p class="eyebrow">From the kitchen</p><h2>Made to be <em>shared.</em></h2></div>
+    <div class="arrows">
+      <button type="button" aria-label="Previous" data-prev><svg class="ic"><use href="#i-left"/></svg></button>
+      <button type="button" aria-label="Next" data-next><svg class="ic"><use href="#i-arrow"/></svg></button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="slider" data-slider>
+    <figure class="shot"><img src="/constructs/pastaxpress/img/pasta-l.webp" alt="Lagos Girls" style="--fp:50% 80%"  width="1190" height="1783"><figcaption><small>Creamy pasta · Kabs Diner</small><b>Lagos Girls</b></figcaption></figure>
+    <figure class="shot"><img src="/constructs/pastaxpress/img/hotdog-l.webp" alt="Suya Mayo" style="--fp:50% 50%" loading="lazy" width="1190" height="1783"><figcaption><small>Hot dog · Kabs Diner</small><b>Suya Mayo</b></figcaption></figure>
+    <figure class="shot"><img src="/constructs/pastaxpress/img/wings-l.webp" alt="Yaaji Wings" style="--fp:50% 55%" loading="lazy" width="1190" height="1783"><figcaption><small>Spiced wings · Kabs Diner</small><b>Yaaji Wings</b></figcaption></figure>
+    <figure class="shot"><img src="/constructs/pastaxpress/img/tacos-l.webp" alt="Pulled Beef Tacos" style="--fp:50% 76%" loading="lazy" width="1190" height="1783"><figcaption><small>Tacos · Kabs Diner</small><b>Pulled Beef Tacos</b></figcaption></figure>
+    <figure class="shot"><img src="/constructs/pastaxpress/img/ofada-l.webp" alt="Ofada Asun" style="--fp:50% 50%" loading="lazy" width="1190" height="1783"><figcaption><small>Wed &amp; Sat</small><b>Ofada Asun</b></figcaption></figure>
+    <figure class="shot"><img src="/constructs/pastaxpress/img/jolly-l.webp" alt="Jolly Box" style="--fp:50% 50%" loading="lazy" width="1190" height="1783"><figcaption><small>Stir-fry pasta</small><b>Jolly Box</b></figcaption></figure>
+    <figure class="shot"><img src="/constructs/pastaxpress/img/bar-l.webp" alt="Kabs Bar" style="--fp:50% 50%" loading="lazy" width="1190" height="1783"><figcaption><small>Cocktails, mocktails &amp; zobo</small><b>Kabs Bar</b></figcaption></figure>
+    </div>
+    <div class="dots" data-dots aria-hidden="true"></div>
+  </div>
+</section>
+
 <!-- COMBO -->
 <section class="combo" id="combo">
   <div class="wrap combo__in">
@@ -116,9 +133,7 @@
       <p class="eyebrow">Friday – Sunday</p>
       <h2>Weekend combo.</h2>
       <p class="price">₦12,500 <small>for all</small></p>
-      <ul class="tick">
-        <li>Stir-fry pasta</li><li>Chicken</li><li>Sausages</li><li>Gizdodo</li><li>2 Fayrouz drinks</li>
-      </ul>
+      <ul class="tick"><li>Stir-fry pasta</li><li>Chicken</li><li>Sausages</li><li>Gizdodo</li><li>2 Fayrouz drinks</li></ul>
       <div class="hero__cta">
         <button class="btn btn--brown" type="button" data-add-combo>Add to basket<svg class="ic"><use href="#i-plus"/></svg></button>
         <span class="mini" data-combo-note>Available Fri, Sat &amp; Sun</span>
@@ -127,73 +142,65 @@
   </div>
 </section>
 
-<!-- KITCHEN -->
-<section class="sec sec--tight" id="kitchen">
-  <div class="wrap">
-    <div class="sec__head sec__head--row">
-      <div>
-        <p class="eyebrow">From the kitchen</p>
-        <h2>Made to be <em>shared.</em></h2>
-      </div>
-      <div class="arrows">
-        <button type="button" aria-label="Previous" data-prev><svg class="ic"><use href="#i-left"/></svg></button>
-        <button type="button" aria-label="Next" data-next><svg class="ic"><use href="#i-arrow"/></svg></button>
-      </div>
-    </div>
-  </div>
-  <div class="slider" data-slider>
-    <figure class="slide"><img src="/constructs/pastaxpress/img/pasta.webp" alt="Creamy pasta in a Kabs Diner box" width="900" height="1349" loading="lazy"><figcaption><b>Lagos Girls</b><span>Kabs Diner</span></figcaption></figure>
-    <figure class="slide"><img src="/constructs/pastaxpress/img/hotdog.webp" alt="Suya mayo hot dog" width="900" height="1349" loading="lazy"><figcaption><b>Suya Mayo</b><span>Kabs Diner</span></figcaption></figure>
-    <figure class="slide"><img src="/constructs/pastaxpress/img/wings.webp" alt="Yaaji spiced wings" width="900" height="1349" loading="lazy"><figcaption><b>Yaaji Wings</b><span>Kabs Diner</span></figcaption></figure>
-    <figure class="slide"><img src="/constructs/pastaxpress/img/tacos.webp" alt="Pulled beef tacos" width="900" height="1349" loading="lazy"><figcaption><b>Pulled Beef Tacos</b><span>Kabs Diner</span></figcaption></figure>
-    <figure class="slide"><img src="/constructs/pastaxpress/img/ofada.webp" alt="Ofada asun trays" width="900" height="1276" loading="lazy"><figcaption><b>Ofada Asun</b><span>Wed &amp; Sat</span></figcaption></figure>
-    <figure class="slide"><img src="/constructs/pastaxpress/img/bar.webp" alt="Kabs Bar canned drinks" width="900" height="1196" loading="lazy"><figcaption><b>Kabs Bar</b><span>Cocktails, mocktails &amp; zobo</span></figcaption></figure>
-  </div>
-  <div class="dots" data-dots aria-hidden="true"></div>
-</section>
-
 <!-- STORY -->
 <section class="sec story" id="story">
   <div class="wrap">
     <div class="story__top">
       <div><p class="eyebrow">The story</p><h2>From ₦5,000 and a <em>craving.</em></h2></div>
-      <p class="sub">Kabira Ilo, Chef Kabs, started by taking stir-fry pasta orders on WhatsApp while still at the University of Ibadan. Today her kitchen runs from a restaurant in Bodija, with Kabs Bar, Kabs Diner and Sunday at Kabs alongside it.</p>
+      <p class="sub">Kabira Ilo, Chef Kabs, started with stir-fry pasta orders on WhatsApp while at the University of Ibadan. Today her kitchen runs from a restaurant in Bodija, alongside Kabs Bar, Kabs Diner and Sunday at Kabs.</p>
     </div>
     <ol class="steps">
-      <li><b>Start</b><span>₦5,000 of stir-fry pasta orders, taken on WhatsApp.</span></li>
+      <li><b>Start</b><span>₦5,000 of stir-fry pasta orders on WhatsApp.</span></li>
       <li><b>2021</b><span>A kiosk on the University of Ibadan campus.</span></li>
       <li><b>2024</b><span>Certified as a chef.</span></li>
-      <li><b>Dec 2024</b><span>A five-bedroom duplex in Bodija turned restaurant, with a pool.</span></li>
+      <li><b>Dec 2024</b><span>A five-bedroom duplex in Bodija becomes the restaurant, with a pool.</span></li>
     </ol>
   </div>
 </section>
 
-<!-- VISIT -->
-<section class="sec visit" id="visit">
-  <div class="wrap">
-    <div class="sec__head">
-      <p class="eyebrow">Order &amp; visit</p>
-      <h2>Three ways to <em>eat.</em></h2>
+<!-- VISIT · WAYFINDER -->
+<section class="wf" id="visit">
+  <div class="wf__copy">
+    <p class="eyebrow">Visit</p>
+    <h2>Come <em>hungry.</em></h2>
+    <div class="addr">
+      <span class="addr__k">Address</span>
+      <p class="addr__l1">10 Osuntokun Avenue, Bodija</p>
+      <p class="addr__l2">Ibadan, opposite Max Okada · Pickup, delivery or sit-in</p>
+      <button class="addr__copy" type="button" data-copy="Pasta Xpress by Chef Kabs, 10 Osuntokun Avenue, Bodija, Ibadan, Oyo State">Copy address</button>
     </div>
-    <div class="ways">
-      <article><svg class="ic"><use href="#i-bag"/></svg><h3>Pickup</h3><p>Order ahead and collect from the restaurant in Bodija.</p></article>
-      <article><svg class="ic"><use href="#i-bike"/></svg><h3>Delivery</h3><p>Order on Glovo, Heyfood or Chowdeck, or call us.</p></article>
-      <article><svg class="ic"><use href="#i-chair"/></svg><h3>Sit-in</h3><p>Eat at the restaurant, with a pool and plenty of room.</p></article>
+    <div class="btns">
+      <button class="btn btn--brown" type="button" id="guideBtn"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></g></svg>Guide me there</button>
+      <a class="btn btn--line" id="gmapsLink" href="https://www.google.com/maps/search/?api=1&amp;query=Pasta+Xpress+10+Osuntokun+Avenue+Bodija+Ibadan" target="_blank" rel="noopener"><svg class="ic"><use href="#i-pin"/></svg>Directions</a>
     </div>
-    <div class="info">
-      <div class="info__card">
-        <div class="row"><svg class="ic"><use href="#i-pin"/></svg><div><b>10 Osuntokun Avenue, Bodija</b><span>Ibadan, opposite Max Okada</span></div></div>
-        <div class="row"><svg class="ic"><use href="#i-clock"/></svg><div><b>Monday – Sunday</b><span>9am to 8pm</span></div></div>
-        <div class="row"><svg class="ic"><use href="#i-phone"/></svg><div><b><a href="tel:+2347063873047">0706 387 3047</a></b><span>Calls and orders</span></div></div>
-        <div class="row"><svg class="ic"><use href="#i-ig"/></svg><div><b><a href="https://www.instagram.com/thechefkabs/" target="_blank" rel="noopener">@thechefkabs</a></b><span>Instagram, TikTok &amp; X</span></div></div>
-        <div class="hero__cta">
-          <a class="btn btn--brown" href="https://www.google.com/maps/search/?api=1&amp;query=Pasta+Xpress+10+Osuntokun+Avenue+Bodija+Ibadan" target="_blank" rel="noopener">Get directions<svg class="ic"><use href="#i-arrow"/></svg></a>
-          <a class="btn btn--line" href="tel:+2347063873047"><svg class="ic"><use href="#i-phone"/></svg>Call</a>
-        </div>
+  </div>
+  <div class="wf__stage" id="stage">
+    <canvas id="map" aria-label="Live wayfinding map to Pasta Xpress"></canvas>
+    <div class="hud hud--tr">Wayfinder <b>/ 01</b><br><span id="hudCoord">&nbsp;</span><br><span class="hud__st" id="hudStatus"><i></i><span id="hudStatusText">Standby</span></span></div>
+    <div class="hud hud--stats">
+      <div class="hud__row"><span>To Pasta Xpress</span><span id="hudDist">&mdash;</span></div>
+      <div class="hud__meter"><i id="hudMeter"></i></div>
+      <div class="hud__grid"><div><span>ETA</span><b id="hudEta">&mdash;</b></div><div><span>Bearing</span><b id="hudBearing">&mdash;</b></div><div><span>Heading</span><b id="hudHeading">N-UP</b></div></div>
+    </div>
+    <div class="wtoast" id="toast">
+      <div class="wtoast__main">
+        <div class="wtoast__ic"><svg id="toastArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></div>
+        <div><div class="wtoast__t" id="toastText">In Ibadan? Tap “Guide me there” for a live compass.</div><div class="wtoast__s" id="toastSub">Osuntokun Avenue · Bodija</div></div>
       </div>
-      <figure class="info__img"><img src="/constructs/pastaxpress/img/bar.webp" alt="Kabs Bar drinks" width="900" height="1196" loading="lazy">
-        <figcaption><b>Kabs Bar</b><span>Cocktails from ₦5,000 · Mocktails from ₦4,000</span><button class="btn btn--gold" type="button" data-goto-drinks>See drinks</button></figcaption>
-      </figure>
+      <div class="wtoast__acts" id="toastActions"></div>
+      <div class="wtoast__bar"><i></i></div>
+    </div>
+  </div>
+  <div class="wrap wf__info">
+    <div class="hours">
+      <p class="hours__h"><svg class="ic"><use href="#i-clock"/></svg>Opening hours</p>
+      <div class="week" data-week aria-hidden="true"></div>
+      <ul class="hours__l" data-hours></ul>
+    </div>
+    <div class="contact">
+      <a class="ct" href="tel:+2347063873047"><span class="ct__i"><svg class="ic"><use href="#i-phone"/></svg></span><span class="ct__t"><small>Call</small><b>0706 387 3047</b></span></a>
+      <a class="ct" href="https://www.instagram.com/thechefkabs/" target="_blank" rel="noopener"><span class="ct__i"><svg class="ic"><use href="#i-ig"/></svg></span><span class="ct__t"><small>Instagram</small><b>@thechefkabs</b></span></a>
+      <div class="ct ct--w"><span class="ct__i"><svg class="ic"><use href="#i-bike"/></svg></span><span class="ct__t"><small>Delivery &amp; pickup</small><span class="chips"><span>Glovo</span><span>Heyfood</span><span>Chowdeck</span><span>Call us</span></span></span></div>
     </div>
   </div>
 </section>
@@ -226,6 +233,7 @@
 </div>
 <div class="toast" data-toast role="status" aria-live="polite"></div>
 
-<script src="/constructs/pastaxpress/pastaxpress.js?v=3" defer></script>
+<script src="/constructs/pastaxpress/pastaxpress.js?v=4" defer></script>
+<script src="/constructs/pastaxpress/pastaxpress-wf.js?v=1" defer></script>
 </body>
 </html>

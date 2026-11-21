@@ -152,8 +152,7 @@
     b.classList.add('ok'); setTimeout(function () { b.classList.remove('ok'); }, 700);
   });
   paintDays(); render(); paint();
-  $('[data-goto-drinks]').addEventListener('click', function () { setTab('drinks'); document.getElementById('menu').scrollIntoView({ behavior: 'smooth' }); });
-
+  
   /* combo */
   var weekend = [5, 6, 0].indexOf(TODAY) > -1;
   $('[data-combo-note]').textContent = weekend ? 'On today · Fri, Sat & Sun' : 'Available Fri, Sat & Sun';
@@ -181,11 +180,11 @@
   window.addEventListener('scroll', function () { if (tk) return; tk = true; requestAnimationFrame(function () { nav.style.boxShadow = window.scrollY > 20 ? '0 12px 34px rgba(46,13,13,.14)' : ''; tk = false; }); }, { passive: true });
 
   /* slider */
-  var sl = $('[data-slider]'), dotsEl = $('[data-dots]'), slides = $$('.slide', sl), cur = 0, hold = 0, vis = true;
+  var sl = $('[data-slider]'), dotsEl = $('[data-dots]'), slides = $$('.shot', sl), cur = 0, hold = 0, vis = true;
   dotsEl.innerHTML = slides.map(function () { return '<i></i>'; }).join('');
   var dots = $$('i', dotsEl);
-  function go(i, user) { cur = Math.max(0, Math.min(slides.length - 1, i)); sl.scrollTo({ left: slides[cur].offsetLeft - slides[0].offsetLeft, behavior: 'smooth' }); if (user) hold = Date.now() + 9000; }
-  function upd() { var best = 0, bd = 1e9; slides.forEach(function (s, i) { var d = Math.abs(s.offsetLeft - slides[0].offsetLeft - sl.scrollLeft); if (d < bd) { bd = d; best = i; } }); cur = best; dots.forEach(function (d, i) { d.classList.toggle('on', i === best); }); }
+  function go(i, user) { cur = Math.max(0, Math.min(slides.length - 1, i)); sl.scrollTo({ left: cur * sl.clientWidth, behavior: 'smooth' }); if (user) hold = Date.now() + 9000; }
+  function upd() { var best = Math.round(sl.scrollLeft / sl.clientWidth); cur = best; dots.forEach(function (d, i) { d.classList.toggle('on', i === best); }); }
   sl.addEventListener('scroll', function () { requestAnimationFrame(upd); }, { passive: true });
   ['pointerdown', 'wheel', 'touchstart'].forEach(function (ev) { sl.addEventListener(ev, function () { hold = Date.now() + 9000; }, { passive: true }); });
   $('[data-prev]').addEventListener('click', function () { go(cur - 1, true); });
@@ -196,9 +195,14 @@
   if (!reduce) setInterval(function () { if (!vis || Date.now() < hold || document.hidden) return; if (cur >= slides.length - 1) dir = -1; if (cur <= 0) dir = 1; go(cur + dir); }, 3800);
 
   /* reveal */
-  var rv = $$('.sec__head,.combo__in,.story__in,.ways,.info,.slider');
+  var rv = $$('.sec__head,.combo__in,.story__top,.steps,.show__head,.slider,.wf__info');
   rv.forEach(function (e) { e.classList.add('reveal'); });
   if ('IntersectionObserver' in window) { var io = new IntersectionObserver(function (en) { en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('is-in'); io.unobserve(x.target); } }); }, { rootMargin: '0px 0px -8% 0px' }); rv.forEach(function (e) { io.observe(e); }); }
   else rv.forEach(function (e) { e.classList.add('is-in'); });
+  /* hours + week */
+  var wkEl = $('[data-week]'), hrs = $('[data-hours]');
+  if (wkEl) wkEl.innerHTML = ORDER.map(function (d) { return '<span class="' + (d === TODAY ? 'on' : '') + '">' + WKL[d] + '</span>'; }).join('');
+  if (hrs) hrs.innerHTML = '<li class="on"><span>Monday – Sunday</span><b>9am – 8pm</b></li><li><span>Pickup · Delivery · Sit-in</span><b>All week</b></li>';
+  $$('[data-copy]').forEach(function (b) { b.addEventListener('click', function () { var v = b.getAttribute('data-copy'); try { navigator.clipboard.writeText(v); } catch (e) {} b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy address'; }, 1600); }); });
   var y = $('[data-year]'); if (y) y.textContent = new Date().getFullYear();
 })();
