@@ -478,3 +478,38 @@ html[data-theme=dark] ::selection{background:var(--clay)}
 .bdots button{width:7px;height:7px;padding:0;border:0;border-radius:999px;background:var(--line);transition:.35s;cursor:pointer}
 .bdots button.on{width:24px;background:var(--rust)}
 @media (max-width:720px){.cascade{height:clamp(260px,74vw,360px)}.cascade .cc{width:78%;margin-left:-39%}}
+
+/* ---- pristine polish ---- */
+html{scroll-padding-top:84px}
+h1,h2,h3{text-wrap:balance}
+p,.lede,.sub{text-wrap:pretty}
+.nav{padding-top:env(safe-area-inset-top)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--rust);outline-offset:3px;border-radius:2px}
+.s-dark a:focus-visible,.s-dark button:focus-visible,.s-rust a:focus-visible,.s-rust button:focus-visible,.s-rust input:focus-visible,.s-rust select:focus-visible,.s-rust textarea:focus-visible,.lb button:focus-visible{outline-color:#f3ebdf}
+img.fade{opacity:0;transition:opacity .9s ease}
+img.fade.on{opacity:1}
+.cascade .cc img.fade{transition:opacity .9s ease}
+.nav-links a{position:relative}
+.nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.nav-links a.active{color:var(--rust)}
+.nav-links a.active::after,.nav-links a:hover::after{transform:scaleX(1)}
+html[data-theme=dark] .nav-links a.active{color:#fff}
+.rail-prog{height:1px;margin:26px var(--pad) 0;background:rgba(243,235,223,.18);overflow:hidden;max-width:var(--max);margin-left:auto;margin-right:auto;width:calc(100% - 2*var(--pad))}
+.rail-prog i{display:block;height:100%;background:var(--clay,#c8a265);will-change:transform;transition:width .3s}
+@media (hover:hover){
+  .frame:not(.cc) img{transition:transform 1.4s cubic-bezier(.2,.7,.2,1),opacity .9s ease}
+  .frame:not(.cc):hover img{transform:scale(1.035)}
+  .ev{transition:background .4s}.ev:hover{background:rgba(243,235,223,.04)}
+}
+/* form: quiet underline fields */
+.field input,.field select,.field textarea{background:transparent;border:0;border-bottom:1px solid rgba(255,244,230,.42);border-radius:0;padding:12px 0 11px;transition:border-color .3s,box-shadow .3s}
+.field input:focus,.field select:focus,.field textarea:focus{background:transparent;border-bottom-color:#fff;box-shadow:0 1px 0 #fff}
+.field textarea{padding-top:12px}
+.field select{background-position:calc(100% - 8px) 50%,calc(100% - 3px) 50%}
+.field label{letter-spacing:.24em;color:rgba(255,244,230,.7)}
+/* experiences rows a touch finer */
+.xp-list li{padding-top:15px;padding-bottom:15px}
+.xp-list li:hover{padding-left:6px}
+/* hero rhythm */
+.hero-copy .sub{max-width:34ch}
+@media (min-width:981px){.hero{min-height:min(100svh,860px)}}

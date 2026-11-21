@@ -535,3 +535,27 @@ requestAnimationFrame(frame);
   });
   paint();
 })();
+
+/* ---- pristine polish ---- */
+(function(){
+  /* lightbox: swipe both ways */
+  let sx=null;lb.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+  lb.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>50){lbI+=dx<0?1:-1;showLB()}},{passive:true});
+  /* images fade in once loaded */
+  document.querySelectorAll('img[loading=lazy]').forEach(im=>{if(im.complete&&im.naturalWidth)return;im.classList.add('fade');const ok=()=>im.classList.add('on');im.addEventListener('load',ok,{once:true});im.addEventListener('error',ok,{once:true})});
+  new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType!==1)return;(n.matches&&n.matches('img[loading=lazy]')?[n]:[].slice.call(n.querySelectorAll?n.querySelectorAll('img[loading=lazy]'):[])).forEach(im=>{if(im.complete&&im.naturalWidth)return;im.classList.add('fade');const ok=()=>im.classList.add('on');im.addEventListener('load',ok,{once:true});im.addEventListener('error',ok,{once:true})})}))).observe(document.body,{childList:true,subtree:true});
+  /* staggered reveals */
+  document.querySelectorAll('.rv').forEach(el=>{const sib=[].slice.call(el.parentNode.children).filter(x=>x.classList.contains('rv'));const i=sib.indexOf(el);if(i>0)el.style.transitionDelay=Math.min(i*70,280)+'ms'});
+  /* active nav link */
+  const links=[].slice.call(document.querySelectorAll('.nav-links a[href^="#"]'));
+  if(links.length&&'IntersectionObserver' in window){
+    const map={};links.forEach(a=>{const s=document.querySelector(a.getAttribute('href'));if(s)map[s.id]=a});
+    const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.remove('active'));const a=map[e.target.id];if(a)a.classList.add('active')}}),{rootMargin:'-45% 0px -50% 0px'});
+    Object.keys(map).forEach(id=>so.observe(document.getElementById(id)));
+  }
+  /* rooms rail progress hairline */
+  const r=document.getElementById('rail');
+  if(r){const bar=document.createElement('div');bar.className='rail-prog';bar.innerHTML='<i></i>';r.parentNode.insertBefore(bar,r.nextSibling);
+    const f=bar.firstChild,upd=()=>{const m=r.scrollWidth-r.clientWidth;f.style.width=(m>0?Math.max(8,(r.clientWidth/r.scrollWidth)*100):100)+'%';f.style.transform='translateX('+(m>0?(r.scrollLeft/m)*((100/Math.max(8,(r.clientWidth/r.scrollWidth)*100))*100-100):0)+'%)'};
+    r.addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd);setTimeout(upd,400);upd()}
+})();
