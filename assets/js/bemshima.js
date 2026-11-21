@@ -37,7 +37,7 @@
 (function () {
   var tags = [
     { y: '2022', bpm: '91' }, { y: '2022', bpm: '95' }, { y: '2022', bpm: '140' },
-    { y: '2022', bpm: '119' }, { y: '2024', bpm: '101' }, { y: '2024', bpm: '84' }, { y: '2022', bpm: '97' }
+    { y: '2022', bpm: '119' }, { y: '2024', bpm: '101' }, { y: '2024', bpm: '84' }, { y: '2022', bpm: '97' }, { y: '2022', bpm: '102' }, { y: '2022', bpm: '88' }
   ];
   var rows = [].slice.call(document.querySelectorAll('.bm .tl__row'));
   var spans = [].slice.call(document.querySelectorAll('[data-track]'));
