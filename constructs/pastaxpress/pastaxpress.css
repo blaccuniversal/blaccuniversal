@@ -671,3 +671,26 @@ a.ct:hover{border-color:var(--acc);background:rgba(244,177,60,.05)}
 .mani{padding:clamp(48px,6vw,80px) 0}
 .deals,.feed{padding:clamp(56px,7vw,90px) 0}
 .spec,.events,.visit{padding:clamp(48px,6vw,80px) 0}
+
+/* tighter pass */
+.hero{padding-top:calc(104px + env(safe-area-inset-top));padding-bottom:clamp(28px,4vw,48px)}
+.hero__art{max-width:520px}
+@media (max-width:860px){.hero{padding-top:calc(84px + env(safe-area-inset-top))}.hero__art{max-width:430px}}
+.mtrack .mcard{height:clamp(240px,30vw,380px)}
+@media (max-width:760px){.mtrack .mcard{height:300px}}
+.mtrack .mcard figcaption{padding:60px clamp(18px,3vw,32px) clamp(16px,2vw,24px)}
+.mtrack .mcard b{font-size:clamp(22px,3vw,36px)}
+.deal-grid{align-items:start}
+.dslider .deal{height:auto}
+.deal--t .deal__big{flex:none;min-height:clamp(120px,14vw,170px)}
+.deal--t{min-height:0}
+.ticket{padding:clamp(18px,2.4vw,28px)}
+.sp{max-width:none}
+.sp__card{flex-direction:row;flex-wrap:wrap;align-items:center;gap:12px 18px;padding:18px 20px}
+.sp__card .sp__list{flex:1 1 300px;margin:0}
+.wf__stage{height:min(78vh,600px);min-height:520px}
+.wf::before{height:min(78vh,600px);min-height:520px}
+.wf__copy{padding-top:clamp(70px,8vw,96px)}
+@media (max-width:860px){.wf__stage{height:auto;min-height:0}#map{height:min(96vw,400px)}}
+.dslider .mtrack{align-items:flex-start}
+.dslider .deal img{aspect-ratio:16/8}
