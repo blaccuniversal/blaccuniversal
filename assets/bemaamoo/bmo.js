@@ -954,7 +954,7 @@
     if (!NET) return;
     var host = isHost(), L = NET.lobby;
     $('[data-rcode]').textContent = NET.code;
-    $('[data-rnet]').textContent = netOn() ? (host ? 'Online · keep this page open' : (hostStale() ? 'Host is away' : 'Online')) : (NET.wasOn ? 'Reconnecting…' : 'Connecting…');
+    $('[data-rnet]').textContent = netOn() ? (host ? 'Online · keep page open' : (hostStale() ? 'Host is away' : 'Online')) : (NET.wasOn ? 'Reconnecting…' : 'Connecting…');
     $('[data-rnet]').classList.toggle('is-on', netOn());
     if (!L) { paintPeople(); $('[data-rhost]').hidden = true; $('[data-rguest]').hidden = false; $('[data-rwait]').textContent = 'Connecting to room ' + NET.code + '…'; $('[data-ostart]').hidden = true; return; }
     $('[data-rhost]').hidden = !host; $('[data-rguest]').hidden = host;
