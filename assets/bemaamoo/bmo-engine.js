@@ -54,7 +54,9 @@
       turn: 0,
       settings: {
         timer: opts.timer || 0,         // seconds per round, 0 = off
-        limit: opts.limit || 0          // words per round, 0 = off
+        limit: opts.limit || 0,         // words per round, 0 = off
+        fixed: !!opts.fixed,            // online rooms: every round starts with the room's creator
+        shuffle: !!opts.shuffle         // online rooms: random first player and a fresh order each round
       }
     };
     newRound(G, opts.category || 'names_all');
@@ -62,6 +64,16 @@
   }
 
   function round(G) { return G.rounds[G.rounds.length - 1]; }
+  function nextTurn(G) {
+    var R = round(G), n = G.players.length;
+    var t = G.turn;
+    for (var tries = 0; tries < n + 1; tries++) {
+      if (R && R.order && R.order.length) { var k = R.order.indexOf(t); t = R.order[(k + 1) % R.order.length]; }
+      else t = (t + 1) % n;
+      if (!G.players[t] || !G.players[t].out) return t;
+    }
+    return t;
+  }
 
   function newRound(G, category) {
     var prev = round(G);
@@ -73,9 +85,21 @@
       left: G.settings.timer || 0,   // seconds left on the clock
       started: false
     });
-    // the next round starts with the player after whoever started the last one
-    G.turn = prev ? (G.rounds.length - 1) % G.players.length : 0;
-    return round(G);
+    var R = round(G), n = G.players.length;
+    R.order = null;
+    // phone-and-pass games: the next round starts with the player after whoever started the last one.
+    // Online rooms: the creator starts every round, or the order is shuffled when the creator chose that.
+    G.turn = prev && !G.settings.fixed ? (G.rounds.length - 1) % n : 0;
+    if (G.settings.fixed) {
+      var act = []; for (var i = 0; i < n; i++) if (!G.players[i].out) act.push(i);
+      if (!act.length) act = [0];
+      if (G.settings.shuffle && act.length > 1) {
+        for (var k = act.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)), t = act[k]; act[k] = act[j]; act[j] = t; }
+        R.order = act;
+      }
+      G.turn = act[0];
+    }
+    return R;
   }
 
   function check(G, raw, dict) {
@@ -131,22 +155,26 @@
     e.total = e.base + e.mav + e.con + e.key;
     R.entries.push(e);
     R.started = true;
-    G.turn = (G.turn + 1) % G.players.length;
+    G.turn = nextTurn(G);
     if (G.settings.limit && R.entries.length >= G.settings.limit) R.done = true;
     return e;
   }
 
-  function skip(G) {
+  function skip(G, quiet) {
     var R = round(G);
     if (R.done) return;
-    R.skips = (R.skips || 0) + 1;
-    G.turn = (G.turn + 1) % G.players.length;
+    if (!quiet) {
+      R.skips = (R.skips || 0) + 1;
+      (R.gaps = R.gaps || []).push({ a: R.entries.length, p: G.turn });   // a skipped turn shows as empty boxes
+    }
+    G.turn = nextTurn(G);
   }
 
   function undo(G) {
     var R = round(G);
     var e = R.entries.pop();
     if (!e) return null;
+    if (R.gaps) R.gaps = R.gaps.filter(function (g) { return g.a <= R.entries.length; });
     G.turn = e.p;
     R.done = false;
     return e;

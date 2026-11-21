@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=5">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=7">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -113,6 +113,10 @@
       </div>
       <p class="oerr" data-oerr hidden></p>
     </section>
+    <section class="fs ocard" data-savedsec hidden>
+      <h2 class="eyebrow">Saved rooms</h2>
+      <ul class="wl" data-saved></ul>
+    </section>
   </main>
 </section>
 
@@ -134,17 +138,9 @@
       </div>
       <p class="onote">Friends open Bemaamoo, tap Play online and enter this code, or open the link.</p>
     </section>
-    <section class="fs">
-      <h2 class="eyebrow">Players</h2>
-      <ol class="rplayers" data-rplayers></ol>
-    </section>
-    <section class="fs" data-wlsec hidden>
-      <h2 class="eyebrow">Waiting to join</h2>
-      <ul class="wl" data-wl></ul>
-    </section>
-    <section class="fs">
-      <h2 class="eyebrow">Chat</h2>
-      <div class="chat"><div class="chat__log" data-chatlog></div><form class="chat__f" data-chatform autocomplete="off"><input data-chatin maxlength="300" placeholder="Message the room" aria-label="Message the room" enterkeyhint="send" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>
+    <section class="fs rrows">
+      <button class="prow" data-act="people" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.2a3.2 3.2 0 010 5.6M18 14.8c1.8.7 3 2.4 3 5.2"/></svg><span class="prow__t"><b data-pcount>1 person in the room</b><small data-wcount>Tap to see who is here</small></span><i class="bdg bdg--in" data-bdgp hidden></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      <button class="prow" data-act="chat" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg><span class="prow__t"><b>Chat</b><small>Message everyone in the room</small></span><i class="bdg bdg--in" data-bdgc hidden></i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
     </section>
     <div data-rhost hidden>
       <section class="fs">
@@ -161,9 +157,23 @@
           <div class="seg" role="group" aria-label="Words per round" data-ropt="limit"></div>
         </div>
       </section>
+      <section class="fs">
+        <h2 class="eyebrow">Turn limit</h2>
+        <div class="seg" role="group" aria-label="Turn limit" data-ropt="turn"></div>
+        <p class="onote" style="margin-top:8px">A player who does not play in time is skipped, and the turn shows as empty boxes.</p>
+      </section>
+      <section class="fs">
+        <h2 class="eyebrow">Who starts each round</h2>
+        <div class="seg" role="group" aria-label="Who starts each round" data-ropt="order"></div>
+        <p class="onote" style="margin-top:8px">You start every round. Choose Shuffle to pick a random first player and mix the order each round.</p>
+      </section>
     </div>
     <div data-rguest hidden><p class="rwait" data-rwait>Connecting…</p></div>
     <button class="btn btn--big btn--full" data-act="ostart" data-ostart hidden>Start game</button>
+    <div class="rtools">
+      <button class="btn btn--ghost" data-act="rsave" data-rsave type="button">Save room</button>
+      <button class="btn btn--ghost btn--warn" data-act="rdel" data-rdel type="button">Delete room</button>
+    </div>
     <button class="lnk rleave" data-act="oleave" type="button">Leave this room</button>
   </main>
 </section>
@@ -178,7 +188,8 @@
     </button>
     <div class="gtop__r">
       <button class="clock" data-act="clock" data-clock hidden aria-label="Pause timer"><span data-clocktx>5:00</span><svg><use href="#i-pause"/></svg></button>
-      <button class="ic ic--b" data-act="lobby" data-lobbybtn hidden aria-label="Room: players, waiting list and chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg><i class="bdg" data-bdg hidden></i></button>
+      <button class="ic ic--b" data-act="people" data-netbtn hidden aria-label="People in the room"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.2a3.2 3.2 0 010 5.6M18 14.8c1.8.7 3 2.4 3 5.2"/></svg><i class="bdg" data-bdgp hidden></i></button>
+      <button class="ic ic--b" data-act="chat" data-netbtn hidden aria-label="Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg><i class="bdg" data-bdgc hidden></i></button>
       <button class="ic" data-act="help" aria-label="How to play"><svg><use href="#i-help"/></svg></button>
     </div>
   </header>
@@ -188,6 +199,7 @@
       <div class="pstrip" data-pstrip></div>
       <div class="board" data-board tabindex="-1" aria-label="Board"></div>
       <div class="dock">
+        <div class="twarn" data-twarn hidden role="status" aria-live="polite"></div>
         <div class="dock__msg" data-msg aria-live="polite"></div>
         <div class="dock__turn"><i data-turndot></i><span data-turn>Your turn</span><span class="dock__live" data-live></span></div>
         <form class="entry" data-entry autocomplete="off">
@@ -248,15 +260,20 @@
   </div>
 </div>
 
-<div class="sheet" data-sheet="lobby" hidden>
-  <div class="sheet__card sheet__card--tall sheet__card--lobby" role="dialog" aria-modal="true" aria-label="Room">
-    <div class="sheet__head"><b>Room <span data-lcode></span></b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+<div class="sheet" data-sheet="people" hidden>
+  <div class="sheet__card" role="dialog" aria-modal="true" aria-label="People in the room">
+    <div class="sheet__head"><b data-ptitle>People</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
     <section class="fs" data-wlsec hidden>
       <h2 class="eyebrow">Waiting to join</h2>
       <ul class="wl" data-wl></ul>
     </section>
     <ol class="rplayers" data-lplayers></ol>
-    <h2 class="eyebrow" style="margin:18px 0 10px">Chat</h2>
+  </div>
+</div>
+
+<div class="sheet sheet--chat" data-sheet="chat" hidden>
+  <div class="sheet__card sheet__card--chat" role="dialog" aria-modal="true" aria-label="Chat">
+    <div class="sheet__head"><b>Chat</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
     <div class="chat"><div class="chat__log" data-chatlog></div><form class="chat__f" data-chatform autocomplete="off"><input data-chatin maxlength="300" placeholder="Message the room" aria-label="Message the room" enterkeyhint="send" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>
   </div>
 </div>
@@ -267,7 +284,9 @@
     <div class="menu">
       <button class="btn btn--full" data-act="close">Back to the game</button>
       <button class="btn btn--full btn--ghost" data-act="end" data-ho>End this round</button>
+      <button class="btn btn--full btn--ghost" data-act="rsave" data-rsave data-onl hidden>Save room</button>
       <button class="btn btn--full btn--ghost" data-act="home">Leave (your game is saved)</button>
+      <button class="btn btn--full btn--ghost btn--warn" data-act="rdel" data-rdel data-onl data-ho hidden>Delete room</button>
       <button class="btn btn--full btn--ghost btn--warn" data-act="quit" data-ho>Finish game</button>
     </div>
   </div>
@@ -311,7 +330,7 @@
 <div class="toast" data-toast hidden></div>
 
 <script src="/assets/bemaamoo/bmo-gate.js?v=3"></script>
-<script src="/assets/bemaamoo/bmo-engine.js?v=2"></script>
-<script src="/assets/bemaamoo/bmo.js?v=9"></script>
+<script src="/assets/bemaamoo/bmo-engine.js?v=4"></script>
+<script src="/assets/bemaamoo/bmo.js?v=11"></script>
 </body>
 </html>

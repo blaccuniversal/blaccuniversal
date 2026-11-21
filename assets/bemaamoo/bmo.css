@@ -329,3 +329,34 @@ body[data-locked] .scr,body[data-locked] .sheet,body[data-locked] .ov{display:no
 .chat__f{display:flex;gap:8px;padding:8px;border-top:1px solid var(--bd)}
 .chat__f input{flex:1;min-width:0;height:44px;padding:0 12px;background:#000;border:1px solid var(--bd2);border-radius:2px;color:#fff;font:inherit;font-size:16px}
 .chat__f .btn{min-height:44px;padding:0 18px}
+
+/* room rows, chat popup, turn warning, skipped turns */
+.rrows{display:flex;flex-direction:column;gap:8px}
+.prow{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:64px;padding:0 14px;text-align:left;background:var(--bg2);border:1px solid var(--bd);border-radius:2px;color:#fff}
+.prow:hover{border-color:var(--bd2)}
+.prow>svg{width:22px;height:22px;flex:none;color:#d6d6d6}
+.prow>svg:last-child{width:18px;height:18px;color:var(--tx3);margin-left:auto}
+.prow__t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.prow__t b{font-size:16px;font-weight:600}
+.prow__t small{font-size:13px;color:var(--tx2)}
+.bdg--in{position:static;margin-left:auto;flex:none}
+.bdg--in+svg{margin-left:0!important}
+.sheet--chat{inset:auto;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100dvh);bottom:auto}
+.sheet__card--chat{display:flex;flex-direction:column;height:min(560px,100%);max-height:100%;padding-bottom:12px}
+.sheet__card--chat .chat{flex:1;min-height:0;border:0;background:none}
+.sheet__card--chat .chat__log{flex:1;height:auto;padding:4px 0 10px}
+.sheet__card--chat .chat__f{padding:8px 0 0}
+.twarn{margin:0 0 8px;padding:9px 12px;border:1px solid #6b5a1e;background:rgba(255,210,63,.08);color:var(--mav);font-size:13.5px;font-weight:600;text-align:center;border-radius:2px}
+.twarn.is-me{border-color:#8a2e2e;background:rgba(255,80,80,.12);color:#ff8d8d;animation:twp 1s ease-in-out infinite}
+@keyframes twp{50%{opacity:.62}}
+.row--skip .cell{background:transparent;border:1px dashed #333}
+.row--skip .row__n{opacity:.6}
+.row__pts--skip{color:var(--tx3);font-size:12px;font-weight:500;letter-spacing:.02em}
+
+.rtools{display:flex;gap:10px;margin:14px 0 4px}.rtools .btn{flex:1}
+.rp .kick{margin-left:10px;border:1px solid var(--bd);background:none;color:var(--tx2);border-radius:8px;font-size:12.5px;padding:6px 10px}
+.rp .kick.is-arm{background:#b3261e;border-color:#b3261e;color:#fff}
+.rp small{margin-left:auto}
+.pchip small{display:block;font-size:10px;opacity:.65;font-weight:500;line-height:1}
+.sum__d + .sum small{opacity:.8}
+.sum__rr{display:flex;gap:8px;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid var(--bd)}.sum__rr b{margin-left:auto}
