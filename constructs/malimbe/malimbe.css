@@ -569,3 +569,9 @@ body{letter-spacing:.005em}
 .drawer__foot .pill{width:100%;justify-content:center}
 /* concept dock steps aside while a menu or popup is open */
 body:has(.drawer:not([hidden])) .cxg-dock,body:has(.mdl:not([hidden])) .cxg-dock,body:has(.sheet:not([hidden])) .cxg-dock,body:has(.lbx:not([hidden])) .cxg-dock{opacity:0;pointer-events:none;transition:opacity .2s}
+
+/* request bar: three fields */
+.bk__bar{grid-template-columns:1.1fr .8fr 1.2fr auto}
+.bk__f input[type=date]{text-align:left;min-height:30px;display:block}
+.bk__f input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
+@media (max-width:900px){.bk__bar{grid-template-columns:1fr 1fr}.bk__f--r{grid-column:1/-1;border-right:0!important}.bk__f:nth-child(1){border-right:1px solid var(--ln)}}

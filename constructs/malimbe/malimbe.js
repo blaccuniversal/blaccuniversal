@@ -64,7 +64,7 @@
   var fIn = $('[data-in]'), fInt = $('[data-room]'), guests = 2;
   var today = new Date(), open = new Date(2026, 11, 1), start = today > open ? today : open;
   function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
-  fIn.min = iso(start);
+  fIn.min = iso(start); fIn.value = iso(start);
   function nice(v) { var p = v.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); }
   var mdl = $('[data-mdl]'), WA = '233599718830';
   function openMdl(interest, note) {
