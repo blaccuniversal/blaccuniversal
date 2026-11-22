@@ -120,7 +120,7 @@
   if (INFO.email) items.push(['Email', '<a href="mailto:' + INFO.email + '">' + INFO.email + '</a>']);
   if (INFO.hours) items.push(['Hours', INFO.hours]);
   $('[data-contact]').innerHTML = items.map(function (x) { return '<li><span>' + x[0] + '</span><b>' + x[1] + '</b></li>'; }).join('');
-  var socs = [['instagram', 'Instagram'], ['facebook', 'Facebook'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['x', 'X'], ['linkedin', 'LinkedIn']].filter(function (k) { return INFO[k[0]]; });
+  var socs = [['instagram', 'Instagram'], ['instagram2', 'Instagram 2'], ['facebook', 'Facebook'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['x', 'X'], ['linkedin', 'LinkedIn']].filter(function (k) { return INFO[k[0]]; });
   $('[data-soc]').innerHTML = socs.map(function (k) { return '<a href="' + INFO[k[0]] + '" target="_blank" rel="noopener">' + k[1] + '</a>'; }).join('');
 
   /* setup finder */
