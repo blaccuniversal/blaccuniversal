@@ -145,19 +145,25 @@
 
   /* ---------- categories sheet ---------- */
   var catMode = 'setup';
+  var catGroup = '';
   function paintCats(q) {
     q = (q || '').trim().toLowerCase();
     var sel = catMode === 'setup' ? S.cat : (G && B.round(G).cat);
+    if (!catGroup) B.CATS.forEach(function (g) { g.c.forEach(function (c) { if (c[0] === sel) catGroup = g.g; }); });
+    if (!catGroup) catGroup = B.CATS[0].g;
+    var tabs = $('[data-ctabs]');
+    if (tabs) { tabs.hidden = !!q; tabs.innerHTML = B.CATS.map(function (g) { return '<button type="button" data-ctab="' + esc(g.g) + '" aria-pressed="' + (g.g === catGroup) + '">' + esc(g.g.replace(' & Culture', '').replace('Franchises & Fandoms', 'Fandoms').replace('Brands & Media', 'Brands')) + '</button>'; }).join(''); }
     var h = '';
     B.CATS.forEach(function (g) {
+      if (!q && g.g !== catGroup) return;
       var items = g.c.filter(function (c) { return !q || c[1].toLowerCase().indexOf(q) >= 0 || g.g.toLowerCase().indexOf(q) >= 0; });
       if (!items.length) return;
-      h += '<h3>' + esc(g.g) + '</h3><div class="cats__g">' + items.map(function (c) { return '<button type="button" data-cat="' + c[0] + '" aria-pressed="' + (c[0] === sel) + '">' + esc(c[1]) + '</button>'; }).join('') + '</div>';
+      h += (q ? '<h3>' + esc(g.g) + '</h3>' : '') + '<div class="cats__g">' + items.map(function (c) { return '<button type="button" data-cat="' + c[0] + '" aria-pressed="' + (c[0] === sel) + '">' + esc(c[1]) + '</button>'; }).join('') + '</div>';
     });
     $('[data-cats]').innerHTML = h || '<p class="cats__none">No category matches that.</p>';
   }
   function openCats(mode) {
-    catMode = mode; $('[data-catq]').value = ''; paintCats(''); openSheet('cats');
+    catMode = mode; catGroup = ''; $('[data-catq]').value = ''; paintCats(''); openSheet('cats');
     $('[data-cats]').scrollTop = 0;
     var on = $('[data-cats] [aria-pressed=true]'); if (on) on.scrollIntoView({ block: 'center' });
   }
@@ -594,6 +600,7 @@
     else if (G.rounds.length > 1) h += '<p class="sum__d">Game total after ' + pl(G.rounds.length, 'round') + ': ' + all[0].total + ' points</p>';
     $('[data-sum]').innerHTML = h;
     var gw = NET && !isHost();
+    initNR();
     $('[data-sumbtns]').hidden = gw; $('[data-sumwait]').hidden = !gw;
     if (gw) $('[data-sumwait]').textContent = 'Waiting for ' + hostName() + ' to start the next round.';
     ov('summary', true);
@@ -608,7 +615,23 @@
     return '<div class="sum' + (list.length > 6 ? ' sum--scroll' : '') + '">' + head + rows + '</div>' + legend;
   }
 
+  /* settings for the next round, changed from the round-over screen */
+  var NR = {};
+  function paintNR() {
+    var o = [['timer', TIMERS], ['limit', LIMITS], ['alpha', ALPHA]];
+    if (NET) o.push(['turn', TURNS]);
+    o.forEach(function (x) { var el = $('[data-nr-seg="' + x[0] + '"]'); if (el) el.innerHTML = x[1].map(function (v) { return '<button type="button" data-nr="' + x[0] + '" data-v="' + v[0] + '" aria-pressed="' + (NR[x[0]] === v[0]) + '">' + v[1] + '</button>'; }).join(''); });
+    var tr = $('[data-nr-turn]'); if (tr) tr.hidden = !NET;
+    var nl = $('[data-nr-note]'); if (nl) nl.textContent = (ALNOTE[NR.alpha || 0] || '').split('. ')[0].replace(/\.$/, '') + '.';
+  }
+  function initNR() { var st = G.settings; NR = { timer: st.timer || 0, limit: st.limit || 0, alpha: st.alpha | 0, turn: st.turn || 0 }; var tg = $('[data-nr-panel]'); if (tg) tg.hidden = true; var bt = $('[data-act="nrtoggle"]'); if (bt) bt.setAttribute('aria-expanded', 'false'); paintNR(); }
+  function applyNR() {
+    if (!G || NR.timer == null) return;
+    var st = G.settings; st.timer = NR.timer; st.limit = NR.limit; st.alpha = NR.alpha;
+    if (NET && isHost()) { st.turn = NR.turn; S.timer = NR.timer; S.limit = NR.limit; S.al = NR.alpha; S.tl = NR.turn; syncLobby(); }
+  }
   function nextRound(cat) {
+    applyNR();
     ov('summary', false);
     B.newRound(G, cat || R().cat);
     save();
@@ -1351,6 +1374,8 @@
     var t = ev.target.closest('button,[data-act]');
     if (!t) { if (ev.target.classList && ev.target.classList.contains('sheet')) closeSheets(); return; }
     var a = t.getAttribute('data-act');
+    if (t.hasAttribute('data-ctab')) { catGroup = t.getAttribute('data-ctab'); paintCats($('[data-catq]').value); $('[data-cats]').scrollTop = 0; return; }
+    if (t.hasAttribute('data-nr')) { NR[t.getAttribute('data-nr')] = +t.getAttribute('data-v'); paintNR(); return; }
     if (t.hasAttribute('data-pc')) { S.pc = +t.getAttribute('data-pc'); S.count = S.pc; saveSetup(); paintSetup(); return; }
     if (t.hasAttribute('data-set')) { S[t.getAttribute('data-set')] = +t.getAttribute('data-v'); saveSetup(); if (cur === 'room') { syncLobby(); paintRoom(); } else paintSetup(); return; }
     if (t.hasAttribute('data-cat')) {
@@ -1420,6 +1445,7 @@
       case 'quit': if (NET && !isHost()) break; if (NET) { G.over = true; save(); } finish(); break;
       case 'next': if (NET && !isHost()) break; nextRound(); break;
       case 'nextcat': openCats('round'); break;
+      case 'nrtoggle': var pn = $('[data-nr-panel]'); pn.hidden = !pn.hidden; t.setAttribute('aria-expanded', String(!pn.hidden)); break;
       case 'again':
         if (gateAcct()) break;
         if (NET) { if (!isHost()) break; ov('final', false); G = null; var Lw = NET.lobby; (Lw.wait || []).forEach(function (w) { if (Lw.players.length < MAXP) Lw.players.push({ dev: w.dev, name: w.name }); }); Lw.wait = []; Lw.dec = []; storeRoom(); pubNow(); show('room'); break; }

@@ -588,3 +588,27 @@ body.is-mini .dock{display:none}
 body.is-mini [data-board]{padding-bottom:76px}
 body.is-mini .mini{left:0;right:0;bottom:0;transform:none;width:100%;box-sizing:border-box;justify-content:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));border:0;border-top:1px solid var(--bd2);border-radius:0;background:#050505;box-shadow:none}
 body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
+
+/* compact categories + next-round settings */
+.ctabs{display:flex;gap:6px;overflow-x:auto;margin:10px -4px 4px;padding:2px 4px 6px;scrollbar-width:none;flex:none}
+.ctabs::-webkit-scrollbar{display:none}
+.ctabs[hidden]{display:none}
+.ctabs button{flex:none;min-height:32px;padding:0 12px;border:1px solid var(--bd2);border-radius:2px;font-size:12.5px;font-weight:600;color:#cfcfcf;white-space:nowrap}
+.ctabs button[aria-pressed=true]{background:#fff;color:#000;border-color:#fff}
+.cats h3{margin:12px 0 6px;font-size:11px}
+.cats__g{display:flex;flex-wrap:wrap;gap:6px}
+.cats__g button{min-height:36px;padding:0 12px;font-size:13.5px;line-height:1.2;white-space:nowrap;max-width:100%;text-align:center}
+.ov__btns--c{gap:6px;margin-top:16px;align-items:stretch}
+.ov__row{display:flex;gap:8px}
+.ov__row .btn{flex:1 1 0;min-width:0;padding:0 10px}
+.ov__more{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;font-size:13px;color:var(--tx2)}
+.ov__more svg{width:14px;height:14px;transition:transform .2s}
+.ov__more[aria-expanded=true] svg{transform:rotate(180deg)}
+.nr{display:grid;gap:10px;padding:12px;border:1px solid var(--bd);border-radius:2px;background:#080808;text-align:left}
+.nr[hidden]{display:none}
+.nr__r{display:grid;gap:6px}
+.nr__r[hidden]{display:none}
+.nr__r>span{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--tx3)}
+.seg--s button{min-height:36px;font-size:13px}
+.nr__n{margin:-4px 0 0;font-size:12.5px;line-height:1.45;color:var(--tx2)}
+.sheet__card--tall{height:auto;min-height:0;max-height:min(86vh,720px)}

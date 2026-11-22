@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=29">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=31">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -279,6 +279,7 @@
   <div class="sheet__card sheet__card--tall" role="dialog" aria-modal="true" aria-label="Choose a category">
     <div class="sheet__head"><b>Choose a category</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
     <label class="search"><svg><use href="#i-search"/></svg><input data-catq type="search" placeholder="Search categories" aria-label="Search categories"></label>
+    <div class="ctabs" data-ctabs></div>
     <div class="cats" data-cats></div>
   </div>
 </div>
@@ -357,10 +358,17 @@
     <h2 class="ov__t" data-sumt>Ada leads</h2>
     <div class="sum" data-sum></div>
     <p class="ov__p" data-sumwait hidden></p>
-    <div class="ov__btns" data-sumbtns>
-      <button class="btn btn--big" data-act="next">Next round</button>
-      <button class="btn btn--big btn--ghost" data-act="nextcat">Next round, new category</button>
-      <button class="btn btn--big btn--ghost" data-act="quit">Finish game</button>
+    <div class="ov__btns ov__btns--c" data-sumbtns>
+      <div class="ov__row"><button class="btn btn--big" data-act="next">Next round</button><button class="btn btn--big btn--ghost" data-act="nextcat">New category</button></div>
+      <button class="lnk ov__more" type="button" data-act="nrtoggle" aria-expanded="false">Round settings<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="nr" data-nr-panel hidden>
+        <div class="nr__r"><span>Round timer</span><div class="seg seg--s" data-nr-seg="timer"></div></div>
+        <div class="nr__r"><span>Words per round</span><div class="seg seg--s" data-nr-seg="limit"></div></div>
+        <div class="nr__r"><span>Letter rule</span><div class="seg seg--s" data-nr-seg="alpha"></div></div>
+        <p class="nr__n" data-nr-note></p>
+        <div class="nr__r" data-nr-turn hidden><span>Skip when idle</span><div class="seg seg--s" data-nr-seg="turn"></div></div>
+      </div>
+      <button class="lnk" data-act="quit">Finish game</button>
     </div>
   </div>
 </div>
@@ -404,6 +412,6 @@
 <script src="/assets/bemaamoo/bmo-config.js?v=1"></script>
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=11"></script>
-<script src="/assets/bemaamoo/bmo.js?v=41"></script>
+<script src="/assets/bemaamoo/bmo.js?v=43"></script>
 </body>
 </html>
