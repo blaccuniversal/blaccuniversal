@@ -777,3 +777,38 @@ body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
 .dtimer{font-size:16px;font-variant-numeric:tabular-nums;color:#fff;letter-spacing:.04em}
 .dtimer.is-low{color:#ff8b7a;animation:dpulse 1s ease-in-out infinite}
 @keyframes dpulse{50%{opacity:.45}}
+
+/* ---- daily: game-style screen ---- */
+.scr--game .dgame,.dgame{display:flex;flex-direction:column;height:100%;min-height:0}
+[data-scr="daily"].scr--game{display:flex;flex-direction:column}
+[data-d-game][hidden],[data-d-pre][hidden]{display:none}
+.dgame .gbody,.dgame .gmain{flex:1;min-height:0}
+.dgame .dock__msg{min-height:18px;padding:0 0 4px;font-size:13px;color:var(--tx2)}
+.dgame .dock__msg.is-bad{color:#ffb3a7}
+.dgame .dtiles{margin:0 0 6px;gap:4px}
+.dgame .dtile{height:clamp(30px,9vw,38px);font-size:clamp(14px,4.4vw,19px);max-width:42px}
+.dgame .entry{grid-template-columns:1fr 76px}
+.dopts{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:12.5px}
+.dopts .lnk{min-height:30px;padding:0 6px;color:var(--tx2)}
+.dopts [hidden]{display:none}
+.dgame .dconf{margin:0 0 8px}
+.dgame .gtop__sub.dtimer{font-size:14px;font-weight:700;color:#fff}
+.dgame .gtop__sub.dtimer.is-low{color:#ff8b7a}
+.dgame .pchip{background:#060606;border:1px solid var(--bd);cursor:pointer;color:inherit;font:inherit}
+.dgame .pchip.is-on{cursor:default}
+.dgame .board{padding-left:clamp(10px,2vw,24px);padding-right:clamp(10px,2vw,24px)}
+.dperkhelp{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:13px;color:#cfcfcf}
+.dperkhelp li{display:flex;gap:10px;align-items:flex-start;line-height:1.4}
+.dperkhelp .tag{flex:none;margin-top:1px}
+.dperkhelp b{color:#fff}
+.feed__none{color:var(--tx3)}
+[data-scr="daily"] .entry{display:grid;grid-template-columns:1fr 76px;gap:6px;align-items:stretch}
+[data-scr="daily"] .entry__in,[data-scr="daily"] .entry .btn{height:46px;min-height:46px;padding-top:0;padding-bottom:0;box-sizing:border-box;margin:0;max-width:none;width:100%;min-width:0}
+[data-scr="daily"] .dly__inw{position:relative;min-width:0}
+[data-scr="daily"] .dly__inw .entry__in{padding:0 46px 0 12px;font-size:16px}
+[data-scr="daily"] .dly__del{position:absolute;right:2px;top:2px;bottom:2px;width:42px;display:grid;place-items:center;background:none;border:0;color:#9a9a9a;min-height:0;padding:0;height:auto}
+[data-scr="daily"] .dly__del svg{width:20px;height:20px}
+.dgame .row__pts,.dgame .row__n{position:static;background:none;box-shadow:none}
+.dgame .board .row.is-x .cell{border-color:#6ee7b7;color:#6ee7b7;background:rgba(110,231,183,.1);animation:xbreath 2.6s ease-in-out infinite}
+.dgame .board .row.is-x .row__pts{color:#6ee7b7}
+@media (min-width:1000px){.dgame .pstrip{display:flex}.dgame .ic--perks{display:grid}.dgame .gmain{max-width:760px;margin:0 auto;width:100%}.dgame .pchip{min-width:0}}

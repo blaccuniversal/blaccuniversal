@@ -1513,7 +1513,7 @@
 
   if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/bemaamoo/sw.js').catch(function () {}); });
 
-  if (window.BmoDaily) BmoDaily.init({ show: show, getList: getList, cur: function () { return cur; } });
+  if (window.BmoDaily) BmoDaily.init({ show: show, fit: fitVh, getList: getList, cur: function () { return cur; } });
   show('home');
   setTimeout(function () { loadMqtt().catch(function () {}); }, 1200);
   (window.requestIdleCallback || function (f) { setTimeout(f, 2500); })(function () { warm(S.cat); }, { timeout: 4000 });

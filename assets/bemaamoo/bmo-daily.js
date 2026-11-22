@@ -66,8 +66,10 @@
   function board(box, mavSet) {
     var r = B.round(st.g), longest = 20, tags = 0;
     r.entries.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; var t = (e.x ? 1 : 0) + (e.mavs.length ? 1 : 0) + (e.con ? 1 : 0) + (e.acc ? 1 : 0) + (e.key ? 1 : 0); if (t > tags) tags = t; });
-    var gap = 3, avail = box.clientWidth - 30 - (46 + tags * 24) - 6, c = Math.max(14, Math.min(40, Math.floor((avail - gap * longest) / longest)));
+    var cs0 = getComputedStyle(box), padx = (parseFloat(cs0.paddingLeft) || 0) + (parseFloat(cs0.paddingRight) || 0);
+    var gap = 3, avail = box.clientWidth - padx - 30 - (46 + tags * 24) - 6, c = Math.max(14, Math.min(40, Math.floor((avail - gap * longest) / longest)));
     box.style.setProperty('--c', c + 'px'); box.style.setProperty('--gap', gap + 'px');
+    if (!r.entries.length && box === el.board) { box.innerHTML = '<div class="board__empty"><b>Daily ' + '#' + num() + '</b><span>Add your first word.<br>Long words score more.</span></div>'; return; }
     var mav = {};
     r.entries.forEach(function (e) { e.mavs.forEach(function (m) { for (var k = m.from; k <= m.to; k++) mav[k + ':' + m.col] = 1; }); });
     var conAt = {}; B.concords(r).forEach(function (q) { for (var k = q.from; k <= q.to; k++) conAt[k] = (k === q.from ? ' is-con-s' : '') + (k === q.to ? ' is-con-e' : ''); });
@@ -79,13 +81,30 @@
     });
     box.innerHTML = h + '</div>';
   }
+  function strip() {
+    var T = B.tally(st.g)[0];
+    el.strip.innerHTML = '<div class="pchip is-on"><span>Score</span><b>' + T.total + '</b></div>' +
+      '<button type="button" class="pchip pchip--part" data-d="perks"><span class="c-mav">Maverick</span><b>' + T.mav + '</b></button>' +
+      '<button type="button" class="pchip pchip--part" data-d="perks"><span class="c-con">Concord</span><b>' + T.con + '</b></button>' +
+      '<button type="button" class="pchip pchip--part" data-d="perks"><span class="c-acc">Regen</span><b>' + T.acc + '</b></button>' +
+      '<button type="button" class="pchip pchip--part" data-d="perks"><span class="c-key">Keystone</span><b>' + T.key + '</b></button>';
+  }
   function paintFound() {
-    var n = entries(st).length;
-    el.pts.textContent = total(st);
-    el.cnt.textContent = pl(n, 'word');
-    el.empty.hidden = !!n;
-    board(el.board);
-    el.undo.hidden = !n;
+    strip(); board(el.board);
+    el.undo.hidden = !entries(st).length;
+    requestAnimationFrame(function () { el.board.scrollTop = el.board.scrollHeight; });
+  }
+  function perks() {
+    var f = [];
+    entries(st).forEach(function (e) {
+      if (e.x) f.push('<li><span class="tag tag--x">3×</span><span>The word · ' + e.w + '</span><em>+' + e.base + '</em></li>');
+      e.mavs.forEach(function (m) { f.push('<li><span class="tag tag--mav">M</span><span>' + m.w + '</span><em>+' + m.pts + '</em></li>'); });
+      if (e.con) f.push('<li><span class="tag tag--con">C</span><span>' + e.streak + ' × ' + e.w.length + ' letters</span><em>+' + e.con + '</em></li>');
+      if (e.acc) f.push('<li><span class="tag tag--acc">R</span><span>Regen · ' + e.w + '</span><em>+' + e.acc + '</em></li>');
+      if (e.key) f.push('<li><span class="tag tag--key">K</span><span>Keystone · ' + e.w + '</span><em>+' + e.key + '</em></li>');
+    });
+    el.feed.innerHTML = f.length ? f.reverse().join('') : '<li class="feed__none">None yet. Find a long word, a column word or an anagram.</li>';
+    $('[data-sheet="dperks"]').hidden = false;
   }
   function paintHomeBtn() {
     var b = $('[data-daily-btn]'); if (!b) return;
@@ -97,10 +116,14 @@
   }
   function paint() {
     today = dayNo(); base = wordFor(num()); st = mine();
-    $('[data-d-num]').textContent = '#' + num();
+    [].forEach.call(document.querySelectorAll('[data-d-num],[data-d-num2]'), function (n) { n.textContent = '#' + num(); });
     clearInterval(ptm);
     el.fin.hidden = true;
-    el.start.hidden = !!(st.done || st.t0); el.play.hidden = !(st.t0 && !st.done); el.res.hidden = !st.done;
+    var playing = !!(st.t0 && !st.done), sec = $('[data-scr="daily"]');
+    sec.classList.toggle('scr--game', playing); document.body.classList.toggle('in-game', playing);
+    el.pre.hidden = playing; el.game.hidden = !playing;
+    el.start.hidden = !!(st.done || st.t0); el.res.hidden = !st.done;
+    if (playing && env.fit) env.fit();
     if (st.done) return paintResult();
     if (!st.t0) {
       try { el.name.value = localStorage.getItem(KEYN) || ''; } catch (e) {}
@@ -112,7 +135,7 @@
   var ptm = 0;
   function playUI() {
     el.tiles.innerHTML = shuffled(base, num()).map(function (l) { return '<button type="button" class="dtile" data-l="' + l + '">' + l + '</button>'; }).join('');
-    el.inp.value = ''; msg('Words of 3+ letters. Each letter once per tile.');
+    el.inp.value = ''; msg('');
     paintTiles(); paintFound(); clock();
     ptm = setInterval(clock, 500);
     dictP().catch(function () { msg('Couldn’t load the dictionary. Check your connection.', true); });
@@ -147,7 +170,7 @@
       put(st); el.inp.value = ''; paintTiles(); paintFound();
       var x = [e.mavs.length ? 'Maverick' : '', e.con ? 'Concord' : '', e.acc ? 'Regen' : '', e.key ? 'Keystone' : ''].filter(Boolean);
       msg(w === base ? 'You found the word! Triple points, +' + e.total : '+' + e.total + ' for ' + w + (x.length ? ' · ' + x.join(' + ') : ''));
-      requestAnimationFrame(function () { window.scrollTo(0, document.body.scrollHeight); });
+      
     }, function () { busy = false; msg('Couldn’t check that word. Try again.', true); });
   }
   function undo() {
@@ -258,14 +281,15 @@
   /* ---------- wire ---------- */
   function init(e) {
     env = e;
-    el = { start: $('[data-d-start]'), name: $('[data-d-name]'), timer: $('[data-d-timer]'), board: $('[data-d-board]'), undo: $('[data-d-undo]'), play: $('[data-d-play]'), res: $('[data-d-res]'), tiles: $('[data-d-tiles]'), inp: $('[data-d-in]'), msg: $('[data-d-msg]'), list: $('[data-d-list]'), pts: $('[data-d-pts]'), cnt: $('[data-d-cnt]'), empty: $('[data-d-empty]'), fin: $('[data-d-fin]') };
+    el = { pre: $('[data-d-pre]'), game: $('[data-d-game]'), strip: $('[data-d-strip]'), feed: $('[data-d-feed]'), start: $('[data-d-start]'), name: $('[data-d-name]'), timer: $('[data-d-timer]'), board: $('[data-d-board]'), undo: $('[data-d-undo]'), play: $('[data-d-play]'), res: $('[data-d-res]'), tiles: $('[data-d-tiles]'), inp: $('[data-d-in]'), msg: $('[data-d-msg]'), list: $('[data-d-list]'), pts: $('[data-d-pts]'), cnt: $('[data-d-cnt]'), empty: $('[data-d-empty]'), fin: $('[data-d-fin]') };
     $('[data-scr="daily"]').addEventListener('click', function (ev) {
       var t = ev.target.closest('[data-d]'); if (!t) { var q = ev.target.closest('.dtile'); if (q) { el.inp.value += q.getAttribute('data-l'); paintTiles(); } return; }
       var a = t.getAttribute('data-d');
-      if (a === 'back') { clearInterval(tmr); clearInterval(ptm); env.show('home'); }
+      if (a === 'back') { clearInterval(tmr); clearInterval(ptm); document.body.classList.remove('in-game'); $('[data-scr="daily"]').classList.remove('scr--game'); env.show('home'); }
       else if (a === 'del') { el.inp.value = el.inp.value.slice(0, -1); paintTiles(); }
       else if (a === 'shuffle') { var o = shuffled(base, Date.now() % 9973); el.tiles.innerHTML = o.map(function (l) { return '<button type="button" class="dtile" data-l="' + l + '">' + l + '</button>'; }).join(''); paintTiles(); }
       else if (a === 'undo') undo();
+      else if (a === 'perks') perks();
       else if (a === 'begin') begin();
       else if (a === 'finish') { el.fin.hidden = false; }
       else if (a === 'no') { el.fin.hidden = true; }
