@@ -62,7 +62,7 @@
   }
   function board(box, mavSet) {
     var r = B.round(st.g), longest = 6, tags = 0;
-    r.entries.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; var t = (e.mavs.length ? 1 : 0) + (e.con ? 1 : 0) + (e.acc ? 1 : 0) + (e.key ? 1 : 0); if (t > tags) tags = t; });
+    r.entries.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; var t = (e.x ? 1 : 0) + (e.mavs.length ? 1 : 0) + (e.con ? 1 : 0) + (e.acc ? 1 : 0) + (e.key ? 1 : 0); if (t > tags) tags = t; });
     var gap = 3, avail = box.clientWidth - 30 - (46 + tags * 24) - 6, c = Math.max(14, Math.min(40, Math.floor((avail - gap * longest) / longest)));
     box.style.setProperty('--c', c + 'px'); box.style.setProperty('--gap', gap + 'px');
     var mav = {};
@@ -72,7 +72,7 @@
     r.entries.forEach(function (e, i) {
       h += '<div class="row' + (conAt[i] != null ? ' is-con' + conAt[i] : '') + (e.acc ? ' is-acc' : '') + '"><span class="row__n">' + (i + 1) + '</span>';
       for (var k = 0; k < e.w.length; k++) h += '<span class="cell' + (mav[i + ':' + (k + 1)] ? ' is-mav' : '') + '">' + e.w[k] + '</span>';
-      h += '<span class="row__pts">+' + e.total + (e.mavs.length ? '<span class="tag tag--mav" title="Maverick">M</span>' : '') + (e.con ? '<span class="tag tag--con" title="Concord">C</span>' : '') + (e.acc ? '<span class="tag tag--acc" title="Regen">R</span>' : '') + (e.key ? '<span class="tag tag--key" title="Keystone">K</span>' : '') + '</span></div>';
+      h += '<span class="row__pts">+' + e.total + (e.x ? '<span class="tag tag--x" title="The full word: double points">2×</span>' : '') + (e.mavs.length ? '<span class="tag tag--mav" title="Maverick">M</span>' : '') + (e.con ? '<span class="tag tag--con" title="Concord">C</span>' : '') + (e.acc ? '<span class="tag tag--acc" title="Regen">R</span>' : '') + (e.key ? '<span class="tag tag--key" title="Keystone">K</span>' : '') + '</span></div>';
     });
     box.innerHTML = h + '</div>';
   }
@@ -109,17 +109,17 @@
     var w = B.norm(raw);
     if (!w) return;
     if (w.length < MIN) return msg('At least ' + MIN + ' letters.', true);
-    if (w === base) return msg('That is the word itself. Find others.', true);
     if (!canMake(w, counts(base))) return msg(w + ' uses letters that aren’t there.', true);
     if (words(st).indexOf(w) >= 0) return msg('Already have ' + w + '.', true);
     if (busy) return; busy = true;
     dictP().then(function (D) {
       busy = false;
-      if (!D.has(w)) return msg(w + ' isn’t counted. Real, everyday words only.', true);
+      if (w !== base && !D.has(w)) return msg(w + ' isn’t counted. Real, everyday words only.', true);
       var e = B.add(st.g, w, { mav: D });
+      if (w === base) { e.x = 1; e.base *= 2; e.total = e.base + e.mav + e.con + e.acc + e.key; }
       put(st); el.inp.value = ''; paintTiles(); paintFound();
       var x = [e.mavs.length ? 'Maverick' : '', e.con ? 'Concord' : '', e.acc ? 'Regen' : '', e.key ? 'Keystone' : ''].filter(Boolean);
-      msg('+' + e.total + ' for ' + w + (x.length ? ' · ' + x.join(' + ') : ''));
+      msg(w === base ? 'You found the word! Double points, +' + e.total : '+' + e.total + ' for ' + w + (x.length ? ' · ' + x.join(' + ') : ''));
       requestAnimationFrame(function () { window.scrollTo(0, document.body.scrollHeight); });
     }, function () { busy = false; msg('Couldn’t check that word. Try again.', true); });
   }
@@ -134,7 +134,7 @@
     var T = B.tally(st.g)[0], n = entries(st).length;
     $('[data-d-score]').textContent = T.total;
     $('[data-d-word]').textContent = base;
-    var rg, sk = streak(), bon = [T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', (rg = entries(st).filter(function (e) { return e.acc; }).length) ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join(' · ');
+    var rg, sk = streak(), bon = [entries(st).some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', (rg = entries(st).filter(function (e) { return e.acc; }).length) ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join(' · ');
     $('[data-d-bonus]').textContent = bon; $('[data-d-bonus]').hidden = !bon;
     $('[data-d-meta]').textContent = pl(n, 'word') + (sk > 1 ? ' · ' + sk + '-day streak' : '');
     board($('[data-d-rboard]'));
@@ -162,7 +162,7 @@
   function shareText() {
     var T = B.tally(st.g)[0], E = entries(st);
     var out = 'Bemaamoo Daily #' + num() + ' · ' + base + '\n' + T.total + ' pts · ' + pl(E.length, 'word') + '\n\n';
-    E.forEach(function (e) { out += e.w + ' +' + e.total + (e.mavs.length ? ' M' : '') + (e.con ? ' C' : '') + (e.acc ? ' R' : '') + (e.key ? ' K' : '') + '\n'; });
+    E.forEach(function (e) { out += e.w + ' +' + e.total + (e.x ? ' 2x' : '') + (e.mavs.length ? ' M' : '') + (e.con ? ' C' : '') + (e.acc ? ' R' : '') + (e.key ? ' K' : '') + '\n'; });
     return out + '\nCan you beat me? blaccuniversal.com/bemaamoo/';
   }
   function share() {
