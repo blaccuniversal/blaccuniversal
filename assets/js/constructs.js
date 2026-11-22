@@ -12,7 +12,8 @@
     { name: 'Brava Hotel', tag: 'Hotel · Ibadan', path: '/constructs/brava/', img: '/constructs/brava/img/cover.webp', logo: '/constructs/brava/img/logo.png?v=2', ar: '824/393', lw: '62%' },
     { name: 'Malimbe Lodge', tag: 'Lodge · Ibadan', path: '/constructs/malimbe/', img: '/constructs/malimbe/img/cover.webp', logo: '/constructs/malimbe/img/mark.png', ar: '207/164', lw: '34%' },
     { name: 'Bujatos Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/bujatos/', img: '/constructs/bujatos/img/cover.webp', logo: '/constructs/bujatos/img/lockup.png', ar: '823/208', lw: '62%' },
-    { name: 'PastaXpress by Chef Kabs', tag: 'Restaurant · Ibadan', path: '/constructs/pastaxpress/', img: '/constructs/pastaxpress/img/pasta.webp', logo: '/constructs/pastaxpress/img/logo.png', ar: '488/175', lw: '62%' }
+    { name: 'PastaXpress by Chef Kabs', tag: 'Restaurant · Ibadan', path: '/constructs/pastaxpress/', img: '/constructs/pastaxpress/img/pasta.webp', logo: '/constructs/pastaxpress/img/logo.png', ar: '488/175', lw: '62%' },
+    { name: 'KleanSound', tag: 'Pro audio', path: '/constructs/kleansound/', img: '/constructs/kleansound/img/cover.webp', logo: '/constructs/kleansound/img/logo.png', ar: '4/3', lw: '56%' }
   ];
 
   // tool rotation
