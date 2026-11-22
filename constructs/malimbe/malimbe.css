@@ -636,3 +636,17 @@ body{overscroll-behavior-y:none}
 .inv__done h3{margin:0 0 10px;font-size:clamp(24px,3vw,32px);font-weight:300;letter-spacing:-.03em}
 .inv__done p{margin:0 0 18px;color:var(--tx2);font-weight:300}
 @media (max-width:860px){.inv__g{grid-template-columns:1fr}}
+.inv__g>*{min-width:0}
+.inv__f{max-width:100%;box-sizing:border-box}
+.inv__f.jf{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.inv__f input,.inv__f select{min-width:0;width:100%;box-sizing:border-box}
+.inv__ok input{width:18px}
+.inv__h{overflow-wrap:anywhere}
+@media (max-width:860px){.inv__g{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){
+  .inv{padding:64px 0}
+  .inv__f.jf{grid-template-columns:minmax(0,1fr);padding:22px 18px}
+  .inv__stats dd{font-size:26px}
+  .inv__stats div:nth-child(even){padding-left:16px}
+}
+.inv .h2{white-space:normal;overflow-wrap:break-word}
