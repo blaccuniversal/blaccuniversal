@@ -347,3 +347,17 @@ body{font-size:var(--fs)}
   .jf{grid-template-columns:1fr 1fr}
 }
 @media (max-width:340px){.jf{grid-template-columns:1fr}}
+
+/* build: tiny dim dots, glow when active; caption slides */
+.hp i{width:6px;height:6px;margin:-3px 0 0 -3px;background:rgba(234,213,139,.4);box-shadow:none;animation:none;transition:width .45s,height .45s,margin .45s,background .45s,box-shadow .45s}
+.hp.on i{width:16px;height:16px;margin:-8px 0 0 -8px;background:var(--g);box-shadow:0 0 0 6px rgba(234,213,139,.22),0 0 22px 6px rgba(234,213,139,.55);animation:glow 2.2s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 0 0 10px rgba(234,213,139,.1),0 0 30px 10px rgba(234,213,139,.4)}}
+.hdots{gap:6px;align-items:center}
+.hdots button{width:14px;height:3px;background:rgba(255,255,255,.14);transition:width .45s,background .45s,box-shadow .45s}
+.hdots button.on{width:30px;background:var(--g);box-shadow:0 0 10px rgba(234,213,139,.6)}
+.hcap{overflow:hidden}
+.hcap.go-l>*{animation:inL .5s cubic-bezier(.2,.7,.2,1)}
+.hcap.go-r>*{animation:inR .5s cubic-bezier(.2,.7,.2,1)}
+@keyframes inL{from{opacity:0;transform:translateX(34px)}}
+@keyframes inR{from{opacity:0;transform:translateX(-34px)}}
+@media (prefers-reduced-motion:reduce){.hp.on i{animation:none}.hcap>*{animation:none!important}}

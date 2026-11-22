@@ -103,13 +103,26 @@
   var hps = $$('.hp'), hd = $('[data-hsdots]');
   hd.innerHTML = HS.map(function (h, i) { return '<button type="button" aria-label="' + h[0] + '"></button>'; }).join('');
   var hds = $$('button', hd);
-  function hsSet(i) {
+  var hcur = 0, hdir = 1, hcap = $('[data-hscap]'), htimer = null, hhold = 0, hvis = true;
+  function hsSet(i, dir) {
+    hcur = i;
     $('[data-hst]').textContent = HS[i][0]; $('[data-hsp]').textContent = HS[i][1];
     hps.forEach(function (p, k) { p.classList.toggle('on', k === i); }); hds.forEach(function (d, k) { d.classList.toggle('on', k === i); });
+    if (dir) { hcap.classList.remove('go-l', 'go-r'); void hcap.offsetWidth; hcap.classList.add(dir > 0 ? 'go-l' : 'go-r'); }
   }
-  hps.forEach(function (p, i) { p.addEventListener('click', function () { hsSet(i); }); });
-  hds.forEach(function (d, i) { d.addEventListener('click', function () { hsSet(i); }); });
+  function hsStep() {
+    if (!hvis || document.hidden || Date.now() < hhold) return;
+    if (hcur + hdir > HS.length - 1 || hcur + hdir < 0) hdir = -hdir;
+    hsSet(hcur + hdir, hdir);
+  }
+  function hsUser(i) { hhold = Date.now() + 9000; hdir = i >= hcur ? 1 : -1; hsSet(i, i === hcur ? 0 : (i > hcur ? 1 : -1)); }
+  hps.forEach(function (p, i) { p.addEventListener('click', function () { hsUser(i); }); });
+  hds.forEach(function (d, i) { d.addEventListener('click', function () { hsUser(i); }); });
   hsSet(0);
+  if (!matchMedia('(prefers-reduced-motion:reduce)').matches) {
+    htimer = setInterval(hsStep, 3600);
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (e) { hvis = e[0].isIntersecting; }, { threshold: .25 }).observe($('.built'));
+  }
 
   /* contact details: fill KLS_INFO in contact-info.js; only filled items are shown */
   var INFO = window.KLS_INFO || {};
