@@ -184,7 +184,25 @@
     R.started = true;
     G.turn = nextTurn(G);
     if (G.settings.limit && R.entries.length >= G.settings.limit) R.done = true;
+    else if (R.fin && balanced(G)) R.done = true;
     return e;
+  }
+
+  /* when the clock hits zero, the round runs on until every player has had the same number of turns */
+  function balanced(G) {
+    var R = round(G), cnt = {}, ids = [];
+    G.players.forEach(function (p, i) { if (!p.out) { cnt[i] = 0; ids.push(i); } });
+    if (ids.length < 2) return true;
+    R.entries.forEach(function (e) { if (cnt[e.p] != null) cnt[e.p]++; });
+    (R.gaps || []).forEach(function (g) { if (cnt[g.p] != null) cnt[g.p]++; });
+    var first = cnt[ids[0]];
+    return ids.every(function (i) { return cnt[i] === first; });
+  }
+  function timeUp(G) {
+    var R = round(G); if (R.done) return true;
+    R.fin = true;
+    if (balanced(G)) R.done = true;
+    return R.done;
   }
 
   function skip(G, quiet) {
@@ -195,6 +213,7 @@
       (R.gaps = R.gaps || []).push({ a: R.entries.length, p: G.turn });   // a skipped turn shows as empty boxes
     }
     G.turn = nextTurn(G);
+    if (R.fin && balanced(G)) R.done = true;
   }
 
   function undo(G) {
@@ -254,7 +273,7 @@
 
   var api = {
     CATS: CATS, tri: tri, norm: norm, concordPts: concordPts, accordPts: accordPts,
-    create: create, newRound: newRound, round: round, check: check, alphaHint: alphaHint, add: add, skip: skip, undo: undo, endRound: endRound,
+    create: create, newRound: newRound, round: round, check: check, alphaHint: alphaHint, add: add, skip: skip, undo: undo, endRound: endRound, timeUp: timeUp, balanced: balanced,
     tally: tally, ranking: ranking, concords: concords, live: live, findMavericks: findMavericks,
     catName: catName, listFile: listFile, hasMavList: hasMavList,
     RULES: { MAX_LEN: MAX_LEN, MIN_LEN: MIN_LEN, MAV_MIN: MAV_MIN, MAV_FIRST_COL: MAV_FIRST_COL, CON_MIN_LEN: CON_MIN_LEN, CON_STREAK: CON_STREAK, ACC_MIN_LEN: ACC_MIN_LEN, KEYSTONE: KEYSTONE }

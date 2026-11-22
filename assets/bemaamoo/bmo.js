@@ -74,7 +74,21 @@
   }
   function openSheet(n) { $('[data-sheet="' + n + '"]').hidden = false; }
   function closeSheets() { $$('[data-sheet]').forEach(function (s) { s.hidden = true; }); }
-  function ov(n, on) { $('[data-ov="' + n + '"]').hidden = !on; }
+  var minSb = false, sbKind = null;
+  function ov(n, on) {
+    var el = $('[data-ov="' + n + '"]');
+    if (n === 'summary' || n === 'final') {
+      if (on) sbKind = n; else if (sbKind === n) { sbKind = null; minSb = false; }
+      el.hidden = !on || minSb;
+      paintMini(); return;
+    }
+    el.hidden = !on;
+  }
+  function paintMini() { var d = $('[data-mini]'); if (d) d.hidden = !(minSb && sbKind); var l = $('[data-mini-l]'); if (l) l.textContent = sbKind === 'final' ? 'Final scores' : 'Scoresheet'; var c = $('[data-mini] [data-act="chat"]'); if (c) c.hidden = !NET; }
+  function minimise(on) {
+    if (!sbKind) return;
+    minSb = on; $('[data-ov="' + sbKind + '"]').hidden = on; paintMini();
+  }
   var toastT;
   function toast(t, col) { var el = $('[data-toast]'); el.textContent = t; el.style.boxShadow = col ? 'inset 6px 0 0 ' + col : ''; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { el.hidden = true; }, col ? 2600 : 1800); }
 
@@ -203,10 +217,11 @@
     tick = setInterval(function () {
       var now = Date.now(), r = R();
       if (!running || r.done) { last = now; return; }
+      if (r.fin) { last = now; return; }   // time is up: the clock stays frozen at 0 while the last turns are played
       r.left = Math.max(0, r.left - (now - last) / 1000); last = now;
       paintClock();
       if (isHost() && now - lastClockPub > 2000) { lastClockPub = now; pubNow(); }
-      if (r.left <= 0) { B.endRound(G); save(); roundOver(); }
+      if (r.left <= 0) { r.left = 0; B.timeUp(G); save(); if (r.done) roundOver(); else { paintGame(); toast('Time’s up. Finish the round so everyone gets the same number of turns.'); buzz([30, 50, 30]); if (isHost()) pubNow(); if (NET && cur === 'game') notifyTurn(); } }
       else if (now - lastClockSave > 5000) { lastClockSave = now; save(); }
     }, 250);
   }
@@ -221,8 +236,9 @@
     var c = $('[data-clock]');
     if (!G.settings.timer) { setp(c, 'hidden', true); return; }
     setp(c, 'hidden', false);
-    var left = clockLeft(), low = left <= 15 && !R().done;
+    var fin = !!(R().fin && !R().done), left = fin ? 0 : clockLeft(), low = !fin && left <= 15 && !R().done;
     tx($('[data-clocktx]'), fmt(left));
+    if (c._fin !== fin) { c._fin = fin; c.classList.toggle('is-fin', fin); }
     if (c._low !== low) { c._low = low; c.classList.toggle('is-low', low); }
     if (c._run !== running) {
       c._run = running; c.classList.toggle('is-paused', !running);
@@ -240,6 +256,7 @@
     var sub = 'Round ' + r.n + ' · ' + pl(r.entries.length, 'word');
     if (G.settings.limit) sub = 'Round ' + r.n + ' · ' + r.entries.length + ' of ' + G.settings.limit + ' words';
     if (G.settings.alpha) sub += ' · ' + alphaTag();
+    if (r.fin && !r.done) sub += ' · final turns';
     $('[data-gsub]').textContent = sub;
     paintClock();
     paintStrip();
@@ -974,7 +991,7 @@
   /* guest: follow the host's game */
   function gsig(g) {
     var r = g.rounds[g.rounds.length - 1], l = r.entries[r.entries.length - 1];
-    return [g.rounds.length, r.n, r.cat, r.entries.length, l ? l.w : '', r.skips || 0, (r.gaps || []).length, g.turn, r.done ? 1 : 0, r.run ? 1 : 0, g.over ? 1 : 0, g.players.length, g.players.map(function (p) { return p.out ? 1 : 0; }).join(''), g.settings.limit || 0].join('|');
+    return [r.fin ? 1 : 0, g.rounds.length, r.n, r.cat, r.entries.length, l ? l.w : '', r.skips || 0, (r.gaps || []).length, g.turn, r.done ? 1 : 0, r.run ? 1 : 0, g.over ? 1 : 0, g.players.length, g.players.map(function (p) { return p.out ? 1 : 0; }).join(''), g.settings.limit || 0].join('|');
   }
   function guestMsg(st) {
     if (!st || st.v !== 1 || st.code !== NET.code || !st.lobby) return;
@@ -1304,6 +1321,8 @@
       case 'owa': shareRoom('wa'); break;
       case 'ostart': startOnline(); break;
       case 'oleave': if (NET) { if (!isHost()) sendIn({ t: 'bye' }); store(KEY_ROOM, null); netClose(); } G = null; show('home'); break;
+      case 'scoremin': minimise(true); break;
+      case 'scoreopen': minimise(false); break;
       case 'clock':
         if (R().done || (NET && !isHost())) break;
         if (NET && running) { running = false; R().run = false; save(); paintClock(); readyScreen(); break; }

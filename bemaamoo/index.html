@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=20">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=21">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -329,6 +329,7 @@
 
 <div class="ov" data-ov="summary" hidden>
   <div class="ov__card ov__card--wide">
+    <button class="ic ov__min" data-act="scoremin" type="button" aria-label="Minimise scoresheet" title="Minimise"><svg><use href="#i-down"/></svg></button>
     <p class="eyebrow" data-sumround>Round 1 over</p>
     <h2 class="ov__t" data-sumt>Ada leads</h2>
     <div class="sum" data-sum></div>
@@ -343,6 +344,7 @@
 
 <div class="ov" data-ov="final" hidden>
   <div class="ov__card ov__card--wide">
+    <button class="ic ov__min" data-act="scoremin" type="button" aria-label="Minimise scoresheet" title="Minimise"><svg><use href="#i-down"/></svg></button>
     <p class="eyebrow" data-finsub>Game over</p>
     <h2 class="ov__t" data-fint>Ada wins</h2>
     <div class="sum" data-fin></div>
@@ -352,6 +354,11 @@
       <button class="btn btn--big btn--ghost" data-act="home">Home</button>
     </div>
   </div>
+</div>
+
+<div class="mini" data-mini hidden>
+  <button class="btn" type="button" data-act="scoreopen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 14l5-5 5 5"/></svg><span data-mini-l>Scoresheet</span></button>
+  <button class="btn btn--ghost" type="button" data-act="chat" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg><span>Chat</span></button>
 </div>
 
 <div class="sheet" data-sheet="acct" hidden>
@@ -373,7 +380,7 @@
 <script src="/assets/bemaamoo/bmo-gate.js?v=4"></script>
 <script src="/assets/bemaamoo/bmo-config.js?v=1"></script>
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
-<script src="/assets/bemaamoo/bmo-engine.js?v=9"></script>
-<script src="/assets/bemaamoo/bmo.js?v=35"></script>
+<script src="/assets/bemaamoo/bmo-engine.js?v=10"></script>
+<script src="/assets/bemaamoo/bmo.js?v=36"></script>
 </body>
 </html>
