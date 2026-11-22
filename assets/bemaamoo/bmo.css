@@ -745,3 +745,9 @@ body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
 .dly__fin [hidden]{display:none}
 .dres__b{margin:0 0 4px;font-size:12px;color:var(--mav)}
 .tag--x{background:var(--mav);color:#000}
+.dly .entry{display:grid;grid-template-columns:1fr 46px 72px;gap:6px;align-items:stretch}
+.dly .entry__in,.dly .entry .btn{height:46px;min-height:46px;padding-top:0;padding-bottom:0;box-sizing:border-box;border-radius:2px;margin:0;max-width:none;width:100%;min-width:0}
+.dly .entry__in{padding:0 12px;font-size:16px}
+.dly .entry .btn{font-size:15px;padding-left:0;padding-right:0}
+.dly .dly__del svg,.dly .dly__del{font-size:18px;line-height:1}
+.dly .dly__del{color:#cfcfcf;border-color:#3a3a3a}
