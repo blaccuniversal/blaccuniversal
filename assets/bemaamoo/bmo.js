@@ -202,6 +202,8 @@
     var r = R();
     $('[data-rdround]').textContent = 'Round ' + r.n;
     $('[data-rdcat]').textContent = B.catName(r.cat);
+    var rn = $('[data-rdnote]');
+    if (rn) rn.innerHTML = '<span>Play fair. No cheating, no looking words up, no help from outside.</span>' + (r.cat === 'road_rage' ? '<span class="rdn__rr"><b>Road Rage is not serious.</b> It is pure entertainment. If you really hate yourselves, meet offline. But seriously, say no to violence.</span>' : '');
     var tx, gb = $('[data-ov="ready"] [data-act="go"]');
     gb.hidden = !!(NET && !isHost());
     if (NET) {
@@ -219,8 +221,24 @@
     ov('ready', true);
   }
 
+  var counting = false;
   function go() {
     if (NET && !isHost()) return;
+    if (counting) return;
+    if (R().started) return begin();
+    counting = true;
+    ov('ready', false);
+    var el = $('[data-ov="count"]'), n = $('[data-cdn]'), steps = ['3', '2', '1', 'Start!'], i = 0;
+    el.hidden = false;
+    (function nx() {
+      n.textContent = steps[i]; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop');
+      buzz(i === 3 ? [40] : [12]);
+      i++;
+      if (i < steps.length) setTimeout(nx, 800);
+      else setTimeout(function () { el.hidden = true; counting = false; begin(); }, 600);
+    })();
+  }
+  function begin() {
     ov('ready', false);
     running = true;
     if (NET) { R().run = true; save(); }

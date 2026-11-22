@@ -664,3 +664,13 @@ body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
 @keyframes breathe{0%,100%{opacity:.35;transform:translateX(-2px)}50%{opacity:1;transform:translateX(3px)}}
 @keyframes breatheL{0%,100%{opacity:.35;transform:translateX(2px)}50%{opacity:1;transform:translateX(-3px)}}
 @media (prefers-reduced-motion:reduce){.ctw__a{animation:none;opacity:.8}}
+
+.rdn{margin:0 0 12px;display:flex;flex-direction:column;gap:6px;font-size:12px;line-height:1.4;color:var(--tx2);text-align:left}
+.rdn span{display:block}
+.rdn__rr{padding:8px 10px;border:1px solid rgba(255,90,70,.45);border-radius:10px;background:rgba(255,90,70,.08);color:#f2c9c3}
+.rdn__rr b{color:#ff8a78}
+.ov--count{z-index:80;background:#000;animation:none}
+.cdn{font-size:clamp(72px,26vw,160px);font-weight:800;letter-spacing:-.02em;line-height:1;color:var(--mav)}
+.cdn.pop{animation:cdpop .8s ease-out}
+@keyframes cdpop{0%{transform:scale(1.5);opacity:0}25%{transform:scale(1);opacity:1}85%{opacity:1}100%{transform:scale(.92);opacity:.2}}
+@media (prefers-reduced-motion:reduce){.cdn.pop{animation:none}}
