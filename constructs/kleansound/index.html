@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/kleansound/img/favicon.png">
 <link rel="preload" as="image" href="/constructs/kleansound/img/stack-smoke.webp" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/kleansound/kleansound.css?v=1">
+<link rel="stylesheet" href="/constructs/kleansound/kleansound.css?v=3">
 </head>
 <body>
 
@@ -29,13 +29,13 @@
 <header class="nav" data-nav>
   <a class="nav__brand" href="#top" aria-label="KleanSound, back to top"><img src="/constructs/kleansound/img/mark.png" alt="KLS" width="920" height="304"><span class="nav__name">Kleansound</span></a>
   <nav class="nav__links" aria-label="Sections">
-    <a href="#range">Range</a><a href="#built">Build</a><a href="#setup">Find your setup</a><a href="#use">Where it plays</a>
+    <a href="#range">Range</a><a href="#built">Build</a><a href="#setup">Find your setup</a><a href="#quote">Contact</a>
   </nav>
   <a class="pill pill--g nav__cta" href="#quote">Get a quote</a>
   <button class="nav__burger" type="button" data-burger aria-label="Open menu" aria-expanded="false"><i></i><i></i></button>
 </header>
 <div class="drawer" data-drawer hidden>
-  <nav aria-label="Sections"><a href="#range"><i>01</i>Range</a><a href="#built"><i>02</i>Build</a><a href="#setup"><i>03</i>Find your setup</a><a href="#use"><i>04</i>Where it plays</a><a href="#quote"><i>05</i>Get a quote</a></nav>
+  <nav aria-label="Sections"><a href="#range"><i>01</i>Range</a><a href="#built"><i>02</i>Build</a><a href="#setup"><i>03</i>Find your setup</a><a href="#quote"><i>04</i>Contact</a></nav>
   <div class="drawer__foot"><a class="pill pill--g pill--lg pill--full" href="#quote">Get a quote</a></div>
 </div>
 
@@ -47,11 +47,12 @@
       <div class="hero__copy">
         <p class="chip rise" style="--d:1"><span class="dot"></span>KLS · Professional loudspeakers</p>
         <h1 class="hero__t rise" style="--d:2">Clean sound.<br><em>Built to carry.</em></h1>
-        <p class="hero__p rise" style="--d:3">Loudspeakers for stages, worship, events and rooms that need to be heard properly. Clear voices. Tight bass. Cabinets made for the road.</p>
+        <p class="hero__p rise" style="--d:3">Loudspeakers from Ibadan for stages, worship, events and rooms that need to be heard properly.</p>
         <div class="hero__btns rise" style="--d:4">
           <a class="pill pill--g pill--lg" href="#quote">Get a quote<svg><use href="#i-arrow"/></svg></a>
           <button class="pill pill--ghost pill--lg" type="button" data-kick aria-pressed="false"><svg data-kickic><use href="#i-play"/></svg><span data-kicktx>Feel the low end</span></button>
         </div>
+        <ul class="facts rise" style="--d:5"><li>Clear</li><li>Tight</li><li>Tough</li><li>Easy to move</li></ul>
         <p class="hero__hint rise" style="--d:5" data-kickhint>Sound on. A short bass demo plays when you tap it.</p>
       </div>
       <figure class="hero__fig rise" style="--d:2" data-fig>
@@ -61,53 +62,28 @@
     <div class="eq wrap" data-eq aria-hidden="true"></div>
   </section>
 
-  <!-- INTRO -->
-  <section class="intro wrap">
-    <p class="eyebrow reveal">KleanSound</p>
-    <h2 class="h2 reveal">Sound without the noise.</h2>
-    <p class="lead reveal">KleanSound builds loudspeakers for people who care how a room sounds. Speech you can understand at the back, bass you can feel without the mud, and cabinets tough enough to be moved every weekend.</p>
-    <ul class="facts reveal">
-      <li><b>Clear</b><span>Voices that stay clean when the room gets loud</span></li>
-      <li><b>Tight</b><span>Low end with control, not boom</span></li>
-      <li><b>Tough</b><span>Textured road finish and metal grilles</span></li>
-      <li><b>Easy</b><span>Recessed handles and stack-ready boxes</span></li>
-    </ul>
-  </section>
-
   <!-- RANGE -->
   <section class="range" id="range">
     <div class="wrap">
       <div class="head reveal"><div><p class="eyebrow">The range</p><h2 class="h2">Three ways to fill a room.</h2></div><p class="note">Pick a starting point. We help you size it.</p></div>
-      <div class="rg">
-        <article class="prod prod--wide reveal">
+      <div class="rg" data-rg>
+        <article class="prod reveal">
           <div class="prod__art"><img src="/constructs/kleansound/img/stack-pair.webp" alt="Two KLS stage cabinets stacked" loading="lazy" width="1213" height="1297"></div>
-          <div class="prod__b">
-            <p class="eyebrow">Stage</p>
-            <h3>Stage cabinets</h3>
-            <p>Full-size cabinets for live bands, worship and halls. Stack them, fly them or put them on stands.</p>
-            <ul class="tags"><li>Stack-ready</li><li>Recessed handles</li><li>Metal grille</li></ul>
-            <a class="pill pill--g" href="#quote" data-pick="Stage cabinets">Ask about stage cabinets<svg><use href="#i-arrow"/></svg></a>
-          </div>
+          <div class="prod__b"><p class="eyebrow">Stage</p><h3>Stage cabinets</h3><p>Full-size cabinets for live bands, worship and halls. Stack, fly or stand-mount.</p>
+            <a class="pill pill--g" href="#quote" data-pick="Stage cabinets">Ask about this<svg><use href="#i-arrow"/></svg></a></div>
         </article>
         <article class="prod reveal">
           <div class="prod__art"><img src="/constructs/kleansound/img/stack-smoke.webp" alt="A tall KLS cabinet on top of a wide KLS cabinet" loading="lazy" width="1400" height="1532"></div>
-          <div class="prod__b">
-            <p class="eyebrow">Systems</p>
-            <h3>Stacked systems</h3>
-            <p>Top cabinets over low-end boxes for bigger crowds, open air and DJ nights.</p>
-            <a class="pill pill--g" href="#quote" data-pick="Stacked system with subs">Ask about systems<svg><use href="#i-arrow"/></svg></a>
-          </div>
+          <div class="prod__b"><p class="eyebrow">Systems</p><h3>Stacked systems</h3><p>Top cabinets over low-end boxes for big crowds, open air and DJ nights.</p>
+            <a class="pill pill--g" href="#quote" data-pick="Stacked system with subs">Ask about this<svg><use href="#i-arrow"/></svg></a></div>
         </article>
         <article class="prod reveal">
           <div class="prod__art"><img src="/constructs/kleansound/img/portable.webp" alt="A portable KLS speaker with carry handle" loading="lazy" width="1200" height="1200"></div>
-          <div class="prod__b">
-            <p class="eyebrow">Portable</p>
-            <h3>Portable speaker</h3>
-            <p>Compact, rugged and easy to carry. Built for small rooms, speeches and pop-up events.</p>
-            <a class="pill pill--g" href="#quote" data-pick="Portable">Ask about portable<svg><use href="#i-arrow"/></svg></a>
-          </div>
+          <div class="prod__b"><p class="eyebrow">Portable</p><h3>Portable speaker</h3><p>Compact, rugged and easy to carry. For small rooms, speeches and pop-ups.</p>
+            <a class="pill pill--g" href="#quote" data-pick="Portable">Ask about this<svg><use href="#i-arrow"/></svg></a></div>
         </article>
       </div>
+      <p class="swipe">Swipe for more →</p>
     </div>
   </section>
 
@@ -117,8 +93,9 @@
       <div class="built__copy reveal">
         <p class="eyebrow">Build</p>
         <h2 class="h2">Made to be moved.</h2>
-        <p class="lead">Speakers get dragged, stacked, loaded and rained on. Every part you touch was thought through. Tap a point on the photo.</p>
-        <ul class="hs" data-hslist></ul>
+        <p class="lead">Tap a point on the photo.</p>
+        <div class="hcap" data-hscap aria-live="polite"><b data-hst></b><p data-hsp></p></div>
+        <div class="hdots" data-hsdots></div>
       </div>
       <figure class="built__fig reveal" data-bfig>
         <img src="/constructs/kleansound/img/stack-pair.webp" alt="Two KLS cabinets stacked, showing the grille, handles and finish" loading="lazy" width="1213" height="1297">
@@ -133,55 +110,39 @@
   <!-- FIND YOUR SETUP -->
   <section class="setup" id="setup">
     <div class="wrap">
-      <div class="head reveal"><div><p class="eyebrow">Find your setup</p><h2 class="h2">Three questions.</h2></div><p class="note">A quick starting point. We confirm the right setup for your venue.</p></div>
+      <div class="head reveal"><div><p class="eyebrow">Find your setup</p><h2 class="h2">Three questions.</h2></div></div>
       <div class="cfg reveal" data-cfg>
-        <fieldset class="q"><legend>Where will it play?</legend>
-          <div class="opts" data-q="venue"><button type="button" data-v="room" aria-pressed="true">A room</button><button type="button" data-v="hall" aria-pressed="false">A hall or church</button><button type="button" data-v="open" aria-pressed="false">Open air</button></div></fieldset>
-        <fieldset class="q"><legend>How many people?</legend>
-          <div class="opts" data-q="crowd"><button type="button" data-v="s" aria-pressed="true">Up to 100</button><button type="button" data-v="m" aria-pressed="false">100 to 500</button><button type="button" data-v="l" aria-pressed="false">500 or more</button></div></fieldset>
-        <fieldset class="q"><legend>What will you play?</legend>
-          <div class="opts" data-q="use"><button type="button" data-v="speech" aria-pressed="true">Speech</button><button type="button" data-v="band" aria-pressed="false">Live band</button><button type="button" data-v="dj" aria-pressed="false">DJ and bass</button></div></fieldset>
+        <div class="cfg__q">
+          <fieldset class="q"><legend>Where?</legend><div class="opts" data-q="venue"><button type="button" data-v="room" aria-pressed="true">Room</button><button type="button" data-v="hall" aria-pressed="false">Hall</button><button type="button" data-v="open" aria-pressed="false">Open air</button></div></fieldset>
+          <fieldset class="q"><legend>How many people?</legend><div class="opts" data-q="crowd"><button type="button" data-v="s" aria-pressed="true">Up to 100</button><button type="button" data-v="m" aria-pressed="false">100 to 500</button><button type="button" data-v="l" aria-pressed="false">500+</button></div></fieldset>
+          <fieldset class="q"><legend>What will you play?</legend><div class="opts" data-q="use"><button type="button" data-v="speech" aria-pressed="true">Speech</button><button type="button" data-v="band" aria-pressed="false">Live band</button><button type="button" data-v="dj" aria-pressed="false">DJ and bass</button></div></fieldset>
+        </div>
         <div class="rec" aria-live="polite">
           <p class="eyebrow">We would start with</p>
           <h3 data-rect>Portable</h3>
           <p data-recp></p>
-          <a class="pill pill--g pill--lg" href="#quote" data-recgo>Request this setup<svg><use href="#i-arrow"/></svg></a>
+          <a class="pill pill--g" href="#quote" data-recgo>Request this setup<svg><use href="#i-arrow"/></svg></a>
         </div>
       </div>
+      <ul class="chips reveal" id="use" aria-label="Where it plays"><li>Worship</li><li>Weddings and events</li><li>Clubs and lounges</li><li>Live bands</li><li>Corporate and schools</li></ul>
     </div>
   </section>
 
-  <!-- USE -->
-  <section class="use" id="use">
-    <div class="wrap">
-      <div class="head reveal"><div><p class="eyebrow">Where it plays</p><h2 class="h2">Wherever sound matters.</h2></div></div>
-      <ul class="ug">
-        <li class="reveal"><i>01</i><b>Worship</b><span>Words that carry to every row, music that does not shout.</span></li>
-        <li class="reveal"><i>02</i><b>Weddings &amp; events</b><span>From the vows to the last dance, one clean system.</span></li>
-        <li class="reveal"><i>03</i><b>Clubs &amp; lounges</b><span>Weight in the low end, comfort in the mids.</span></li>
-        <li class="reveal"><i>04</i><b>Live bands</b><span>Stage cabinets that stay clear at stage volume.</span></li>
-        <li class="reveal"><i>05</i><b>Corporate &amp; schools</b><span>Speech you can follow without turning it up.</span></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- QUOTE -->
+  <!-- QUOTE + CONTACT -->
   <section class="quote" id="quote">
     <div class="wrap quote__g">
       <div class="quote__copy reveal">
         <p class="eyebrow">Get a quote</p>
         <h2 class="h2">Tell us about the room.</h2>
-        <p class="lead">Share what you are setting up and where. We come back with the right system and a quote.</p>
-        <ol class="steps"><li><b>1</b>Tell us the room and the crowd</li><li><b>2</b>We suggest the setup</li><li><b>3</b>You get a quote</li></ol>
+        <ul class="contact" data-contact></ul>
+        <div class="soc" data-soc></div>
       </div>
       <form class="jf reveal" id="qForm" novalidate>
         <input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
         <label><span>Full name</span><input name="name" autocomplete="name" required></label>
         <label><span>Phone</span><input name="phone" type="tel" autocomplete="tel" placeholder="+234" required></label>
-        <label class="jf__full"><span>Email (optional)</span><input name="email" type="email" autocomplete="email"></label>
-        <label class="jf__full"><span>What are you looking at?</span><select name="setup"><option>Not sure yet</option><option>Portable</option><option>Stage cabinets</option><option>Stacked system with subs</option></select></label>
-        <label class="jf__full"><span>Venue and city</span><input name="venue" placeholder="e.g. Church hall, Ibadan" autocomplete="off"></label>
-        <label class="jf__full"><span>Anything else</span><textarea name="note" rows="3" placeholder="Crowd size, what you will play, dates"></textarea></label>
+        <label class="jf__full"><span>Looking at</span><select name="setup"><option>Not sure yet</option><option>Portable</option><option>Stage cabinets</option><option>Stacked system with subs</option></select></label>
+        <label class="jf__full"><span>Venue, city and details</span><textarea name="note" rows="2" placeholder="e.g. Church hall, Ibadan, about 300 people"></textarea></label>
         <div class="jf__foot"><button class="pill pill--g pill--lg pill--full" type="submit">Send request<svg><use href="#i-arrow"/></svg></button><p class="jf__msg" id="qMsg" role="status">We reply as soon as we can.</p></div>
       </form>
     </div>
@@ -190,10 +151,11 @@
 
 <footer class="ft"><div class="wrap ft__in">
   <img class="ft__logo" src="/constructs/kleansound/img/logo.png" alt="KLS Kleansound" width="1149" height="474">
-  <p>Clean sound. Built to carry.</p>
+  <p>Ibadan, Oyo State, Nigeria</p>
   <small>© <span data-year>2026</span> KleanSound <br><a href="https://blaccuniversal.com" target="_blank" rel="noopener">Designed by BLACC Universal</a></small>
 </div></footer>
 
-<script src="/constructs/kleansound/kleansound.js?v=1" defer></script>
+<script src="/constructs/kleansound/contact-info.js?v=2"></script>
+<script src="/constructs/kleansound/kleansound.js?v=3" defer></script>
 </body>
 </html>

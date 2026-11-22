@@ -100,12 +100,28 @@
     ['Stack-ready', 'Cabinets sit flush on each other, so a stack stays steady from the first song to the last.'],
     ['Road finish', 'A textured coating built for load-ins, load-outs and the odd knock.']
   ];
-  var hl = $('[data-hslist]'), hps = $$('.hp');
-  hl.innerHTML = HS.map(function (h, i) { return '<li data-i="' + i + '"><button type="button"><i>0' + (i + 1) + '</i><b>' + h[0] + '</b></button><span class="hs__dw"><p class="hs__d">' + h[1] + '</p></span></li>'; }).join('');
-  function hsSet(i) { $$('li', hl).forEach(function (li, k) { li.classList.toggle('on', k === i); }); hps.forEach(function (p, k) { p.classList.toggle('on', k === i); }); }
-  $$('li button', hl).forEach(function (b, i) { b.addEventListener('click', function () { hsSet(i); }); });
+  var hps = $$('.hp'), hd = $('[data-hsdots]');
+  hd.innerHTML = HS.map(function (h, i) { return '<button type="button" aria-label="' + h[0] + '"></button>'; }).join('');
+  var hds = $$('button', hd);
+  function hsSet(i) {
+    $('[data-hst]').textContent = HS[i][0]; $('[data-hsp]').textContent = HS[i][1];
+    hps.forEach(function (p, k) { p.classList.toggle('on', k === i); }); hds.forEach(function (d, k) { d.classList.toggle('on', k === i); });
+  }
   hps.forEach(function (p, i) { p.addEventListener('click', function () { hsSet(i); }); });
+  hds.forEach(function (d, i) { d.addEventListener('click', function () { hsSet(i); }); });
   hsSet(0);
+
+  /* contact details: fill KLS_INFO in contact-info.js; only filled items are shown */
+  var INFO = window.KLS_INFO || {};
+  var items = [];
+  if (INFO.address) items.push(['Visit', INFO.address + (INFO.maps ? ' <a class="dir" href="' + INFO.maps + '" target="_blank" rel="noopener">Directions</a>' : '')]);
+  if (INFO.phone) items.push(['Call', '<a href="tel:' + INFO.phone.replace(/[^+\d]/g, '') + '">' + INFO.phone + '</a>']);
+  if (INFO.whatsapp) items.push(['Message', '<a href="https://wa.me/' + INFO.whatsapp.replace(/\D/g, '') + '" target="_blank" rel="noopener">' + INFO.whatsapp + '</a>']);
+  if (INFO.email) items.push(['Email', '<a href="mailto:' + INFO.email + '">' + INFO.email + '</a>']);
+  if (INFO.hours) items.push(['Hours', INFO.hours]);
+  $('[data-contact]').innerHTML = items.map(function (x) { return '<li><span>' + x[0] + '</span><b>' + x[1] + '</b></li>'; }).join('');
+  var socs = [['instagram', 'Instagram'], ['facebook', 'Facebook'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['x', 'X'], ['linkedin', 'LinkedIn']].filter(function (k) { return INFO[k[0]]; });
+  $('[data-soc]').innerHTML = socs.map(function (k) { return '<a href="' + INFO[k[0]] + '" target="_blank" rel="noopener">' + k[1] + '</a>'; }).join('');
 
   /* setup finder */
   var st = { venue: 'room', crowd: 's', use: 'speech' };
