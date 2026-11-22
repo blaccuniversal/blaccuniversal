@@ -262,11 +262,10 @@
   function ang(e) { var r = dial.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI; }
   dial.addEventListener('pointerdown', function (e) {
     if (e.button > 0) return; drag = true; moved = false; acc = 0; lastA = ang(e); sx = e.clientX; sy = e.clientY; baseIdx = S.idx; pend = 0;
-    dial.classList.add('drag'); try { dial.setPointerCapture(e.pointerId); } catch (x) {}
   });
   dial.addEventListener('pointermove', function (e) {
     if (!drag) return;
-    if (!moved && Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 6) moved = true;
+    if (!moved && Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 6) { moved = true; dial.classList.add('drag'); try { dial.setPointerCapture(e.pointerId); } catch (x) {} }
     if (!moved) return;
     var a = ang(e), d = a - lastA; if (d > 180) d -= 360; if (d < -180) d += 360; lastA = a; acc += d;
     knob.style.setProperty('--rot', (baseIdx * STEP + acc) + 'deg');
