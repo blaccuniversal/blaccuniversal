@@ -10,6 +10,7 @@
   var CON_MIN_LEN = 3;       // Concord words need 3+ letters
   var CON_STREAK = 3;        // Concord starts at 3 same-length words in a row
   var ACC_MIN_LEN = 3;       // Regen: a word with the same letters as the word above it (3+ letters)
+  var CLAIM_BONUS = 3;       // ladder and lap: bonus on top of the word's score when someone claims a letter that was passed
   var KEYSTONE = 5;          // bonus when one word sets off a Maverick and a Concord
 
   var CATS = [
@@ -111,26 +112,37 @@
   }
 
   function nextLetter(c) { return c === 'Z' ? 'A' : String.fromCharCode(c.charCodeAt(0) + 1); }
+  // The letters played so far, in order. A passed turn ("no word") in ladder or lap play still uses up its letter.
+  function letterSeq(R) {
+    var e = R.entries, g = R.gaps || [], out = [], gi = 0;
+    for (var i = 0; i <= e.length; i++) {
+      while (gi < g.length && g[gi].a <= i) { if (g[gi].l) out.push(g[gi].l); gi++; }
+      if (i < e.length) out.push(e[i].w.charAt(0));
+    }
+    return out;
+  }
   // What the letter rule asks of the next word: { mode, after } for sorted play, { mode, letter } for ladder and lap (empty on the first word, which is free).
   function alphaHint(G) {
     var mode = (G.settings && G.settings.alpha) | 0, R = round(G), e = R.entries, h = { mode: mode, after: '', letter: '' };
-    if (!mode || !e.length) return h;
-    var last = e[e.length - 1].w;
-    if (mode === 1) { h.after = last; return h; }
-    var c = last.charAt(0);
+    if (!mode) return h;
+    if (mode === 1) { if (e.length) h.after = e[e.length - 1].w; return h; }
+    var seq = letterSeq(R); if (!seq.length) return h;
+    var c = seq[seq.length - 1];
     if (mode === 2) { h.letter = nextLetter(c); return h; }
     var n = 0; G.players.forEach(function (p) { if (!p.out) n++; });
-    var run = 0; for (var i = e.length - 1; i >= 0 && e[i].w.charAt(0) === c; i--) run++;
+    var run = 0; for (var i = seq.length - 1; i >= 0 && seq[i] === c; i--) run++;
     h.letter = run >= Math.max(1, n) ? nextLetter(c) : c;   // a lap: every player plays this letter, then the room moves on
     return h;
   }
   function check(G, raw, dict) {
-    var w = norm(raw), R = round(G);
+    var w = norm(raw), R = round(G), repeated = false;
     if (!w) return { ok: false, why: 'empty', w: w };
     if (R.done) return { ok: false, why: 'done', w: w };
     if (w.length < MIN_LEN) return { ok: false, why: 'short', w: w };
     if (MAX_LEN && w.length > MAX_LEN) return { ok: false, why: 'long', w: w };
     for (var i = 0; i < R.entries.length; i++) if (R.entries[i].w === w) return { ok: false, why: 'repeat', w: w };
+    (R.gaps || []).forEach(function (g) { if (g.claim && g.claim.w === w) repeated = true; });
+    if (repeated) return { ok: false, why: 'repeat', w: w };
     var ah = alphaHint(G);
     if (ah.mode === 1 && ah.after && w < ah.after) return { ok: false, why: 'order', w: w };
     if ((ah.mode === 2 || ah.mode === 3) && ah.letter && w.charAt(0) !== ah.letter) return { ok: false, why: 'letter', w: w };
@@ -210,7 +222,9 @@
     if (R.done) return;
     if (!quiet) {
       R.skips = (R.skips || 0) + 1;
-      (R.gaps = R.gaps || []).push({ a: R.entries.length, p: G.turn });   // a skipped turn shows as empty boxes
+      var g = { a: R.entries.length, p: G.turn }, h = alphaHint(G);
+      if (h.letter) g.l = h.letter;                       // ladder and lap: a pass is a "null" on this letter, worth 0, and play moves on
+      (R.gaps = R.gaps || []).push(g);                    // a skipped turn shows as empty boxes
     }
     G.turn = nextTurn(G);
     if (R.fin && balanced(G)) R.done = true;
@@ -218,6 +232,8 @@
 
   function undo(G) {
     var R = round(G);
+    var gl = R.gaps && R.gaps[R.gaps.length - 1];
+    if (gl && gl.a === R.entries.length) { R.gaps.pop(); G.turn = gl.p; R.done = false; return { w: '', p: gl.p, gap: true }; }
     var e = R.entries.pop();
     if (!e) return null;
     if (R.gaps) R.gaps = R.gaps.filter(function (g) { return g.a <= R.entries.length; });
@@ -226,12 +242,29 @@
     return e;
   }
 
+  /* ladder and lap: someone else says they do have a word for a letter that was passed. A valid word scores as normal plus a bonus. */
+  function claim(G, gi, raw, pid, dict) {
+    var R = round(G), g = (R.gaps || [])[gi], w = norm(raw);
+    if (!g || !g.l || g.claim) return { ok: false, why: 'gone', w: w };
+    if (R.done) return { ok: false, why: 'done', w: w };
+    if (w.length < MIN_LEN) return { ok: false, why: 'short', w: w };
+    if (w.charAt(0) !== g.l) return { ok: false, why: 'letter', w: w, letter: g.l };
+    var n = 0; G.players.forEach(function (p) { if (!p.out) n++; });
+    if (pid === g.p && n > 1) return { ok: false, why: 'self', w: w };
+    var dup = R.entries.some(function (e) { return e.w === w; }) || R.gaps.some(function (x) { return x.claim && x.claim.w === w; });
+    if (dup) return { ok: false, why: 'repeat', w: w };
+    if (dict && !dict.has(w)) return { ok: false, why: 'unknown', w: w };
+    g.claim = { w: w, p: pid, pts: tri(w.length) + CLAIM_BONUS };
+    return { ok: true, w: w, pts: g.claim.pts };
+  }
+
   function endRound(G) { round(G).done = true; }
 
   function tally(G, onlyRound) {
     var t = G.players.map(function (p) { return { id: p.id, name: p.name, base: 0, mav: 0, con: 0, acc: 0, key: 0, total: 0, words: 0, mavs: 0, cons: 0, keys: 0 }; });
     var rounds = onlyRound ? [onlyRound] : G.rounds;
     rounds.forEach(function (R) {
+      (R.gaps || []).forEach(function (g) { var s = g.claim && t[g.claim.p]; if (!s) return; s.base += g.claim.pts; s.total += g.claim.pts; s.words++; s.claims = (s.claims || 0) + 1; });
       R.entries.forEach(function (e) {
         var s = t[e.p]; if (!s) return;
         s.base += e.base; s.mav += e.mav; s.con += e.con; s.acc += e.acc || 0; s.key += e.key; s.total += e.total; s.words++;
@@ -273,10 +306,10 @@
 
   var api = {
     CATS: CATS, tri: tri, norm: norm, concordPts: concordPts, accordPts: accordPts,
-    create: create, newRound: newRound, round: round, check: check, alphaHint: alphaHint, add: add, skip: skip, undo: undo, endRound: endRound, timeUp: timeUp, balanced: balanced,
+    create: create, newRound: newRound, round: round, check: check, alphaHint: alphaHint, add: add, skip: skip, claim: claim, undo: undo, endRound: endRound, timeUp: timeUp, balanced: balanced,
     tally: tally, ranking: ranking, concords: concords, live: live, findMavericks: findMavericks,
     catName: catName, listFile: listFile, hasMavList: hasMavList,
-    RULES: { MAX_LEN: MAX_LEN, MIN_LEN: MIN_LEN, MAV_MIN: MAV_MIN, MAV_FIRST_COL: MAV_FIRST_COL, CON_MIN_LEN: CON_MIN_LEN, CON_STREAK: CON_STREAK, ACC_MIN_LEN: ACC_MIN_LEN, KEYSTONE: KEYSTONE }
+    RULES: { CLAIM_BONUS: CLAIM_BONUS, MAX_LEN: MAX_LEN, MIN_LEN: MIN_LEN, MAV_MIN: MAV_MIN, MAV_FIRST_COL: MAV_FIRST_COL, CON_MIN_LEN: CON_MIN_LEN, CON_STREAK: CON_STREAK, ACC_MIN_LEN: ACC_MIN_LEN, KEYSTONE: KEYSTONE }
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BMO = api;
 })(this);

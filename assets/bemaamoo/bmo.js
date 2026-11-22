@@ -118,7 +118,7 @@
   var S = load(KEY_SETUP) || {};
   S = { mode: S.mode === 'solo' ? 'solo' : 'pass', pc: Math.max(2, Math.min(8, S.pc || (S.count > 1 ? S.count : 2))), count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null && S.tl !== 20 ? S.tl : 15, sh: S.sh ? 1 : 0, al: +S.al || 0 };
   function saveSetup() { store(KEY_SETUP, S); }
-  var ALNOTE = ['Any word, any letter.', 'Sorted: each word comes after the word above it in the alphabet.', 'Ladder: if one word starts with A, the next starts with B, then C, and so on.', 'Lap: everyone plays a word starting with the same letter, then the whole table moves to the next letter.'];
+  var ALNOTE = ['Any word, any letter.', 'Sorted: each word sorts after the word above it. Letters can be skipped.', 'Ladder: A, then B, then C. One word per letter, no skipping. No word? Pass with "No word" (0 points); anyone can claim it later for a bonus.', 'Lap: everyone plays the same letter, then the table moves on. No word? Pass with "No word" (0 points); anyone can claim it later for a bonus.'];
   function paintSetup() {
     var solo1 = S.mode === 'solo';
     S.count = solo1 ? 1 : S.pc;
@@ -319,7 +319,7 @@
   function paintBoard() {
     var b = $('[data-board]'), r = R();
     sizeBoard();
-    var bk = [b.clientWidth, r.n, r.cat, r.entries.map(function (e) { return e.w + (e.mavs.length ? 'm' : '') + (e.con ? 'c' : '') + (e.acc ? 'r' : '') + (e.key ? 'k' : '') + (e.forced ? 'f' : ''); }).join(','), (r.gaps || []).map(function (g) { return g.a + ':' + g.p; }).join(','), G.players.map(function (p) { return p.name; }).join(','), r.entries.length ? '' : G.turn].join('|');
+    var bk = [b.clientWidth, r.n, r.cat, r.entries.map(function (e) { return e.w + (e.mavs.length ? 'm' : '') + (e.con ? 'c' : '') + (e.acc ? 'r' : '') + (e.key ? 'k' : '') + (e.forced ? 'f' : ''); }).join(','), (r.gaps || []).map(function (g) { return g.a + ':' + g.p + (g.l || '') + (g.claim ? g.claim.w : ''); }).join(',') + (r.done ? 'd' : ''), G.players.map(function (p) { return p.name; }).join(','), r.entries.length ? '' : G.turn].join('|');
     if (b._k === bk && lastAdded < 0 && !b._dirty) return;
     b._k = bk;
     if (!r.entries.length && !(r.gaps || []).length) {
@@ -336,12 +336,18 @@
     var cons = B.concords(r), conAt = {};
     cons.forEach(function (c) { for (var k = c.from; k <= c.to; k++) conAt[k] = (k === c.from ? ' is-con-s' : '') + (k === c.to ? ' is-con-e' : ''); });
     var h = '<div class="rows">', gaps = r.gaps || [], gi = 0, seq = 0;
-    function gapRow(g) {
+    function gapRow(g, gx) {
       seq++;
+      if (g.l) {
+        var cl = g.claim, cells = cl ? cl.w.split('').map(function (ch) { return '<span class="cell is-claim">' + ch + '</span>'; }).join('') : '<span class="cell cell--null">' + g.l + '</span>';
+        var rt = cl ? '+' + cl.pts + '<span class="tag tag--cl" title="Claimed by ' + esc(pname(cl.p)) + '">' + esc(pname(cl.p).slice(0, 8)) + '</span>'
+          : (!r.done && G.settings.alpha > 1 ? '<button type="button" class="claimb" data-act="claim" data-gi="' + gx + '">I have one</button>' : '<span class="row__pts--skip">no word</span>');
+        return '<div class="row row--skip row--null' + (cl ? ' is-claimed' : '') + '"><span class="row__n"><i style="background:' + color(g.p) + '"></i>' + seq + '</span>' + cells + '<span class="row__pts' + (cl ? '' : ' row__pts--skip') + '">' + rt + '</span></div>';
+      }
       return '<div class="row row--skip"><span class="row__n"><i style="background:' + color(g.p) + '"></i>' + seq + '</span>' + '<span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span><span class="cell"></span>' + '<span class="row__pts row__pts--skip">' + esc(pname(g.p)) + ' skipped</span></div>';
     }
     r.entries.forEach(function (e, i) {
-      while (gi < gaps.length && gaps[gi].a <= i) { h += gapRow(gaps[gi]); gi++; }
+      while (gi < gaps.length && gaps[gi].a <= i) { h += gapRow(gaps[gi], gi); gi++; }
       seq++;
       var cls = 'row' + (conAt[i] != null ? ' is-con' + conAt[i] : '') + (i === r.entries.length - 1 ? ' is-last' : '') + (e.acc ? ' is-acc' : '');
       h += '<div class="' + cls + '" data-row="' + i + '"><span class="row__n">' + (solo() ? '' : '<i style="background:' + color(e.p) + '"></i>') + seq + '</span>';
@@ -358,13 +364,62 @@
       if (e.forced) tags += '<span class="tag tag--f" title="Counted by the table">table</span>';
       h += '<span class="row__pts">+' + e.total + tags + '</span></div>';
     });
-    while (gi < gaps.length) { h += gapRow(gaps[gi]); gi++; }
+    while (gi < gaps.length) { h += gapRow(gaps[gi], gi); gi++; }
     h += '</div>';
     b.innerHTML = h;
     requestAnimationFrame(function () { b.scrollTop = b.scrollHeight; });
   }
 
   function lastWord() { var e = G ? R().entries : null; return e && e.length ? e[e.length - 1].w : ''; }
+  /* claim a passed letter */
+  var claimGi = -1, claimWho = -1;
+  function claimers(gi) {
+    var g = R().gaps[gi], out = [];
+    if (NET) { var m = meIdx(); if (m > -1 && (m !== g.p || G.players.length === 1)) out.push(m); return out; }
+    G.players.forEach(function (p, i) { if (!p.out && (i !== g.p || G.players.length === 1)) out.push(i); });
+    return out;
+  }
+  function openClaim(gi) {
+    var r = R(), g = r.gaps && r.gaps[gi]; if (!g || !g.l || g.claim || r.done) return;
+    var who = claimers(gi);
+    if (!who.length) { toast('Only another player can claim this letter'); return; }
+    claimGi = gi; claimWho = who.length === 1 ? who[0] : -1;
+    $('[data-claim-in]').value = ''; $('[data-claim-m]').textContent = '';
+    paintClaim(); openSheet('claim');
+    setTimeout(function () { var i = $('[data-claim-in]'); if (i) i.focus(); }, 60);
+  }
+  function paintClaim() {
+    var g = R().gaps[claimGi]; if (!g) return;
+    $('[data-claim-t]').textContent = 'Claim ' + g.l;
+    $('[data-claim-n]').innerHTML = esc(pname(g.p)) + ' had no word for <b>' + g.l + '</b>. Type one that starts with ' + g.l + '. A real word scores its points plus ' + B.RULES.CLAIM_BONUS + '.';
+    var who = claimers(claimGi);
+    $('[data-claim-w]').innerHTML = who.length > 1 ? who.map(function (i) { return '<button type="button" class="chipb' + (i === claimWho ? ' is-on' : '') + '" data-act="claimwho" data-p="' + i + '"><i style="background:' + color(i) + '"></i>' + esc(pname(i)) + '</button>'; }).join('') : '';
+  }
+  function claimMsg(t) { $('[data-claim-m]').innerHTML = t; }
+  function claimGo() {
+    var g = R().gaps[claimGi], raw = $('[data-claim-in]').value;
+    if (!g || !B.norm(raw)) { claimMsg('Type a word.'); return; }
+    if (claimWho < 0) { claimMsg('Pick who is claiming.'); return; }
+    if (NET && !isHost()) {
+      sendIn({ t: 'claim', gi: claimGi, w: B.norm(raw), n: R().entries.length });
+      claimMsg('Checking…'); claimWait = { gi: claimGi, at: Date.now() };
+      setTimeout(function () { var gg = R().gaps[claimGi]; if (claimWait && gg && gg.claim) { closeSheets(); claimWait = null; } else if (claimWait && Date.now() - claimWait.at > 5500) { claimMsg('Not accepted. Check the word and try again.'); claimWait = null; } }, 6000);
+      return;
+    }
+    getList(R().cat).then(function (L) { claimApply(claimGi, raw, claimWho, L.full); }, function () { claimMsg('Couldn’t load the word list. Try again.'); });
+  }
+  var claimWait = null;
+  function claimApply(gi, raw, pid, dict) {
+    var res = B.claim(G, gi, raw, pid, dict);
+    if (!res.ok) {
+      var t = { unknown: '<b>' + esc(res.w) + '</b> isn’t in our ' + esc(B.catName(R().cat)) + ' list.', letter: 'It has to start with <b>' + esc(res.letter || '') + '</b>.', repeat: '<b>' + esc(res.w) + '</b> is already on the board.', short: 'Use at least ' + B.RULES.MIN_LEN + ' letters.', self: 'Another player has to claim this one.', gone: 'Already claimed.', done: 'This round is over.' }[res.why] || 'Not accepted.';
+      claimMsg(t); return false;
+    }
+    save(); closeSheets(); paintGame(); toast(pname(pid) + ' claimed ' + res.w + ' · +' + res.pts, color(pid)); buzz(30);
+    if (NET && isHost()) pubNow();
+    if (!NET) focusIn();
+    return true;
+  }
   function orderMsg() {
     var h = B.alphaHint(G);
     return h.mode === 1 ? 'Sorted play is on. Play a word that comes after <b>' + esc(h.after) + '</b> in the alphabet.' : 'The next word must start with <b>' + esc(h.letter) + '</b>.';
@@ -406,7 +461,8 @@
       tx(el, need > 0 ? lv.streak + ' × ' + lv.len + ' letters · ' + need + ' more for Concord' : 'Concord × ' + lv.streak + ' · keep it at ' + lv.len + ' letters');
       el.classList.toggle('is-hot', need <= 1);
     } else { tx(el, ''); el.classList.remove('is-hot'); }
-    setp($('[data-act="skip"]'), 'hidden', solo());
+    var ah0 = B.alphaHint(G), nul = ah0.mode > 1 && !!ah0.letter;
+    setp($('[data-act="skip"]'), 'hidden', solo() && !nul);
     setp($('[data-act="undo"]'), 'disabled', !r.entries.length || r.done);
     var inp = $('[data-in]'), goB = $('.entry__go');
     setp(inp, 'placeholder', 'Type ' + (/^names/.test(r.cat) ? 'a name' : 'a word') + (function () { var h = B.alphaHint(G); return h.mode === 1 && h.after ? ' after ' + h.after : h.letter ? ' starting with ' + h.letter : ''; })() + ' · ' + B.catName(r.cat));
@@ -417,11 +473,11 @@
       setp(inp, 'disabled', off); setp(goB, 'disabled', off);
       if (!mine && !r.done) setp(inp, 'placeholder', 'Waiting for ' + cp + '…');
       if (NET.pend) setp(inp, 'placeholder', 'Sending…');
-      var sk = $('[data-act="skip"]'); setp(sk, 'hidden', r.done || !(mine || isHost())); tx(sk, mine ? 'Skip turn' : 'Skip ' + cp);
+      var sk = $('[data-act="skip"]'); setp(sk, 'hidden', r.done || !(mine || isHost())); tx(sk, nul ? (mine ? 'No word for ' + ah0.letter : cp + ': no word') : mine ? 'Skip turn' : 'Skip ' + cp);
       setp($('[data-act="undo"]'), 'hidden', !isHost()); setp($('[data-act="end"]'), 'hidden', !isHost());
     } else {
       setp(inp, 'disabled', false); setp(goB, 'disabled', false);
-      setp($('[data-act="undo"]'), 'hidden', false); setp($('[data-act="end"]'), 'hidden', false); tx($('[data-act="skip"]'), 'Skip turn');
+      setp($('[data-act="undo"]'), 'hidden', false); setp($('[data-act="end"]'), 'hidden', false); tx($('[data-act="skip"]'), nul ? 'No word for ' + ah0.letter : 'Skip turn');
     }
   }
 
@@ -444,6 +500,7 @@
       if (e.acc) f.push('<li><span class="tag tag--acc">R</span><span>Regen · ' + esc(e.w) + who(e) + '</span><em>+' + e.acc + '</em></li>');
       if (e.key) f.push('<li><span class="tag tag--key">K</span><span>Keystone · ' + esc(e.w) + who(e) + '</span><em>+' + e.key + '</em></li>');
     });
+    (r.gaps || []).forEach(function (g) { if (g.claim) f.push('<li><span class="tag tag--cl">+</span><span>Claim · ' + esc(g.claim.w) + (solo() ? '' : ' · <b class="pn" style="color:' + color(g.claim.p) + '">' + esc(pname(g.claim.p)) + '</b>') + '</span><em>+' + g.claim.pts + '</em></li>'); });
     return f.length ? f.reverse().slice(0, 60).join('') : '<li class="feed__none">None yet</li>';
   }
   function paintPerks() {
@@ -901,6 +958,12 @@
     if (!G) return;
     if (m.t === 'act') { var ca = G.players[G.turn]; if (ca && ca.dev === m.dev && !R().done) NET.turnAt = Date.now(); return; }
     if (m.t === 'vreq' || m.t === 'vouch' || m.t === 'vno' || m.t === 'vcancel') { vouchMsg(m); return; }
+    if (m.t === 'claim') {
+      var pr = G.players.filter(function (x) { return x.dev === m.dev && !x.out; })[0], ri = pr ? G.players.indexOf(pr) : -1;
+      if (ri < 0 || R().done || !R().run) { pubSoon(); return; }
+      getList(R().cat).then(function (Lc) { var rs = B.claim(G, m.gi, m.w, ri, Lc.full); if (rs.ok) { save(); paintGame(); toast(pr.name + ' claimed ' + rs.w + ' · +' + rs.pts, color(ri)); } pubNow(); }, function () { pubSoon(); });
+      return;
+    }
     var r = R(), cp = G.players[G.turn];
     if (!cp || cp.dev !== m.dev || r.done || !r.run) { pubSoon(); return; }
     if (m.t === 'skip') { if (m.n != null && m.n !== r.entries.length) { pubSoon(); return; } B.skip(G); save(); msg(''); paintGame(); toast(cp.name + ' skipped'); notifyTurn(); return; }
@@ -998,7 +1061,7 @@
   /* guest: follow the host's game */
   function gsig(g) {
     var r = g.rounds[g.rounds.length - 1], l = r.entries[r.entries.length - 1];
-    return [r.fin ? 1 : 0, g.rounds.length, r.n, r.cat, r.entries.length, l ? l.w : '', r.skips || 0, (r.gaps || []).length, g.turn, r.done ? 1 : 0, r.run ? 1 : 0, g.over ? 1 : 0, g.players.length, g.players.map(function (p) { return p.out ? 1 : 0; }).join(''), g.settings.limit || 0].join('|');
+    return [r.fin ? 1 : 0, g.rounds.length, r.n, r.cat, r.entries.length, l ? l.w : '', r.skips || 0, (r.gaps || []).length, (r.gaps || []).filter(function (x) { return x.claim; }).length, g.turn, r.done ? 1 : 0, r.run ? 1 : 0, g.over ? 1 : 0, g.players.length, g.players.map(function (p) { return p.out ? 1 : 0; }).join(''), g.settings.limit || 0].join('|');
   }
   function guestMsg(st) {
     if (!st || st.v !== 1 || st.code !== NET.code || !st.lobby) return;
@@ -1295,6 +1358,9 @@
       return;
     }
     switch (a) {
+      case 'claim': openClaim(+t.getAttribute('data-gi')); break;
+      case 'claimgo': claimGo(); break;
+      case 'claimwho': claimWho = +t.getAttribute('data-p'); paintClaim(); break;
       case 'help': openSheet('help'); break;
       case 'perks': openSheet('perks'); paintPerks(); break;
       case 'close': closeSheets(); if (cur === 'game' && running) focusIn(); break;
@@ -1341,10 +1407,10 @@
       case 'skip':
         if (!running || R().done) break;
         if (NET && !isHost()) { if (myTurn()) { var sm = { t: 'skip', n: R().entries.length }; sendIn(sm); sm.dev = DEV; applyMove(sm, null); } break; }
-        var who = pname(G.turn); B.skip(G); save(); msg(''); paintGame(); toast(who + ' skipped'); if (NET) notifyTurn(); else focusIn(); break;
+        var who = pname(G.turn), nl = B.alphaHint(G).letter; B.skip(G); save(); msg(''); paintGame(); toast(who + (nl && G.settings.alpha > 1 ? ': no word for ' + nl + ', 0 points' : ' skipped')); if (NET) notifyTurn(); else focusIn(); break;
       case 'undo':
         if (NET && !isHost()) break;
-        var e = B.undo(G); if (!e) break; save(); msg(''); paintGame(); toast('Removed ' + e.w); focusIn(); break;
+        var e = B.undo(G); if (!e) break; save(); msg(''); paintGame(); toast(e.gap ? 'Removed the pass' : 'Removed ' + e.w); focusIn(); break;
       case 'end': if (NET && !isHost()) break; closeSheets(); if (G && !R().done) { B.endRound(G); save(); roundOver(); } break;
       case 'quit': if (NET && !isHost()) break; if (NET) { G.over = true; save(); } finish(); break;
       case 'next': if (NET && !isHost()) break; nextRound(); break;
@@ -1369,6 +1435,7 @@
   });
   $('[data-entry]').addEventListener('submit', function (ev) { ev.preventDefault(); submit(); });
   document.addEventListener('submit', function (ev) { var f = ev.target; if (f && f.hasAttribute && f.hasAttribute('data-chatform')) { ev.preventDefault(); var i = f.querySelector('[data-chatin]'); chatSend(i.value); i.value = ''; } });
+  document.addEventListener('submit', function (ev) { if (ev.target.hasAttribute && ev.target.hasAttribute('data-claim-f')) { ev.preventDefault(); claimGo(); } });
   document.addEventListener('keydown', function (ev) {
     if (ev.key === 'Escape') { if (!$$('[data-sheet]').every(function (s) { return s.hidden; })) { closeSheets(); ev.preventDefault(); } }
   });
