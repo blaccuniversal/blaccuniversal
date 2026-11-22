@@ -480,3 +480,11 @@ input,textarea{font-size:max(16px,1em)}
 .finacct{display:flex;flex-direction:column;gap:10px;margin:12px 0;padding:12px;border:1px solid var(--bd2);border-radius:12px;background:rgba(255,210,63,.07)}
 .finacct p{margin:0;font-size:14px;line-height:1.4}
 .pchip .av,.rp .av{margin-right:2px}
+
+/* perks sheet (phones) and coloured player names */
+@media (min-width:1000px){.ic--perks{display:none}}
+.pn{font-weight:700}
+.sum__n u{text-decoration:none}
+.pk__h{margin:18px 0 10px}
+.feed--m{max-height:none;gap:10px;font-size:14px}
+.score__n b{color:inherit}

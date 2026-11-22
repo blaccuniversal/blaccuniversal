@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=19">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=20">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -201,6 +201,7 @@
       <button class="clock" data-act="clock" data-clock hidden aria-label="Pause timer"><span data-clocktx>5:00</span><svg><use href="#i-pause"/></svg></button>
       <button class="ic ic--b" data-act="people" data-netbtn hidden aria-label="People in the room"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.2a3.2 3.2 0 010 5.6M18 14.8c1.8.7 3 2.4 3 5.2"/></svg><i class="bdg" data-bdgp hidden></i></button>
       <button class="ic ic--b" data-act="chat" data-netbtn hidden aria-label="Chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg><i class="bdg" data-bdgc hidden></i></button>
+      <button class="ic ic--perks" data-act="perks" aria-label="Perks and scores"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 16.9 6.8 19.7l1-5.9-4.3-4.1 5.9-.8z"/></svg></button>
       <button class="ic" data-act="help" aria-label="How to play"><svg><use href="#i-help"/></svg></button>
     </div>
   </header>
@@ -258,6 +259,14 @@
   </div>
 </div>
 
+<div class="sheet" data-sheet="perks" hidden>
+  <div class="sheet__card" role="dialog" aria-modal="true" aria-label="Perks and scores">
+    <div class="sheet__head"><b>Perks this round</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+    <div data-pscores></div>
+    <p class="eyebrow pk__h">Who earned what</p>
+    <ol class="feed feed--m" data-pfeed></ol>
+  </div>
+</div>
 <div class="sheet" data-sheet="help" hidden>
   <div class="sheet__card" role="dialog" aria-modal="true" aria-label="How to play">
     <div class="sheet__head"><b>How to play</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
@@ -364,6 +373,6 @@
 <script src="/assets/bemaamoo/bmo-config.js?v=1"></script>
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=9"></script>
-<script src="/assets/bemaamoo/bmo.js?v=32"></script>
+<script src="/assets/bemaamoo/bmo.js?v=34"></script>
 </body>
 </html>

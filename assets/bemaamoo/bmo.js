@@ -246,6 +246,7 @@
     paintBoard();
     paintDock();
     paintSide();
+    paintPerks();
     paintVq();
   }
 
@@ -275,10 +276,15 @@
   function sizeBoard() {
     var b = $('[data-board]'); if (!b || !G) return;
     var r = R();
-    var longest = 6;
-    r.entries.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; });
+    var longest = 6, maxTags = 0;
+    r.entries.forEach(function (e) {
+      if (e.w.length > longest) longest = e.w.length;
+      var t = (e.mavs.length ? 1 : 0) + (e.con ? 1 : 0) + (e.acc ? 1 : 0) + (e.key ? 1 : 0) + (e.forced ? 2 : 0);
+      if (t > maxTags) maxTags = t;
+    });
+    var ptsW = 46 + maxTags * 24;
     var cs = getComputedStyle(b);
-    var avail = b.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 30 - 64;
+    var avail = b.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 30 - ptsW - 6;
     var gap = window.innerWidth < 420 ? 3 : 4;
     var c = Math.floor((avail - gap * longest) / longest);
     c = Math.max(16, Math.min(window.innerWidth >= 1000 ? 46 : 42, c));
@@ -289,7 +295,7 @@
   function paintBoard() {
     var b = $('[data-board]'), r = R();
     sizeBoard();
-    var bk = [b.clientWidth, r.n, r.cat, r.entries.map(function (e) { return e.w; }).join(','), (r.gaps || []).map(function (g) { return g.a + ':' + g.p; }).join(','), G.players.map(function (p) { return p.name; }).join(','), r.entries.length ? '' : G.turn].join('|');
+    var bk = [b.clientWidth, r.n, r.cat, r.entries.map(function (e) { return e.w + (e.mavs.length ? 'm' : '') + (e.con ? 'c' : '') + (e.acc ? 'r' : '') + (e.key ? 'k' : '') + (e.forced ? 'f' : ''); }).join(','), (r.gaps || []).map(function (g) { return g.a + ':' + g.p; }).join(','), G.players.map(function (p) { return p.name; }).join(','), r.entries.length ? '' : G.turn].join('|');
     if (b._k === bk && lastAdded < 0 && !b._dirty) return;
     b._k = bk;
     if (!r.entries.length && !(r.gaps || []).length) {
@@ -400,17 +406,26 @@
     var t = B.ranking(G, R()), h = '', ovl = B.tally(G), multi = G.rounds.length > 1;
     t.forEach(function (s) {
       if (G.players[s.id] && G.players[s.id].out) return;
-      h += '<div class="score' + (s.id === G.turn && !solo() ? ' is-on' : '') + '"><span class="score__p">' + s.place + '</span><span class="score__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b><small>' + pl(s.words, 'word') + ' · M ' + s.mav + ' · C ' + s.con + ' · A ' + s.acc + ' · K ' + s.key + (multi ? ' · overall ' + ovl[s.id].total : '') + '</small></span><span class="score__t">' + s.total + '</span></div>';
+      h += '<div class="score' + (s.id === G.turn && !solo() ? ' is-on' : '') + '"><span class="score__p">' + s.place + '</span><span class="score__n"><b><i style="background:' + color(s.id) + '"></i><u style="color:' + color(s.id) + '">' + esc(s.name) + '</u></b><small>' + pl(s.words, 'word') + ' · M ' + s.mav + ' · C ' + s.con + ' · A ' + s.acc + ' · K ' + s.key + (multi ? ' · overall ' + ovl[s.id].total : '') + '</small></span><span class="score__t">' + s.total + '</span></div>';
     });
     var sc = $('[data-scores]'); if (sc._h !== h) { sc._h = h; sc.innerHTML = h; }
+    $('[data-feed]').innerHTML = perkItems();
+  }
+  function perkItems() {
     var f = [], r = R();
+    function who(e) { return solo() ? '' : ' · <b class="pn" style="color:' + color(e.p) + '">' + esc(pname(e.p)) + '</b>'; }
     r.entries.forEach(function (e) {
-      e.mavs.forEach(function (m) { f.push('<li><span class="tag tag--mav">M</span><span>' + esc(m.w) + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + m.pts + '</em></li>'); });
-      if (e.con) f.push('<li><span class="tag tag--con">C</span><span>' + e.streak + ' × ' + e.w.length + ' letters' + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + e.con + '</em></li>');
-      if (e.acc) f.push('<li><span class="tag tag--acc">R</span><span>Regen · ' + esc(e.w) + (solo() ? '' : ' · ' + esc(pname(e.p))) + '</span><em>+' + e.acc + '</em></li>');
-      if (e.key) f.push('<li><span class="tag tag--key">K</span><span>Keystone · ' + esc(e.w) + '</span><em>+' + e.key + '</em></li>');
+      e.mavs.forEach(function (m) { f.push('<li><span class="tag tag--mav">M</span><span>' + esc(m.w) + who(e) + '</span><em>+' + m.pts + '</em></li>'); });
+      if (e.con) f.push('<li><span class="tag tag--con">C</span><span>' + e.streak + ' × ' + e.w.length + ' letters' + who(e) + '</span><em>+' + e.con + '</em></li>');
+      if (e.acc) f.push('<li><span class="tag tag--acc">R</span><span>Regen · ' + esc(e.w) + who(e) + '</span><em>+' + e.acc + '</em></li>');
+      if (e.key) f.push('<li><span class="tag tag--key">K</span><span>Keystone · ' + esc(e.w) + who(e) + '</span><em>+' + e.key + '</em></li>');
     });
-    $('[data-feed]').innerHTML = f.length ? f.reverse().slice(0, 30).join('') : '<li class="feed__none">None yet</li>';
+    return f.length ? f.reverse().slice(0, 60).join('') : '<li class="feed__none">None yet</li>';
+  }
+  function paintPerks() {
+    var sh = $('[data-sheet="perks"]'); if (!sh || sh.hidden || !G) return;
+    $('[data-pscores]').innerHTML = sumRows(B.ranking(G, R()).filter(function (s) { return !(G.players[s.id] && G.players[s.id].out); }));
+    $('[data-pfeed]').innerHTML = perkItems();
   }
 
   /* messages under the board */
@@ -502,7 +517,7 @@
     var head = compact ? '' : '<div class="sum__h"><span></span><span>Player</span><span title="Word points">W</span><span class="c-mav" title="Maverick">M</span><span class="c-con" title="Concord">C</span><span class="c-acc" title="Regen">R</span><span class="c-key" title="Keystone">K</span><span>Total</span></div>';
     var rows = list.map(function (s) {
       var st = compact ? '' : '<span>' + s.base + '</span><span class="c-mav">' + s.mav + '</span><span class="c-con">' + s.con + '</span><span class="c-acc">' + s.acc + '</span><span class="c-key">' + s.key + '</span>';
-      return '<div class="sum__r' + (compact ? ' sum__r--c' : '') + (G.players[s.id] && G.players[s.id].out ? ' is-out' : '') + '"><span class="sum__p">' + s.place + '</span><span class="sum__n"><b><i style="background:' + color(s.id) + '"></i>' + esc(s.name) + '</b></span>' + st + '<span class="sum__t">' + s.total + '</span></div>';
+      return '<div class="sum__r' + (compact ? ' sum__r--c' : '') + (G.players[s.id] && G.players[s.id].out ? ' is-out' : '') + '"><span class="sum__p">' + s.place + '</span><span class="sum__n"><b><i style="background:' + color(s.id) + '"></i><u style="color:' + color(s.id) + '">' + esc(s.name) + '</u></b></span>' + st + '<span class="sum__t">' + s.total + '</span></div>';
     }).join('');
     var legend = compact ? '' : '<p class="sum__lg">W words · M Maverick · C Concord · R Regen · K Keystone</p>';
     return '<div class="sum' + (list.length > 6 ? ' sum--scroll' : '') + '">' + head + rows + '</div>' + legend;
@@ -1256,6 +1271,7 @@
     }
     switch (a) {
       case 'help': openSheet('help'); break;
+      case 'perks': openSheet('perks'); paintPerks(); break;
       case 'close': closeSheets(); if (cur === 'game' && running) focusIn(); break;
       case 'setup': show('setup'); break;
       case 'home': leave(); break;
