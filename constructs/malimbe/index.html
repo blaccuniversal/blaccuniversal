@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/malimbe/img/favicon.png">
 <link rel="preload" as="image" href="/constructs/malimbe/img/building.webp" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/malimbe/malimbe.css?v=28">
+<link rel="stylesheet" href="/constructs/malimbe/malimbe.css?v=29">
 </head>
 <body>
 
@@ -40,13 +40,13 @@
 <header class="nav" data-nav>
   <a class="nav__brand" href="#top" aria-label="Malimbe Lodge, back to top"><img src="/constructs/malimbe/img/mark.png" alt="" width="207" height="164"><span class="nav__name">Malimbe</span></a>
   <nav class="nav__links" aria-label="Sections">
-    <a href="#rooms">Rooms</a><a href="#eat">Eat &amp; gather</a><a href="#grounds">Grounds</a><a href="#visit">Visit</a>
+    <a href="#rooms">Rooms</a><a href="#eat">Eat &amp; gather</a><a href="#grounds">Grounds</a><a href="#investors">Investors</a><a href="#visit">Visit</a>
   </nav>
   <button class="pill pill--w nav__cta" type="button" data-book>Join the wait list</button>
   <button class="nav__burger" type="button" data-burger aria-label="Open menu" aria-expanded="false"><i></i><i></i></button>
 </header>
 <div class="drawer" data-drawer hidden>
-  <nav aria-label="Sections"><a href="#rooms"><i>01</i>Rooms</a><a href="#eat"><i>02</i>Eat &amp; gather</a><a href="#grounds"><i>03</i>Grounds</a><a href="#visit"><i>04</i>Visit</a></nav>
+  <nav aria-label="Sections"><a href="#rooms"><i>01</i>Rooms</a><a href="#eat"><i>02</i>Eat &amp; gather</a><a href="#grounds"><i>03</i>Grounds</a><a href="#investors"><i>04</i>Investors</a><a href="#visit"><i>05</i>Visit</a></nav>
   <div class="drawer__foot">
     <p>Opening December 2026<br>Oyo Road, opposite IITA, Ibadan</p>
     <button class="pill pill--w pill--lg" type="button" data-book>Join the wait list</button>
@@ -180,7 +180,40 @@
         <div class="person reveal"><span>Director</span><h3>Oghenetega David Iortim</h3><p>Tech executive. Founder of Figorr.</p></div>
         <div class="person reveal"><span>Chief Hospitality Officer</span><h3>Abiodun Aroworamimo</h3><p>MD, Inqaba Biotec West Africa.</p></div>
       </div>
-      <div class="partner reveal"><div><h3>Help open Nigeria’s first nature hotel.</h3><p>Ask for the investor overview.</p></div><button class="pill pill--ghost pill--lg" type="button" data-book data-interest="Investment">Request the overview</button></div>
+      <div class="partner reveal"><div><h3>Help open Nigeria’s first nature hotel.</h3><p>Get the investor overview.</p></div><a class="pill pill--ghost pill--lg" href="#investors">Get the deck</a></div>
+    </div>
+  </section>
+
+  <!-- INVESTORS -->
+  <section class="inv" id="investors">
+    <div class="wrap inv__g">
+      <div class="inv__copy reveal">
+        <p class="eyebrow">Investors</p>
+        <h2 class="h2">Own a piece of Nigeria’s first nature hotel.</h2>
+        <p class="inv__lead">Tell us who you are and the investor deck, with the full numbers, downloads straight away.</p>
+        <dl class="inv__stats">
+          <div><dt>Total raise</dt><dd>₦800M</dd></div>
+          <div><dt>Per 1% equity</dt><dd>₦10M</dd></div>
+          <div><dt>Raised so far</dt><dd>₦500M</dd></div>
+          <div><dt>Opening</dt><dd>Dec 2026</dd></div>
+        </dl>
+        <p class="inv__fine">70% complete · Ibadan, Oyo State · 11 culture-themed rooms, event pavilion and grounds.</p>
+      </div>
+      <form class="jf inv__f reveal" id="invForm" novalidate>
+        <input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
+        <label class="jf__full"><span>Full name</span><input name="name" autocomplete="name" required></label>
+        <label><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
+        <label><span>Phone / WhatsApp</span><input name="phone" type="tel" autocomplete="tel" placeholder="+234" required></label>
+        <label><span>Currency</span><select name="currency"><option value="₦">₦ Naira</option><option value="$">$ US dollar</option><option value="£">£ Pound</option><option value="€">€ Euro</option></select></label>
+        <label><span>Amount you could invest</span><input name="amount" inputmode="numeric" placeholder="e.g. 20,000,000" autocomplete="off" required></label>
+        <label class="jf__full"><span>Source of funds</span><select name="source" required><option value="">Select one</option><option>Salary / employment income</option><option>Business income or profits</option><option>Personal savings</option><option>Sale of property or assets</option><option>Investment returns</option><option>Inheritance or gift</option><option>Pension or retirement funds</option><option>Fund or family office</option><option>Other</option></select></label>
+        <label class="jf__full inv__oth" hidden><span>Please describe</span><input name="source_other" autocomplete="off"></label>
+        <label class="jf__full"><span>Address</span><input name="address" autocomplete="street-address" placeholder="Street, city" required></label>
+        <label class="jf__full"><span>Country</span><input name="country" autocomplete="country-name" required></label>
+        <label class="jf__full"><span>LinkedIn page</span><input name="linkedin" type="url" inputmode="url" placeholder="linkedin.com/in/yourname" required></label>
+        <label class="inv__ok jf__full"><input type="checkbox" name="consent" required><em>I confirm these details are accurate and agree that Malimbe may contact me about this investment. They stay private.</em></label>
+        <div class="jf__foot"><button class="pill pill--w pill--lg pill--full" type="submit">Get the investor deck<svg><use href="#i-down"/></svg></button><p class="jf__msg" id="invMsg" role="status">The PDF downloads as soon as you submit.</p></div>
+      </form>
     </div>
   </section>
 
@@ -279,5 +312,6 @@
 <div class="toast" data-toast hidden></div>
 <script src="/constructs/malimbe/malimbe.js?v=25" defer></script>
 <script src="/constructs/malimbe/malimbe-wf.js?v=21" defer></script>
+<script src="/constructs/malimbe/malimbe-inv.js?v=2" defer></script>
 </body>
 </html>
