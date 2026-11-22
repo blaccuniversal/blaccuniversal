@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=21">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=22">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -45,12 +45,10 @@
       <h1 class="wm">Bemaamoo</h1>
       <p class="lead">Every word you add can spell another one going down. Play alone, pass the phone, or play online with friends anywhere, turn by turn.</p>
       <div class="hero__btns">
-        <button class="btn btn--big" data-act="continue" data-continue hidden>Continue</button>
-        <button class="btn btn--big" data-act="room" data-roombtn hidden>Back to room</button>
-        <button class="btn btn--big" data-act="setup" data-newbtn>New game</button>
-        <button class="btn btn--big btn--ghost" data-act="pass">Pass the phone</button>
-        <button class="btn btn--big btn--ghost" data-act="online">Play online</button>
-        <button class="btn btn--big btn--ghost" data-act="help">How to play</button>
+        <button class="btn" data-act="continue" data-continue hidden>Continue</button>
+        <button class="btn" data-act="room" data-roombtn hidden>Back to room</button>
+        <button class="btn" data-act="newgame" data-newbtn>New game</button>
+        <button class="lnk hero__help" data-act="help" type="button">How to play</button>
       </div>
       <p class="hero__note" data-contnote hidden></p>
     </div>
@@ -252,6 +250,16 @@
 </section>
 
 <!-- SHEETS -->
+<div class="sheet" data-sheet="mode" hidden>
+  <div class="sheet__card" role="dialog" aria-modal="true" aria-label="New game">
+    <div class="sheet__head"><b>New game</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+    <div class="modes">
+      <button class="prow" data-act="solo" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"/></svg><span class="prow__t"><b>Solo</b><small>Play alone, beat your own score</small></span></button>
+      <button class="prow" data-act="pass" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg><span class="prow__t"><b>Pass the phone</b><small>Two or more players on one device</small></span></button>
+      <button class="prow" data-act="online" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><span class="prow__t"><b>Play online</b><small>Friends anywhere, turn by turn</small></span></button>
+    </div>
+  </div>
+</div>
 <div class="sheet" data-sheet="cats" hidden>
   <div class="sheet__card sheet__card--tall" role="dialog" aria-modal="true" aria-label="Choose a category">
     <div class="sheet__head"><b>Choose a category</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
@@ -381,6 +389,6 @@
 <script src="/assets/bemaamoo/bmo-config.js?v=1"></script>
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=10"></script>
-<script src="/assets/bemaamoo/bmo.js?v=36"></script>
+<script src="/assets/bemaamoo/bmo.js?v=37"></script>
 </body>
 </html>

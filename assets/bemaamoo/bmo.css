@@ -503,3 +503,11 @@ input,textarea{font-size:max(16px,1em)}
 .mini .btn[hidden]{display:none}
 .mini svg{width:18px;height:18px}
 body[data-locked] .mini{display:none!important}
+
+/* home: one New game button, modes inside */
+.hero__btns{gap:8px;align-items:center}
+.hero__btns .btn{min-height:46px;min-width:170px;padding:0 22px;font-size:15px}
+.hero__help{margin-top:2px}
+.modes{display:flex;flex-direction:column;gap:8px}
+.modes .prow{min-height:58px}
+@media (max-width:640px){.hero__btns{flex-direction:column}.hero__btns .btn{width:100%;max-width:320px}}

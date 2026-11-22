@@ -1291,8 +1291,10 @@
       case 'help': openSheet('help'); break;
       case 'perks': openSheet('perks'); paintPerks(); break;
       case 'close': closeSheets(); if (cur === 'game' && running) focusIn(); break;
+      case 'newgame': openSheet('mode'); break;
+      case 'solo': closeSheets(); S.count = 1; saveSetup(); paintSetup(); show('setup'); break;
       case 'setup': show('setup'); break;
-      case 'pass': if (S.count < 2) { S.count = 2; saveSetup(); } paintSetup(); show('setup'); break;
+      case 'pass': closeSheets(); if (S.count < 2) { S.count = 2; saveSetup(); } paintSetup(); show('setup'); break;
       case 'home': leave(); break;
       case 'continue': resume(); break;
       case 'cats': openCats('setup'); break;
@@ -1312,7 +1314,7 @@
       case 'rrm': dropSaved(t.getAttribute('data-code')); paintSaved(); break;
       case 'wadd': addMid(t.getAttribute('data-dev')); break;
       case 'wno': declineWait(t.getAttribute('data-dev')); break;
-      case 'online': show('online'); paintSaved(); break;
+      case 'online': closeSheets(); show('online'); paintSaved(); break;
       case 'ocreate': if (gateAcct()) break; createRoom(); break;
       case 'ojoin': if (gateAcct()) break; joinRoom($('[data-ocode]').value, oName()); break;
       case 'room': resumeRoom(); break;
