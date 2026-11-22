@@ -66,11 +66,12 @@
     $$('[data-scr]').forEach(function (s) { s.hidden = s.getAttribute('data-scr') !== name; });
     document.body.classList.toggle('in-game', name === 'game');
     window.scrollTo(0, 0);
-    if (name === 'home') paintHome();
+    if (name === 'home') { paintHome(); if (window.BmoDaily) BmoDaily.paintHomeBtn(); }
     if (name === 'setup') paintSetup();
     if (name === 'game') { fitVh(); paintGame(); }
     if (name === 'online') paintOnline();
     if (name === 'room') paintRoom();
+    if (name === 'daily' && window.BmoDaily) BmoDaily.paint();
   }
   function openSheet(n) { $('[data-sheet="' + n + '"]').hidden = false; }
   function closeSheets() { $$('[data-sheet]').forEach(function (s) { s.hidden = true; }); }
@@ -1426,6 +1427,7 @@
       case 'perks': openSheet('perks'); paintPerks(); break;
       case 'close': closeSheets(); if (cur === 'game' && running) focusIn(); break;
       case 'newgame': openSheet('mode'); break;
+      case 'daily': show('daily'); break;
       case 'solo': closeSheets(); S.mode = 'solo'; S.count = 1; saveSetup(); paintSetup(); show('setup'); break;
       case 'setup': show('setup'); break;
       case 'pass': closeSheets(); S.mode = 'pass'; S.count = S.pc; saveSetup(); paintSetup(); show('setup'); break;
@@ -1511,6 +1513,7 @@
 
   if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('/bemaamoo/sw.js').catch(function () {}); });
 
+  if (window.BmoDaily) BmoDaily.init({ show: show, getList: getList, cur: function () { return cur; } });
   show('home');
   setTimeout(function () { loadMqtt().catch(function () {}); }, 1200);
   (window.requestIdleCallback || function (f) { setTimeout(f, 2500); })(function () { warm(S.cat); }, { timeout: 4000 });
