@@ -136,7 +136,7 @@
     $('[data-d-score]').textContent = T.total;
     $('[data-d-word]').textContent = base;
     var rg, sk = streak(), bon = [entries(st).some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', (rg = entries(st).filter(function (e) { return e.acc; }).length) ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join(' · ');
-    $('[data-d-bonus]').textContent = bon; $('[data-d-bonus]').hidden = !bon;
+    $('[data-d-bonus]').innerHTML = bon.replace('Found the word', '<em>Found the word</em>'); $('[data-d-bonus]').hidden = !bon;
     $('[data-d-meta]').textContent = pl(n, 'word') + (sk > 1 ? ' · ' + sk + '-day streak' : '');
     board($('[data-d-rboard]'));
     $('[data-d-missed]').textContent = '';
@@ -178,7 +178,14 @@
     c.fillStyle = gold; c.font = '800 190px ' + FONT; c.fillText(String(T.total), W / 2, 380);
     c.fillStyle = '#9a9a9a'; c.font = '500 34px ' + FONT;
     c.fillText(pl(E.length, 'word'), W / 2, 430);
-    if (bon) { c.fillStyle = gold; c.font = '600 30px ' + FONT; c.fillText(bon, W / 2, 472); }
+    if (bon) {
+      c.font = '600 30px ' + FONT;
+      var parts = bon.split('  ·  '), sep = '  ·  ', ws = parts.map(function (t) { return c.measureText(t).width; }), sw = c.measureText(sep).width;
+      var tot = ws.reduce(function (a, b) { return a + b; }, 0) + sw * (parts.length - 1), px0 = (W - tot) / 2;
+      c.textAlign = 'left';
+      parts.forEach(function (t, i) { c.fillStyle = t === 'Found the word' ? EM : gold; c.fillText(t, px0, 472); px0 += ws[i]; if (i < parts.length - 1) { c.fillStyle = '#666'; c.fillText(sep, px0, 472); px0 += sw; } });
+      c.textAlign = 'center';
+    }
     var x0 = pad + 40;
     shown.forEach(function (e, i) {
       var y = top + 20 + i * rh, mavCells = {};

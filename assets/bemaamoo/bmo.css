@@ -765,3 +765,4 @@ body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
 .dboard .row.is-x .row__pts{color:#6ee7b7}
 @keyframes xbreath{0%,100%{box-shadow:0 0 0 rgba(110,231,183,0);transform:scale(1);opacity:.85}50%{box-shadow:0 0 12px rgba(110,231,183,.55);transform:scale(1.04);opacity:1}}
 @media (prefers-reduced-motion:reduce){.dboard .row.is-x .cell{animation:none;box-shadow:0 0 8px rgba(110,231,183,.4)}}
+.dres__b em{font-style:normal;color:#6ee7b7}
