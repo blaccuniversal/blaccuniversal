@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=45">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=46">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -65,10 +65,18 @@
     <span class="top__sp"></span>
   </header>
   <main class="dly wrap">
-    <div data-d-play>
+    <div class="dstart" data-d-start hidden>
+      <h2 class="dstart__t">Today’s word is waiting</h2>
+      <p class="dstart__p">One try. You get <b>10 minutes</b> once you start, and the clock doesn’t stop if you leave. Play fair: no cheating, no looking words up.</p>
+      <form class="dstart__f" data-d-startform autocomplete="off">
+        <input class="entry__in" data-d-name type="text" maxlength="18" autocapitalize="words" autocomplete="nickname" spellcheck="false" placeholder="Your name" aria-label="Your name">
+        <button class="btn btn--full" type="submit">Start the 10 minutes</button>
+      </form>
+    </div>
+    <div data-d-play hidden>
       <p class="dly__h">Unscramble the word for triple points, then spell as many others as you can. One try a day.</p>
       <div class="dtiles" data-d-tiles></div>
-      <div class="dtools"><button type="button" class="lnk" data-d="shuffle">Shuffle</button><span class="dscore"><b data-d-pts>0</b> pts · <span data-d-cnt>0 words</span></span></div>
+      <div class="dtools"><button type="button" class="lnk" data-d="shuffle">Shuffle</button><b class="dtimer" data-d-timer>10:00</b><span class="dscore"><b data-d-pts>0</b> pts · <span data-d-cnt>0 words</span></span></div>
       <form class="entry" data-d-form autocomplete="off">
         <div class="dly__inw"><input class="entry__in" data-d-in type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type or tap letters" aria-label="Your word"><button class="dly__del" type="button" data-d="del" aria-label="Delete letter"><svg><use href="#i-back"/></svg></button></div>
         <button class="btn entry__go" type="submit">Add</button>
@@ -81,7 +89,7 @@
     </div>
     <div data-d-res hidden>
       <div class="dres">
-        <p class="eyebrow">Today's word</p>
+        <p class="eyebrow" data-d-who>Today's word</p>
         <h2 class="dres__w" data-d-word>TARNATION</h2>
         <div class="dres__s"><b data-d-score>0</b><span>pts</span></div>
         <p class="dres__m" data-d-meta></p>
@@ -455,7 +463,7 @@
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=12"></script>
 <script src="/assets/bemaamoo/bmo-daily-words.js?v=1"></script>
-<script src="/assets/bemaamoo/bmo-daily.js?v=9"></script>
+<script src="/assets/bemaamoo/bmo-daily.js?v=10"></script>
 <script src="/assets/bemaamoo/bmo.js?v=48"></script>
 </body>
 </html>

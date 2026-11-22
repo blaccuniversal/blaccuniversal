@@ -766,3 +766,14 @@ body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
 @keyframes xbreath{0%,100%{box-shadow:0 0 0 rgba(110,231,183,0);transform:scale(1);opacity:.85}50%{box-shadow:0 0 12px rgba(110,231,183,.55);transform:scale(1.04);opacity:1}}
 @media (prefers-reduced-motion:reduce){.dboard .row.is-x .cell{animation:none;box-shadow:0 0 8px rgba(110,231,183,.4)}}
 .dres__b em{font-style:normal;color:#6ee7b7}
+
+.dstart{padding:28px 0 8px;text-align:center;display:flex;flex-direction:column;gap:12px}
+.dstart[hidden],[data-d-play][hidden],[data-d-res][hidden]{display:none}
+.dstart__t{margin:0;font-size:20px}
+.dstart__p{margin:0;font-size:13px;line-height:1.5;color:var(--tx2)}
+.dstart__p b{color:#fff}
+.dstart__f{display:flex;flex-direction:column;gap:10px;max-width:340px;margin:6px auto 0;width:100%}
+.dstart__f .entry__in{height:46px;text-transform:none;letter-spacing:.02em;font-weight:600;text-align:center}
+.dtimer{font-size:16px;font-variant-numeric:tabular-nums;color:#fff;letter-spacing:.04em}
+.dtimer.is-low{color:#ff8b7a;animation:dpulse 1s ease-in-out infinite}
+@keyframes dpulse{50%{opacity:.45}}

@@ -3,7 +3,7 @@
   'use strict';
   var W = window.BMO_DAILY_WORDS || [];
   var START = Date.UTC(2026, 10, 23) / 86400000;            // day #1 = 23 Nov 2026
-  var KEY = 'bmo_daily_v1', MIN = 3;
+  var KEY = 'bmo_daily_v1', KEYN = 'bmo_daily_name', MIN = 3, LIMIT = 600000;
   var B = window.BMO, env = null, el = {}, today = 0, base = '', st = null, dict = null, busy = false;
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -22,6 +22,8 @@
       (s.found || []).forEach(function (w) { B.add(s.g, w, {}); });   // older saves: replay the words in order
       delete s.found;
     }
+    if (!s.done && !s.t0 && B.round(s.g).entries.length) { s.t0 = Date.now(); put(s); }   // game begun before the timer existed
+    if (!s.done && s.t0 && Date.now() - s.t0 >= LIMIT) { s.done = true; put(s); }
     B.round(s.g).entries.forEach(function (e) { if (e.x && e.base === B.tri(e.w.length) * 2) { e.base = B.tri(e.w.length) * 3; e.total = e.base + e.mav + e.con + e.acc + e.key; } });   // older saves used x2
     return s;
   }
@@ -90,25 +92,49 @@
     today = dayNo(); var s = mine();
     var sub = $('[data-daily-sub]');
     if (s.done) sub.textContent = 'Done today · ' + total(s) + ' pts';
-    else if (entries(s).length) sub.textContent = 'In progress · ' + pl(entries(s).length, 'word');
+    else if (s.t0) sub.textContent = 'In progress · ' + Math.ceil(Math.max(0, LIMIT - (Date.now() - s.t0)) / 60000) + ' min left';
     else sub.textContent = 'New word today';
   }
   function paint() {
     today = dayNo(); base = wordFor(num()); st = mine();
     $('[data-d-num]').textContent = '#' + num();
-    el.play.hidden = st.done; el.res.hidden = !st.done;
+    clearInterval(ptm);
     el.fin.hidden = true;
+    el.start.hidden = !!(st.done || st.t0); el.play.hidden = !(st.t0 && !st.done); el.res.hidden = !st.done;
     if (st.done) return paintResult();
+    if (!st.t0) {
+      try { el.name.value = localStorage.getItem(KEYN) || ''; } catch (e) {}
+      dictP().catch(function () {});   // warm the dictionary while they read
+      return;
+    }
+    playUI();
+  }
+  var ptm = 0;
+  function playUI() {
     el.tiles.innerHTML = shuffled(base, num()).map(function (l) { return '<button type="button" class="dtile" data-l="' + l + '">' + l + '</button>'; }).join('');
     el.inp.value = ''; msg('Words of 3+ letters. Each letter once per tile.');
-    paintTiles(); paintFound();
+    paintTiles(); paintFound(); clock();
+    ptm = setInterval(clock, 500);
     dictP().catch(function () { msg('Couldn’t load the dictionary. Check your connection.', true); });
+  }
+  function left() { return Math.max(0, LIMIT - (Date.now() - st.t0)); }
+  function clock() {
+    var ms = left(), m = Math.floor(ms / 60000), sc = Math.ceil(ms % 60000 / 1000); if (sc === 60) { m++; sc = 0; }
+    el.timer.textContent = m + ':' + (sc < 10 ? '0' : '') + sc;
+    el.timer.classList.toggle('is-low', ms <= 60000);
+    if (ms <= 0) { clearInterval(ptm); st.done = true; put(st); paint(); }
+  }
+  function begin() {
+    var n = (el.name.value || '').trim().replace(/\s+/g, ' ').slice(0, 18);
+    try { localStorage.setItem(KEYN, n); } catch (e) {}
+    st.name = n || 'Player'; st.t0 = Date.now(); put(st); paint();
   }
 
   /* ---------- play ---------- */
   function add(raw) {
     var w = B.norm(raw);
     if (!w) return;
+    if (left() <= 0) return clock();
     if (w.length < MIN) return msg('At least ' + MIN + ' letters.', true);
     if (!canMake(w, counts(base))) return msg(w + ' uses letters that aren’t there.', true);
     if (words(st).indexOf(w) >= 0) return msg('Already have ' + w + '.', true);
@@ -134,7 +160,7 @@
     var a = load(); st = mine();
     var T = B.tally(st.g)[0], n = entries(st).length;
     $('[data-d-score]').textContent = T.total;
-    $('[data-d-word]').textContent = base;
+    $('[data-d-word]').textContent = base; $('[data-d-who]').textContent = (st.name || 'Player') + ' · Today’s word';
     var rg, sk = streak(), bon = [entries(st).some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', (rg = entries(st).filter(function (e) { return e.acc; }).length) ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join(' · ');
     $('[data-d-bonus]').innerHTML = bon.replace('Found the word', '<em>Found the word</em>'); $('[data-d-bonus]').hidden = !bon;
     $('[data-d-meta]').textContent = pl(n, 'word') + (sk > 1 ? ' · ' + sk + '-day streak' : '');
@@ -173,7 +199,7 @@
     var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
     c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
     c.textAlign = 'center'; c.textBaseline = 'alphabetic';
-    c.fillStyle = '#8a8a8a'; c.font = '600 30px ' + FONT; c.fillText('BEMAAMOO  ·  DAILY #' + num(), W / 2, 100);
+    c.fillStyle = '#8a8a8a'; c.font = '600 30px ' + FONT; c.fillText('BEMAAMOO  ·  DAILY #' + num() + (st.name ? '  ·  ' + st.name.toUpperCase() : ''), W / 2, 100);
     c.fillStyle = '#fff'; c.font = '800 84px ' + FONT; c.fillText(base, W / 2, 210);
     c.fillStyle = gold; c.font = '800 190px ' + FONT; c.fillText(String(T.total), W / 2, 380);
     c.fillStyle = '#9a9a9a'; c.font = '500 34px ' + FONT;
@@ -232,19 +258,21 @@
   /* ---------- wire ---------- */
   function init(e) {
     env = e;
-    el = { board: $('[data-d-board]'), undo: $('[data-d-undo]'), play: $('[data-d-play]'), res: $('[data-d-res]'), tiles: $('[data-d-tiles]'), inp: $('[data-d-in]'), msg: $('[data-d-msg]'), list: $('[data-d-list]'), pts: $('[data-d-pts]'), cnt: $('[data-d-cnt]'), empty: $('[data-d-empty]'), fin: $('[data-d-fin]') };
+    el = { start: $('[data-d-start]'), name: $('[data-d-name]'), timer: $('[data-d-timer]'), board: $('[data-d-board]'), undo: $('[data-d-undo]'), play: $('[data-d-play]'), res: $('[data-d-res]'), tiles: $('[data-d-tiles]'), inp: $('[data-d-in]'), msg: $('[data-d-msg]'), list: $('[data-d-list]'), pts: $('[data-d-pts]'), cnt: $('[data-d-cnt]'), empty: $('[data-d-empty]'), fin: $('[data-d-fin]') };
     $('[data-scr="daily"]').addEventListener('click', function (ev) {
       var t = ev.target.closest('[data-d]'); if (!t) { var q = ev.target.closest('.dtile'); if (q) { el.inp.value += q.getAttribute('data-l'); paintTiles(); } return; }
       var a = t.getAttribute('data-d');
-      if (a === 'back') { clearInterval(tmr); env.show('home'); }
+      if (a === 'back') { clearInterval(tmr); clearInterval(ptm); env.show('home'); }
       else if (a === 'del') { el.inp.value = el.inp.value.slice(0, -1); paintTiles(); }
       else if (a === 'shuffle') { var o = shuffled(base, Date.now() % 9973); el.tiles.innerHTML = o.map(function (l) { return '<button type="button" class="dtile" data-l="' + l + '">' + l + '</button>'; }).join(''); paintTiles(); }
       else if (a === 'undo') undo();
+      else if (a === 'begin') begin();
       else if (a === 'finish') { el.fin.hidden = false; }
       else if (a === 'no') { el.fin.hidden = true; }
       else if (a === 'yes') { st.done = true; put(st); paint(); }
       else if (a === 'share') share();
     });
+    $('[data-d-startform]').addEventListener('submit', function (ev) { ev.preventDefault(); begin(); });
     $('[data-d-form]').addEventListener('submit', function (ev) { ev.preventDefault(); add(el.inp.value); });
     el.inp.addEventListener('input', paintTiles);
     paintHomeBtn();
