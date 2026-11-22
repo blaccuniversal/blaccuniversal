@@ -76,7 +76,7 @@
   function closeSheets() { $$('[data-sheet]').forEach(function (s) { s.hidden = true; }); }
   function ov(n, on) { $('[data-ov="' + n + '"]').hidden = !on; }
   var toastT;
-  function toast(t) { var el = $('[data-toast]'); el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { el.hidden = true; }, 1800); }
+  function toast(t, col) { var el = $('[data-toast]'); el.textContent = t; el.style.boxShadow = col ? 'inset 6px 0 0 ' + col : ''; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { el.hidden = true; }, col ? 2600 : 1800); }
 
   /* ---------- home ---------- */
   function paintHome() {
@@ -471,6 +471,7 @@
     lastAdded = -1;
     if (r.done) { roundOverSoon(r); return; }
     if (NET) { notifyTurn(); return; }
+    if (!solo() && !r.done) { toast('Pass the phone to ' + pname(G.turn), color(G.turn)); buzz(30); }
     focusIn();
   }
 
@@ -1274,6 +1275,7 @@
       case 'perks': openSheet('perks'); paintPerks(); break;
       case 'close': closeSheets(); if (cur === 'game' && running) focusIn(); break;
       case 'setup': show('setup'); break;
+      case 'pass': if (S.count < 2) { S.count = 2; saveSetup(); } paintSetup(); show('setup'); break;
       case 'home': leave(); break;
       case 'continue': resume(); break;
       case 'cats': openCats('setup'); break;
