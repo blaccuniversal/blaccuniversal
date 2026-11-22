@@ -738,3 +738,9 @@ body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
 .dly__missed b{color:#fff}
 .dtiles{flex-wrap:nowrap;gap:5px}
 .dtile{flex:1 1 0;min-width:0;max-width:46px;width:auto}
+
+.dboard{margin-top:6px;overflow-x:auto}
+.dboard .rows{margin:0 auto}
+.dly__fin{display:flex;justify-content:center;gap:18px}
+.dly__fin [hidden]{display:none}
+.dres__b{margin:0 0 4px;font-size:12px;color:var(--mav)}

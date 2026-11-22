@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=38">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=39">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -66,7 +66,7 @@
   </header>
   <main class="dly wrap">
     <div data-d-play>
-      <p class="dly__h">Spell as many words as you can from these letters. One try a day.</p>
+      <p class="dly__h">Spell as many everyday words as you can from these letters. One try a day.</p>
       <div class="dtiles" data-d-tiles></div>
       <div class="dtools"><button type="button" class="lnk" data-d="shuffle">Shuffle</button><span class="dscore"><b data-d-pts>0</b> pts · <span data-d-cnt>0 words</span></span></div>
       <form class="entry" data-d-form autocomplete="off">
@@ -75,9 +75,9 @@
         <button class="btn entry__go" type="submit">Add</button>
       </form>
       <p class="dly__msg" data-d-msg aria-live="polite"></p>
-      <ul class="dfound" data-d-list></ul>
-      <p class="dly__empty" data-d-empty>Words you find appear here.</p>
-      <div class="dly__fin"><button class="lnk" type="button" data-d="finish">I'm done for today</button></div>
+      <div class="dboard" data-d-board></div>
+      <p class="dly__empty" data-d-empty>Words go on the board, one per row. Maverick, Concord, Regen and Keystone bonuses work here too.</p>
+      <div class="dly__fin"><button class="lnk" type="button" data-d="undo" data-d-undo hidden>Undo last word</button><button class="lnk" type="button" data-d="finish">I'm done for today</button></div>
       <div class="dconf" data-d-fin hidden><span>Lock in your score? You can't play again today.</span><button class="btn btn--ghost" type="button" data-d="no">Keep going</button><button class="btn" type="button" data-d="yes">Finish</button></div>
     </div>
     <div data-d-res hidden>
@@ -86,10 +86,11 @@
         <h2 class="dres__w" data-d-word>TARNATION</h2>
         <div class="dres__s"><b data-d-score>0</b><span>pts</span></div>
         <p class="dres__m" data-d-meta></p>
+        <p class="dres__b" data-d-bonus hidden></p>
         <button class="btn btn--full" type="button" data-d="share" data-d-share><span>Share my sheet</span></button>
         <p class="dres__n" data-d-next></p>
       </div>
-      <ul class="dfound" data-d-found></ul>
+      <div class="dboard" data-d-rboard></div>
       <p class="dly__missed" data-d-missed></p>
     </div>
   </main>
@@ -455,7 +456,7 @@
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=12"></script>
 <script src="/assets/bemaamoo/bmo-daily-words.js?v=1"></script>
-<script src="/assets/bemaamoo/bmo-daily.js?v=1"></script>
+<script src="/assets/bemaamoo/bmo-daily.js?v=3"></script>
 <script src="/assets/bemaamoo/bmo.js?v=48"></script>
 </body>
 </html>
