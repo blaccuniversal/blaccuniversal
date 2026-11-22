@@ -61,7 +61,7 @@
     });
   }
   function board(box, mavSet) {
-    var r = B.round(st.g), longest = 6, tags = 0;
+    var r = B.round(st.g), longest = 20, tags = 0;
     r.entries.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; var t = (e.x ? 1 : 0) + (e.mavs.length ? 1 : 0) + (e.con ? 1 : 0) + (e.acc ? 1 : 0) + (e.key ? 1 : 0); if (t > tags) tags = t; });
     var gap = 3, avail = box.clientWidth - 30 - (46 + tags * 24) - 6, c = Math.max(14, Math.min(40, Math.floor((avail - gap * longest) / longest)));
     box.style.setProperty('--c', c + 'px'); box.style.setProperty('--gap', gap + 'px');
@@ -159,21 +159,66 @@
     }
     f(); tmr = setInterval(f, 1000);
   }
-  function shareText() {
-    var T = B.tally(st.g)[0], E = entries(st);
-    var out = 'Bemaamoo Daily #' + num() + ' · ' + base + '\n' + T.total + ' pts · ' + pl(E.length, 'word') + '\n\n';
-    E.forEach(function (e) { out += e.w + ' +' + e.total + (e.x ? ' 2x' : '') + (e.mavs.length ? ' M' : '') + (e.con ? ' C' : '') + (e.acc ? ' R' : '') + (e.key ? ' K' : '') + '\n'; });
-    return out + '\nCan you beat me? blaccuniversal.com/bemaamoo/';
+  function css(n, d) { var v = getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v || d; }
+  function rr(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
+  function sheetImage() {
+    var E = entries(st), T = B.tally(st.g)[0], W = 1080, pad = 60, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
+    var gold = css('--mav', '#ffd23f'), blue = css('--con', '#4aa8ff'), purple = css('--acc', '#b48cff'), key = css('--key', '#ff6a4d');
+    var longest = Math.max(6, base.length); E.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; });
+    var ptsW = 250, cs = Math.min(64, Math.floor((W - pad * 2 - ptsW - 8 * (longest - 1)) / longest)), gap = 8, rh = cs + 12;
+    var rg = E.filter(function (e) { return e.acc; }).length, bon = [E.some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', rg ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join('  ·  ');
+    var MAXR = 22, shown = E.slice(0, MAXR), more = E.length - shown.length;
+    var top = bon ? 510 : 470, H = top + shown.length * rh + (more > 0 ? 70 : 0) + 150;
+    var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
+    c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+    c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    c.fillStyle = '#8a8a8a'; c.font = '600 30px ' + FONT; c.fillText('BEMAAMOO  ·  DAILY #' + num(), W / 2, 100);
+    c.fillStyle = '#fff'; c.font = '800 84px ' + FONT; c.fillText(base, W / 2, 210);
+    c.fillStyle = gold; c.font = '800 190px ' + FONT; c.fillText(String(T.total), W / 2, 380);
+    c.fillStyle = '#9a9a9a'; c.font = '500 34px ' + FONT;
+    c.fillText(pl(E.length, 'word'), W / 2, 430);
+    if (bon) { c.fillStyle = gold; c.font = '600 30px ' + FONT; c.fillText(bon, W / 2, 472); }
+    var x0 = pad + 40;
+    shown.forEach(function (e, i) {
+      var y = top + 20 + i * rh, mavCells = {};
+      e.mavs.forEach(function (m) { for (var k = m.from; k <= m.to; k++) if (k === i) mavCells[m.col] = 1; });
+      for (var k = 0; k < e.w.length; k++) {
+        var x = x0 + k * (cs + gap), hot = false;
+        E.forEach(function (f, fi) { f.mavs.forEach(function (m) { if (m.col === k + 1 && fi >= m.from && fi <= m.to && fi === i) hot = true; }); });
+        c.fillStyle = hot ? 'rgba(255,210,63,.16)' : '#0c0c0c'; rr(c, x, y, cs, cs, 6); c.fill();
+        c.strokeStyle = hot ? gold : (e.acc ? purple : '#2c2c2c'); c.lineWidth = 2; rr(c, x, y, cs, cs, 6); c.stroke();
+        c.fillStyle = hot ? gold : (e.acc ? purple : '#f2f2f2'); c.font = '700 ' + Math.round(cs * .52) + 'px ' + FONT; c.textAlign = 'center'; c.fillText(e.w[k], x + cs / 2, y + cs * .7);
+      }
+      var px = x0 + e.w.length * (cs + gap) + 14; c.textAlign = 'left';
+      c.fillStyle = '#cfcfcf'; c.font = '700 ' + Math.round(cs * .46) + 'px ' + FONT; c.fillText('+' + e.total, px, y + cs * .68);
+      px += c.measureText('+' + e.total).width + 12;
+      [[e.x, '2×', gold], [e.mavs.length, 'M', gold], [e.con, 'C', blue], [e.acc, 'R', purple], [e.key, 'K', key]].forEach(function (t) {
+        if (!t[0]) return; var tw = Math.max(cs * .5, 30);
+        c.fillStyle = t[2]; rr(c, px, y + cs * .2, tw, cs * .6, 5); c.fill();
+        c.fillStyle = '#000'; c.font = '800 ' + Math.round(cs * .36) + 'px ' + FONT; c.textAlign = 'center'; c.fillText(t[1], px + tw / 2, y + cs * .62); c.textAlign = 'left'; px += tw + 6;
+      });
+    });
+    c.textAlign = 'center';
+    if (more > 0) { c.fillStyle = '#8a8a8a'; c.font = '500 30px ' + FONT; c.fillText('+ ' + pl(more, 'more word'), W / 2, top + 20 + shown.length * rh + 40); }
+    c.fillStyle = '#8a8a8a'; c.font = '500 30px ' + FONT; c.fillText('Can you beat me?  blaccuniversal.com/bemaamoo', W / 2, H - 50);
+    return cv;
   }
   function share() {
-    var t = shareText(), b = $('[data-d-share] span');
-    function copied() { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Share my sheet'; }, 1800); }
-    function copy() {
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(copied, function () { b.textContent = 'Copy failed'; });
-      else { var x = document.createElement('textarea'); x.value = t; document.body.appendChild(x); x.select(); try { document.execCommand('copy'); copied(); } catch (e) {} x.remove(); }
-    }
-    if (navigator.share) navigator.share({ text: t }).catch(function (e) { if (!e || e.name !== 'AbortError') copy(); });
-    else copy();
+    var b = $('[data-d-share] span');
+    function say(t) { b.textContent = t; setTimeout(function () { b.textContent = 'Share my sheet'; }, 1800); }
+    var cv; try { cv = sheetImage(); } catch (e) { return say('Couldn’t make the image'); }
+    cv.toBlob(function (blob) {
+      if (!blob) return say('Couldn’t make the image');
+      var name = 'bemaamoo-daily-' + num() + '.png', file;
+      try { file = new File([blob], name, { type: 'image/png' }); } catch (e) { file = null; }
+      if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: 'Bemaamoo Daily #' + num() }).catch(function (e) { if (e && e.name !== 'AbortError') save(); });
+      } else save();
+      function save() {
+        var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(u); }, 4000); say('Image saved');
+      }
+    }, 'image/png');
   }
 
   /* ---------- wire ---------- */

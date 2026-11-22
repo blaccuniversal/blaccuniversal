@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=41">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=43">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -70,8 +70,7 @@
       <div class="dtiles" data-d-tiles></div>
       <div class="dtools"><button type="button" class="lnk" data-d="shuffle">Shuffle</button><span class="dscore"><b data-d-pts>0</b> pts · <span data-d-cnt>0 words</span></span></div>
       <form class="entry" data-d-form autocomplete="off">
-        <input class="entry__in" data-d-in type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type or tap letters" aria-label="Your word">
-        <button class="btn btn--ghost entry__go dly__del" type="button" data-d="del" aria-label="Delete letter">⌫</button>
+        <div class="dly__inw"><input class="entry__in" data-d-in type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type or tap letters" aria-label="Your word"><button class="dly__del" type="button" data-d="del" aria-label="Delete letter"><svg><use href="#i-back"/></svg></button></div>
         <button class="btn entry__go" type="submit">Add</button>
       </form>
       <p class="dly__msg" data-d-msg aria-live="polite"></p>
@@ -456,7 +455,7 @@
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=12"></script>
 <script src="/assets/bemaamoo/bmo-daily-words.js?v=1"></script>
-<script src="/assets/bemaamoo/bmo-daily.js?v=5"></script>
+<script src="/assets/bemaamoo/bmo-daily.js?v=7"></script>
 <script src="/assets/bemaamoo/bmo.js?v=48"></script>
 </body>
 </html>
