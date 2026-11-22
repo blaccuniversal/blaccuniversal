@@ -511,3 +511,16 @@ body[data-locked] .mini{display:none!important}
 .modes{display:flex;flex-direction:column;gap:8px}
 .modes .prow{min-height:58px}
 @media (max-width:640px){.hero__btns{flex-direction:column}.hero__btns .btn{width:100%;max-width:320px}}
+
+/* mobile hardening */
+.ojoin{grid-template-columns:minmax(0,1fr) auto}
+.ocode{min-width:0;width:100%;box-sizing:border-box;padding:0 8px}
+.ojoin .btn{min-width:84px;padding:0 18px}
+@media (max-width:380px){.ocode{font-size:20px;letter-spacing:.3em}}
+@media (max-width:640px){
+  .btn--big{min-height:50px;font-size:15.5px}
+  .lnk{min-height:40px;display:inline-flex;align-items:center;justify-content:center}
+  .wrap,.setup{max-width:100%;box-sizing:border-box}
+}
+.ov__min+.eyebrow{padding:0 36px}
+.ov__min+.eyebrow+.ov__t{padding:0 8px}
