@@ -15,6 +15,7 @@
   function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
   store.fav = store.fav || []; store.rec = store.rec || [];
+  function flag(cc) { return /^[A-Za-z]{2}$/.test(cc || '') ? '<img class="fl" src="/radio/flags/' + cc.toLowerCase() + '.webp" alt="" loading="lazy" onerror="this.style.visibility=\'hidden\'">' : '<span class="fl"></span>'; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   /* ---------- api ---------- */
@@ -69,8 +70,9 @@
     }
   }
   function art(el, st) {
-    if (st.logo) { el.style.backgroundImage = 'url("' + st.logo.replace(/"/g, '%22') + '")'; el.textContent = ''; var im = new Image(); im.onerror = function () { el.style.backgroundImage = ''; el.textContent = (st.cc || st.name.slice(0, 2)).toUpperCase(); }; im.src = st.logo; }
-    else { el.style.backgroundImage = ''; el.textContent = (st.cc || st.name.slice(0, 2)).toUpperCase(); }
+    var fb = function () { el.textContent = ''; var f = /^[A-Za-z]{2}$/.test(st.cc || '') ? '/radio/flags/' + st.cc.toLowerCase() + '.webp' : ''; el.style.backgroundImage = f ? 'url("' + f + '")' : ''; el.style.backgroundSize = f ? 'cover' : ''; if (!f) el.textContent = st.name.slice(0, 2).toUpperCase(); };
+    if (st.logo) { el.style.backgroundImage = 'url("' + st.logo.replace(/"/g, '%22') + '")'; el.style.backgroundSize = 'cover'; el.textContent = ''; var im = new Image(); im.onerror = fb; im.src = st.logo; }
+    else fb();
   }
   function renderList() {
     if (!S.list.length) { elList.innerHTML = '<li class="empty">' + esc(S.empty || 'No stations here.') + '</li>'; return; }
@@ -192,7 +194,7 @@
     var d = sheetData.filter(function (x) { return !q || x.n.toLowerCase().indexOf(q) > -1; }).slice(0, 250);
     if (!d.length) { sL.innerHTML = '<li class="empty">Nothing matches.</li>'; return; }
     sL.innerHTML = d.map(function (x, i) {
-      return '<li><button type="button" class="row" data-pick="' + esc(sheetKind === 'country' ? x.c : x.n) + '" data-nm="' + esc(x.n) + '">' + (x.c ? '<span class="cc">' + esc(x.c) + '</span>' : '') + '<span class="row__t"><b>' + esc(sheetKind === 'genre' ? cap(x.n) : x.n) + '</b></span><span class="cnt">' + x.k + '</span></button></li>';
+      return '<li><button type="button" class="row" data-pick="' + esc(sheetKind === 'country' ? x.c : x.n) + '" data-nm="' + esc(x.n) + '">' + (x.c ? flag(x.c) : '') + '<span class="row__t"><b>' + esc(sheetKind === 'genre' ? cap(x.n) : x.n) + '</b></span><span class="cnt">' + x.k + '</span></button></li>';
     }).join('');
   }
   function runSearch() {
