@@ -152,7 +152,8 @@
     if (!catGroup) B.CATS.forEach(function (g) { g.c.forEach(function (c) { if (c[0] === sel) catGroup = g.g; }); });
     if (!catGroup) catGroup = B.CATS[0].g;
     var tabs = $('[data-ctabs]');
-    if (tabs) { tabs.hidden = !!q; tabs.innerHTML = B.CATS.map(function (g) { return '<button type="button" data-ctab="' + esc(g.g) + '" aria-pressed="' + (g.g === catGroup) + '">' + esc(g.g.replace(' & Culture', '').replace('Franchises & Fandoms', 'Fandoms').replace('Brands & Media', 'Brands')) + '</button>'; }).join(''); }
+    var tw = $('[data-ctw]'); if (tw) tw.hidden = !!q;
+    if (tabs) { tabs.innerHTML = B.CATS.map(function (g) { return '<button type="button" data-ctab="' + esc(g.g) + '" aria-pressed="' + (g.g === catGroup) + '">' + esc(g.g.replace(' & Culture', '').replace('Franchises & Fandoms', 'Fandoms').replace('Brands & Media', 'Brands')) + '</button>'; }).join(''); }
     var h = '';
     B.CATS.forEach(function (g) {
       if (!q && g.g !== catGroup) return;
@@ -161,9 +162,16 @@
       h += (q ? '<h3>' + esc(g.g) + '</h3>' : '') + '<div class="cats__g">' + items.map(function (c) { return '<button type="button" data-cat="' + c[0] + '" aria-pressed="' + (c[0] === sel) + '">' + esc(c[1]) + '</button>'; }).join('') + '</div>';
     });
     $('[data-cats]').innerHTML = h || '<p class="cats__none">No category matches that.</p>';
+    if (tabs && !q) { var on = tabs.querySelector('[aria-pressed=true]'); if (on && !tabs._seen) { tabs._seen = 1; tabs.scrollLeft = Math.max(0, on.offsetLeft - 40); } ctEdges(); }
+  }
+  function ctEdges() {
+    var el = $('[data-ctabs]'), w = $('[data-ctw]'); if (!el || !w) return;
+    var l = el.scrollLeft > 4, r = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+    w.classList.toggle('has-l', l); w.classList.toggle('has-r', r);
+    $$('[data-ctarr]').forEach(function (b) { b.hidden = b.getAttribute('data-ctarr') === '-1' ? !l : !r; });
   }
   function openCats(mode) {
-    catMode = mode; catGroup = ''; $('[data-catq]').value = ''; paintCats(''); openSheet('cats');
+    catMode = mode; catGroup = ''; var ct0 = $('[data-ctabs]'); if (ct0) ct0._seen = 0; $('[data-catq]').value = ''; paintCats(''); openSheet('cats'); setTimeout(ctEdges, 30); setTimeout(ctEdges, 300);
     $('[data-cats]').scrollTop = 0;
     var on = $('[data-cats] [aria-pressed=true]'); if (on) on.scrollIntoView({ block: 'center' });
   }
@@ -317,7 +325,7 @@
     var avail = b.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 30 - ptsW - 6;
     var gap = window.innerWidth < 420 ? 3 : 4;
     var c = Math.floor((avail - gap * longest) / longest);
-    c = Math.max(16, Math.min(window.innerWidth >= 1000 ? 46 : 42, c));
+    c = Math.max(14, Math.min(window.innerWidth >= 1000 ? 46 : 42, c));
     b.style.setProperty('--c', c + 'px');
     b.style.setProperty('--gap', gap + 'px');
   }
@@ -607,12 +615,16 @@
   }
   function sumRows(list, compact) {
     var head = compact ? '' : '<div class="sum__h"><span></span><span>Player</span><span title="Word points">W</span><span class="c-mav" title="Maverick">M</span><span class="c-con" title="Concord">C</span><span class="c-acc" title="Regen">R</span><span class="c-key" title="Keystone">K</span><span>Total</span></div>';
+    var dg = function (f) { return Math.max.apply(null, list.map(function (s) { return String(f(s)).length; })); };
+    var cw = function (d, big) { return Math.max(big ? 40 : 24, Math.ceil(d * (big ? 10.5 : 8.6) + 6)); };
+    var cols = compact ? '24px minmax(0,1fr) ' + cw(dg(function (s) { return s.total; }), 1) + 'px'
+      : '24px minmax(0,1fr) ' + [function (s) { return s.base; }, function (s) { return s.mav; }, function (s) { return s.con; }, function (s) { return s.acc; }, function (s) { return s.key; }].map(function (f) { return cw(dg(f)) + 'px'; }).join(' ') + ' ' + cw(dg(function (s) { return s.total; }), 1) + 'px';
     var rows = list.map(function (s) {
-      var st = compact ? '' : '<span>' + s.base + '</span><span class="c-mav">' + s.mav + '</span><span class="c-con">' + s.con + '</span><span class="c-acc">' + s.acc + '</span><span class="c-key">' + s.key + '</span>';
+      var st = compact ? '' : '<span class="sum__parts"><span data-l="W">' + s.base + '</span><span class="c-mav" data-l="M">' + s.mav + '</span><span class="c-con" data-l="C">' + s.con + '</span><span class="c-acc" data-l="R">' + s.acc + '</span><span class="c-key" data-l="K">' + s.key + '</span></span>';
       return '<div class="sum__r' + (compact ? ' sum__r--c' : '') + (G.players[s.id] && G.players[s.id].out ? ' is-out' : '') + '"><span class="sum__p">' + s.place + '</span><span class="sum__n"><b><i style="background:' + color(s.id) + '"></i><u style="color:' + color(s.id) + '">' + esc(s.name) + '</u></b></span>' + st + '<span class="sum__t">' + s.total + '</span></div>';
     }).join('');
     var legend = compact ? '' : '<p class="sum__lg">W words · M Maverick · C Concord · R Regen · K Keystone</p>';
-    return '<div class="sum' + (list.length > 6 ? ' sum--scroll' : '') + '">' + head + rows + '</div>' + legend;
+    return '<div class="sum' + (list.length > 6 ? ' sum--scroll' : '') + '" style="--cols:' + cols + '">' + head + rows + '</div>' + legend;
   }
 
   /* settings for the next round, changed from the round-over screen */
@@ -1374,6 +1386,7 @@
     var t = ev.target.closest('button,[data-act]');
     if (!t) { if (ev.target.classList && ev.target.classList.contains('sheet')) closeSheets(); return; }
     var a = t.getAttribute('data-act');
+    if (t.hasAttribute('data-ctarr')) { var ce = $('[data-ctabs]'); ce.scrollBy({ left: +t.getAttribute('data-ctarr') * ce.clientWidth * .7, behavior: 'smooth' }); return; }
     if (t.hasAttribute('data-ctab')) { catGroup = t.getAttribute('data-ctab'); paintCats($('[data-catq]').value); $('[data-cats]').scrollTop = 0; return; }
     if (t.hasAttribute('data-nr')) { NR[t.getAttribute('data-nr')] = +t.getAttribute('data-v'); paintNR(); return; }
     if (t.hasAttribute('data-pc')) { S.pc = +t.getAttribute('data-pc'); S.count = S.pc; saveSetup(); paintSetup(); return; }
@@ -1465,6 +1478,7 @@
     if (t.hasAttribute('data-in') && $('[data-msg]').innerHTML) { msg(''); pending = null; }
   });
   $('[data-entry]').addEventListener('submit', function (ev) { ev.preventDefault(); submit(); });
+  (function () { var ce = $('[data-ctabs]'); if (ce) ce.addEventListener('scroll', ctEdges, { passive: true }); window.addEventListener('resize', ctEdges); })();
   document.addEventListener('submit', function (ev) { var f = ev.target; if (f && f.hasAttribute && f.hasAttribute('data-chatform')) { ev.preventDefault(); var i = f.querySelector('[data-chatin]'); chatSend(i.value); i.value = ''; } });
   document.addEventListener('submit', function (ev) { if (ev.target.hasAttribute && ev.target.hasAttribute('data-claim-f')) { ev.preventDefault(); claimGo(); } });
   document.addEventListener('keydown', function (ev) {

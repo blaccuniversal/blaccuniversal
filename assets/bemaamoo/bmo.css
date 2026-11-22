@@ -612,3 +612,41 @@ body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
 .seg--s button{min-height:36px;font-size:13px}
 .nr__n{margin:-4px 0 0;font-size:12.5px;line-height:1.45;color:var(--tx2)}
 .sheet__card--tall{height:auto;min-height:0;max-height:min(86vh,720px)}
+
+/* long words: keep the row number and the points in view while the board scrolls sideways */
+.row__n{position:sticky;left:0;z-index:2;background:#000}
+.row__pts{position:sticky;right:0;z-index:2;background:#000;box-shadow:-10px 0 8px #000}
+.rows{min-width:100%}
+
+/* score tables: columns sized to the numbers so big scores never run into names */
+.sum[style] .sum__h,.sum[style] .sum__r{grid-template-columns:var(--cols);gap:0 4px}
+.sum[style] .sum__r>span{padding:0}
+.sum__r>.sum__t{white-space:nowrap}
+.sum__n b u{overflow:hidden;text-overflow:ellipsis;min-width:0}
+/* category groups: fades and arrows show there is more to the side */
+.ctw{position:relative;margin:10px 0 4px;flex:none}
+.ctw[hidden]{display:none}
+.ctw .ctabs{margin:0;padding:2px 0 6px}
+.ctw::before,.ctw::after{content:"";position:absolute;top:0;bottom:6px;width:34px;pointer-events:none;z-index:2;opacity:0;transition:opacity .2s}
+.ctw::before{left:0;background:linear-gradient(90deg,#0f0f0f 30%,rgba(15,15,15,0))}
+.ctw::after{right:0;background:linear-gradient(270deg,#0f0f0f 30%,rgba(15,15,15,0))}
+.ctw.has-l::before,.ctw.has-r::after{opacity:1}
+.ctw__a{position:absolute;top:0;z-index:3;width:30px;height:32px;display:grid;place-items:center;border:1px solid var(--bd2);border-radius:2px;background:#161616;color:#fff}
+.ctw__a svg{width:16px;height:16px}
+.ctw__a[hidden]{display:none}
+.ctw__a--l{left:0}.ctw__a--r{right:0}
+
+/* score rows: the five part columns sit inside .sum__parts */
+.sum__parts{display:contents}
+.sum[style] .sum__r>.sum__parts>span{display:block;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;color:#e9e9e9;min-width:0}
+.sum[style] .sum__r>.sum__parts>span:is(.c-mav,.c-con,.c-acc,.c-key){opacity:.95}
+@media (max-width:520px){
+  .sum[style] .sum__h{display:none}
+  .sum__lg{display:none}
+  .sum[style] .sum__r:not(.sum__r--c){grid-template-columns:24px minmax(0,1fr) auto;row-gap:4px;padding:9px 0}
+  .sum[style] .sum__r:not(.sum__r--c)>.sum__t{grid-column:3;grid-row:1}
+  .sum[style] .sum__r:not(.sum__r--c)>.sum__parts{grid-column:2/-1;grid-row:2;display:flex;flex-wrap:wrap;gap:2px 14px}
+  .sum[style] .sum__r:not(.sum__r--c)>.sum__parts>span{text-align:left;font-size:12.5px}
+  .sum[style] .sum__parts>span::before{content:attr(data-l);margin-right:4px;font-size:9.5px;font-weight:700;letter-spacing:.06em;color:var(--tx3)}
+  .sum[style] .sum__parts>span.c-mav::before{color:var(--mav,#ffc857)}
+}
