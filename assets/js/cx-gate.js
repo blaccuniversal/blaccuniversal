@@ -223,14 +223,13 @@
     e.preventDefault();
     var k = f.getAttribute('data-form'), err = f.parentNode.querySelector('[data-err]');
     if (k === 'code') {
-      var box = f, v = f.code.value.replace(/\s+/g, '').toUpperCase();
+      var box = f, v = f.code.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
       function no() { box.classList.remove('is-no'); void box.offsetWidth; box.classList.add('is-no'); err.hidden = false; f.code.select(); }
       if (!v || !window.crypto || !crypto.subtle) return no();
       sha('blacccx:' + v).then(function (ho) {
         if (ho === window.CX_OWNER) { put('cx_pass', { h: ho, until: Date.now() + DAYS * 864e5 }); return ok(); }
         var list = window.CX_CODES[ID] || [], alts = [v];
-        var m = v.match(/^([A-Z]{3,4})-?([A-Z0-9]{5})$/); if (m && alts.indexOf(m[1] + '-' + m[2]) < 0) alts.push(m[1] + '-' + m[2]);
-        if (v.indexOf('-') > -1) alts.push(v.replace(/-/g, ''));
+        [3, 4].forEach(function (k) { if (v.length > k + 2) alts.push(v.slice(0, k) + '-' + v.slice(k)); });
         return alts.reduce(function (pr, a) {
           return pr.then(function (found) { return found || sha('blacccx:' + ID + ':' + a).then(function (h) { return list.indexOf(h) > -1 ? h : null; }); });
         }, Promise.resolve(null)).then(function (h) {
