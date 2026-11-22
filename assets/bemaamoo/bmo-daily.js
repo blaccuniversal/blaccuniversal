@@ -63,7 +63,7 @@
       t.classList.toggle('is-used', seen[L] <= (u[L] || 0));
     });
   }
-  function board(box, mavSet) {
+  function board(box, hide) {
     var r = B.round(st.g), longest = 20, tags = 0;
     r.entries.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; var t = (e.x ? 1 : 0) + (e.mavs.length ? 1 : 0) + (e.con ? 1 : 0) + (e.acc ? 1 : 0) + (e.key ? 1 : 0); if (t > tags) tags = t; });
     var cs0 = getComputedStyle(box), padx = (parseFloat(cs0.paddingLeft) || 0) + (parseFloat(cs0.paddingRight) || 0);
@@ -76,7 +76,7 @@
     var h = '<div class="rows">';
     r.entries.forEach(function (e, i) {
       h += '<div class="row' + (e.x ? ' is-x' : '') + (conAt[i] != null ? ' is-con' + conAt[i] : '') + (e.acc ? ' is-acc' : '') + '"><span class="row__n">' + (i + 1) + '</span>';
-      for (var k = 0; k < e.w.length; k++) h += '<span class="cell' + (mav[i + ':' + (k + 1)] ? ' is-mav' : '') + '">' + e.w[k] + '</span>';
+      for (var k = 0; k < e.w.length; k++) h += '<span class="cell' + (mav[i + ':' + (k + 1)] ? ' is-mav' : '') + '">' + (hide && e.x ? '' : e.w[k]) + '</span>';
       h += '<span class="row__pts">+' + e.total + (e.x ? '<span class="tag tag--x" title="The full word: triple points">3×</span>' : '') + (e.mavs.length ? '<span class="tag tag--mav" title="Maverick">M</span>' : '') + (e.con ? '<span class="tag tag--con" title="Concord">C</span>' : '') + (e.acc ? '<span class="tag tag--acc" title="Regen">R</span>' : '') + (e.key ? '<span class="tag tag--key" title="Keystone">K</span>' : '') + '</span></div>';
     });
     box.innerHTML = h + '</div>';
@@ -183,11 +183,11 @@
     var a = load(); st = mine();
     var T = B.tally(st.g)[0], n = entries(st).length;
     $('[data-d-score]').textContent = T.total;
-    $('[data-d-word]').textContent = base; $('[data-d-who]').textContent = (st.name || 'Player') + ' · Today’s word';
+    $('[data-d-word]').textContent = shuffled(base, num()).join(''); $('[data-d-who]').textContent = (st.name || 'Player') + ' · Today’s letters';
     var rg, sk = streak(), bon = [entries(st).some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', (rg = entries(st).filter(function (e) { return e.acc; }).length) ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join(' · ');
     $('[data-d-bonus]').innerHTML = bon.replace('Found the word', '<em>Found the word</em>'); $('[data-d-bonus]').hidden = !bon;
     $('[data-d-meta]').textContent = pl(n, 'word') + (sk > 1 ? ' · ' + sk + '-day streak' : '');
-    board($('[data-d-rboard]'));
+    board($('[data-d-rboard]'), true);
     $('[data-d-missed]').textContent = '';
     dictP().then(function (D) {
       var c = counts(base), all = 0, miss = [], got = words(st);
@@ -223,7 +223,7 @@
     c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
     c.textAlign = 'center'; c.textBaseline = 'alphabetic';
     c.fillStyle = '#8a8a8a'; c.font = '600 30px ' + FONT; c.fillText('BEMAAMOO  ·  DAILY #' + num() + (st.name ? '  ·  ' + st.name.toUpperCase() : ''), W / 2, 100);
-    c.fillStyle = '#fff'; c.font = '800 84px ' + FONT; c.fillText(base, W / 2, 210);
+    c.fillStyle = '#fff'; c.font = '800 84px ' + FONT; c.fillText(shuffled(base, num()).join(''), W / 2, 210);
     c.fillStyle = gold; c.font = '800 190px ' + FONT; c.fillText(String(T.total), W / 2, 380);
     c.fillStyle = '#9a9a9a'; c.font = '500 34px ' + FONT;
     c.fillText(pl(E.length, 'word'), W / 2, 430);
@@ -244,7 +244,7 @@
         E.forEach(function (f, fi) { f.mavs.forEach(function (m) { if (m.col === k + 1 && fi >= m.from && fi <= m.to && fi === i) hot = true; }); });
         c.fillStyle = hot ? 'rgba(255,210,63,.16)' : '#0c0c0c'; rr(c, x, y, cs, cs, 6); c.fill();
         c.strokeStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#2c2c2c')); if (e.x) { c.shadowColor = EM; c.shadowBlur = 18; } c.lineWidth = 2; rr(c, x, y, cs, cs, 6); c.stroke();
-        c.shadowBlur = 0; c.fillStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#f2f2f2')); c.font = '700 ' + Math.round(cs * .52) + 'px ' + FONT; c.textAlign = 'center'; c.fillText(e.w[k], x + cs / 2, y + cs * .7);
+        c.shadowBlur = 0; c.fillStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#f2f2f2')); c.font = '700 ' + Math.round(cs * .52) + 'px ' + FONT; c.textAlign = 'center'; if (!e.x) c.fillText(e.w[k], x + cs / 2, y + cs * .7);
       }
       var px = x0 + e.w.length * (cs + gap) + 14; c.textAlign = 'left';
       c.fillStyle = '#cfcfcf'; c.font = '700 ' + Math.round(cs * .46) + 'px ' + FONT; c.fillText('+' + e.total, px, y + cs * .68);
