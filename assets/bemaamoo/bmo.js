@@ -84,7 +84,7 @@
     }
     el.hidden = !on;
   }
-  function paintMini() { var d = $('[data-mini]'); if (d) d.hidden = !(minSb && sbKind); var l = $('[data-mini-l]'); if (l) l.textContent = sbKind === 'final' ? 'Final scores' : 'Scoresheet'; var c = $('[data-mini] [data-act="chat"]'); if (c) c.hidden = !NET; }
+  function paintMini() { var d = $('[data-mini]'); if (d) d.hidden = !(minSb && sbKind); document.body.classList.toggle('is-mini', !!(minSb && sbKind)); var l = $('[data-mini-l]'); if (l) l.textContent = sbKind === 'final' ? 'Final scores' : 'Scoresheet'; var c = $('[data-mini] [data-act="chat"]'); if (c) c.hidden = !NET; }
   function minimise(on) {
     if (!sbKind) return;
     minSb = on; $('[data-ov="' + sbKind + '"]').hidden = on; paintMini();

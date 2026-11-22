@@ -582,3 +582,9 @@ body[data-locked] .mini{display:none!important}
 .dock{padding-bottom:calc(8px + env(safe-area-inset-bottom))}
 @media (max-width:520px){.btn--big{min-height:46px;font-size:14.5px}.entry__in,.entry__go{height:46px;min-height:46px}}
 .tmenu .prow[hidden]{display:none}
+
+/* finished round, scoresheet minimised: the entries scroll freely and a slim bar sits under them */
+body.is-mini .dock{display:none}
+body.is-mini [data-board]{padding-bottom:76px}
+body.is-mini .mini{left:0;right:0;bottom:0;transform:none;width:100%;box-sizing:border-box;justify-content:center;gap:8px;padding:8px 12px calc(8px + env(safe-area-inset-bottom));border:0;border-top:1px solid var(--bd2);border-radius:0;background:#050505;box-shadow:none}
+body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
