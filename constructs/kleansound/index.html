@@ -14,7 +14,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/kleansound/img/favicon.png">
 <link rel="preload" as="image" href="/constructs/kleansound/img/stack-smoke.webp" fetchpriority="high">
-<link rel="stylesheet" href="/constructs/kleansound/kleansound.css?v=3">
+<link rel="stylesheet" href="/constructs/kleansound/kleansound.css?v=5">
 </head>
 <body>
 
@@ -29,13 +29,13 @@
 <header class="nav" data-nav>
   <a class="nav__brand" href="#top" aria-label="KleanSound, back to top"><img src="/constructs/kleansound/img/mark.png" alt="KLS" width="920" height="304"><span class="nav__name">Kleansound</span></a>
   <nav class="nav__links" aria-label="Sections">
-    <a href="#range">Range</a><a href="#built">Build</a><a href="#setup">Find your setup</a><a href="#quote">Contact</a>
+    <a href="#range">Range</a><a href="#built">Build</a><a href="#setup">Find your setup</a><a href="#visit">Visit</a>
   </nav>
   <a class="pill pill--g nav__cta" href="#quote">Get a quote</a>
   <button class="nav__burger" type="button" data-burger aria-label="Open menu" aria-expanded="false"><i></i><i></i></button>
 </header>
 <div class="drawer" data-drawer hidden>
-  <nav aria-label="Sections"><a href="#range"><i>01</i>Range</a><a href="#built"><i>02</i>Build</a><a href="#setup"><i>03</i>Find your setup</a><a href="#quote"><i>04</i>Contact</a></nav>
+  <nav aria-label="Sections"><a href="#range"><i>01</i>Range</a><a href="#built"><i>02</i>Build</a><a href="#setup"><i>03</i>Find your setup</a><a href="#visit"><i>04</i>Visit</a></nav>
   <div class="drawer__foot"><a class="pill pill--g pill--lg pill--full" href="#quote">Get a quote</a></div>
 </div>
 
@@ -47,13 +47,13 @@
       <div class="hero__copy">
         <p class="chip rise" style="--d:1"><span class="dot"></span>KLS · Professional loudspeakers</p>
         <h1 class="hero__t rise" style="--d:2">Clean sound.<br><em>Built to carry.</em></h1>
-        <p class="hero__p rise" style="--d:3">Loudspeakers from Ibadan for stages, worship, events and rooms that need to be heard properly.</p>
+        <p class="hero__p rise" style="--d:3">Ibadan-built loudspeakers for stages and events.</p>
         <div class="hero__btns rise" style="--d:4">
           <a class="pill pill--g pill--lg" href="#quote">Get a quote<svg><use href="#i-arrow"/></svg></a>
           <button class="pill pill--ghost pill--lg" type="button" data-kick aria-pressed="false"><svg data-kickic><use href="#i-play"/></svg><span data-kicktx>Feel the low end</span></button>
         </div>
         <ul class="facts rise" style="--d:5"><li>Clear</li><li>Tight</li><li>Tough</li><li>Easy to move</li></ul>
-        <p class="hero__hint rise" style="--d:5" data-kickhint>Sound on. A short bass demo plays when you tap it.</p>
+        <p class="hero__hint" data-kickhint hidden></p>
       </div>
       <figure class="hero__fig rise" style="--d:2" data-fig>
         <img src="/constructs/kleansound/img/stack-smoke.webp" alt="Two KLS cabinets stacked on a dark stage with smoke" width="1400" height="1532" fetchpriority="high">
@@ -65,25 +65,25 @@
   <!-- RANGE -->
   <section class="range" id="range">
     <div class="wrap">
-      <div class="head reveal"><div><p class="eyebrow">The range</p><h2 class="h2">Three ways to fill a room.</h2></div><p class="note">Pick a starting point. We help you size it.</p></div>
+      <div class="head reveal"><div><p class="eyebrow">The range</p><h2 class="h2">Three ways to fill a room.</h2></div></div>
       <div class="rg" data-rg>
         <article class="prod reveal">
           <div class="prod__art"><img src="/constructs/kleansound/img/stack-pair.webp" alt="Two KLS stage cabinets stacked" loading="lazy" width="1213" height="1297"></div>
-          <div class="prod__b"><p class="eyebrow">Stage</p><h3>Stage cabinets</h3><p>Full-size cabinets for live bands, worship and halls. Stack, fly or stand-mount.</p>
+          <div class="prod__b"><p class="eyebrow">Stage</p><h3>Stage cabinets</h3><p>For bands, worship and halls.</p>
             <a class="pill pill--g" href="#quote" data-pick="Stage cabinets">Ask about this<svg><use href="#i-arrow"/></svg></a></div>
         </article>
         <article class="prod reveal">
           <div class="prod__art"><img src="/constructs/kleansound/img/stack-smoke.webp" alt="A tall KLS cabinet on top of a wide KLS cabinet" loading="lazy" width="1400" height="1532"></div>
-          <div class="prod__b"><p class="eyebrow">Systems</p><h3>Stacked systems</h3><p>Top cabinets over low-end boxes for big crowds, open air and DJ nights.</p>
+          <div class="prod__b"><p class="eyebrow">Systems</p><h3>Stacked systems</h3><p>For crowds, open air and DJs.</p>
             <a class="pill pill--g" href="#quote" data-pick="Stacked system with subs">Ask about this<svg><use href="#i-arrow"/></svg></a></div>
         </article>
         <article class="prod reveal">
           <div class="prod__art"><img src="/constructs/kleansound/img/portable.webp" alt="A portable KLS speaker with carry handle" loading="lazy" width="1200" height="1200"></div>
-          <div class="prod__b"><p class="eyebrow">Portable</p><h3>Portable speaker</h3><p>Compact, rugged and easy to carry. For small rooms, speeches and pop-ups.</p>
+          <div class="prod__b"><p class="eyebrow">Portable</p><h3>Portable speaker</h3><p>For small rooms and pop-ups.</p>
             <a class="pill pill--g" href="#quote" data-pick="Portable">Ask about this<svg><use href="#i-arrow"/></svg></a></div>
         </article>
       </div>
-      <p class="swipe">Swipe for more →</p>
+      
     </div>
   </section>
 
@@ -93,7 +93,7 @@
       <div class="built__copy reveal">
         <p class="eyebrow">Build</p>
         <h2 class="h2">Made to be moved.</h2>
-        <p class="lead">Tap a point on the photo.</p>
+        
         <div class="hcap" data-hscap aria-live="polite"><b data-hst></b><p data-hsp></p></div>
         <div class="hdots" data-hsdots></div>
       </div>
@@ -118,7 +118,7 @@
           <fieldset class="q"><legend>What will you play?</legend><div class="opts" data-q="use"><button type="button" data-v="speech" aria-pressed="true">Speech</button><button type="button" data-v="band" aria-pressed="false">Live band</button><button type="button" data-v="dj" aria-pressed="false">DJ and bass</button></div></fieldset>
         </div>
         <div class="rec" aria-live="polite">
-          <p class="eyebrow">We would start with</p>
+          <p class="eyebrow">Start with</p>
           <h3 data-rect>Portable</h3>
           <p data-recp></p>
           <a class="pill pill--g" href="#quote" data-recgo>Request this setup<svg><use href="#i-arrow"/></svg></a>
@@ -128,21 +128,52 @@
     </div>
   </section>
 
-  <!-- QUOTE + CONTACT -->
+  <!-- VISIT -->
+  <section class="visit" id="visit">
+    <div class="wrap visit__g">
+      <div class="visit__copy reveal">
+        <p class="eyebrow">Visit</p>
+        <h2 class="h2">Find us in Ibadan.</h2>
+        <ul class="contact" data-contact></ul>
+        <div class="soc" data-soc></div>
+        <div class="vbtns">
+          <button class="pill pill--g" type="button" id="guideBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></g></svg>Guide me there</button>
+          <a class="pill pill--ghost" id="gmapsLink" href="https://www.google.com/maps/dir/?api=1&amp;destination=7.38629,3.88280" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+      <div class="wf__stage reveal" id="stage">
+        <canvas id="map" aria-label="Map to KLS KleanSound, Ibadan"></canvas>
+        <div class="hud hud--stats">
+          <div class="hud__row"><span>To KLS</span><span id="hudDist">&mdash;</span></div>
+          <div class="hud__meter"><i id="hudMeter"></i></div>
+          <div class="hud__grid"><div><span>ETA</span><b id="hudEta">&mdash;</b></div><div><span>Bearing</span><b id="hudBearing">&mdash;</b></div><div><span>Heading</span><b id="hudHeading">N-UP</b></div></div>
+        </div>
+        <div class="hud hud--tr"><span id="hudCoord">7.3863&deg; N &middot; 3.8828&deg; E</span> <span class="hud__st" id="hudStatus"><i></i><span id="hudStatusText">Standby</span></span></div>
+        <div class="wtoast" id="toast">
+          <div class="wtoast__main">
+            <div class="wtoast__ic"><svg id="toastArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></div>
+            <div><div class="wtoast__t" id="toastText"></div><div class="wtoast__s" id="toastSub"></div></div>
+          </div>
+          <div class="wtoast__acts" id="toastActions"></div>
+          <div class="wtoast__bar"><i></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
   <section class="quote" id="quote">
     <div class="wrap quote__g">
       <div class="quote__copy reveal">
         <p class="eyebrow">Get a quote</p>
         <h2 class="h2">Tell us about the room.</h2>
-        <ul class="contact" data-contact></ul>
-        <div class="soc" data-soc></div>
       </div>
       <form class="jf reveal" id="qForm" novalidate>
         <input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
         <label><span>Full name</span><input name="name" autocomplete="name" required></label>
         <label><span>Phone</span><input name="phone" type="tel" autocomplete="tel" placeholder="+234" required></label>
         <label class="jf__full"><span>Looking at</span><select name="setup"><option>Not sure yet</option><option>Portable</option><option>Stage cabinets</option><option>Stacked system with subs</option></select></label>
-        <label class="jf__full"><span>Venue, city and details</span><textarea name="note" rows="2" placeholder="e.g. Church hall, Ibadan, about 300 people"></textarea></label>
+        <label class="jf__full"><span>Venue and city</span><input name="note" placeholder="e.g. Church hall, Ibadan, 300 people"></label>
         <div class="jf__foot"><button class="pill pill--g pill--lg pill--full" type="submit">Send request<svg><use href="#i-arrow"/></svg></button><p class="jf__msg" id="qMsg" role="status">We reply as soon as we can.</p></div>
       </form>
     </div>
@@ -156,6 +187,7 @@
 </div></footer>
 
 <script src="/constructs/kleansound/contact-info.js?v=4"></script>
-<script src="/constructs/kleansound/kleansound.js?v=4" defer></script>
+<script src="/constructs/kleansound/kleansound.js?v=5" defer></script>
+<script src="/constructs/kleansound/kleansound-wf.js?v=2" defer></script>
 </body>
 </html>

@@ -95,10 +95,10 @@
 
   /* build hotspots */
   var HS = [
-    ['Perforated grille', 'A hex-perforated metal grille protects the drivers and lets the sound through.'],
-    ['Recessed handles', 'Handles are set into the cabinet, so lifting is easy and nothing snags in the van.'],
-    ['Stack-ready', 'Cabinets sit flush on each other, so a stack stays steady from the first song to the last.'],
-    ['Road finish', 'A textured coating built for load-ins, load-outs and the odd knock.']
+    ['Perforated grille', 'Hex-perforated metal protects the drivers.'],
+    ['Recessed handles', 'Recessed handles never snag in the van.'],
+    ['Stack-ready', 'Flush cabinets keep a stack steady.'],
+    ['Road finish', 'A textured coat built for the road.']
   ];
   var hps = $$('.hp'), hd = $('[data-hsdots]');
   hd.innerHTML = HS.map(function (h, i) { return '<button type="button" aria-label="' + h[0] + '"></button>'; }).join('');
@@ -114,7 +114,7 @@
   /* contact details: fill KLS_INFO in contact-info.js; only filled items are shown */
   var INFO = window.KLS_INFO || {};
   var items = [];
-  if (INFO.address) items.push(['Visit', INFO.address + (INFO.maps ? ' <a class="dir" href="' + INFO.maps + '" target="_blank" rel="noopener">Directions</a>' : '')]);
+  if (INFO.address) items.push(['Visit', INFO.address]);
   if (INFO.phone) items.push(['Call', '<a href="tel:' + INFO.phone.replace(/[^+\d]/g, '') + '">' + INFO.phone + '</a>']);
   if (INFO.whatsapp) items.push(['Message', '<a href="https://wa.me/' + INFO.whatsapp.replace(/\D/g, '') + '" target="_blank" rel="noopener">' + INFO.whatsapp + '</a>']);
   if (INFO.email) items.push(['Email', '<a href="mailto:' + INFO.email + '">' + INFO.email + '</a>']);
@@ -126,9 +126,9 @@
   /* setup finder */
   var st = { venue: 'room', crowd: 's', use: 'speech' };
   var REC = {
-    p: ['Portable', 'Compact and easy to move. A good fit for small rooms, speeches and pop-up events.', 'Portable'],
-    c: ['Stage cabinets', 'A pair of stage cabinets gives you the reach and clarity a hall, church or live band needs.', 'Stage cabinets'],
-    s: ['Stacked system with subs', 'Stage cabinets over low-end boxes. Built for bigger crowds, open air and heavy bass.', 'Stacked system with subs']
+    p: ['Portable', 'Easy to move. Fits small rooms and pop-ups.', 'Portable'],
+    c: ['Stage cabinets', 'Reach and clarity for halls and live bands.', 'Stage cabinets'],
+    s: ['Stacked system with subs', 'Stage cabinets over subs for big crowds.', 'Stacked system with subs']
   };
   var rec = $('.rec');
   function recompute() {
@@ -166,12 +166,11 @@
     $$('.bad', f).forEach(function (x) { x.classList.remove('bad'); });
     if (el.name.value.trim().length < 3) bad.push(el.name);
     if (el.phone.value.replace(/\D/g, '').length < 7) bad.push(el.phone);
-    if (el.email.value.trim() && !/^\S+@\S+\.\S{2,}$/.test(el.email.value.trim())) bad.push(el.email);
     if (bad.length) { bad.forEach(function (x) { x.classList.add('bad'); }); say('Please check the highlighted fields.', 'err'); bad[0].focus(); return; }
     if (el.botcheck.value) return;
     var sb = f.querySelector('button[type=submit]'); sb.disabled = true; say('Sending…');
     var d = { access_key: 'c45f617c-f3f2-4caa-93cf-5d49e2cece46', subject: 'KleanSound quote request: ' + el.name.value.trim(), from_name: 'KleanSound page', botcheck: '', page: location.href,
-      name: el.name.value.trim(), phone: el.phone.value.trim(), email: el.email.value.trim(), setup: el.setup.value, venue: el.venue.value.trim(), note: el.note.value.trim(),
+      name: el.name.value.trim(), phone: el.phone.value.trim(), setup: el.setup.value, venue: el.note.value.trim(),
       finder: st.venue + ' / ' + st.crowd + ' / ' + st.use };
     fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(d) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok || j.success === false) throw 0; }); })
