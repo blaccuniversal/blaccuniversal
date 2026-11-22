@@ -22,6 +22,7 @@
       (s.found || []).forEach(function (w) { B.add(s.g, w, {}); });   // older saves: replay the words in order
       delete s.found;
     }
+    B.round(s.g).entries.forEach(function (e) { if (e.x && e.base === B.tri(e.w.length) * 2) { e.base = B.tri(e.w.length) * 3; e.total = e.base + e.mav + e.con + e.acc + e.key; } });   // older saves used x2
     return s;
   }
   function put(s) { var a = load(); a[num()] = s; save(a); }
@@ -70,9 +71,9 @@
     var conAt = {}; B.concords(r).forEach(function (q) { for (var k = q.from; k <= q.to; k++) conAt[k] = (k === q.from ? ' is-con-s' : '') + (k === q.to ? ' is-con-e' : ''); });
     var h = '<div class="rows">';
     r.entries.forEach(function (e, i) {
-      h += '<div class="row' + (conAt[i] != null ? ' is-con' + conAt[i] : '') + (e.acc ? ' is-acc' : '') + '"><span class="row__n">' + (i + 1) + '</span>';
+      h += '<div class="row' + (e.x ? ' is-x' : '') + (conAt[i] != null ? ' is-con' + conAt[i] : '') + (e.acc ? ' is-acc' : '') + '"><span class="row__n">' + (i + 1) + '</span>';
       for (var k = 0; k < e.w.length; k++) h += '<span class="cell' + (mav[i + ':' + (k + 1)] ? ' is-mav' : '') + '">' + e.w[k] + '</span>';
-      h += '<span class="row__pts">+' + e.total + (e.x ? '<span class="tag tag--x" title="The full word: double points">2×</span>' : '') + (e.mavs.length ? '<span class="tag tag--mav" title="Maverick">M</span>' : '') + (e.con ? '<span class="tag tag--con" title="Concord">C</span>' : '') + (e.acc ? '<span class="tag tag--acc" title="Regen">R</span>' : '') + (e.key ? '<span class="tag tag--key" title="Keystone">K</span>' : '') + '</span></div>';
+      h += '<span class="row__pts">+' + e.total + (e.x ? '<span class="tag tag--x" title="The full word: triple points">3×</span>' : '') + (e.mavs.length ? '<span class="tag tag--mav" title="Maverick">M</span>' : '') + (e.con ? '<span class="tag tag--con" title="Concord">C</span>' : '') + (e.acc ? '<span class="tag tag--acc" title="Regen">R</span>' : '') + (e.key ? '<span class="tag tag--key" title="Keystone">K</span>' : '') + '</span></div>';
     });
     box.innerHTML = h + '</div>';
   }
@@ -116,10 +117,10 @@
       busy = false;
       if (w !== base && !D.full.has(w)) return msg(w + ' isn’t in the dictionary.', true);
       var e = B.add(st.g, w, { mav: D.mav });
-      if (w === base) { e.x = 1; e.base *= 2; e.total = e.base + e.mav + e.con + e.acc + e.key; }
+      if (w === base) { e.x = 1; e.base *= 3; e.total = e.base + e.mav + e.con + e.acc + e.key; }
       put(st); el.inp.value = ''; paintTiles(); paintFound();
       var x = [e.mavs.length ? 'Maverick' : '', e.con ? 'Concord' : '', e.acc ? 'Regen' : '', e.key ? 'Keystone' : ''].filter(Boolean);
-      msg(w === base ? 'You found the word! Double points, +' + e.total : '+' + e.total + ' for ' + w + (x.length ? ' · ' + x.join(' + ') : ''));
+      msg(w === base ? 'You found the word! Triple points, +' + e.total : '+' + e.total + ' for ' + w + (x.length ? ' · ' + x.join(' + ') : ''));
       requestAnimationFrame(function () { window.scrollTo(0, document.body.scrollHeight); });
     }, function () { busy = false; msg('Couldn’t check that word. Try again.', true); });
   }
@@ -163,7 +164,7 @@
   function rr(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
   function sheetImage() {
     var E = entries(st), T = B.tally(st.g)[0], W = 1080, pad = 60, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
-    var gold = css('--mav', '#ffd23f'), blue = css('--con', '#4aa8ff'), purple = css('--acc', '#b48cff'), key = css('--key', '#ff6a4d');
+    var EM = '#6ee7b7', gold = css('--mav', '#ffd23f'), blue = css('--con', '#4aa8ff'), purple = css('--acc', '#b48cff'), key = css('--key', '#ff6a4d');
     var longest = Math.max(6, base.length); E.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; });
     var ptsW = 250, cs = Math.min(64, Math.floor((W - pad * 2 - ptsW - 8 * (longest - 1)) / longest)), gap = 8, rh = cs + 12;
     var rg = E.filter(function (e) { return e.acc; }).length, bon = [E.some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', rg ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join('  ·  ');
@@ -186,13 +187,13 @@
         var x = x0 + k * (cs + gap), hot = false;
         E.forEach(function (f, fi) { f.mavs.forEach(function (m) { if (m.col === k + 1 && fi >= m.from && fi <= m.to && fi === i) hot = true; }); });
         c.fillStyle = hot ? 'rgba(255,210,63,.16)' : '#0c0c0c'; rr(c, x, y, cs, cs, 6); c.fill();
-        c.strokeStyle = hot ? gold : (e.acc ? purple : '#2c2c2c'); c.lineWidth = 2; rr(c, x, y, cs, cs, 6); c.stroke();
-        c.fillStyle = hot ? gold : (e.acc ? purple : '#f2f2f2'); c.font = '700 ' + Math.round(cs * .52) + 'px ' + FONT; c.textAlign = 'center'; c.fillText(e.w[k], x + cs / 2, y + cs * .7);
+        c.strokeStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#2c2c2c')); if (e.x) { c.shadowColor = EM; c.shadowBlur = 18; } c.lineWidth = 2; rr(c, x, y, cs, cs, 6); c.stroke();
+        c.shadowBlur = 0; c.fillStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#f2f2f2')); c.font = '700 ' + Math.round(cs * .52) + 'px ' + FONT; c.textAlign = 'center'; c.fillText(e.w[k], x + cs / 2, y + cs * .7);
       }
       var px = x0 + e.w.length * (cs + gap) + 14; c.textAlign = 'left';
       c.fillStyle = '#cfcfcf'; c.font = '700 ' + Math.round(cs * .46) + 'px ' + FONT; c.fillText('+' + e.total, px, y + cs * .68);
       px += c.measureText('+' + e.total).width + 12;
-      [[e.x, '2×', gold], [e.mavs.length, 'M', gold], [e.con, 'C', blue], [e.acc, 'R', purple], [e.key, 'K', key]].forEach(function (t) {
+      [[e.x, '3×', EM], [e.mavs.length, 'M', gold], [e.con, 'C', blue], [e.acc, 'R', purple], [e.key, 'K', key]].forEach(function (t) {
         if (!t[0]) return; var tw = Math.max(cs * .5, 30);
         c.fillStyle = t[2]; rr(c, px, y + cs * .2, tw, cs * .6, 5); c.fill();
         c.fillStyle = '#000'; c.font = '800 ' + Math.round(cs * .36) + 'px ' + FONT; c.textAlign = 'center'; c.fillText(t[1], px + tw / 2, y + cs * .62); c.textAlign = 'left'; px += tw + 6;
