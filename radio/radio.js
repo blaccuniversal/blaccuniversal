@@ -4,7 +4,7 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var root = $('[data-root]'), au = $('[data-au]'), dial = $('[data-dial]'), knob = $('[data-knob]');
   var elName = $('[data-sname]'), elMeta = $('[data-meta]'), elSt = $('[data-status]'), elCtx = $('[data-ctx]'), elArt = $('[data-art]');
-  var elList = $('[data-list]'), elLctx = $('[data-lctx]'), elLcount = $('[data-lcount]'), elNet = $('[data-net]');
+  var elList = $('[data-list]'), elLctx = $('[data-lctx]'), elLcount = $('[data-lcount]'), elNet = $('[data-net]') || {};
   var prog = $('[data-prog]'), track = $('[data-track]'), ticksG = $('[data-ticks]');
   var sheet = $('[data-sheet]'), sQ = $('[data-q]'), sL = $('[data-sl]'), sT = $('[data-st]');
   var favBtn = $('[data-fav]'), vol = $('[data-vol]');
