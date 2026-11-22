@@ -54,6 +54,8 @@
   /* ---------- dial ui ---------- */
   function paint() {
     var n = S.list.length, st = S.list[S.idx];
+    var cn = $('[data-cn]'), ct = $('[data-ct]'), ln = $('[data-line]');
+    cn.textContent = n ? (S.idx < 9 ? '0' : '') + (S.idx + 1) : '00'; ct.textContent = (n < 10 ? '0' : '') + n; ln.style.width = (n ? (S.idx + 1) / n * 100 : 0) + '%';
     elLctx.textContent = S.label; elLcount.textContent = n ? (S.idx + 1) + ' of ' + n : '';
     elCtx.textContent = S.label;
     if (st) {
