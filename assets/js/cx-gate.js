@@ -228,8 +228,13 @@
       if (!v || !window.crypto || !crypto.subtle) return no();
       sha('blacccx:' + v).then(function (ho) {
         if (ho === window.CX_OWNER) { put('cx_pass', { h: ho, until: Date.now() + DAYS * 864e5 }); return ok(); }
-        return sha('blacccx:' + ID + ':' + v).then(function (h) {
-          if ((window.CX_CODES[ID] || []).indexOf(h) < 0) return no();
+        var list = window.CX_CODES[ID] || [], alts = [v];
+        var m = v.match(/^([A-Z]{3,4})-?([A-Z0-9]{5})$/); if (m && alts.indexOf(m[1] + '-' + m[2]) < 0) alts.push(m[1] + '-' + m[2]);
+        if (v.indexOf('-') > -1) alts.push(v.replace(/-/g, ''));
+        return alts.reduce(function (pr, a) {
+          return pr.then(function (found) { return found || sha('blacccx:' + ID + ':' + a).then(function (h) { return list.indexOf(h) > -1 ? h : null; }); });
+        }, Promise.resolve(null)).then(function (h) {
+          if (!h) return no();
           put(K_UNLOCK, { h: h, until: Date.now() + DAYS * 864e5 }); ok();
         });
       });
