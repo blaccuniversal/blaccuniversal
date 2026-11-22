@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BLACC Radio · Every station, one dial</title>
+<meta name="description" content="BLACC Radio. Tune live radio stations from every country with a single dial.">
+<meta name="theme-color" content="#050505">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="/radio/radio.css?v=3">
+</head>
+<body>
+
+<header class="hd">
+  <a class="back" href="/" aria-label="Back to BLACC Universal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg><span>BLACC Universal</span></a>
+  <div class="brand">BLACC <b>Radio</b></div>
+  <div class="net" data-net aria-live="polite"></div>
+</header>
+
+<main class="rd" data-root>
+  <section class="left">
+    <div class="stage" data-stage>
+      <div class="dial" data-dial tabindex="0" role="slider" aria-label="Tuning dial. Turn to change station" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0">
+        <svg class="ring" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><linearGradient id="eg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#e0661f"/><stop offset="1" stop-color="#c94a1c"/></linearGradient></defs>
+          <g data-ticks></g>
+          <path class="ring__t" data-track pathLength="100"/>
+          <path class="ring__p" data-prog pathLength="100"/>
+        </svg>
+        <div class="knob"><div class="knob__r" data-knob><i></i></div></div>
+        <button class="hub" type="button" data-play aria-label="Play">
+          <svg class="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>
+          <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5.5" width="4" height="13" rx="1"/><rect x="13.5" y="5.5" width="4" height="13" rx="1"/></svg>
+          <span class="spin" aria-hidden="true"></span>
+        </button>
+      </div>
+      <nav class="sats" data-sats aria-label="Browse">
+        <button type="button" data-sat="country" title="Country" aria-label="Country"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.8 5.2 3.8 8.5s-1.2 6.1-3.8 8.5c-2.6-2.4-3.8-5.2-3.8-8.5S9.4 5.9 12 3.5z"/></svg></button>
+        <button type="button" data-sat="genre" title="Genre" aria-label="Genre"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17V6l10-2v11"/><circle cx="7" cy="17" r="2.2"/><circle cx="17" cy="15" r="2.2"/></svg></button>
+        <button type="button" data-sat="fav" title="Favourites" aria-label="Favourites"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.6 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></button>
+        <button type="button" data-sat="recent" title="Recently played" aria-label="Recently played"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></button>
+        <button type="button" data-sat="search" title="Search" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
+      </nav>
+    </div>
+
+    <div class="now">
+      <div class="now__art" data-art aria-hidden="true"></div>
+      <div class="now__t">
+        <small data-ctx>Loading stations…</small>
+        <h1 data-sname>Tune in</h1>
+        <p class="meta" data-meta>&nbsp;</p>
+        <p class="st" data-status role="status"></p>
+      </div>
+    </div>
+    <div class="ctl">
+      <button type="button" class="ib" data-prev aria-label="Previous station"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h2v14H7zM20 5.5v13L10.5 12z"/></svg></button>
+      <button type="button" class="ib" data-fav aria-label="Add to favourites" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 20s-7.5-4.6-7.5-10A4.2 4.2 0 0 1 12 7.6 4.2 4.2 0 0 1 19.5 10c0 5.4-7.5 10-7.5 10z"/></svg></button>
+      <button type="button" class="ib" data-next aria-label="Next station"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 5h2v14h-2zM4 5.5v13L13.5 12z"/></svg></button>
+      <label class="vol"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 6v12l-4.5-3.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6"/></svg><input type="range" min="0" max="100" value="80" data-vol aria-label="Volume"></label>
+    </div>
+  </section>
+
+  <section class="right">
+    <div class="lh">
+      <div><small data-lctx>Stations</small><b data-lcount></b></div>
+      <div class="lh__b"><button type="button" class="ib ib--s" data-up aria-label="Up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14l6-6 6 6"/></svg></button><button type="button" class="ib ib--s" data-down aria-label="Down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10l6 6 6-6"/></svg></button></div>
+    </div>
+    <ul class="list" data-list></ul>
+  </section>
+</main>
+
+<div class="sheet" data-sheet hidden>
+  <div class="sheet__b" data-close></div>
+  <div class="sheet__p" role="dialog" aria-modal="true" aria-labelledby="sh-t">
+    <div class="sheet__h"><h2 id="sh-t" data-st>Country</h2><button type="button" class="ib ib--s" data-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <input class="sheet__q" type="search" data-q placeholder="Search" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <ul class="sheet__l" data-sl></ul>
+  </div>
+</div>
+
+<audio data-au preload="none" playsinline></audio>
+<script src="/radio/radio.js?v=3"></script>
+</body>
+</html>

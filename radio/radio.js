@@ -117,7 +117,7 @@
   function loadHls() {
     if (window.Hls) return Promise.resolve(window.Hls);
     if (hlsP) return hlsP;
-    hlsP = new Promise(function (res) { var s = document.createElement('script'); s.src = '/constructs/radio/hls.light.min.js?v=1'; s.onload = function () { res(window.Hls); }; s.onerror = function () { res(null); }; document.head.appendChild(s); });
+    hlsP = new Promise(function (res) { var s = document.createElement('script'); s.src = '/radio/hls.light.min.js?v=1'; s.onload = function () { res(window.Hls); }; s.onerror = function () { res(null); }; document.head.appendChild(s); });
     return hlsP;
   }
   function killHls() { if (S.hls) { try { S.hls.destroy(); } catch (e) {} S.hls = null; } }
