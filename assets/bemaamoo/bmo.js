@@ -449,6 +449,8 @@
   if (window.BMA && window.BMA.enabled) window.BMA.onChange(function (A) { if (A.user && A.profile && lastRes) { A.record(lastRes); lastRes = null; var fa = $('[data-finacct]'); if (fa) fa.hidden = true; } });
   function tx(el, v) { if (el.textContent !== v) el.textContent = v; }
   function setp(el, k, v) { if (el[k] !== v) el[k] = v; }
+  function skLabel(t) { var b = $('[data-act="skip"] b'); if (b) b.textContent = t; }
+  function paintMore() { var m = $('[data-act="turnmenu"]'); if (m) m.hidden = !$$('[data-sheet="turn"] .prow').some(function (b) { return !b.hidden; }); }
   function paintDock() {
     var r = R(), d = $('.dock');
     d.classList.toggle('is-done', !!r.done);
@@ -473,12 +475,13 @@
       setp(inp, 'disabled', off); setp(goB, 'disabled', off);
       if (!mine && !r.done) setp(inp, 'placeholder', 'Waiting for ' + cp + '…');
       if (NET.pend) setp(inp, 'placeholder', 'Sending…');
-      var sk = $('[data-act="skip"]'); setp(sk, 'hidden', r.done || !(mine || isHost())); tx(sk, nul ? (mine ? 'No word for ' + ah0.letter : cp + ': no word') : mine ? 'Skip turn' : 'Skip ' + cp);
+      var sk = $('[data-act="skip"]'); setp(sk, 'hidden', r.done || !(mine || isHost())); skLabel(nul ? (mine ? 'No word for ' + ah0.letter : cp + ': no word') : mine ? 'Skip turn' : 'Skip ' + cp);
       setp($('[data-act="undo"]'), 'hidden', !isHost()); setp($('[data-act="end"]'), 'hidden', !isHost());
     } else {
       setp(inp, 'disabled', false); setp(goB, 'disabled', false);
-      setp($('[data-act="undo"]'), 'hidden', false); setp($('[data-act="end"]'), 'hidden', false); tx($('[data-act="skip"]'), nul ? 'No word for ' + ah0.letter : 'Skip turn');
+      setp($('[data-act="undo"]'), 'hidden', false); setp($('[data-act="end"]'), 'hidden', false); skLabel(nul ? 'No word for ' + ah0.letter : 'Skip turn');
     }
+    paintMore();
   }
 
   function paintSide() {
@@ -1357,7 +1360,9 @@
       else nextRound(k);
       return;
     }
+    if ((a === 'skip' || a === 'undo' || a === 'end') && t.closest('[data-sheet="turn"]')) closeSheets();
     switch (a) {
+      case 'turnmenu': openSheet('turn'); break;
       case 'claim': openClaim(+t.getAttribute('data-gi')); break;
       case 'claimgo': claimGo(); break;
       case 'claimwho': claimWho = +t.getAttribute('data-p'); paintClaim(); break;

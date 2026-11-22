@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=26">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=28">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -214,16 +214,11 @@
         <div class="vq" data-vq hidden></div>
         <div class="twarn" data-twarn hidden role="status" aria-live="polite"></div>
         <div class="dock__msg" data-msg aria-live="polite"></div>
-        <div class="dock__turn"><i data-turndot></i><span data-turn>Your turn</span><span class="dock__live" data-live></span></div>
+        <div class="dock__turn"><i data-turndot></i><span data-turn>Your turn</span><span class="dock__live" data-live></span><button class="dock__more" type="button" data-act="turnmenu" aria-label="More options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="19" cy="12" r="1.9"/></svg></button></div>
         <form class="entry" data-entry autocomplete="off">
           <input class="entry__in" data-in type="text" inputmode="text" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type a word" aria-label="Your word">
           <button class="btn entry__go" type="submit">Add</button>
         </form>
-        <div class="dock__acts">
-          <button class="lnk" data-act="skip" type="button">Skip turn</button>
-          <button class="lnk" data-act="undo" type="button">Undo last word</button>
-          <button class="lnk" data-act="end" type="button">End round</button>
-        </div>
       </div>
     </div>
     <aside class="gside">
@@ -258,6 +253,16 @@
     <div class="claimw" data-claim-w></div>
     <form class="ojoin" data-claim-f novalidate><input class="cin" data-claim-in type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="40" placeholder="Your word"><button class="btn" type="submit">Claim</button></form>
     <p class="onote claimm" data-claim-m role="status"></p>
+  </div>
+</div>
+<div class="sheet" data-sheet="turn" hidden>
+  <div class="sheet__card" role="dialog" aria-modal="true" aria-label="Turn options">
+    <div class="sheet__head"><b>Options</b><button class="ic" data-act="close" aria-label="Close"><svg><use href="#i-x"/></svg></button></div>
+    <div class="tmenu">
+      <button class="prow" data-act="skip" type="button"><span class="prow__t"><b>Skip turn</b><small>Pass without a word</small></span></button>
+      <button class="prow" data-act="undo" type="button"><span class="prow__t"><b>Undo last word</b><small>Take back the newest entry</small></span></button>
+      <button class="prow prow--warn" data-act="end" type="button"><span class="prow__t"><b>End round</b><small>Stop now and see the scores</small></span></button>
+    </div>
   </div>
 </div>
 <div class="sheet" data-sheet="mode" hidden>
@@ -399,6 +404,6 @@
 <script src="/assets/bemaamoo/bmo-config.js?v=1"></script>
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=11"></script>
-<script src="/assets/bemaamoo/bmo.js?v=39"></script>
+<script src="/assets/bemaamoo/bmo.js?v=40"></script>
 </body>
 </html>
