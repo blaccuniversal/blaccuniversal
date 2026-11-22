@@ -116,21 +116,28 @@
 
   /* ---------- setup ---------- */
   var S = load(KEY_SETUP) || {};
-  S = { count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null && S.tl !== 20 ? S.tl : 15, sh: S.sh ? 1 : 0, al: +S.al || 0 };
+  S = { mode: S.mode === 'solo' ? 'solo' : 'pass', pc: Math.max(2, Math.min(8, S.pc || (S.count > 1 ? S.count : 2))), count: S.count || 1, names: S.names || [], cat: S.cat || 'names_all', timer: S.timer != null ? S.timer : 0, limit: S.limit != null ? S.limit : 0, tl: S.tl != null && S.tl !== 20 ? S.tl : 15, sh: S.sh ? 1 : 0, al: +S.al || 0 };
   function saveSetup() { store(KEY_SETUP, S); }
+  var ALNOTE = ['Any word, any letter.', 'Sorted: each word comes after the word above it in the alphabet.', 'Ladder: if one word starts with A, the next starts with B, then C, and so on.', 'Lap: everyone plays a word starting with the same letter, then the whole table moves to the next letter.'];
   function paintSetup() {
+    var solo1 = S.mode === 'solo';
+    S.count = solo1 ? 1 : S.pc;
+    $('[data-setup-title]').textContent = solo1 ? 'Solo' : 'Pass the phone';
     var pc = $('[data-pcount]'), h = '';
-    for (var i = 1; i <= 8; i++) h += '<button type="button" data-pc="' + i + '" aria-pressed="' + (S.count === i) + '">' + i + '</button>';
+    pc.hidden = solo1;
+    for (var i = 2; i <= 8; i++) h += '<button type="button" data-pc="' + i + '" aria-pressed="' + (S.pc === i) + '">' + i + '</button>';
     pc.innerHTML = h;
+    $('[data-pl-h]').textContent = solo1 ? 'Your name' : 'Players';
     var pn = $('[data-pnames]'); h = '';
     for (var j = 0; j < S.count; j++) {
-      h += '<label class="pname"><i style="background:' + COLORS[j] + '"></i><input data-pn="' + j + '" maxlength="18" placeholder="' + (S.count === 1 ? 'Your name' : 'Player ' + (j + 1)) + '" value="' + esc(S.names[j] || '') + '" autocomplete="off" autocapitalize="words"></label>';
+      h += '<label class="pname"><i style="background:' + COLORS[j] + '"></i><input data-pn="' + j + '" maxlength="18" placeholder="' + (solo1 ? 'Your name (optional)' : 'Player ' + (j + 1)) + '" value="' + esc(S.names[j] || '') + '" autocomplete="off" autocapitalize="words"></label>';
     }
     pn.innerHTML = h;
     $('[data-catname]').textContent = B.catName(S.cat);
     $('[data-catgroup]').textContent = groupOf(S.cat);
     seg('[data-opt="timer"]', TIMERS, S.timer, 'timer');
     seg('[data-opt="limit"]', LIMITS, S.limit, 'limit'); seg('[data-opt="alpha"]', ALPHA, S.al, 'al');
+    $('[data-alnote]').textContent = ALNOTE[+S.al || 0] || '';
   }
   function seg(sel, opts, val, key) {
     $(sel).innerHTML = opts.map(function (o) { return '<button type="button" data-set="' + key + '" data-v="' + o[0] + '" aria-pressed="' + (val === o[0]) + '">' + o[1] + '</button>'; }).join('');
@@ -1278,7 +1285,7 @@
     var t = ev.target.closest('button,[data-act]');
     if (!t) { if (ev.target.classList && ev.target.classList.contains('sheet')) closeSheets(); return; }
     var a = t.getAttribute('data-act');
-    if (t.hasAttribute('data-pc')) { S.count = +t.getAttribute('data-pc'); saveSetup(); paintSetup(); return; }
+    if (t.hasAttribute('data-pc')) { S.pc = +t.getAttribute('data-pc'); S.count = S.pc; saveSetup(); paintSetup(); return; }
     if (t.hasAttribute('data-set')) { S[t.getAttribute('data-set')] = +t.getAttribute('data-v'); saveSetup(); if (cur === 'room') { syncLobby(); paintRoom(); } else paintSetup(); return; }
     if (t.hasAttribute('data-cat')) {
       var k = t.getAttribute('data-cat');
@@ -1292,9 +1299,9 @@
       case 'perks': openSheet('perks'); paintPerks(); break;
       case 'close': closeSheets(); if (cur === 'game' && running) focusIn(); break;
       case 'newgame': openSheet('mode'); break;
-      case 'solo': closeSheets(); S.count = 1; saveSetup(); paintSetup(); show('setup'); break;
+      case 'solo': closeSheets(); S.mode = 'solo'; S.count = 1; saveSetup(); paintSetup(); show('setup'); break;
       case 'setup': show('setup'); break;
-      case 'pass': closeSheets(); if (S.count < 2) { S.count = 2; saveSetup(); } paintSetup(); show('setup'); break;
+      case 'pass': closeSheets(); S.mode = 'pass'; S.count = S.pc; saveSetup(); paintSetup(); show('setup'); break;
       case 'home': leave(); break;
       case 'continue': resume(); break;
       case 'cats': openCats('setup'); break;

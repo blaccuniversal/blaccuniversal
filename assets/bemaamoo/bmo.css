@@ -524,3 +524,21 @@ body[data-locked] .mini{display:none!important}
 }
 .ov__min+.eyebrow{padding:0 36px}
 .ov__min+.eyebrow+.ov__t{padding:0 8px}
+
+/* setup: cleaner, mode-aware, start button always in reach */
+.setup{gap:26px;padding-bottom:12px}
+.fs--rules{border:1px solid var(--bd);border-radius:2px;padding:16px;gap:20px;background:var(--bg2)}
+.fs--rules .fs__h{margin:0 0 -4px;grid-column:1/-1}
+.fs--rules .seg{background:#000}
+.eyebrow--s{font-size:11px;margin:0 0 8px;color:var(--tx3)}
+.seg[hidden]{display:none}
+.gobar{position:sticky;bottom:0;z-index:5;padding:12px clamp(14px,3vw,40px) calc(12px + env(safe-area-inset-bottom));background:linear-gradient(rgba(0,0,0,0),#000 28%);display:flex;justify-content:center}
+.gobar .btn{max-width:560px}
+[data-scr="setup"]{display:flex;flex-direction:column;min-height:100dvh}
+[data-scr="setup"][hidden]{display:none}
+[data-scr="setup"] .setup{flex:1}
+.pnames{margin-top:0}
+.ocard{border:1px solid var(--bd);border-radius:2px;padding:16px;background:var(--bg2)}
+.ocard .onote{margin-bottom:12px}
+.ocard .btn{min-height:48px}
+.fs__full{grid-column:1/-1}
