@@ -44,7 +44,7 @@
   function pl(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
 
   function dictP() {
-    if (!dict) dict = env.getList('words_en').then(function (L) { return L.mav; });
+    if (!dict) dict = env.getList('words_en').then(function (L) { return L; });
     dict.catch(function () { dict = null; });
     return dict;
   }
@@ -114,8 +114,8 @@
     if (busy) return; busy = true;
     dictP().then(function (D) {
       busy = false;
-      if (w !== base && !D.has(w)) return msg(w + ' isn’t counted. Real, everyday words only.', true);
-      var e = B.add(st.g, w, { mav: D });
+      if (w !== base && !D.full.has(w)) return msg(w + ' isn’t in the dictionary.', true);
+      var e = B.add(st.g, w, { mav: D.mav });
       if (w === base) { e.x = 1; e.base *= 2; e.total = e.base + e.mav + e.con + e.acc + e.key; }
       put(st); el.inp.value = ''; paintTiles(); paintFound();
       var x = [e.mavs.length ? 'Maverick' : '', e.con ? 'Concord' : '', e.acc ? 'Regen' : '', e.key ? 'Keystone' : ''].filter(Boolean);
@@ -141,8 +141,8 @@
     $('[data-d-missed]').textContent = '';
     dictP().then(function (D) {
       var c = counts(base), all = 0, miss = [], got = words(st);
-      D.forEach(function (w) { if (w.length >= MIN && w.length < base.length && canMake(w, c)) { all++; if (got.indexOf(w) < 0) miss.push(w); } });
-      miss.sort(function (x, y) { return y.length - x.length || (x < y ? -1 : 1); });
+      D.full.forEach(function (w) { if (w.length >= MIN && w.length < base.length && canMake(w, c)) { all++; if (got.indexOf(w) < 0) miss.push(w); } });
+      miss.sort(function (x, y) { return (D.mav.has(y) ? 1 : 0) - (D.mav.has(x) ? 1 : 0) || y.length - x.length || (x < y ? -1 : 1); });
       $('[data-d-meta]').textContent = n + ' of ' + all + ' words' + (sk > 1 ? ' · ' + sk + '-day streak' : '');
       $('[data-d-missed]').innerHTML = miss.length ? '<b>You missed</b> ' + miss.slice(0, 12).join(', ') + (miss.length > 12 ? ' and ' + (miss.length - 12) + ' more' : '') : '<b>You found every word.</b>';
     }, function () {});
