@@ -3,7 +3,7 @@
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var root = $('[data-root]'), au = $('[data-au]'), moved = false;
-  var elName = $('[data-sname]'), elMeta = $('[data-meta]'), elSt = $('[data-status]'), elCtx = $('[data-ctx]'), elArt = document.createElement('i');
+  var elName = $('[data-sname]'), elMeta = $('[data-meta]'), elSt = $('[data-status]'), elCtx = document.createElement('i'), elArt = document.createElement('i');
   var elList = $('[data-list]'), elLctx = $('[data-lctx]'), elLcount = $('[data-lcount]'), elNet = $('[data-net]') || {};
     var sheet = $('[data-sheet]'), sQ = $('[data-q]'), sL = $('[data-sl]'), sT = $('[data-st]');
   var favBtn = $('[data-fav]'), vol = $('[data-vol]');
@@ -56,7 +56,7 @@
     var n = S.list.length, st = S.list[S.idx];
     var cn = $('[data-cn]'), ct = $('[data-ct]'), ln = $('[data-line]');
     cn.textContent = n ? (S.idx < 9 ? '0' : '') + (S.idx + 1) : '00'; ct.textContent = (n < 10 ? '0' : '') + n; ln.style.width = (n ? (S.idx + 1) / n * 100 : 0) + '%';
-    elLctx.textContent = S.label; elLcount.textContent = n ? (S.idx + 1) + ' of ' + n : '';
+    elLctx.textContent = S.label; elLcount.textContent = n ? n + (n === 1 ? ' station' : ' stations') : '';
     elCtx.textContent = S.label;
     if (st) {
       elName.textContent = st.name;
@@ -66,7 +66,7 @@
       favBtn.setAttribute('aria-pressed', isF); favBtn.setAttribute('aria-label', isF ? 'Remove from favourites' : 'Add to favourites');
     } else { elName.textContent = 'Tune in'; elMeta.innerHTML = '&nbsp;'; elArt.style.backgroundImage = ''; elArt.textContent = ''; }
     Array.prototype.forEach.call(document.querySelectorAll('[data-sat]'), function (b) { b.classList.toggle('on', b.getAttribute('data-sat') === S.mode); });
-    Array.prototype.forEach.call(elList.children, function (li, i) { var r = li.firstChild; if (r && r.classList) r.classList.toggle('sel', i === S.idx); });
+    Array.prototype.forEach.call(elList.querySelectorAll('.row'), function (r) { r.classList.toggle('sel', +r.getAttribute('data-i') === S.idx); });
     if ('mediaSession' in navigator && st) {
       try { navigator.mediaSession.metadata = new MediaMetadata({ title: st.name, artist: 'BLACC Radio', album: st.country || '', artwork: st.logo ? [{ src: st.logo, sizes: '256x256' }] : [] }); } catch (e) {}
     }
@@ -76,19 +76,23 @@
     if (st.logo) { el.style.backgroundImage = 'url("' + st.logo.replace(/"/g, '%22') + '")'; el.style.backgroundSize = 'cover'; el.textContent = ''; var im = new Image(); im.onerror = fb; im.src = st.logo; }
     else fb();
   }
+  var io = null, PAGE = 30;
+  function lazyArt() {
+    if (!('IntersectionObserver' in window)) { Array.prototype.forEach.call(elList.querySelectorAll('[data-a]'), function (a) { art(a, S.list[+a.getAttribute('data-a')]); }); return; }
+    if (!io) io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); var st = S.list[+e.target.getAttribute('data-a')]; if (st) art(e.target, st); } }); }, { rootMargin: '300px' });
+    else io.disconnect();
+    Array.prototype.forEach.call(elList.querySelectorAll('[data-a]'), function (a) { io.observe(a); });
+  }
   function renderList() {
     if (!S.list.length) { elList.innerHTML = '<li class="empty">' + esc(S.empty || 'No stations here.') + '</li>'; return; }
-    elList.innerHTML = S.list.map(function (st, i) {
+    var n = Math.min(S.list.length, Math.max(S.shown || PAGE, S.idx + 1));
+    S.shown = n;
+    elList.innerHTML = S.list.slice(0, n).map(function (st, i) {
       return '<li><button type="button" class="row' + (i === S.idx ? ' sel' : '') + '" data-i="' + i + '"><span class="row__n">' + (i < 9 ? '0' : '') + (i + 1) + '</span><span class="row__a" data-a="' + i + '"></span><span class="row__t"><b>' + esc(st.name) + '</b><span>' + esc([st.country, st.tags.join(', ')].filter(Boolean).join(' · ')) + '</span></span><span class="eq"><i></i><i></i><i></i></span></button></li>';
-    }).join('');
-    Array.prototype.forEach.call(elList.querySelectorAll('[data-a]'), function (a) { art(a, S.list[+a.getAttribute('data-a')]); });
-    scrollSel(true);
+    }).join('') + (n < S.list.length ? '<li class="more"><button type="button" data-more>Show ' + Math.min(PAGE, S.list.length - n) + ' more</button></li>' : '');
+    lazyArt();
   }
-  function scrollSel(instant) {
-    var li = elList.children[S.idx]; if (!li) return;
-    var top = li.offsetTop - (elList.clientHeight - li.offsetHeight) / 2;
-    elList.scrollTo({ top: top, behavior: instant ? 'auto' : 'smooth' });
-  }
+  function scrollSel() {}
   function setState(cls, msg, bad) {
     root.classList.toggle('is-play', cls === 'live' || cls === 'load');
     root.classList.toggle('is-live', cls === 'live'); root.classList.toggle('is-load', cls === 'load');
@@ -108,7 +112,8 @@
   function tune(i, keep) {
     if (!S.list.length) return;
     S.idx = ((i % S.list.length) + S.list.length) % S.list.length;
-    paint(); scrollSel(); begin(keep);
+    if (S.idx >= (S.shown || PAGE)) renderList();
+    paint(); begin(keep);
   }
   function begin(keep) {
     var st = S.list[S.idx]; if (!st) return;
@@ -157,16 +162,16 @@
   function setList(list, mode, key, label, id, empty) {
     S.list = list; S.mode = mode; S.key = key; S.label = label; S.empty = empty;
     S.idx = Math.max(0, id ? list.findIndex(function (s) { return s.id === id; }) : 0);
-    renderList(); paint();
+    S.shown = PAGE; renderList(); paint();
   }
   function showCountry(cc, name, id) {
-    S.mode = 'country'; elCtx.textContent = 'Loading…';
+    S.mode = 'country'; elLctx.textContent = 'Loading…';
     return stations('countrycode=' + encodeURIComponent(cc)).then(function (l) {
       setList(l, 'country', cc, name + ' · Popular', id, 'No streams found for this country. Try another one.');
     }).catch(netErr);
   }
   function showTag(tag, id) {
-    elCtx.textContent = 'Loading…';
+    elLctx.textContent = 'Loading…';
     return stations('tagExact=true&tag=' + encodeURIComponent(tag)).then(function (l) {
       setList(l, 'genre', tag, cap(tag) + ' · Worldwide', id, 'No streams found for this genre.');
     }).catch(netErr);
@@ -223,8 +228,6 @@
   $('[data-play]').addEventListener('click', function () { toggle(); });
   $('[data-prev]').addEventListener('click', function () { tune(S.idx - 1); });
   $('[data-next]').addEventListener('click', function () { tune(S.idx + 1); });
-  $('[data-up]').addEventListener('click', function () { tune(S.idx - 1); });
-  $('[data-down]').addEventListener('click', function () { tune(S.idx + 1); });
   favBtn.addEventListener('click', function () {
     var st = S.list[S.idx]; if (!st) return;
     var has = store.fav.some(function (f) { return f.id === st.id; });
@@ -236,6 +239,7 @@
     if (k === 'fav') showFav(); else if (k === 'recent') showRecent(); else openSheet(k);
   });
   elList.addEventListener('click', function (e) {
+    if (e.target.closest('[data-more]')) { S.shown = (S.shown || PAGE) + PAGE; renderList(); return; }
     var r = e.target.closest('[data-i]'); if (r) tune(+r.getAttribute('data-i'));
     else if (e.target.closest('[data-retry]')) init();
   });
