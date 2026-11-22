@@ -133,7 +133,7 @@
   if (INFO.email) items.push(['Email', '<a href="mailto:' + INFO.email + '">' + INFO.email + '</a>']);
   if (INFO.hours) items.push(['Hours', INFO.hours]);
   $('[data-contact]').innerHTML = items.map(function (x) { return '<li><span>' + x[0] + '</span><b>' + x[1] + '</b></li>'; }).join('');
-  var socs = [['instagram', 'Instagram'], ['instagram2', 'Instagram 2'], ['facebook', 'Facebook'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['x', 'X'], ['linkedin', 'LinkedIn']].filter(function (k) { return INFO[k[0]]; });
+  var socs = [['instagram', 'Instagram'], ['facebook', 'Facebook'], ['tiktok', 'TikTok'], ['youtube', 'YouTube'], ['x', 'X'], ['linkedin', 'LinkedIn']].filter(function (k) { return INFO[k[0]]; });
   $('[data-soc]').innerHTML = socs.map(function (k) { return '<a href="' + INFO[k[0]] + '" target="_blank" rel="noopener">' + k[1] + '</a>'; }).join('');
 
   /* setup finder */
@@ -181,13 +181,10 @@
     if (el.phone.value.replace(/\D/g, '').length < 7) bad.push(el.phone);
     if (bad.length) { bad.forEach(function (x) { x.classList.add('bad'); }); say('Please check the highlighted fields.', 'err'); bad[0].focus(); return; }
     if (el.botcheck.value) return;
-    var sb = f.querySelector('button[type=submit]'); sb.disabled = true; say('Sending…');
-    var d = { access_key: 'c45f617c-f3f2-4caa-93cf-5d49e2cece46', subject: 'KleanSound quote request: ' + el.name.value.trim(), from_name: 'KleanSound page', botcheck: '', page: location.href,
-      name: el.name.value.trim(), phone: el.phone.value.trim(), setup: el.setup.value, venue: el.note.value.trim(),
-      finder: st.venue + ' / ' + st.crowd + ' / ' + st.use };
-    fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(d) })
-      .then(function (r) { return r.json().then(function (j) { if (!r.ok || j.success === false) throw 0; }); })
-      .then(function () { f.innerHTML = '<div class="done"><svg><use href="#i-check"/></svg><h3>Thank you, ' + d.name.split(' ')[0].replace(/[<>&"]/g, '') + '.</h3><p>We have your request and will be in touch soon.</p></div>'; })
-      .catch(function () { sb.disabled = false; say('Could not send just now. Please try again.', 'err'); });
+    var num = ((window.KLS_INFO || {}).whatsapp || '').replace(/\D/g, '');
+    var msg = 'Hello KLS KleanSound, I would like a quote.\n\nName: ' + el.name.value.trim() + '\nPhone: ' + el.phone.value.trim() + '\nLooking at: ' + el.setup.value + (el.note.value.trim() ? '\nVenue: ' + el.note.value.trim() : '') + '\nSetup finder: ' + st.venue + ' / ' + st.crowd + ' / ' + st.use;
+    var url = 'https://wa.me/' + num + '?text=' + encodeURIComponent(msg);
+    say('Opening WhatsApp…');
+    var w = window.open(url, '_blank', 'noopener'); if (!w) location.href = url;
   });
 })();

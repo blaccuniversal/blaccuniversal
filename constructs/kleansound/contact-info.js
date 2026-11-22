@@ -7,5 +7,5 @@ window.KLS_INFO = {
   whatsapp: '+234 803 409 8225',
   email: '',
   hours: '',
-  instagram: 'https://www.instagram.com/klsbykleansound/', instagram2: 'https://www.instagram.com/klskleansound/', facebook: '', tiktok: '', youtube: '', x: '', linkedin: ''
+  instagram: 'https://www.instagram.com/klsbykleansound/', facebook: '', tiktok: 'https://www.tiktok.com/@klsbykleansound', youtube: '', x: '', linkedin: ''
 };
