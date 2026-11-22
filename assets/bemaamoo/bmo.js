@@ -26,9 +26,9 @@
   /* ---------- viewport (keeps the input above phone keyboards) ---------- */
   function fitVh() {
     var vv = window.visualViewport;
-    if (vv) document.documentElement.style.setProperty('--appH', vv.height + 'px');
+    if (vv) { var st_ = document.documentElement.style; st_.setProperty('--appH', vv.height + 'px'); st_.setProperty('--appTop', Math.max(0, vv.offsetTop) + 'px'); }
   }
-  if (window.visualViewport) { visualViewport.addEventListener('resize', function () { fitVh(); if (cur === 'game') { window.scrollTo(0, 0); sizeBoard(); } }); }
+  if (window.visualViewport) { visualViewport.addEventListener('scroll', function () { fitVh(); if (document.body.classList.contains('in-game')) window.scrollTo(0, 0); }); visualViewport.addEventListener('resize', function () { fitVh(); if (cur === 'game') { window.scrollTo(0, 0); sizeBoard(); } }); }
 
   /* ---------- word lists ---------- */
   var LISTS = {};
