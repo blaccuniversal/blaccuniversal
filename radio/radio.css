@@ -106,11 +106,11 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 .fl{flex:0 0 34px;width:34px;height:24px;object-fit:cover;border:1px solid var(--rl2);border-radius:2px;display:block}
 
 /* sheet */
-.sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;overscroll-behavior:contain}
 .sheet[hidden]{display:none}
 .sheet__b{position:absolute;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fade .25s}
-.sheet__p{position:relative;width:100%;max-width:480px;height:min(620px,82dvh);display:flex;flex-direction:column;background:#090909;border:1px solid var(--rl2);border-bottom:0;border-radius:4px 4px 0 0;padding:20px 20px calc(10px + env(safe-area-inset-bottom));animation:up .32s cubic-bezier(.2,.7,.2,1)}
-@keyframes up{from{transform:translateY(32px);opacity:0}}
+.sheet__p{position:relative;width:100%;max-width:480px;height:min(620px,calc(100dvh - 32px));display:flex;flex-direction:column;background:#090909;border:1px solid var(--rl2);border-radius:4px;padding:20px 20px 12px;animation:up .3s cubic-bezier(.2,.7,.2,1);box-shadow:0 30px 80px rgba(0,0,0,.7)}
+@keyframes up{from{transform:scale(.96) translateY(10px);opacity:0}}
 @keyframes fade{from{opacity:0}}
 .sheet__h{display:flex;justify-content:space-between;align-items:center;margin:0 -8px 6px 0}
 .sheet__h h2{font-size:22px;font-weight:400;letter-spacing:-.01em;text-transform:none}
@@ -126,10 +126,6 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 .sheet__l .row__t b{font-weight:400}
 .cnt{font-size:12px;color:var(--rm);flex:none;font-variant-numeric:tabular-nums}
 
-@media(min-width:900px){
-  .sheet{align-items:center}
-  .sheet__p{border-radius:4px;border-bottom:1px solid var(--rl2)}
-}
 @media(max-width:900px){.bro{grid-template-columns:repeat(2,1fr)}.bro .bb:last-child{grid-column:span 2}}
 @media(max-width:760px){
   .pl{grid-template-columns:52px minmax(0,1fr);grid-template-areas:"p t" "c c";row-gap:10px}

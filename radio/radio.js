@@ -187,15 +187,21 @@
   /* ---------- sheets ---------- */
   var sheetKind = '', sheetData = [], sT0 = 0;
   function openSheet(kind) {
-    sheetKind = kind; sheet.hidden = false; sQ.value = ''; sL.innerHTML = '<li class="empty">Loading…</li>';
+    sheetKind = kind; lockPage(true); sheet.hidden = false; sQ.value = ''; sL.innerHTML = '<li class="empty">Loading…</li>';
     sT.textContent = kind === 'country' ? 'Choose a country' : kind === 'genre' ? 'Choose a genre' : 'Search stations';
     sQ.placeholder = kind === 'search' ? 'Station name' : 'Filter';
-    setTimeout(function () { if (kind !== 'country' || matchMedia('(min-width:900px)').matches) sQ.focus(); }, 60);
+    setTimeout(function () { if (kind === 'search' || matchMedia('(min-width:900px)').matches) { try { sQ.focus({ preventScroll: true }); } catch (e) { sQ.focus(); } } }, 80);
     if (kind === 'country') cached('countries', 'countries?hidebroken=true&order=stationcount&reverse=true', 864e5).then(function (d) { sheetData = d.filter(function (x) { return x.k > 0 && x.c; }); fill(); }).catch(function () { sL.innerHTML = '<li class="empty">Could not load countries.</li>'; });
     else if (kind === 'genre') cached('tags', 'tags?hidebroken=true&order=stationcount&reverse=true&limit=150', 864e5).then(function (d) { sheetData = d.filter(function (x) { return x.k > 20; }); fill(); }).catch(function () { sL.innerHTML = '<li class="empty">Could not load genres.</li>'; });
     else { sheetData = []; sL.innerHTML = '<li class="empty">Type a station name to search the world.</li>'; }
   }
-  function closeSheet() { sheet.hidden = true; document.activeElement && document.activeElement.blur && document.activeElement.blur(); }
+  var lockY = 0, locked = false;
+  function lockPage(on) {
+    var b = document.body;
+    if (on && !locked) { locked = true; lockY = window.pageYOffset; b.style.cssText += ';position:fixed;top:' + (-lockY) + 'px;left:0;right:0;width:100%;overflow-y:scroll'; }
+    else if (!on && locked) { locked = false; b.style.position = b.style.top = b.style.left = b.style.right = b.style.width = b.style.overflowY = ''; window.scrollTo(0, lockY); }
+  }
+  function closeSheet() { sheet.hidden = true; lockPage(false); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); }
   function fill() {
     var q = sQ.value.trim().toLowerCase();
     var d = sheetData.filter(function (x) { return !q || x.n.toLowerCase().indexOf(q) > -1; }).slice(0, 250);
