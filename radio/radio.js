@@ -2,11 +2,10 @@
 (function () {
   'use strict';
   var $ = function (s, r) { return (r || document).querySelector(s); };
-  var root = $('[data-root]'), au = $('[data-au]'), dial = $('[data-dial]'), knob = $('[data-knob]');
-  var elName = $('[data-sname]'), elMeta = $('[data-meta]'), elSt = $('[data-status]'), elCtx = $('[data-ctx]'), elArt = $('[data-art]');
+  var root = $('[data-root]'), au = $('[data-au]'), moved = false;
+  var elName = $('[data-sname]'), elMeta = $('[data-meta]'), elSt = $('[data-status]'), elCtx = $('[data-ctx]'), elArt = document.createElement('i');
   var elList = $('[data-list]'), elLctx = $('[data-lctx]'), elLcount = $('[data-lcount]'), elNet = $('[data-net]') || {};
-  var prog = $('[data-prog]'), track = $('[data-track]'), ticksG = $('[data-ticks]');
-  var sheet = $('[data-sheet]'), sQ = $('[data-q]'), sL = $('[data-sl]'), sT = $('[data-st]');
+    var sheet = $('[data-sheet]'), sQ = $('[data-q]'), sL = $('[data-sl]'), sT = $('[data-st]');
   var favBtn = $('[data-fav]'), vol = $('[data-vol]');
 
   var HOSTS = ['de1', 'de2', 'fi1', 'nl1', 'at1'].map(function (h) { return 'https://' + h + '.api.radio-browser.info'; });
@@ -52,27 +51,8 @@
   }
 
   /* ---------- dial ui ---------- */
-  (function ring() {
-    var cx = 100, cy = 100, r = 84, a0 = 135, a1 = 405;
-    function pt(a, rr) { var t = a * Math.PI / 180; return [cx + rr * Math.cos(t), cy + rr * Math.sin(t)]; }
-    var s = pt(a0, r), e = pt(a1, r), d = 'M ' + s[0].toFixed(2) + ' ' + s[1].toFixed(2) + ' A ' + r + ' ' + r + ' 0 1 1 ' + e[0].toFixed(2) + ' ' + e[1].toFixed(2);
-    track.setAttribute('d', d); prog.setAttribute('d', d);
-    var h = '';
-    for (var i = 0; i <= 54; i++) { var a = a0 + (a1 - a0) * i / 54, p = pt(a, 93), q = pt(a, i % 6 ? 96.5 : 99); h += '<line x1="' + p[0].toFixed(1) + '" y1="' + p[1].toFixed(1) + '" x2="' + q[0].toFixed(1) + '" y2="' + q[1].toFixed(1) + '"/>'; }
-    ticksG.innerHTML = h;
-    var sats = document.querySelectorAll('[data-sat]'), n = sats.length, W = 0.5, cxp = 0.38, cyp = 0.5;
-    Array.prototype.forEach.call(sats, function (b, i) {
-      var ang = (-52 + (104 * i / (n - 1))) * Math.PI / 180;
-      b.style.left = ((cxp + W * Math.cos(ang)) * 100).toFixed(2) + '%'; b.style.top = ((cyp + W * Math.sin(ang)) * 100).toFixed(2) + '%';
-    });
-  })();
   function paint() {
     var n = S.list.length, st = S.list[S.idx];
-    prog.style.strokeDasharray = (n ? (S.idx + 1) / n * 100 : 0) + ' 100';
-    var on = ticksG.children, lit = n ? Math.round((S.idx + 1) / n * 54) : 0;
-    for (var i = 0; i < on.length; i++) on[i].classList.toggle('on', i <= lit && n > 0);
-    dial.setAttribute('aria-valuemax', Math.max(0, n - 1)); dial.setAttribute('aria-valuenow', S.idx);
-    if (!drag) knob.style.setProperty('--rot', (S.idx * STEP) + 'deg');
     elLctx.textContent = S.label; elLcount.textContent = n ? (S.idx + 1) + ' of ' + n : '';
     elCtx.textContent = S.label;
     if (st) {
@@ -95,7 +75,7 @@
   function renderList() {
     if (!S.list.length) { elList.innerHTML = '<li class="empty">' + esc(S.empty || 'No stations here.') + '</li>'; return; }
     elList.innerHTML = S.list.map(function (st, i) {
-      return '<li><button type="button" class="row' + (i === S.idx ? ' sel' : '') + '" data-i="' + i + '"><span class="row__a" data-a="' + i + '"></span><span class="row__t"><b>' + esc(st.name) + '</b><span>' + esc([st.country, st.tags.join(', ')].filter(Boolean).join(' · ')) + '</span></span><span class="eq"><i></i><i></i><i></i></span></button></li>';
+      return '<li><button type="button" class="row' + (i === S.idx ? ' sel' : '') + '" data-i="' + i + '"><span class="row__n">' + (i < 9 ? '0' : '') + (i + 1) + '</span><span class="row__a" data-a="' + i + '"></span><span class="row__t"><b>' + esc(st.name) + '</b><span>' + esc([st.country, st.tags.join(', ')].filter(Boolean).join(' · ')) + '</span></span><span class="eq"><i></i><i></i><i></i></span></button></li>';
     }).join('');
     Array.prototype.forEach.call(elList.querySelectorAll('[data-a]'), function (a) { art(a, S.list[+a.getAttribute('data-a')]); });
     scrollSel(true);
@@ -236,7 +216,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !sheet.hidden) closeSheet(); });
 
   /* ---------- controls ---------- */
-  $('[data-play]').addEventListener('click', function (e) { e.stopPropagation(); if (!moved) toggle(); });
+  $('[data-play]').addEventListener('click', function () { toggle(); });
   $('[data-prev]').addEventListener('click', function () { tune(S.idx - 1); });
   $('[data-next]').addEventListener('click', function () { tune(S.idx + 1); });
   $('[data-up]').addEventListener('click', function () { tune(S.idx - 1); });
@@ -257,36 +237,6 @@
   });
   vol.addEventListener('input', function () { var v = vol.value / 100; au.volume = v; vol.style.setProperty('--v', vol.value + '%'); store.vol = +vol.value; save(); });
 
-  /* dial gestures: turn to step through stations, tap hub to play/pause */
-  var drag = false, moved = false, lastA = 0, acc = 0, sx = 0, sy = 0, tuneT = 0, baseIdx = 0, pend = 0;
-  function ang(e) { var r = dial.getBoundingClientRect(); return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI; }
-  dial.addEventListener('pointerdown', function (e) {
-    if (e.button > 0) return; drag = true; moved = false; acc = 0; lastA = ang(e); sx = e.clientX; sy = e.clientY; baseIdx = S.idx; pend = 0;
-  });
-  dial.addEventListener('pointermove', function (e) {
-    if (!drag) return;
-    if (!moved && Math.abs(e.clientX - sx) + Math.abs(e.clientY - sy) > 6) { moved = true; dial.classList.add('drag'); try { dial.setPointerCapture(e.pointerId); } catch (x) {} }
-    if (!moved) return;
-    var a = ang(e), d = a - lastA; if (d > 180) d -= 360; if (d < -180) d += 360; lastA = a; acc += d;
-    knob.style.setProperty('--rot', (baseIdx * STEP + acc) + 'deg');
-    var n = S.list.length; if (!n) return;
-    var steps = Math.round(acc / STEP), ni = (((baseIdx + steps) % n) + n) % n;
-    if (ni !== S.idx) { S.idx = ni; paintLight(); if (navigator.vibrate) try { navigator.vibrate(4); } catch (x) {} clearTimeout(tuneT); tuneT = setTimeout(function () { tune(S.idx); }, 420); }
-  });
-  function endDrag(e) {
-    if (!drag) return; drag = false; dial.classList.remove('drag');
-    knob.style.setProperty('--rot', (S.idx * STEP) + 'deg');
-    setTimeout(function () { moved = false; }, 0);
-  }
-  dial.addEventListener('pointerup', endDrag); dial.addEventListener('pointercancel', endDrag);
-  function paintLight() { paint(); scrollSel(); }
-  dial.addEventListener('wheel', function (e) { e.preventDefault(); var now = Date.now(); if (now - (dial._w || 0) < 120) return; dial._w = now; var n = S.list.length; if (!n) return; S.idx = (S.idx + (e.deltaY > 0 ? 1 : -1) + n) % n; paintLight(); clearTimeout(tuneT); tuneT = setTimeout(function () { tune(S.idx); }, 420); }, { passive: false });
-  dial.addEventListener('keydown', function (e) {
-    var k = e.key;
-    if (k === 'ArrowRight' || k === 'ArrowUp') { e.preventDefault(); tune(S.idx + (k === 'ArrowUp' ? -1 : 1)); }
-    else if (k === 'ArrowLeft' || k === 'ArrowDown') { e.preventDefault(); tune(S.idx + (k === 'ArrowDown' ? 1 : -1)); }
-    else if (k === ' ' || k === 'Enter') { e.preventDefault(); toggle(); }
-  });
   if ('mediaSession' in navigator) {
     [['play', function () { begin(); }], ['pause', stop], ['stop', stop], ['previoustrack', function () { tune(S.idx - 1); }], ['nexttrack', function () { tune(S.idx + 1); }]].forEach(function (a) { try { navigator.mediaSession.setActionHandler(a[0], a[1]); } catch (e) {} });
   }
