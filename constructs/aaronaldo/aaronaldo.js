@@ -83,7 +83,7 @@
       '<div class="sheet__info"><p class="eyebrow">' + esc(cur.cat) + '</p><h2 id="sheet-t" class="sheet__name">' + esc(cur.name) + '</h2>' +
       '<p class="sheet__price" data-total>' + N(total()) + '</p><p class="sheet__desc">' + esc(cur.d || '') + '</p>' + opts +
       '<div class="buy"><div class="qty" role="group" aria-label="Quantity"><button type="button" data-q="-1" aria-label="Fewer">−</button><output data-qv>1</output><button type="button" data-q="1" aria-label="More">+</button></div>' +
-      '<button type="button" class="btn btn--red" data-order>' + (WA ? 'Order on WhatsApp' : 'Order now') + ' · <span data-total2>' + N(total()) + '</span></button></div>' +
+      '<button type="button" class="btn btn--red" data-order>' + (WA ? 'Order on WhatsApp' : 'Order now') + '<span class="buy__t"> · <span data-total2>' + N(total()) + '</span></span></button></div>' +
       (facts ? '<ul class="facts">' + facts + '</ul>' : '') +
       '<p class="note">Pick up in Ibadan or ask about delivery. We confirm availability and payment details with you before anything is charged.</p>' +
       '<form class="enq" data-enq hidden><p class="enq__t">Where should we reach you?</p><label>Your name<input name="name" required autocomplete="name"></label><label>Phone number<input name="phone" type="tel" required inputmode="tel" autocomplete="tel"></label>' +
