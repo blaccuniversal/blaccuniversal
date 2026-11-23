@@ -900,3 +900,4 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dgame .gtop__mid{flex:1;min-width:0;flex-direction:row;align-items:center;justify-content:space-between;text-align:left;gap:10px;padding:0 4px}
 .dgame .gtop__cat{font-size:17px;font-weight:700;text-align:left}
 .dgame .gtop__sub{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin:0}
+.dres .ov__btns .btn{white-space:nowrap;font-size:15px;padding:0 8px}
