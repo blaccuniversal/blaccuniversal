@@ -1447,7 +1447,7 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 /* Worked with: client logos, all white, one line */
 .clients{list-style:none;margin:24px auto 0;padding:0;max-width:1120px;display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:clamp(14px,4vw,56px)}
 .clients li{display:flex;align-items:center;justify-content:center;flex:none}
-.clients img{display:block;height:min(36px,5.4vw);width:auto;opacity:.92}
+.clients img{display:block;height:min(56px,10.5vw);width:auto;opacity:.92}
 .clients__link{display:block;transition:opacity .2s}
 .clients__link:hover img,.clients__link:focus-visible img{opacity:1}
 .clients__link:focus-visible{outline:1px solid #fff;outline-offset:6px}
