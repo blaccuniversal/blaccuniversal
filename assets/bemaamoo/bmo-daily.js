@@ -57,7 +57,11 @@
   function pl(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
 
   function dictP() {
-    if (!dict) dict = env.getList('words_en').then(function (L) { return L; });
+    // dictionary words plus English names (Anita, Tina...); Maverick still uses the common-word list only
+    if (!dict) dict = Promise.all([env.getList('words_en'), env.getList('names_english')]).then(function (a) {
+      var full = new Set(a[0].full); a[1].full.forEach(function (w) { full.add(w); });
+      return { full: full, mav: a[0].mav };
+    });
     dict.catch(function () { dict = null; });
     return dict;
   }
