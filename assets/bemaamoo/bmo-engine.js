@@ -28,8 +28,8 @@
   ];
   var CAT_NAME = {};
   CATS.forEach(function (g) { g.c.forEach(function (c) { CAT_NAME[c[0]] = c[1]; }); });
-  // Names and cities lists are big, so Mavericks use a shorter list of well-known ones.
-  var MAV_LIST = { words_en: 1, words_fr: 1, words_es: 1, words_pt: 1, words_de: 1, words_it: 1, words_nl: 1, words_sw: 1, names_all: 1, names_english: 1, names_african: 1, names_arabic: 1, cities: 1 };
+  // Mavericks use the same full list the game accepts as correct (no shorter 'well-known' lists).
+  var MAV_LIST = {};
 
   function tri(n) { return n * (n + 1) / 2; }
 
