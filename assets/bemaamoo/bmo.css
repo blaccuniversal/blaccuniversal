@@ -901,3 +901,8 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dgame .gtop__cat{font-size:17px;font-weight:700;text-align:left}
 .dgame .gtop__sub{font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;margin:0}
 .dres .ov__btns .btn{white-space:nowrap;font-size:15px;padding:0 8px}
+
+/* game header: title block left-aligned beside the back arrow */
+.gtop__mid{align-items:flex-start;text-align:left;padding:4px 6px}
+.dgame .gtop__mid{align-items:center}
+.gtop__cat,.gtop__sub{text-align:left}
