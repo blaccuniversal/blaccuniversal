@@ -276,3 +276,4 @@ html[data-theme=dark] .nav .cartb{background:none;color:var(--ink)}
 /* hero: categories row removed, content pushed down for head room */
 .hero{padding:clamp(72px,12vw,130px) var(--g) clamp(52px,9vw,100px)}
 .hero__sub{max-width:56ch}
+.hero{padding-top:clamp(112px,17vw,190px)}
