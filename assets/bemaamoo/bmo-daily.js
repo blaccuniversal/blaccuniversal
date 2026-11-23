@@ -187,13 +187,15 @@
     var rg, sk = streak(), bon = [entries(st).some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', (rg = entries(st).filter(function (e) { return e.acc; }).length) ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join(' · ');
     $('[data-d-bonus]').innerHTML = bon.replace('Found the word', '<em>Found the word</em>'); $('[data-d-bonus]').hidden = !bon;
     $('[data-d-meta]').textContent = pl(n, 'word') + (sk > 1 ? ' · ' + sk + '-day streak' : '');
-    board($('[data-d-rboard]'), true);
+    $('[data-d-rboard]').classList.add('dboard--res'); board($('[data-d-rboard]'), true);
     $('[data-d-missed]').textContent = '';
     dictP().then(function (D) {
       var c = counts(base), all = 0, miss = [], got = words(st);
-      D.full.forEach(function (w) { if (w.length >= MIN && w.length < base.length && canMake(w, c)) { all++; if (got.indexOf(w) < 0) miss.push(w); } });
+      var maxp = 3 * B.tri(base.length);
+      D.full.forEach(function (w) { if (w.length >= MIN && w.length < base.length && canMake(w, c)) { all++; maxp += B.tri(w.length); if (got.indexOf(w) < 0) miss.push(w); } });
+      st.max = maxp; st.all = all;
       miss.sort(function (x, y) { return (D.mav.has(y) ? 1 : 0) - (D.mav.has(x) ? 1 : 0) || y.length - x.length || (x < y ? -1 : 1); });
-      $('[data-d-meta]').textContent = n + ' of ' + all + ' words' + (sk > 1 ? ' · ' + sk + '-day streak' : '');
+      $('[data-d-meta]').textContent = n + ' of ' + all + ' words · ' + T.total + ' of ' + maxp.toLocaleString('en') + ' pts' + (sk > 1 ? ' · ' + sk + '-day streak' : '');
       $('[data-d-missed]').innerHTML = miss.length ? '<b>You missed</b> ' + miss.slice(0, 12).join(', ') + (miss.length > 12 ? ' and ' + (miss.length - 12) + ' more' : '') : '<b>You found every word.</b>';
     }, function () {});
     tick();
@@ -226,7 +228,7 @@
     c.fillStyle = '#fff'; c.font = '800 84px ' + FONT; c.fillText(shuffled(base, num()).join(''), W / 2, 210);
     c.fillStyle = gold; c.font = '800 190px ' + FONT; c.fillText(String(T.total), W / 2, 380);
     c.fillStyle = '#9a9a9a'; c.font = '500 34px ' + FONT;
-    c.fillText(pl(E.length, 'word'), W / 2, 430);
+    c.fillText(st.all ? E.length + ' of ' + st.all + ' words  ·  ' + T.total + ' of ' + st.max.toLocaleString('en') + ' pts' : pl(E.length, 'word'), W / 2, 430);
     if (bon) {
       c.font = '600 30px ' + FONT;
       var parts = bon.split('  ·  '), sep = '  ·  ', ws = parts.map(function (t) { return c.measureText(t).width; }), sw = c.measureText(sep).width;
@@ -242,7 +244,7 @@
       for (var k = 0; k < e.w.length; k++) {
         var x = x0 + k * (cs + gap), hot = false;
         E.forEach(function (f, fi) { f.mavs.forEach(function (m) { if (m.col === k + 1 && fi >= m.from && fi <= m.to && fi === i) hot = true; }); });
-        c.fillStyle = hot ? 'rgba(255,210,63,.16)' : '#0c0c0c'; rr(c, x, y, cs, cs, 6); c.fill();
+        c.fillStyle = e.x ? EM : (hot ? 'rgba(255,210,63,.16)' : '#0c0c0c'); rr(c, x, y, cs, cs, 6); c.fill();
         c.strokeStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#2c2c2c')); if (e.x) { c.shadowColor = EM; c.shadowBlur = 18; } c.lineWidth = 2; rr(c, x, y, cs, cs, 6); c.stroke();
         c.shadowBlur = 0; c.fillStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#f2f2f2')); c.font = '700 ' + Math.round(cs * .52) + 'px ' + FONT; c.textAlign = 'center'; if (!e.x) c.fillText(e.w[k], x + cs / 2, y + cs * .7);
       }
@@ -299,6 +301,9 @@
     $('[data-d-startform]').addEventListener('submit', function (ev) { ev.preventDefault(); begin(); });
     $('[data-d-form]').addEventListener('submit', function (ev) { ev.preventDefault(); add(el.inp.value); });
     el.inp.addEventListener('input', paintTiles);
+    function toEnd() { if (el.board && !el.game.hidden) el.board.scrollTop = el.board.scrollHeight; }
+    if (window.visualViewport) visualViewport.addEventListener('resize', function () { setTimeout(toEnd, 60); });
+    el.inp.addEventListener('focus', function () { setTimeout(toEnd, 250); });
     paintHomeBtn();
   }
   window.BmoDaily = { init: init, paint: paint, paintHomeBtn: paintHomeBtn };

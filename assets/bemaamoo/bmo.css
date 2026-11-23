@@ -816,3 +816,8 @@ body.is-mini .mini .btn{min-height:42px;flex:1 1 0;max-width:220px}
 /* keep the play screen glued to the visible area so the entry box sits right above the keyboard (iOS scrolls the page when the keyboard opens) */
 body.in-game{position:fixed;left:0;right:0;width:100%;overflow:hidden}
 body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);height:var(--appH,100dvh);z-index:1}
+
+.dboard--res .row.is-x .cell{background:#6ee7b7;border-color:#6ee7b7;color:#04210f}
+.dgame .board{display:flex;flex-direction:column}
+.dgame .board .rows{margin-top:auto}
+.dgame .board .board__empty{margin:auto 0}
