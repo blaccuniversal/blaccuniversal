@@ -179,24 +179,27 @@
   }
 
   /* ---------- result ---------- */
+  function stats() {
+    var E = entries(st), T = B.tally(st.g)[0], rg = E.filter(function (e) { return e.acc; }).length;
+    return { E: E, T: T, rg: rg, perks: T.mavs + T.cons + rg + T.keys, perkPts: T.mav + T.con + T.acc + T.key, found: E.some(function (e) { return e.x; }) };
+  }
   function paintResult() {
     var a = load(); st = mine();
-    var T = B.tally(st.g)[0], n = entries(st).length;
+    var S = stats(), T = S.T, n = S.E.length, sk = streak();
     $('[data-d-score]').textContent = T.total;
-    $('[data-d-word]').textContent = shuffled(base, num()).join(''); $('[data-d-who]').textContent = (st.name || 'Player') + ' · Today’s letters';
-    var rg, sk = streak(), bon = [entries(st).some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', (rg = entries(st).filter(function (e) { return e.acc; }).length) ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join(' · ');
-    $('[data-d-bonus]').innerHTML = bon.replace('Found the word', '<em>Found the word</em>'); $('[data-d-bonus]').hidden = !bon;
-    $('[data-d-meta]').textContent = pl(n, 'word') + (sk > 1 ? ' · ' + sk + '-day streak' : '');
-    $('[data-d-rboard]').classList.add('dboard--res'); board($('[data-d-rboard]'), true);
-    $('[data-d-missed]').textContent = '';
+    $('[data-d-who]').textContent = 'Daily #' + num() + ' · ' + (st.name || 'Player');
+    $('[data-d-meta]').textContent = sk > 1 ? sk + '-day streak' : '';
+    $('[data-d-brk]').innerHTML = '<span><i>W</i>' + T.base + '</span><span class="m"><i>M</i>' + T.mav + '</span><span class="c"><i>C</i>' + T.con + '</span><span class="r"><i>R</i>' + T.acc + '</span><span class="k"><i>K</i>' + T.key + '</span>';
+    function rows(all, maxp) {
+      var r = [['Words found', all ? n + ' of ' + all : String(n)], ['Points from words', String(T.base)], ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'],
+        ['Possible, excluding perks', maxp ? maxp.toLocaleString('en') + ' pts' : '…'], ['Possible words', all ? String(all) : '…'], ['Today’s word', S.found ? 'Found · 3×' : 'Not found']];
+      $('[data-d-sum]').innerHTML = r.map(function (x, i) { return '<div class="dsum__r' + (i === 5 && S.found ? ' is-x' : '') + '"><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('');
+    }
+    rows(st.all, st.max);
     dictP().then(function (D) {
-      var c = counts(base), all = 0, miss = [], got = words(st);
-      var maxp = 3 * B.tri(base.length);
-      D.full.forEach(function (w) { if (w.length >= MIN && w.length < base.length && canMake(w, c)) { all++; maxp += B.tri(w.length); if (got.indexOf(w) < 0) miss.push(w); } });
-      st.max = maxp; st.all = all;
-      miss.sort(function (x, y) { return (D.mav.has(y) ? 1 : 0) - (D.mav.has(x) ? 1 : 0) || y.length - x.length || (x < y ? -1 : 1); });
-      $('[data-d-meta]').textContent = n + ' of ' + all + ' words · ' + T.total + ' of ' + maxp.toLocaleString('en') + ' possible pts (excl. perks)' + (sk > 1 ? ' · ' + sk + '-day streak' : '');
-      $('[data-d-missed]').innerHTML = miss.length ? '<b>You missed</b> ' + miss.slice(0, 12).join(', ') + (miss.length > 12 ? ' and ' + (miss.length - 12) + ' more' : '') : '<b>You found every word.</b>';
+      var c = counts(base), all = 0, maxp = 3 * B.tri(base.length);
+      D.full.forEach(function (w) { if (w.length >= MIN && w.length < base.length && canMake(w, c)) { all++; maxp += B.tri(w.length); } });
+      st.max = maxp; st.all = all; rows(all, maxp);
     }, function () {});
     tick();
   }
@@ -214,68 +217,50 @@
   function css(n, d) { var v = getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v || d; }
   function rr(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
   function sheetImage() {
-    var E = entries(st), T = B.tally(st.g)[0], W = 1080, pad = 60, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
+    var S = stats(), T = S.T, W = 1080, pad = 70, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
     var EM = '#6ee7b7', gold = css('--mav', '#ffd23f'), blue = css('--con', '#4aa8ff'), purple = css('--acc', '#b48cff'), key = css('--key', '#ff6a4d');
-    var longest = Math.max(6, base.length); E.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; });
-    var ptsW = 250, cs = Math.min(64, Math.floor((W - pad * 2 - ptsW - 8 * (longest - 1)) / longest)), gap = 8, rh = cs + 12;
-    var rg = E.filter(function (e) { return e.acc; }).length, bon = [E.some(function (e) { return e.x; }) ? 'Found the word' : '', T.mavs ? T.mavs + ' Maverick' + (T.mavs > 1 ? 's' : '') : '', T.cons ? T.cons + ' Concord' : '', rg ? rg + ' Regen' : '', T.keys ? T.keys + ' Keystone' : ''].filter(Boolean).join('  ·  ');
-    var MAXR = 22, shown = E.slice(0, MAXR), more = E.length - shown.length;
-    var top = bon ? 510 : 470, H = top + shown.length * rh + (more > 0 ? 70 : 0) + 150;
+    var rows = [['Words found', st.all ? S.E.length + ' of ' + st.all : String(S.E.length)], ['Points from words', String(T.base)], ['Perks earned', S.perks + '  ·  +' + S.perkPts + ' pts'],
+      ['Possible, excluding perks', st.max ? st.max.toLocaleString('en') + ' pts' : '-'], ['Possible words', st.all ? String(st.all) : '-'], ['Today’s word', S.found ? 'Found  ·  3×' : 'Not found']];
+    var rh = 96, top = 640, H = top + rows.length * rh + 190;
     var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
     c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
+    c.strokeStyle = '#222'; c.lineWidth = 2; rr(c, 24, 24, W - 48, H - 48, 18); c.stroke();
     c.textAlign = 'center'; c.textBaseline = 'alphabetic';
-    c.fillStyle = '#8a8a8a'; c.font = '600 30px ' + FONT; c.fillText('BEMAAMOO  ·  DAILY #' + num() + (st.name ? '  ·  ' + st.name.toUpperCase() : ''), W / 2, 100);
-    c.fillStyle = '#fff'; c.font = '800 84px ' + FONT; c.fillText(shuffled(base, num()).join(''), W / 2, 210);
-    c.fillStyle = gold; c.font = '800 190px ' + FONT; c.fillText(String(T.total), W / 2, 380);
-    c.fillStyle = '#9a9a9a'; c.font = '500 34px ' + FONT;
-    c.fillText(st.all ? E.length + ' of ' + st.all + ' words  ·  ' + T.total + ' of ' + st.max.toLocaleString('en') + ' possible pts, excl. perks' : pl(E.length, 'word'), W / 2, 430);
-    if (bon) {
-      c.font = '600 30px ' + FONT;
-      var parts = bon.split('  ·  '), sep = '  ·  ', ws = parts.map(function (t) { return c.measureText(t).width; }), sw = c.measureText(sep).width;
-      var tot = ws.reduce(function (a, b) { return a + b; }, 0) + sw * (parts.length - 1), px0 = (W - tot) / 2;
-      c.textAlign = 'left';
-      parts.forEach(function (t, i) { c.fillStyle = t === 'Found the word' ? EM : gold; c.fillText(t, px0, 472); px0 += ws[i]; if (i < parts.length - 1) { c.fillStyle = '#666'; c.fillText(sep, px0, 472); px0 += sw; } });
-      c.textAlign = 'center';
-    }
-    var x0 = pad + 40;
-    shown.forEach(function (e, i) {
-      var y = top + 20 + i * rh, mavCells = {};
-      e.mavs.forEach(function (m) { for (var k = m.from; k <= m.to; k++) if (k === i) mavCells[m.col] = 1; });
-      for (var k = 0; k < e.w.length; k++) {
-        var x = x0 + k * (cs + gap), hot = false;
-        E.forEach(function (f, fi) { f.mavs.forEach(function (m) { if (m.col === k + 1 && fi >= m.from && fi <= m.to && fi === i) hot = true; }); });
-        c.fillStyle = e.x ? EM : (hot ? 'rgba(255,210,63,.16)' : '#0c0c0c'); rr(c, x, y, cs, cs, 6); c.fill();
-        c.strokeStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#2c2c2c')); if (e.x) { c.shadowColor = EM; c.shadowBlur = 18; } c.lineWidth = 2; rr(c, x, y, cs, cs, 6); c.stroke();
-        c.shadowBlur = 0; c.fillStyle = e.x ? EM : (hot ? gold : (e.acc ? purple : '#f2f2f2')); c.font = '700 ' + Math.round(cs * .52) + 'px ' + FONT; c.textAlign = 'center'; if (!e.x) c.fillText(e.w[k], x + cs / 2, y + cs * .7);
-      }
-      var px = x0 + e.w.length * (cs + gap) + 14; c.textAlign = 'left';
-      c.fillStyle = '#cfcfcf'; c.font = '700 ' + Math.round(cs * .46) + 'px ' + FONT; c.fillText('+' + e.total, px, y + cs * .68);
-      px += c.measureText('+' + e.total).width + 12;
-      [[e.x, '3×', EM], [e.mavs.length, 'M', gold], [e.con, 'C', blue], [e.acc, 'R', purple], [e.key, 'K', key]].forEach(function (t) {
-        if (!t[0]) return; var tw = Math.max(cs * .5, 30);
-        c.fillStyle = t[2]; rr(c, px, y + cs * .2, tw, cs * .6, 5); c.fill();
-        c.fillStyle = '#000'; c.font = '800 ' + Math.round(cs * .36) + 'px ' + FONT; c.textAlign = 'center'; c.fillText(t[1], px + tw / 2, y + cs * .62); c.textAlign = 'left'; px += tw + 6;
-      });
+    c.fillStyle = '#8a8a8a'; c.font = '600 30px ' + FONT; c.fillText('BEMAAMOO  ·  DAILY #' + num() + (st.name ? '  ·  ' + st.name.toUpperCase() : ''), W / 2, 120);
+    c.fillStyle = gold; c.font = '800 220px ' + FONT; c.fillText(String(T.total), W / 2, 360);
+    c.fillStyle = '#9a9a9a'; c.font = '600 40px ' + FONT; c.fillText(st.max ? 'points out of a possible ' + st.max.toLocaleString('en') : 'points', W / 2, 430);
+    var chips = [['W', T.base, '#fff'], ['M', T.mav, gold], ['C', T.con, blue], ['R', T.acc, purple], ['K', T.key, key]];
+    c.font = '700 44px ' + FONT; var gapC = 46, ws = chips.map(function (t) { return c.measureText(t[0] + ' ' + t[1]).width; }), tot = ws.reduce(function (a, b) { return a + b; }, 0) + gapC * (chips.length - 1), x = (W - tot) / 2;
+    c.textAlign = 'left';
+    chips.forEach(function (t, i) { c.fillStyle = '#7a7a7a'; c.font = '700 34px ' + FONT; c.fillText(t[0], x, 540); var lw = c.measureText(t[0] + ' ').width; c.fillStyle = t[2]; c.font = '700 44px ' + FONT; c.fillText(String(t[1]), x + lw, 540); x += ws[i] + gapC; });
+    rows.forEach(function (r, i) {
+      var y = top + i * rh; c.strokeStyle = '#1f1f1f'; c.lineWidth = 2; c.beginPath(); c.moveTo(pad, y); c.lineTo(W - pad, y); c.stroke();
+      c.textAlign = 'left'; c.fillStyle = '#b5b5b5'; c.font = '500 38px ' + FONT; c.fillText(r[0], pad, y + 62);
+      c.textAlign = 'right'; c.fillStyle = (i === 5 && S.found) ? EM : '#fff'; c.font = '700 40px ' + FONT; c.fillText(r[1], W - pad, y + 62);
     });
-    c.textAlign = 'center';
-    if (more > 0) { c.fillStyle = '#8a8a8a'; c.font = '500 30px ' + FONT; c.fillText('+ ' + pl(more, 'more word'), W / 2, top + 20 + shown.length * rh + 40); }
-    c.fillStyle = '#8a8a8a'; c.font = '500 30px ' + FONT; c.fillText('Can you beat me?  blaccuniversal.com/bemaamoo', W / 2, H - 50);
+    c.textAlign = 'center'; c.fillStyle = '#8a8a8a'; c.font = '500 32px ' + FONT; c.fillText('Can you beat my score, and win the day?', W / 2, H - 100);
+    c.fillStyle = '#fff'; c.font = '700 34px ' + FONT; c.fillText('blaccuniversal.com/bemaamoo', W / 2, H - 52);
     return cv;
+  }
+  function shareText() {
+    var T = B.tally(st.g)[0];
+    return 'Bemaamoo Daily #' + num() + '\nI scored ' + T.total + (st.max ? ' out of a possible ' + st.max.toLocaleString('en') : '') + '.\nCan you beat my score, and win the day?\nPlay here: blaccuniversal.com/bemaamoo';
   }
   function share() {
     var b = $('[data-d-share] span');
-    function say(t) { b.textContent = t; setTimeout(function () { b.textContent = 'Share my sheet'; }, 1800); }
+    function say(t) { b.textContent = t; setTimeout(function () { b.textContent = 'Share my result'; }, 1800); }
     var cv; try { cv = sheetImage(); } catch (e) { return say('Couldn’t make the image'); }
     cv.toBlob(function (blob) {
       if (!blob) return say('Couldn’t make the image');
-      var name = 'bemaamoo-daily-' + num() + '.png', file;
+      var name = 'bemaamoo-daily-' + num() + '.png', file, txt = shareText();
       try { file = new File([blob], name, { type: 'image/png' }); } catch (e) { file = null; }
       if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: 'Bemaamoo Daily #' + num() }).catch(function (e) { if (e && e.name !== 'AbortError') save(); });
+        navigator.share({ files: [file], text: txt, title: 'Bemaamoo Daily #' + num() }).catch(function (e) { if (e && e.name !== 'AbortError') save(); });
       } else save();
       function save() {
+        try { navigator.clipboard.writeText(txt).catch(function () {}); } catch (e) {}
         var u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(function () { URL.revokeObjectURL(u); }, 4000); say('Image saved');
+        setTimeout(function () { URL.revokeObjectURL(u); }, 4000); say('Image saved, text copied');
       }
     }, 'image/png');
   }
