@@ -132,7 +132,7 @@
   (function () {
     var root = document.documentElement, btn = $('[data-theme-btn]'), meta = document.querySelector('meta[name="theme-color"]');
     function cur() { return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
-    function paint() { var d = cur() === 'dark'; if (btn) { btn.setAttribute('aria-label', d ? 'Switch to light mode' : 'Switch to dark mode'); btn.title = d ? 'Light mode' : 'Dark mode'; } if (meta) meta.content = d ? '#05070f' : '#ffffff'; }
+    function paint() { var d = cur() === 'dark'; if (btn) { btn.setAttribute('aria-label', d ? 'Switch to light mode' : 'Switch to dark mode'); btn.title = d ? 'Light mode' : 'Dark mode'; } if (meta) meta.content = d ? '#070405' : '#ffffff'; }
     if (btn) btn.addEventListener('click', function () { var n = cur() === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', n); try { localStorage.setItem('aar_theme', n); } catch (e) {} paint(); });
     paint();
   })();

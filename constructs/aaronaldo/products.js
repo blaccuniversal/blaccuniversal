@@ -9,7 +9,7 @@ window.AAR_PRODUCTS = [
   "price": 1650000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/iphone-15-pro-max.webp",
+  "img": "/constructs/aaronaldo/img/iphone-15-pro-max.webp?v=4",
   "d": "Titanium design, 6.7\" Super Retina display and a pro camera system.",
   "o": [
    {
@@ -75,7 +75,7 @@ window.AAR_PRODUCTS = [
   "price": 1450000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/iphone-burgundy.webp",
+  "img": "/constructs/aaronaldo/img/iphone-burgundy.webp?v=4",
   "d": "Pro-grade iPhone in a deep burgundy finish with a triple camera system.",
   "o": [
    {
@@ -120,7 +120,7 @@ window.AAR_PRODUCTS = [
   "price": 1500000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/galaxy-ultra.webp",
+  "img": "/constructs/aaronaldo/img/galaxy-ultra.webp?v=4",
   "d": "Samsung flagship with a quad camera, big AMOLED display and a built-in S Pen.",
   "o": [
    {
@@ -164,7 +164,7 @@ window.AAR_PRODUCTS = [
   "price": 1100000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/pixel-9-pro.webp",
+  "img": "/constructs/aaronaldo/img/pixel-9-pro.webp?v=4",
   "d": "Google Pixel with the signature camera bar, clean Android and strong AI features.",
   "o": [
    {
@@ -200,7 +200,7 @@ window.AAR_PRODUCTS = [
   "price": 780000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/ps5-slim.webp",
+  "img": "/constructs/aaronaldo/img/ps5-slim.webp?v=4",
   "d": "Sony PlayStation 5 Slim with a DualSense controller. Fast loading and 4K gaming.",
   "o": [],
   "f": [
@@ -223,7 +223,7 @@ window.AAR_PRODUCTS = [
   "price": 750000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/xbox-series-x.webp",
+  "img": "/constructs/aaronaldo/img/xbox-series-x.webp?v=4",
   "d": "Microsoft Xbox Series X with a wireless controller. 4K gaming and Game Pass ready.",
   "o": [],
   "f": [
@@ -245,7 +245,7 @@ window.AAR_PRODUCTS = [
   "price": 650000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/airpods-max.webp",
+  "img": "/constructs/aaronaldo/img/airpods-max.webp?v=4",
   "d": "Apple over-ear headphones with active noise cancellation and spatial audio.",
   "o": [],
   "f": [
@@ -267,7 +267,7 @@ window.AAR_PRODUCTS = [
   "price": 230000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/airpods-pro.webp",
+  "img": "/constructs/aaronaldo/img/airpods-pro.webp?v=4",
   "d": "Apple earbuds with active noise cancellation and a wireless charging case.",
   "o": [],
   "f": [
@@ -289,7 +289,7 @@ window.AAR_PRODUCTS = [
   "price": 150000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/airpods-4.webp",
+  "img": "/constructs/aaronaldo/img/airpods-4.webp?v=4",
   "d": "Apple open-fit earbuds with a compact charging case.",
   "o": [],
   "f": [
@@ -307,7 +307,7 @@ window.AAR_PRODUCTS = [
   "price": 65000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/jbl-go-4.webp",
+  "img": "/constructs/aaronaldo/img/jbl-go-4.webp?v=4",
   "d": "Pocket-sized, waterproof Bluetooth speaker with punchy JBL sound and a carry loop.",
   "o": [],
   "f": [
@@ -329,7 +329,7 @@ window.AAR_PRODUCTS = [
   "price": 290000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/onyx-studio-7.webp",
+  "img": "/constructs/aaronaldo/img/onyx-studio-7.webp?v=4",
   "d": "Premium portable speaker with a signature carry handle and rich 360° sound.",
   "o": [],
   "f": [
@@ -351,7 +351,7 @@ window.AAR_PRODUCTS = [
   "price": 330000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/aura-studio-4.webp",
+  "img": "/constructs/aaronaldo/img/aura-studio-4.webp?v=4",
   "d": "Glass-dome speaker with ambient lighting and room-filling sound.",
   "o": [],
   "f": [
@@ -377,7 +377,7 @@ window.AAR_PRODUCTS = [
   "price": 45000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/gaming-soundbar.webp",
+  "img": "/constructs/aaronaldo/img/gaming-soundbar.webp?v=4",
   "d": "Compact desktop soundbar with a glowing RGB light strip, made for gaming setups.",
   "o": [],
   "f": [
@@ -399,7 +399,7 @@ window.AAR_PRODUCTS = [
   "price": 420000,
   "t": "phone",
   "c": "graphite",
-  "img": "/constructs/aaronaldo/img/apple-watch.webp",
+  "img": "/constructs/aaronaldo/img/apple-watch.webp?v=4",
   "d": "Apple Watch with fitness and health tracking, always-on display and a sport band.",
   "o": [
    {
