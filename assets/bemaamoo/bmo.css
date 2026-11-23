@@ -889,3 +889,9 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 [data-d-pre]:not([hidden]){flex:1;display:flex;flex-direction:column}
 [data-d-pre] .dly{flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:10vh}
 .hero__btns .btn{border-radius:4px}
+
+/* daily: all five stat chips fit, no sideways scroll */
+.dgame .pstrip{display:grid;grid-template-columns:1.15fr repeat(4,1fr);gap:5px;overflow:visible}
+.dgame .pchip{flex-direction:column;gap:1px;min-width:0;padding:6px 2px;justify-content:center;align-items:center;text-align:center}
+.dgame .pchip span{font-size:10.5px;letter-spacing:.02em;line-height:1.2}
+.dgame .pchip b{font-size:16px;line-height:1.2}
