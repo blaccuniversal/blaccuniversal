@@ -195,7 +195,7 @@
       D.full.forEach(function (w) { if (w.length >= MIN && w.length < base.length && canMake(w, c)) { all++; maxp += B.tri(w.length); if (got.indexOf(w) < 0) miss.push(w); } });
       st.max = maxp; st.all = all;
       miss.sort(function (x, y) { return (D.mav.has(y) ? 1 : 0) - (D.mav.has(x) ? 1 : 0) || y.length - x.length || (x < y ? -1 : 1); });
-      $('[data-d-meta]').textContent = n + ' of ' + all + ' words · ' + T.total + ' of ' + maxp.toLocaleString('en') + ' pts' + (sk > 1 ? ' · ' + sk + '-day streak' : '');
+      $('[data-d-meta]').textContent = n + ' of ' + all + ' words · ' + T.total + ' of ' + maxp.toLocaleString('en') + ' possible pts (excl. perks)' + (sk > 1 ? ' · ' + sk + '-day streak' : '');
       $('[data-d-missed]').innerHTML = miss.length ? '<b>You missed</b> ' + miss.slice(0, 12).join(', ') + (miss.length > 12 ? ' and ' + (miss.length - 12) + ' more' : '') : '<b>You found every word.</b>';
     }, function () {});
     tick();
@@ -228,7 +228,7 @@
     c.fillStyle = '#fff'; c.font = '800 84px ' + FONT; c.fillText(shuffled(base, num()).join(''), W / 2, 210);
     c.fillStyle = gold; c.font = '800 190px ' + FONT; c.fillText(String(T.total), W / 2, 380);
     c.fillStyle = '#9a9a9a'; c.font = '500 34px ' + FONT;
-    c.fillText(st.all ? E.length + ' of ' + st.all + ' words  ·  ' + T.total + ' of ' + st.max.toLocaleString('en') + ' pts' : pl(E.length, 'word'), W / 2, 430);
+    c.fillText(st.all ? E.length + ' of ' + st.all + ' words  ·  ' + T.total + ' of ' + st.max.toLocaleString('en') + ' possible pts, excl. perks' : pl(E.length, 'word'), W / 2, 430);
     if (bon) {
       c.font = '600 30px ' + FONT;
       var parts = bon.split('  ·  '), sep = '  ·  ', ws = parts.map(function (t) { return c.measureText(t).width; }), sw = c.measureText(sep).width;
