@@ -278,3 +278,8 @@ html[data-theme=dark] .nav .cartb{background:none;color:var(--ink)}
 .hero__sub{max-width:56ch}
 .hero{padding-top:clamp(112px,17vw,190px)}
 .hero{padding-top:clamp(84px,13vw,150px)}.hero .eyebrow{margin-bottom:clamp(28px,4vw,40px)}
+/* hero: tagline high, headline on one line */
+.hero{padding-top:clamp(26px,5vw,56px)}
+.hero .eyebrow{margin-bottom:clamp(100px,30vw,170px)}
+.hero h1{white-space:nowrap;font-size:clamp(19px,5.6vw,64px)}
+.wf__copy>.wf__h{white-space:nowrap;max-width:none;font-size:clamp(20px,6.6vw,54px)}
