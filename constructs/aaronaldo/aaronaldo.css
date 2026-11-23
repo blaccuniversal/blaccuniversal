@@ -272,3 +272,6 @@ html[data-theme=dark] .nav .cartb{background:none;color:var(--ink)}
 .nav .tgl{margin-left:auto}.nav__links+.tgl{margin-left:0}
 .nav .cartb__n{top:3px;right:1px}
 @media(min-width:900px){.nav .menub{display:none}}
+
+/* hero: categories row removed, content pushed down for head room */
+.hero{padding:clamp(72px,12vw,130px) var(--g) clamp(52px,9vw,100px)}
