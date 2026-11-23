@@ -227,42 +227,41 @@
   function css(n, d) { var v = getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v || d; }
   function rr(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
   function sheetImage() {
-    var S = stats(), T = S.T, W = 1080, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
+    // drawn at the same proportions as the on-screen result card (1284px wide)
+    var S = stats(), T = S.T, W = 1284, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
     var EM = '#6ee7b7', gold = css('--mav', '#ffd23f'), blue = css('--con', '#4aa8ff'), purple = css('--acc', '#b48cff'), key = css('--key', '#ff6a4d');
     var rows = [['Words found', st.all ? S.E.length + ' of ' + st.all : String(S.E.length)], ['Possible words', st.all ? String(st.all) : '-'], ['Possible points, excluding perks', st.max ? st.max.toLocaleString('en') : '-'],
       ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'], ['Today’s word', S.found ? 'Found · 3×' : 'Not found']];
-    var cx = 40, cw = W - 80, px = cx + 64, pw = cw - 128, L = px, R = px + pw;
-    var rowH = 92, H = 814 + rows.length * rowH, cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
+    var cx = 65, cw = 1153, L = 119, R = 1166, top = 62, pitch = 129;
+    var firstDiv = 763, lastDiv = firstDiv + rows.length * pitch, capY = lastDiv + 82, urlY = capY + 66, cardB = urlY + 70, H = cardB + 62;
+    var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
     c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
-    c.fillStyle = '#0b0b0b'; c.fillRect(cx, 40, cw, H - 80); c.strokeStyle = '#2a2a2a'; c.lineWidth = 2; c.strokeRect(cx + 1, 41, cw - 2, H - 82);
-    c.textBaseline = 'alphabetic'; c.textAlign = 'center';
-    var y = 40 + 100;
-    c.fillStyle = '#9a9a9a'; c.font = '600 30px ' + FONT; try { c.letterSpacing = '6px'; } catch (e) {}
-    c.fillText(('Daily #' + num() + ' · Result').toUpperCase(), W / 2 + 3, y); try { c.letterSpacing = '0px'; } catch (e) {}
-    y += 110; c.fillStyle = '#fff'; c.font = '800 104px ' + FONT; c.fillText(T.total + ' points', W / 2, y);
-    y += 70; c.strokeStyle = '#1f1f1f'; c.lineWidth = 2; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
-    // player row
-    var ry = y + 74; c.textAlign = 'left';
-    c.fillStyle = '#fff'; c.font = '700 48px ' + FONT; c.fillText(st.name || 'Player', L, ry);
-    c.textAlign = 'right'; c.font = '800 58px ' + FONT; c.fillText(String(T.total), R, ry + 4);
+    c.fillStyle = '#0b0b0b'; c.fillRect(cx, top, cw, cardB - top); c.strokeStyle = '#242424'; c.lineWidth = 2; c.strokeRect(cx + 1, top + 1, cw - 2, cardB - top - 2);
+    c.textBaseline = 'middle';
+    function line(y) { c.strokeStyle = '#1f1f1f'; c.lineWidth = 2; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke(); }
+    c.textAlign = 'center'; c.fillStyle = '#9a9a9a'; c.font = '600 35px ' + FONT; try { c.letterSpacing = '8px'; } catch (e) {}
+    c.fillText(('Daily #' + num() + ' · Result').toUpperCase(), W / 2 + 4, 157); try { c.letterSpacing = '0px'; } catch (e) {}
+    c.fillStyle = '#fff'; c.font = '800 84px ' + FONT; c.fillText(T.total + ' points', W / 2, 240);
+    line(365);
+    c.textAlign = 'left'; c.fillStyle = '#fff'; c.font = '700 58px ' + FONT; c.fillText(st.name || 'Player', L, 463);
+    c.textAlign = 'right'; c.font = '800 76px ' + FONT; c.fillText(String(T.total), R, 463);
     var parts = [['W', T.base, '#fff'], ['M', T.mav, gold], ['C', T.con, blue], ['R', T.acc, purple], ['K', T.key, key]]; c.textAlign = 'left';
-    var ws = parts.map(function (t) { c.font = '700 28px ' + FONT; var a1 = c.measureText(t[0]).width + 12; c.font = '700 40px ' + FONT; return a1 + c.measureText(String(t[1])).width; });
-    var gap = (pw - ws.reduce(function (a2, b2) { return a2 + b2; }, 0)) / (parts.length - 1), x = L;
+    var ws = parts.map(function (t) { c.font = '700 31px ' + FONT; var a1 = c.measureText(t[0]).width + 14; c.font = '700 50px ' + FONT; return a1 + c.measureText(String(t[1])).width; });
+    var gap = ((R - L) - ws.reduce(function (a2, b2) { return a2 + b2; }, 0)) / (parts.length - 1), x = L;
     parts.forEach(function (t, i) {
-      c.fillStyle = '#7a7a7a'; c.font = '700 28px ' + FONT; c.fillText(t[0], x, ry + 62); var lw = c.measureText(t[0]).width + 12;
-      c.fillStyle = t[2]; c.font = '700 40px ' + FONT; c.fillText(String(t[1]), x + lw, ry + 62); x += ws[i] + gap;
+      c.fillStyle = '#7a7a7a'; c.font = '700 31px ' + FONT; c.fillText(t[0], x, 582); var lw = c.measureText(t[0]).width + 14;
+      c.fillStyle = t[2]; c.font = '700 50px ' + FONT; c.fillText(String(t[1]), x + lw, 580); x += ws[i] + gap;
     });
-    y = ry + 62 + 40; c.strokeStyle = '#1f1f1f'; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
-    y += 62; c.textAlign = 'left'; c.fillStyle = '#6f6f6f'; c.font = '500 28px ' + FONT; c.fillText('Today’s challenge', L, y);
-    y += 26;
+    line(652);
+    c.fillStyle = '#6f6f6f'; c.font = '500 36px ' + FONT; c.fillText('Today’s challenge', L, 722);
     rows.forEach(function (r, i) {
-      c.strokeStyle = '#1f1f1f'; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
-      c.textAlign = 'left'; c.fillStyle = '#b5b5b5'; c.font = '500 34px ' + FONT; c.fillText(r[0], L, y + 58);
-      c.textAlign = 'right'; c.fillStyle = (i === 4 && S.found) ? EM : '#fff'; c.font = '700 36px ' + FONT; c.fillText(r[1], R, y + 58); y += rowH;
+      var y = firstDiv + i * pitch; if (i) line(y);
+      c.textAlign = 'left'; c.fillStyle = '#b5b5b5'; c.font = '500 46px ' + FONT; c.fillText(r[0], L, y + pitch / 2 + 2);
+      c.textAlign = 'right'; c.fillStyle = (i === 4 && S.found) ? EM : '#fff'; c.font = '700 46px ' + FONT; c.fillText(r[1], R, y + pitch / 2 + 2);
     });
-    c.strokeStyle = '#1f1f1f'; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
-    c.textAlign = 'center'; c.fillStyle = '#9a9a9a'; c.font = '500 32px ' + FONT; c.fillText('Can you beat my score, and win the day?', W / 2, y + 74);
-    c.fillStyle = '#fff'; c.font = '700 34px ' + FONT; c.fillText('blaccuniversal.com/bemaamoo', W / 2, y + 124);
+    line(lastDiv);
+    c.textAlign = 'center'; c.fillStyle = '#9a9a9a'; c.font = '500 40px ' + FONT; c.fillText('Can you beat my score, and win the day?', W / 2, capY);
+    c.fillStyle = '#fff'; c.font = '700 42px ' + FONT; c.fillText('blaccuniversal.com/bemaamoo', W / 2, urlY);
     return cv;
   }
   function shareText() {
