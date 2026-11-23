@@ -52,7 +52,7 @@
       return '<button type="button" class="card" data-id="' + p.id + '"><span class="card__img">' + pic(p) + (p.badge ? '<i class="card__badge">' + esc(p.badge) + '</i>' : '') + '</span>' +
         '<span class="card__txt"><b class="card__name">' + esc(p.name) + '</b><span class="card__meta">' + esc(p.meta || '') + '</span><span class="card__price">' + N(p.price) + '</span></span></button>';
     }).join('');
-    cards.scrollLeft = 0;
+    cards.scrollLeft = 0; setTimeout(function () { if (window.__edges) window.__edges(); }, 0);
     $$('[data-view-btn]').forEach(function (b) { var on = b.getAttribute('data-view-btn') === view; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
     $('[data-swipe-nav]').hidden = view !== 'swipe';
   }
@@ -96,6 +96,8 @@
   }
   function closeSheet() { sheet.classList.remove('is-in'); document.documentElement.classList.remove('is-sheet'); setTimeout(function () { sheet.hidden = true; }, 200); if (lastFocus && lastFocus.focus) lastFocus.focus(); }
   function refresh() { var t = N(total()); $('[data-total]', body).textContent = t; $('[data-total2]', body).textContent = t; $('[data-qv]', body).textContent = qty; }
+  function edges() { var m = cards.scrollWidth - cards.clientWidth; cards.style.setProperty('--fl', cards.scrollLeft > 4 ? '8%' : '0%'); cards.style.setProperty('--fr', cards.scrollLeft < m - 4 ? '8%' : '0%'); }
+  cards.addEventListener('scroll', edges, { passive: true }); window.addEventListener('resize', edges); window.__edges = edges; setTimeout(edges, 0); setTimeout(edges, 400);
   cards.addEventListener('click', function (e) { var c = e.target.closest('[data-id]'); if (c) openSheet(c.getAttribute('data-id')); });
   sheet.addEventListener('click', function (e) {
     if (e.target.closest('[data-close]') || e.target === sheet) return closeSheet();
