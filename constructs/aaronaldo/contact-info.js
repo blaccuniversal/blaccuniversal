@@ -1,10 +1,11 @@
-/* AARONALDO TECH contact details. Anything left empty is hidden. Add the WhatsApp number (with country code) to switch orders to WhatsApp. */
+/* Aaronaldo Gadget Store contact details. Anything left empty is hidden. */
 window.AAR_INFO = {
-  address: 'Ibadan, Oyo State, Nigeria',
-  maps: '',
-  phone: '',
-  whatsapp: '',
-  email: '',
-  hours: '',
+  name: 'Aaronaldo Gadget Store',
+  address: 'Shop 6, BAEYOLT PLAZA, 6B Sango Poly Road, beside Homeland Foodie, Ibadan',
+  mapQuery: 'Aaronaldo Gadget Store, Shop 6, BAEYOLT PLAZA, 6B Sango Poly Road, Ibadan',
+  phone: '+234 813 049 4303',
+  whatsapp: '+234 813 049 4303',
+  email: '', hours: '',
+  rating: '4.9', reviews: 14,
   instagram: '', tiktok: '', x: '', facebook: ''
 };

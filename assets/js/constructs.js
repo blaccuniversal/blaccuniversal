@@ -7,14 +7,14 @@
   /* Constructs shown after login: { name: 'Name', path: '/constructs/folder/' } */
   var CONSTRUCTS = [
     { name: 'ÀṢÀ Bar & Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/asa/', img: '/constructs/asa/img/bar-s.webp', logo: '/constructs/asa/img/logo.png' },
-    { name: 'Cinema D Hybrid', tag: 'Cinema · Ibadan', path: '/constructs/cinema/', img: '/constructs/cinema/img/cover.webp', logo: '/constructs/cinema/img/logo.png', ar: '103/94', lw: '34%' },
-    { name: 'Mcrystal Cinemas', tag: 'Cinema · Lagos', path: '/constructs/mcrystal/', img: '/constructs/mcrystal/img/cover.webp?v=2', logo: '/constructs/mcrystal/img/logo.png', ar: '824/759', lw: '40%' },
+    { name: 'Cinema D Hybrid', tag: 'Cinema · Ibadan', path: '/constructs/cinema/', img: '/constructs/cinema/img/cover.webp', logo: '/constructs/cinema/img/logo.png?v=2', ar: '103/94', lw: '34%' },
+    { name: 'Mcrystal Cinemas', tag: 'Cinema · Lagos', path: '/constructs/mcrystal/', img: '/constructs/mcrystal/img/cover.webp?v=2', logo: '/constructs/mcrystal/img/logo.png?v=2', ar: '824/759', lw: '40%' },
     { name: 'Brava Hotel', tag: 'Hotel · Ibadan', path: '/constructs/brava/', img: '/constructs/brava/img/cover.webp', logo: '/constructs/brava/img/logo.png?v=2', ar: '824/393', lw: '62%' },
     { name: 'Malimbe Lodge', tag: 'Lodge · Ibadan', path: '/constructs/malimbe/', img: '/constructs/malimbe/img/cover.webp', logo: '/constructs/malimbe/img/mark.png', ar: '207/164', lw: '34%' },
     { name: 'Bujatos Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/bujatos/', img: '/constructs/bujatos/img/cover.webp', logo: '/constructs/bujatos/img/lockup.png', ar: '823/208', lw: '62%' },
-    { name: 'PastaXpress by Chef Kabs', tag: 'Restaurant · Ibadan', path: '/constructs/pastaxpress/', img: '/constructs/pastaxpress/img/pasta.webp', logo: '/constructs/pastaxpress/img/logo.png', ar: '488/175', lw: '62%' },
-    { name: 'KleanSound', tag: 'Pro audio', path: '/constructs/kleansound/', img: '/constructs/kleansound/img/cover.webp', logo: '/constructs/kleansound/img/logo.png', ar: '4/3', lw: '56%' },
-    { name: 'AARONALDO TECH', tag: 'Tech store · Ibadan', path: '/constructs/aaronaldo/', img: '/constructs/aaronaldo/img/cover.webp', logo: '/constructs/aaronaldo/img/logo.png', ar: '900/220', lw: '62%' }
+    { name: 'PastaXpress by Chef Kabs', tag: 'Restaurant · Ibadan', path: '/constructs/pastaxpress/', img: '/constructs/pastaxpress/img/pasta.webp', logo: '/constructs/pastaxpress/img/logo.png?v=2', ar: '488/175', lw: '62%' },
+    { name: 'KleanSound', tag: 'Pro audio', path: '/constructs/kleansound/', img: '/constructs/kleansound/img/cover.webp', logo: '/constructs/kleansound/img/logo.png?v=2', ar: '4/3', lw: '56%' },
+    { name: 'Aaronaldo Gadget Store', tag: 'Gadget store · Ibadan', path: '/constructs/aaronaldo/', img: '/constructs/aaronaldo/img/cover.webp', logo: '/constructs/aaronaldo/img/logo.png?v=2', ar: '1100/220', lw: '62%' }
   ];
 
   // tool rotation

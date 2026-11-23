@@ -1,4 +1,4 @@
-/* AARONALDO TECH · storefront */
+/* Aaronaldo Gadget Store · storefront */
 (function () {
   'use strict';
   var P = window.AAR_PRODUCTS || [], INFO = window.AAR_INFO || {};
@@ -7,6 +7,7 @@
   var N = function (n) { return '₦' + Math.round(n).toLocaleString('en-NG'); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var WA = (INFO.whatsapp || '').replace(/\D/g, '');
+  var MQ = encodeURIComponent(INFO.mapQuery || INFO.address || ''), DIR = 'https://www.google.com/maps/dir/?api=1&destination=' + MQ;
 
   /* ---------- product art (original drawings, replaced by "img" when supplied) ---------- */
   var COL = { graphite: ['#4a4f5e', '#14161d'], silver: ['#eceef3', '#aeb4c2'], white: ['#ffffff', '#c9cdd8'], black: ['#2a2c34', '#08090c'], sapphire: ['#2f56c9', '#0a1a55'] };
@@ -66,7 +67,7 @@
   function total() { var x = cur.price; (cur.o || []).forEach(function (o) { x += (o.v.filter(function (v) { return v[0] === sel[o.k]; })[0] || [0, 0])[1]; }); return x * qty; }
   function msg() {
     var opts = (cur.o || []).map(function (o) { return o.k + ': ' + sel[o.k]; }).join(', ');
-    return 'Hello AARONALDO TECH, I would like to order:\n' + qty + ' × ' + cur.name + (opts ? ' (' + opts + ')' : '') + '\nTotal: ' + N(total()) + '\nPlease confirm it is available.';
+    return 'Hello Aaronaldo Gadget Store, I would like to order:\n' + qty + ' × ' + cur.name + (opts ? ' (' + opts + ')' : '') + '\nTotal: ' + N(total()) + '\nPlease confirm it is available.';
   }
   function openSheet(id) {
     cur = P.filter(function (p) { return p.id === id; })[0]; if (!cur) return;
@@ -86,7 +87,7 @@
       (facts ? '<ul class="facts">' + facts + '</ul>' : '') +
       '<p class="note">Pick up in Ibadan or ask about delivery. We confirm availability and payment details with you before anything is charged.</p>' +
       '<form class="enq" data-enq hidden><p class="enq__t">Where should we reach you?</p><label>Your name<input name="name" required autocomplete="name"></label><label>Phone number<input name="phone" type="tel" required inputmode="tel" autocomplete="tel"></label>' +
-      '<input type="hidden" name="access_key" value="c45f617c-f3f2-4caa-93cf-5d49e2cece46"><input type="hidden" name="subject" value="AARONALDO TECH order enquiry"><input type="hidden" name="from_name" value="AARONALDO TECH construct"><input type="hidden" name="order" value="">' +
+      '<input type="hidden" name="access_key" value="c45f617c-f3f2-4caa-93cf-5d49e2cece46"><input type="hidden" name="subject" value="Aaronaldo Gadget Store order enquiry"><input type="hidden" name="from_name" value="Aaronaldo Gadget Store construct"><input type="hidden" name="order" value="">' +
       '<p class="sr-only"><label>Leave empty <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label></p>' +
       '<button class="btn btn--red" type="submit">Send order request</button><p class="enq__ok" role="status" hidden>Sent. We will call you to confirm.</p><p class="enq__err" role="alert" hidden>That did not go through. Please try again.</p></form></div>';
     sheet.hidden = false; document.documentElement.classList.add('is-sheet');
@@ -115,12 +116,16 @@
 
   /* ---------- visit / contact ---------- */
   var rows = [];
-  if (INFO.address) rows.push(['Find us', INFO.maps ? '<a href="' + esc(INFO.maps) + '" target="_blank" rel="noopener">' + esc(INFO.address) + '</a>' : esc(INFO.address)]);
+  if (INFO.address) rows.push(['Find us', '<a href="' + DIR + '" target="_blank" rel="noopener">' + esc(INFO.address) + '</a>']);
   if (INFO.whatsapp) rows.push(['WhatsApp', '<a href="https://wa.me/' + WA + '" target="_blank" rel="noopener">' + esc(INFO.whatsapp) + '</a>']);
   if (INFO.phone) rows.push(['Call', '<a href="tel:' + INFO.phone.replace(/[^+\d]/g, '') + '">' + esc(INFO.phone) + '</a>']);
   if (INFO.email) rows.push(['Email', '<a href="mailto:' + esc(INFO.email) + '">' + esc(INFO.email) + '</a>']);
   if (INFO.hours) rows.push(['Hours', esc(INFO.hours)]);
   $('[data-info]').innerHTML = rows.map(function (r) { return '<li><span>' + r[0] + '</span><span>' + r[1] + '</span></li>'; }).join('');
-  var wa = $('[data-wa]'); if (WA) { wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hello AARONALDO TECH, I have a question.'); wa.hidden = false; }
+  if (WA) $$('[data-wa]').forEach(function (wa) { wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hello Aaronaldo Gadget Store, I have a question.'); wa.hidden = false; });
+  var fr = $('[data-map]'); if (fr && MQ) fr.src = 'https://www.google.com/maps?q=' + MQ + '&z=17&output=embed';
+  $$('[data-dir]').forEach(function (a) { a.href = DIR; });
+  $$('[data-wa-text]').forEach(function (a) { if (WA) { a.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(a.getAttribute('data-wa-text')); a.hidden = false; } });
+  $$('[data-rating]').forEach(function (a) { if (INFO.rating) { a.innerHTML = '<b>★ ' + INFO.rating + '</b> · ' + INFO.reviews + ' Google reviews'; a.href = 'https://www.google.com/maps/search/?api=1&query=' + MQ; a.hidden = false; } });
   $$('[data-year]').forEach(function (y) { y.textContent = new Date().getFullYear(); });
 })();
