@@ -61,7 +61,7 @@
     if (!dict) {
       if (num() >= 2) {
         var get = function (f) { return fetch('/assets/bemaamoo/words/' + f).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (t) { return new Set(t.split('\n')); }); };
-        dict = Promise.all([get('daily_strict.txt?v=2'), get('words_en.mav.txt')]).then(function (a) { return { full: a[0], mav: a[1] }; });
+        dict = Promise.all([get('daily_strict.txt?v=3'), get('words_en.mav.txt')]).then(function (a) { return { full: a[0], mav: a[1] }; });
       }
       else dict = Promise.all([env.getList('words_en'), env.getList('names_english')]).then(function (a) {
         var full = new Set(a[0].full); a[1].full.forEach(function (w) { full.add(w); });

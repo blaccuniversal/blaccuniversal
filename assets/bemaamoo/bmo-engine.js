@@ -15,7 +15,7 @@
 
   var CATS = [
     { g: 'Words', c: [['words_en', 'Words (English)'], ['words_fr', 'Words (French)'], ['words_es', 'Words (Spanish)'], ['words_pt', 'Words (Portuguese)'], ['words_de', 'Words (German)'], ['words_it', 'Words (Italian)'], ['words_nl', 'Words (Dutch)'], ['words_sw', 'Words (Swahili)']] },
-    { g: 'Names', c: [['names_all', 'Names (All)'], ['names_english', 'Names (English)'], ['names_african', 'Names (African)'], ['names_yoruba', 'Names (Yoruba)'], ['names_arabic', 'Names (Arabic)'], ['names_biblical', 'Names (Biblical)'], ['names_latin', 'Names (Latin)']] },
+    { g: 'Names', c: [['names_all', 'Names (All)'], ['names_english', 'Names (English)'], ['names_african', 'Names (African)'], ['names_yoruba', 'Names (Yoruba)'], ['names_igbo', 'Names (Igbo)'], ['names_arabic', 'Names (Arabic)'], ['names_biblical', 'Names (Biblical)'], ['names_latin', 'Names (Latin)']] },
     { g: 'Places', c: [['countries', 'Countries'], ['capitals', 'Capitals'], ['cities', 'Cities'], ['rivers', 'Rivers'], ['mountains', 'Mountains'], ['oceans', 'Oceans & Seas'], ['islands', 'Islands'], ['deserts', 'Deserts'], ['continents', 'Continents']] },
     { g: 'Nature', c: [['animals', 'Animals'], ['birds', 'Birds'], ['fish', 'Fish & Sea Life'], ['insects', 'Insects'], ['reptiles', 'Reptiles'], ['trees', 'Trees'], ['flowers', 'Flowers'], ['fruits', 'Fruits'], ['vegetables', 'Vegetables'], ['gems', 'Gems & Minerals'], ['weather', 'Weather'], ['planets', 'Planets & Stars']] },
     { g: 'Food & Drink', c: [['foods', 'Foods'], ['drinks', 'Drinks'], ['cuisines', 'Cuisines'], ['spices', 'Spices & Herbs'], ['desserts', 'Desserts']] },
