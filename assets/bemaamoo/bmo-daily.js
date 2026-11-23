@@ -3,7 +3,7 @@
   'use strict';
   var W = window.BMO_DAILY_WORDS || [];
   var START = Date.UTC(2026, 10, 23) / 86400000;            // day #1 = 23 Nov 2026
-  var KEY = 'bmo_daily_v1', KEYN = 'bmo_daily_name', MIN = 3, LIMIT = 600000;
+  var KEY = 'bmo_daily_v1', KEYN = 'bmo_daily_name', MIN = 3;
   var B = window.BMO, env = null, el = {}, today = 0, base = '', st = null, dict = null, busy = false;
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -23,7 +23,6 @@
       delete s.found;
     }
     if (!s.done && !s.t0 && B.round(s.g).entries.length) { s.t0 = Date.now(); put(s); }   // game begun before the timer existed
-    if (!s.done && s.t0 && Date.now() - s.t0 >= LIMIT) { s.done = true; put(s); }
     B.round(s.g).entries.forEach(function (e) { if (e.x && e.base === B.tri(e.w.length) * 2) { e.base = B.tri(e.w.length) * 3; e.total = e.base + e.mav + e.con + e.acc + e.key; } });   // older saves used x2
     return s;
   }
@@ -122,7 +121,7 @@
     today = dayNo(); var s = mine();
     var sub = $('[data-daily-sub]');
     if (s.done) sub.textContent = 'Done today · ' + total(s) + ' pts';
-    else if (s.t0) sub.textContent = 'In progress · ' + Math.ceil(Math.max(0, LIMIT - (Date.now() - s.t0)) / 60000) + ' min left';
+    else if (s.t0) sub.textContent = 'In progress';
     else sub.textContent = 'New word today';
   }
   function paint() {
@@ -140,7 +139,7 @@
     var f = $('[data-d-startform]'), h = $('.dstart__t'), pp = $('.dstart__p');
     if (f) f.hidden = used;
     if (h) h.textContent = used ? 'Today’s try is used' : 'Today’s word is waiting';
-    if (pp) pp.innerHTML = used ? 'You already played today’s word on this device. Come back at midnight for a new one.<br><span data-d-next2></span>' : 'One try. You get <b>10 minutes</b> once you start, and the clock doesn’t stop if you leave. Play fair: no cheating, no looking words up.';
+    if (pp) pp.innerHTML = used ? 'You already played today’s word on this device. Come back at midnight for a new one.<br><span data-d-next2></span>' : 'One try, no timer. Play as many words as you can, then tap <b>I’m done</b> to lock in your score. Play fair: no cheating, no looking words up.';
     if (used) { tick2(); return; }
     if (!st.t0) {
       try { el.name.value = localStorage.getItem(KEYN) || ''; } catch (e) {}
@@ -153,16 +152,8 @@
   function playUI() {
     el.tiles.innerHTML = shuffled(base, num()).map(function (l) { return '<button type="button" class="dtile" data-l="' + l + '">' + l + '</button>'; }).join('');
     el.inp.value = ''; msg('');
-    paintTiles(); paintFound(); clock();
-    ptm = setInterval(clock, 500);
+    paintTiles(); paintFound();
     dictP().catch(function () { msg('Couldn’t load the dictionary. Check your connection.', true); });
-  }
-  function left() { return Math.max(0, LIMIT - (Date.now() - st.t0)); }
-  function clock() {
-    var ms = left(), m = Math.floor(ms / 60000), sc = Math.ceil(ms % 60000 / 1000); if (sc === 60) { m++; sc = 0; }
-    el.timer.textContent = m + ':' + (sc < 10 ? '0' : '') + sc;
-    el.timer.classList.toggle('is-low', ms <= 60000);
-    if (ms <= 0) { clearInterval(ptm); st.done = true; put(st); paint(); }
   }
   function begin() {
     var n = (el.name.value || '').trim().replace(/\s+/g, ' ').slice(0, 18);
@@ -174,7 +165,6 @@
   function add(raw) {
     var w = B.norm(raw);
     if (!w) return;
-    if (left() <= 0) return clock();
     if (w.length < MIN) return msg('At least ' + MIN + ' letters.', true);
     if (!canMake(w, counts(base))) return msg(w + ' uses letters that aren’t there.', true);
     if (words(st).indexOf(w) >= 0) return msg('Already have ' + w + '.', true);
