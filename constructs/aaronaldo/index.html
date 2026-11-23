@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/aaronaldo/img/favicon.png">
-<link rel="stylesheet" href="/constructs/aaronaldo/aaronaldo.css?v=4">
+<link rel="stylesheet" href="/constructs/aaronaldo/aaronaldo.css?v=7">
 </head>
 <body id="top">
 
@@ -65,13 +65,42 @@
   </div>
 </section>
 
-<section id="visit" class="visit">
-  <div class="visit__in">
+<section class="wf" id="visit">
+  <div class="wf__copy">
     <p class="eyebrow eyebrow--lt">Visit</p>
-    <h2>Come see it in person.</h2>
+    <h2 class="wf__h">Find your way<br>to Aaronaldo.</h2>
+    <div class="addr">
+      <span class="addr__k">Address</span>
+      <p class="addr__l1">Shop 6, BAEYOLT Plaza</p>
+      <p class="addr__l2">6B Sango Poly Road, beside Homeland Foodie, Ibadan</p>
+      <button class="addr__copy" type="button" data-copy="Aaronaldo Gadget Store, Shop 6, BAEYOLT Plaza, 6B Sango Poly Road, beside Homeland Foodie, Ibadan">Copy address</button>
+    </div>
+    <div class="vbtns">
+      <button class="pill pill--w" type="button" id="guideBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M15.2 8.8l-1.9 4.5-4.5 1.9 1.9-4.5z"/></g></svg>Guide me there</button>
+      <a class="pill pill--ghost" id="gmapsLink" data-dir target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0113 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></g></svg>Directions</a>
+    </div>
+  </div>
+  <div class="wf__stage" id="stage">
+    <canvas id="map" aria-label="Live wayfinding map to Aaronaldo Gadget Store"></canvas>
+    <div class="hud hud--tr">Wayfinder <b>/ 01</b><br><span id="hudCoord">7.4275&deg; N &middot; 3.8985&deg; E</span><br><span class="hud__st" id="hudStatus"><i></i><span id="hudStatusText">Standby</span></span></div>
+    <div class="hud hud--stats">
+      <div class="hud__row"><span>To the shop</span><span id="hudDist">&mdash;</span></div>
+      <div class="hud__meter"><i id="hudMeter"></i></div>
+      <div class="hud__grid"><div><span>ETA</span><b id="hudEta">&mdash;</b></div><div><span>Bearing</span><b id="hudBearing">&mdash;</b></div><div><span>Heading</span><b id="hudHeading">N-UP</b></div></div>
+    </div>
+    <div class="wtoast" id="toast">
+      <div class="wtoast__main">
+        <div class="wtoast__ic"><svg id="toastArrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg></div>
+        <div><div class="wtoast__t" id="toastText">In Ibadan? Tap &ldquo;Guide me there&rdquo; for a live compass.</div><div class="wtoast__s" id="toastSub">Sango Poly Road &middot; Ibadan</div></div>
+      </div>
+      <div class="wtoast__acts" id="toastActions"></div>
+      <div class="wtoast__bar"><i></i></div>
+    </div>
+  </div>
+  <div class="wf__info">
     <ul class="info" data-info></ul>
-    <div class="visit__btns"><a class="btn btn--w" data-dir target="_blank" rel="noopener">Get directions</a><a class="btn btn--ghost" data-wa hidden target="_blank" rel="noopener">Chat on WhatsApp</a></div>
-    <div class="mapbox"><iframe data-map title="Map to Aaronaldo Gadget Store" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+    <div class="visit__btns"><a class="btn btn--w" data-wa hidden target="_blank" rel="noopener">Chat on WhatsApp</a></div>
+    <p class="wf__note">The street map is a guide. The compass, distance and bearing are live, and “Directions” opens the real route in Google Maps.</p>
   </div>
 </section>
 
@@ -86,6 +115,7 @@
 
 <script src="/constructs/aaronaldo/contact-info.js?v=4"></script>
 <script src="/constructs/aaronaldo/products.js?v=5"></script>
-<script src="/constructs/aaronaldo/aaronaldo.js?v=5"></script>
+<script src="/constructs/aaronaldo/aaronaldo.js?v=6"></script>
+<script src="/constructs/aaronaldo/aaronaldo-wf.js?v=3"></script>
 </body>
 </html>
