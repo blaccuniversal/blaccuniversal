@@ -188,4 +188,34 @@ img{max-width:100%}
 .buy .btn{overflow:hidden;text-overflow:ellipsis}
 @media(max-width:480px){.buy .btn{font-size:11px;letter-spacing:.02em;padding:0 8px}}
 @media(max-width:480px){.buy .btn{font-size:12px;letter-spacing:.06em}.buy__t{display:none}}
-.brand{align-items:center}.brand__mk{width:auto;height:26px;align-self:center;margin-right:2px}.foot__logo{width:190px;height:auto;margin:6px auto 12px}
+.brand{align-items:center}.brand__mk{width:auto;height:26px;align-self:center;margin-right:2px}.foot__logo{width:190px;height:auto;margin:6px auto 12px}.foot__logo.dk{display:none}html[data-theme=dark] .foot__logo.dk{display:inline-block}html[data-theme=dark] .foot__logo.lt{display:none}
+
+/* theme toggle + dark mode */
+.dk{display:none}.lt{display:inline-block}
+.tgl{display:grid;place-items:center;flex:none;width:36px;height:36px;margin-left:auto;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink)}.tgl:hover{border-color:var(--ink)}
+.tgl__sun{display:none}
+.nav__links{margin-left:auto}.nav__links+.tgl{margin-left:0}
+@media(max-width:560px){.nav .tgl{margin-left:auto}.nav .tgl+.pill{margin-left:0}}
+html[data-theme=dark]{--ink:#f3f5fb;--mut:#9ca5bb;--line:rgba(255,255,255,.13);--soft:#0e1326;color-scheme:dark}
+html[data-theme=dark] body{background:#05070f}
+html[data-theme=dark] .nav{background:rgba(5,7,15,.9)}
+html[data-theme=dark] .pill{background:#fff;color:#0a0b10}
+html[data-theme=dark] .tgl__moon{display:none}html[data-theme=dark] .tgl__sun{display:block}
+html[data-theme=dark] .lt{display:none}html[data-theme=dark] .dk{display:inline-block}
+html[data-theme=dark] .tab,html[data-theme=dark] .swn button,html[data-theme=dark] .views button,html[data-theme=dark] .card,html[data-theme=dark] .sheet__card{background:#0a0e1c}
+html[data-theme=dark] .tab.is-on,html[data-theme=dark] .views button.is-on{background:#fff;color:#05070f;border-color:#fff}
+html[data-theme=dark] .swn button:hover,html[data-theme=dark] .views button:hover:not(.is-on){background:#121933}
+html[data-theme=dark] .card:hover{border-color:#ff2d46;box-shadow:0 10px 34px rgba(255,45,70,.18)}
+html[data-theme=dark] .card__img,html[data-theme=dark] .sheet__stage{background:#fff}
+html[data-theme=dark] .sheet__x{background:#0a0e1c;color:#fff}
+html[data-theme=dark] .chip input:checked+span{background:#fff;color:#05070f;border-color:#fff}html[data-theme=dark] .chip input:checked+span small{color:#5d6270}
+html[data-theme=dark] .chip span{background:#0a0e1c}
+html[data-theme=dark] .qty,html[data-theme=dark] .enq input{background:#0a0e1c}
+html[data-theme=dark] .enq{background:#0e1326}
+html[data-theme=dark] .btn{background:#fff;color:#05070f;border-color:#fff}html[data-theme=dark] .btn--red{background:linear-gradient(135deg,#0a1a55,#050509 55%,#8e1228);color:#fff;border-color:transparent}
+html[data-theme=dark] .btn--ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,.4)}
+html[data-theme=dark] .svc{border-color:var(--line)}
+html[data-theme=dark] .foot a{border-color:var(--line)}
+html[data-theme=dark] .hero__cats a,html[data-theme=dark] .rate{color:rgba(255,255,255,.85)}
+html[data-theme=dark] .hero{border-bottom:1px solid var(--line)}
+html[data-theme=dark] .card__badge{color:#0a0b10}html[data-theme=dark] .sheet__stage .card__badge{color:#0a0b10}

@@ -1,4 +1,4 @@
-/* Aaronaldo Gadget Store · Wayfinder · construct by BLACC Universal */
+/* Aaronaldo Tech Enterprises · Wayfinder · construct by BLACC Universal */
 (()=>{
 const LODGE = { lat: 7.427472, lng: 3.8985 };      // Shop 6, BAEYOLT Plaza, Sango Poly Road, Ibadan
 const IBADAN = { lat: 7.3775, lng: 3.9470 };

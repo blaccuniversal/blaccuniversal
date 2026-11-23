@@ -1,4 +1,4 @@
-/* Aaronaldo Gadget Store · storefront */
+/* Aaronaldo Tech Enterprises · storefront */
 (function () {
   'use strict';
   var P = window.AAR_PRODUCTS || [], INFO = window.AAR_INFO || {};
@@ -67,7 +67,7 @@
   function total() { var x = cur.price; (cur.o || []).forEach(function (o) { x += (o.v.filter(function (v) { return v[0] === sel[o.k]; })[0] || [0, 0])[1]; }); return x * qty; }
   function msg() {
     var opts = (cur.o || []).map(function (o) { return o.k + ': ' + sel[o.k]; }).join(', ');
-    return 'Hello Aaronaldo Gadget Store, I would like to order:\n' + qty + ' × ' + cur.name + (opts ? ' (' + opts + ')' : '') + '\nTotal: ' + N(total()) + '\nPlease confirm it is available.';
+    return 'Hello Aaronaldo Tech Enterprises, I would like to order:\n' + qty + ' × ' + cur.name + (opts ? ' (' + opts + ')' : '') + '\nTotal: ' + N(total()) + '\nPlease confirm it is available.';
   }
   function openSheet(id) {
     cur = P.filter(function (p) { return p.id === id; })[0]; if (!cur) return;
@@ -87,7 +87,7 @@
       (facts ? '<ul class="facts">' + facts + '</ul>' : '') +
       '<p class="note">Pick up in Ibadan or ask about delivery. We confirm availability and payment details with you before anything is charged.</p>' +
       '<form class="enq" data-enq hidden><p class="enq__t">Where should we reach you?</p><label>Your name<input name="name" required autocomplete="name"></label><label>Phone number<input name="phone" type="tel" required inputmode="tel" autocomplete="tel"></label>' +
-      '<input type="hidden" name="access_key" value="c45f617c-f3f2-4caa-93cf-5d49e2cece46"><input type="hidden" name="subject" value="Aaronaldo Gadget Store order enquiry"><input type="hidden" name="from_name" value="Aaronaldo Gadget Store construct"><input type="hidden" name="order" value="">' +
+      '<input type="hidden" name="access_key" value="c45f617c-f3f2-4caa-93cf-5d49e2cece46"><input type="hidden" name="subject" value="Aaronaldo Tech Enterprises order enquiry"><input type="hidden" name="from_name" value="Aaronaldo Tech Enterprises construct"><input type="hidden" name="order" value="">' +
       '<p class="sr-only"><label>Leave empty <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label></p>' +
       '<button class="btn btn--red" type="submit">Send order request</button><p class="enq__ok" role="status" hidden>Sent. We will call you to confirm.</p><p class="enq__err" role="alert" hidden>That did not go through. Please try again.</p></form></div>';
     sheet.hidden = false; document.documentElement.classList.add('is-sheet');
@@ -122,10 +122,18 @@
   if (INFO.email) rows.push(['Email', '<a href="mailto:' + esc(INFO.email) + '">' + esc(INFO.email) + '</a>']);
   if (INFO.hours) rows.push(['Hours', esc(INFO.hours)]);
   $('[data-info]').innerHTML = rows.map(function (r) { return '<li><span>' + r[0] + '</span><span>' + r[1] + '</span></li>'; }).join('');
-  if (WA) $$('[data-wa]').forEach(function (wa) { wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hello Aaronaldo Gadget Store, I have a question.'); wa.hidden = false; });
+  if (WA) $$('[data-wa]').forEach(function (wa) { wa.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent('Hello Aaronaldo Tech Enterprises, I have a question.'); wa.hidden = false; });
   var fr = $('[data-map]'); if (fr && MQ) fr.src = 'https://www.google.com/maps?q=' + MQ + '&z=17&output=embed';
   $$('[data-dir]').forEach(function (a) { a.href = DIR; });
   $$('[data-wa-text]').forEach(function (a) { if (WA) { a.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(a.getAttribute('data-wa-text')); a.hidden = false; } });
   $$('[data-rating]').forEach(function (a) { if (INFO.rating) { a.innerHTML = '<b>★ ' + INFO.rating + '</b> · ' + INFO.reviews + ' Google reviews'; a.href = 'https://www.google.com/maps/search/?api=1&query=' + MQ; a.hidden = false; } });
   $$('[data-year]').forEach(function (y) { y.textContent = new Date().getFullYear(); });
+  /* ---------- dark mode ---------- */
+  (function () {
+    var root = document.documentElement, btn = $('[data-theme-btn]'), meta = document.querySelector('meta[name="theme-color"]');
+    function cur() { return root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+    function paint() { var d = cur() === 'dark'; if (btn) { btn.setAttribute('aria-label', d ? 'Switch to light mode' : 'Switch to dark mode'); btn.title = d ? 'Light mode' : 'Dark mode'; } if (meta) meta.content = d ? '#05070f' : '#ffffff'; }
+    if (btn) btn.addEventListener('click', function () { var n = cur() === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', n); try { localStorage.setItem('aar_theme', n); } catch (e) {} paint(); });
+    paint();
+  })();
 })();

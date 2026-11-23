@@ -1,4 +1,4 @@
-/* Aaronaldo Gadget Store products. Prices are ESTIMATES: replace with the shop's real prices.
+/* Aaronaldo Tech Enterprises products. Prices are ESTIMATES: replace with the shop's real prices.
    o = options [{k:'Storage', v:[['128GB',0],['256GB',60000]]}] (extra price in naira). */
 window.AAR_PRODUCTS = [
  {
