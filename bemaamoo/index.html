@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=54">
+<link rel="stylesheet" href="/assets/bemaamoo/bmo.css?v=55">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -75,13 +75,15 @@
         </form>
       </div>
       <div data-d-res hidden>
-        <div class="dres">
-          <p class="eyebrow" data-d-who>Daily</p>
-          <h2 class="dres__t"><b data-d-score>0</b><span>pts</span></h2>
+        <div class="dres ov__card ov__card--wide">
+          <p class="eyebrow" data-d-who>Daily · Result</p>
+          <h2 class="ov__t"><span data-d-score>0</span> points</h2>
           <p class="dres__m" data-d-meta></p>
-          <div class="dbrk" data-d-brk></div>
-          <div class="dsum" data-d-sum></div>
-          <button class="btn btn--full" type="button" data-d="share" data-d-share><span>Share my result</span></button>
+          <div data-d-sum></div>
+          <div class="ov__btns">
+            <button class="btn btn--big" type="button" data-d="share" data-d-share><span>Share my result</span></button>
+            <button class="btn btn--big btn--ghost" type="button" data-d="back">Home</button>
+          </div>
           <p class="dres__n" data-d-next></p>
         </div>
       </div>
@@ -108,7 +110,7 @@
         <div class="dock__msg" data-d-msg aria-live="polite"></div>
         <div class="dtiles" data-d-tiles></div>
         <form class="entry" data-d-form autocomplete="off">
-          <div class="dly__inw"><input class="entry__in" data-d-in type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="Type or tap letters" aria-label="Your word"><button class="dly__del" type="button" data-d="del" aria-label="Delete letter"><svg><use href="#i-back"/></svg></button></div>
+          <div class="dly__inw"><input class="entry__in" data-d-in type="text" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="Type or tap letters" aria-label="Your word"><button class="dly__del" type="button" data-d="del" aria-label="Delete letter"><svg><use href="#i-back"/></svg></button></div>
           <button class="btn entry__go" type="submit">Add</button>
         </form>
         <div class="dopts"><button type="button" class="lnk" data-d="shuffle">Shuffle</button><button type="button" class="lnk" data-d="undo" data-d-undo>Undo last word</button><button type="button" class="lnk" data-d="finish">I'm done</button></div>
@@ -492,7 +494,7 @@
 <script src="/assets/bemaamoo/bmo-acct.js?v=2"></script>
 <script src="/assets/bemaamoo/bmo-engine.js?v=12"></script>
 <script src="/assets/bemaamoo/bmo-daily-words.js?v=1"></script>
-<script src="/assets/bemaamoo/bmo-daily.js?v=17"></script>
+<script src="/assets/bemaamoo/bmo-daily.js?v=19"></script>
 <script src="/assets/bemaamoo/bmo.js?v=50"></script>
 </body>
 </html>

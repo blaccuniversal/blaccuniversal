@@ -179,6 +179,7 @@
   }
 
   /* ---------- result ---------- */
+  function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]; }); }
   function stats() {
     var E = entries(st), T = B.tally(st.g)[0], rg = E.filter(function (e) { return e.acc; }).length;
     return { E: E, T: T, rg: rg, perks: T.mavs + T.cons + rg + T.keys, perkPts: T.mav + T.con + T.acc + T.key, found: E.some(function (e) { return e.x; }) };
@@ -187,13 +188,17 @@
     var a = load(); st = mine();
     var S = stats(), T = S.T, n = S.E.length, sk = streak();
     $('[data-d-score]').textContent = T.total;
-    $('[data-d-who]').textContent = 'Daily #' + num() + ' · ' + (st.name || 'Player');
+    $('[data-d-who]').textContent = 'Daily #' + num() + ' · Result';
     $('[data-d-meta]').textContent = sk > 1 ? sk + '-day streak' : '';
-    $('[data-d-brk]').innerHTML = '<span><i>W</i>' + T.base + '</span><span class="m"><i>M</i>' + T.mav + '</span><span class="c"><i>C</i>' + T.con + '</span><span class="r"><i>R</i>' + T.acc + '</span><span class="k"><i>K</i>' + T.key + '</span>';
     function rows(all, maxp) {
-      var r = [['Words found', all ? n + ' of ' + all : String(n)], ['Points from words', String(T.base)], ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'],
-        ['Possible, excluding perks', maxp ? maxp.toLocaleString('en') + ' pts' : '…'], ['Possible words', all ? String(all) : '…'], ['Today’s word', S.found ? 'Found · 3×' : 'Not found']];
-      $('[data-d-sum]').innerHTML = r.map(function (x, i) { return '<div class="dsum__r' + (i === 5 && S.found ? ' is-x' : '') + '"><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('');
+      var list = [{ base: T.base, mav: T.mav, con: T.con, acc: T.acc, key: T.key, total: T.total }];
+      var dg = function (f) { return String(f(list[0])).length; }, cw = function (d, big) { return Math.max(big ? 40 : 24, Math.ceil(d * (big ? 10.5 : 8.6) + 6)); };
+      var cols = '24px minmax(0,1fr) ' + ['base', 'mav', 'con', 'acc', 'key'].map(function (k) { return cw(String(T[k]).length) + 'px'; }).join(' ') + ' ' + cw(String(T.total).length, 1) + 'px';
+      var head = '<div class="sum__h"><span></span><span>Player</span><span>W</span><span class="c-mav">M</span><span class="c-con">C</span><span class="c-acc">R</span><span class="c-key">K</span><span>Total</span></div>';
+      var row = '<div class="sum__r"><span class="sum__p">1</span><span class="sum__n"><b><i style="background:#fff"></i><u style="color:#fff">' + esc(st.name || 'Player') + '</u></b></span><span class="sum__parts"><span data-l="W">' + T.base + '</span><span class="c-mav" data-l="M">' + T.mav + '</span><span class="c-con" data-l="C">' + T.con + '</span><span class="c-acc" data-l="R">' + T.acc + '</span><span class="c-key" data-l="K">' + T.key + '</span></span><span class="sum__t">' + T.total + '</span></div>';
+      var r = [['Words found', all ? n + ' of ' + all : String(n)], ['Possible words', all ? String(all) : '…'], ['Possible points, excluding perks', maxp ? maxp.toLocaleString('en') : '…'],
+        ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'], ['Today’s word', S.found ? 'Found · 3×' : 'Not found']];
+      $('[data-d-sum]').innerHTML = '<div class="sum" style="--cols:' + cols + '">' + head + row + '</div><p class="sum__lg">W words · M Maverick · C Concord · R Regen · K Keystone</p><p class="sum__d">Today’s challenge</p><div class="sum sum--rounds">' + r.map(function (x, i) { return '<div class="sum__rr' + (i === 4 && S.found ? ' is-x' : '') + '"><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>';
     }
     rows(st.all, st.max);
     dictP().then(function (D) {
@@ -284,7 +289,11 @@
       else if (a === 'share') share();
     });
     $('[data-d-startform]').addEventListener('submit', function (ev) { ev.preventDefault(); begin(); });
-    $('[data-d-form]').addEventListener('submit', function (ev) { ev.preventDefault(); add(el.inp.value); });
+    $('[data-d-form]').addEventListener('submit', function (ev) { ev.preventDefault(); add(el.inp.value); keep(); });
+    function keep() { try { el.inp.focus({ preventScroll: true }); } catch (e) {} }
+    // tapping Add / delete / tiles must not pull focus off the box, or the keyboard closes
+    $('[data-d-form]').addEventListener('pointerdown', function (ev) { if (ev.target.closest('button')) ev.preventDefault(); });
+    el.tiles.addEventListener('pointerdown', function (ev) { if (ev.target.closest('button')) ev.preventDefault(); });
     el.inp.addEventListener('input', paintTiles);
     function toEnd() { if (el.board && !el.game.hidden) el.board.scrollTop = el.board.scrollHeight; }
     if (window.visualViewport) visualViewport.addEventListener('resize', function () { setTimeout(toEnd, 60); });

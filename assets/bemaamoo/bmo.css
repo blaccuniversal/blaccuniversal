@@ -852,3 +852,9 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dsum__r{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid #1f1f1f;font-size:15px;color:#b5b5b5;text-align:left}
 .dsum__r b{color:#fff;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
 .dsum__r.is-x b{color:#6ee7b7}
+
+.dres.ov__card{margin:12px auto;text-align:center;padding:22px clamp(16px,4vw,26px)}
+.dres .sum__rr.is-x b{color:#6ee7b7}
+.dres .sum__rr span{color:var(--tx2)}
+.dres .sum__rr{padding:11px 0;font-size:14px}
+.dres__n{margin:14px 0 0}
