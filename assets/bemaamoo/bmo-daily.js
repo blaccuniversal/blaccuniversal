@@ -173,6 +173,14 @@
       
     }, function () { busy = false; msg('Couldn’t check that word. Try again.', true); });
   }
+  var uTmr = 0;
+  function armUndo() {
+    var b = $('[data-d-undo]'), E = entries(st);
+    if (!E.length) return;
+    if (b.classList.contains('is-armed')) { clearTimeout(uTmr); b.classList.remove('is-armed'); b.textContent = 'Undo last word'; return undo(); }
+    b.classList.add('is-armed'); b.textContent = 'Tap again to remove ' + E[E.length - 1].w;
+    clearTimeout(uTmr); uTmr = setTimeout(function () { b.classList.remove('is-armed'); b.textContent = 'Undo last word'; }, 3000);
+  }
   function undo() {
     if (!entries(st).length) return;
     B.undo(st.g); put(st); paintFound(); msg('Removed the last word.');
@@ -222,29 +230,42 @@
   function css(n, d) { var v = getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v || d; }
   function rr(c, x, y, w, h, r) { c.beginPath(); if (c.roundRect) c.roundRect(x, y, w, h, r); else c.rect(x, y, w, h); }
   function sheetImage() {
-    var S = stats(), T = S.T, W = 1080, pad = 70, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
+    var S = stats(), T = S.T, W = 1080, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
     var EM = '#6ee7b7', gold = css('--mav', '#ffd23f'), blue = css('--con', '#4aa8ff'), purple = css('--acc', '#b48cff'), key = css('--key', '#ff6a4d');
-    var rows = [['Words found', st.all ? S.E.length + ' of ' + st.all : String(S.E.length)], ['Points from words', String(T.base)], ['Perks earned', S.perks + '  ·  +' + S.perkPts + ' pts'],
-      ['Possible, excluding perks', st.max ? st.max.toLocaleString('en') + ' pts' : '-'], ['Possible words', st.all ? String(st.all) : '-'], ['Today’s word', S.found ? 'Found  ·  3×' : 'Not found']];
-    var rh = 96, top = 640, H = top + rows.length * rh + 190;
-    var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
+    var rows = [['Words found', st.all ? S.E.length + ' of ' + st.all : String(S.E.length)], ['Possible words', st.all ? String(st.all) : '-'], ['Possible points, excluding perks', st.max ? st.max.toLocaleString('en') : '-'],
+      ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'], ['Today’s word', S.found ? 'Found · 3×' : 'Not found']];
+    var cx = 40, cw = W - 80, px = cx + 64, pw = cw - 128, L = px, R = px + pw;
+    var rowH = 92, H = 814 + rows.length * rowH, cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
     c.fillStyle = '#000'; c.fillRect(0, 0, W, H);
-    c.strokeStyle = '#222'; c.lineWidth = 2; rr(c, 24, 24, W - 48, H - 48, 18); c.stroke();
-    c.textAlign = 'center'; c.textBaseline = 'alphabetic';
-    c.fillStyle = '#8a8a8a'; c.font = '600 30px ' + FONT; c.fillText('BEMAAMOO  ·  DAILY #' + num() + (st.name ? '  ·  ' + st.name.toUpperCase() : ''), W / 2, 120);
-    c.fillStyle = gold; c.font = '800 220px ' + FONT; c.fillText(String(T.total), W / 2, 360);
-    c.fillStyle = '#9a9a9a'; c.font = '600 40px ' + FONT; c.fillText(st.max ? 'points out of a possible ' + st.max.toLocaleString('en') : 'points', W / 2, 430);
-    var chips = [['W', T.base, '#fff'], ['M', T.mav, gold], ['C', T.con, blue], ['R', T.acc, purple], ['K', T.key, key]];
-    c.font = '700 44px ' + FONT; var gapC = 46, ws = chips.map(function (t) { return c.measureText(t[0] + ' ' + t[1]).width; }), tot = ws.reduce(function (a, b) { return a + b; }, 0) + gapC * (chips.length - 1), x = (W - tot) / 2;
-    c.textAlign = 'left';
-    chips.forEach(function (t, i) { c.fillStyle = '#7a7a7a'; c.font = '700 34px ' + FONT; c.fillText(t[0], x, 540); var lw = c.measureText(t[0] + ' ').width; c.fillStyle = t[2]; c.font = '700 44px ' + FONT; c.fillText(String(t[1]), x + lw, 540); x += ws[i] + gapC; });
-    rows.forEach(function (r, i) {
-      var y = top + i * rh; c.strokeStyle = '#1f1f1f'; c.lineWidth = 2; c.beginPath(); c.moveTo(pad, y); c.lineTo(W - pad, y); c.stroke();
-      c.textAlign = 'left'; c.fillStyle = '#b5b5b5'; c.font = '500 38px ' + FONT; c.fillText(r[0], pad, y + 62);
-      c.textAlign = 'right'; c.fillStyle = (i === 5 && S.found) ? EM : '#fff'; c.font = '700 40px ' + FONT; c.fillText(r[1], W - pad, y + 62);
+    c.fillStyle = '#0b0b0b'; c.fillRect(cx, 40, cw, H - 80); c.strokeStyle = '#2a2a2a'; c.lineWidth = 2; c.strokeRect(cx + 1, 41, cw - 2, H - 82);
+    c.textBaseline = 'alphabetic'; c.textAlign = 'center';
+    var y = 40 + 100;
+    c.fillStyle = '#9a9a9a'; c.font = '600 30px ' + FONT; try { c.letterSpacing = '6px'; } catch (e) {}
+    c.fillText(('Daily #' + num() + ' · Result').toUpperCase(), W / 2 + 3, y); try { c.letterSpacing = '0px'; } catch (e) {}
+    y += 110; c.fillStyle = '#fff'; c.font = '800 104px ' + FONT; c.fillText(T.total + ' points', W / 2, y);
+    y += 70; c.strokeStyle = '#1f1f1f'; c.lineWidth = 2; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
+    // player row
+    var ry = y + 74; c.textAlign = 'left';
+    c.fillStyle = '#fff'; c.font = '700 40px ' + FONT; c.fillText('1', L + 6, ry);
+    c.beginPath(); c.arc(L + 86, ry - 14, 11, 0, 7); c.fill();
+    c.font = '700 48px ' + FONT; c.fillText(st.name || 'Player', L + 118, ry);
+    c.textAlign = 'right'; c.font = '800 58px ' + FONT; c.fillText(String(T.total), R, ry + 4);
+    var parts = [['W', T.base, '#fff'], ['M', T.mav, gold], ['C', T.con, blue], ['R', T.acc, purple], ['K', T.key, key]], x = L + 118; c.textAlign = 'left';
+    parts.forEach(function (t) {
+      c.fillStyle = '#7a7a7a'; c.font = '700 28px ' + FONT; c.fillText(t[0], x, ry + 62); x += c.measureText(t[0]).width + 12;
+      c.fillStyle = t[2]; c.font = '700 40px ' + FONT; c.fillText(String(t[1]), x, ry + 62); x += c.measureText(String(t[1])).width + 38;
     });
-    c.textAlign = 'center'; c.fillStyle = '#8a8a8a'; c.font = '500 32px ' + FONT; c.fillText('Can you beat my score, and win the day?', W / 2, H - 100);
-    c.fillStyle = '#fff'; c.font = '700 34px ' + FONT; c.fillText('blaccuniversal.com/bemaamoo', W / 2, H - 52);
+    y = ry + 62 + 40; c.strokeStyle = '#1f1f1f'; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
+    y += 62; c.textAlign = 'left'; c.fillStyle = '#6f6f6f'; c.font = '500 28px ' + FONT; c.fillText('Today’s challenge', L, y);
+    y += 26;
+    rows.forEach(function (r, i) {
+      c.strokeStyle = '#1f1f1f'; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
+      c.textAlign = 'left'; c.fillStyle = '#b5b5b5'; c.font = '500 34px ' + FONT; c.fillText(r[0], L, y + 58);
+      c.textAlign = 'right'; c.fillStyle = (i === 4 && S.found) ? EM : '#fff'; c.font = '700 36px ' + FONT; c.fillText(r[1], R, y + 58); y += rowH;
+    });
+    c.strokeStyle = '#1f1f1f'; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
+    c.textAlign = 'center'; c.fillStyle = '#9a9a9a'; c.font = '500 32px ' + FONT; c.fillText('Can you beat my score, and win the day?', W / 2, y + 74);
+    c.fillStyle = '#fff'; c.font = '700 34px ' + FONT; c.fillText('blaccuniversal.com/bemaamoo', W / 2, y + 124);
     return cv;
   }
   function shareText() {
@@ -280,7 +301,7 @@
       if (a === 'back') { clearInterval(tmr); clearInterval(ptm); document.body.classList.remove('in-game'); $('[data-scr="daily"]').classList.remove('scr--game'); env.show('home'); }
       else if (a === 'del') { el.inp.value = el.inp.value.slice(0, -1); paintTiles(); }
       else if (a === 'shuffle') { var o = shuffled(base, Date.now() % 9973); el.tiles.innerHTML = o.map(function (l) { return '<button type="button" class="dtile" data-l="' + l + '">' + l + '</button>'; }).join(''); paintTiles(); }
-      else if (a === 'undo') undo();
+      else if (a === 'undo') armUndo();
       else if (a === 'perks') perks();
       else if (a === 'begin') begin();
       else if (a === 'finish') { el.fin.hidden = false; }
