@@ -7,7 +7,7 @@
   var N = function (n) { return '₦' + Math.round(n).toLocaleString('en-NG'); };
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var WA = (INFO.whatsapp || '').replace(/\D/g, '');
-  var MQ = encodeURIComponent(INFO.mapQuery || INFO.address || ''), DIR = 'https://www.google.com/maps/dir/?api=1&destination=' + MQ;
+  var MQ = encodeURIComponent(INFO.mapQuery || INFO.address || ''), DIR = INFO.pin || ('https://www.google.com/maps/dir/?api=1&destination=' + MQ);
 
   /* ---------- product art (original drawings, replaced by "img" when supplied) ---------- */
   var COL = { graphite: ['#4a4f5e', '#14161d'], silver: ['#eceef3', '#aeb4c2'], white: ['#ffffff', '#c9cdd8'], black: ['#2a2c34', '#08090c'], sapphire: ['#2f56c9', '#0a1a55'] };
