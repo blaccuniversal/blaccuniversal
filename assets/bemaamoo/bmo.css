@@ -906,3 +906,9 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .gtop__mid{align-items:flex-start;text-align:left;padding:4px 6px}
 .dgame .gtop__mid{align-items:center}
 .gtop__cat,.gtop__sub{text-align:left}
+.dres .ov__btns{width:100%;display:flex;flex-direction:row;gap:10px;margin-top:22px}
+.dres .ov__btns .btn{max-width:none;min-width:0;width:auto;padding:0 10px;overflow:visible}
+.dres .ov__btns .btn:first-child{flex:1.7 1 0}
+.dres .ov__btns .btn:last-child{flex:1 1 0}
+.dres.ov__card{align-items:stretch}
+.dres [data-d-sum],.dres .ov__btns{width:100%;box-sizing:border-box}

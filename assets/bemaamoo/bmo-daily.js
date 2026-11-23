@@ -267,7 +267,7 @@
   }
   function shareText() {
     var T = B.tally(st.g)[0];
-    return 'Bemaamoo Daily Challenge #' + num() + '\n\nI scored ' + T.total + (st.max ? ' out of a possible ' + st.max.toLocaleString('en') : '') + '.\nCan you beat my score, and win the day?\n\nPlay here: blaccuniversal.com/bemaamoo';
+    return 'Bemaamoo Daily Challenge #' + num() + '\n\nI scored ' + T.total + (st.max ? ' out of a possible ' + st.max.toLocaleString('en') : '') + '.\n\nCan you beat my score, and win the day?\nPlay here: blaccuniversal.com/bemaamoo';
   }
   function share() {
     var b = $('[data-d-share] span');
