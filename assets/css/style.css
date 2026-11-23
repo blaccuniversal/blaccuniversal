@@ -1412,3 +1412,18 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 
 /* wide hero on large screens */
 @media (min-width:1100px){.hero__photo{left:0;transform:none;width:100%;max-width:none;object-position:50% 40%}.hero__spot{--y:47%;--r:620px;background:radial-gradient(circle var(--r) at var(--x) var(--y),rgba(0,0,0,0) 0%,rgba(0,0,0,.15) 50%,rgba(0,0,0,.85) 100%)}}
+
+/* BLACC Universal in numbers */
+.stats__eyebrow{text-align:center;margin-bottom:clamp(28px,4vw,56px)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin:0;max-width:1120px;margin-left:auto;margin-right:auto}
+.stat{display:flex;flex-direction:column-reverse;align-items:center;justify-content:center;gap:14px;padding:6px 12px;text-align:center}
+.stat+.stat{border-left:1px solid #2a2a2a}
+.stat__num{margin:0;font-size:clamp(34px,5vw,64px);font-weight:300;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;color:#fff}
+.stat__label{margin:0;font-size:13px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#9a9a9a}
+@media (max-width:760px){
+  .stats{grid-template-columns:1fr;border-top:1px solid #2a2a2a}
+  .stat{flex-direction:row-reverse;justify-content:space-between;align-items:baseline;gap:12px;padding:18px 2px;text-align:left;border-bottom:1px solid #2a2a2a}
+  .stat+.stat{border-left:0}
+  .stat__num{font-size:clamp(34px,11vw,46px)}
+  .stat__label{font-size:11px;letter-spacing:.14em;max-width:11em}
+}
