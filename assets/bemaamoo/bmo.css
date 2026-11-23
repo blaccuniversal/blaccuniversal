@@ -824,3 +824,17 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dgame .board .cell,.dboard .cell{font-size:var(--dfs,12px)}
 .dgame .board .row__n,.dboard .row__n{font-size:12px}
 .dgame .board .row__pts,.dboard .row__pts{font-size:14px}
+
+/* home polish */
+.home{justify-content:space-between;padding-top:clamp(18px,6vh,64px)}
+.hero{gap:14px;margin:auto 0}
+.hero .wm{letter-spacing:-.03em;line-height:1;margin:6px 0 0}
+.hero .lead{max-width:30ch;margin:0 auto;font-size:15px;line-height:1.5;color:#9a9a9a}
+.hero__btns{width:100%;max-width:300px;flex-direction:column;gap:10px;margin-top:14px}
+.hero__btns .btn{width:100%;min-width:0;max-width:none;min-height:50px;border-radius:12px;font-size:16px;font-weight:700}
+.hero__btns .btn--daily{background:#fff;color:#000}
+.hero__btns .btn--daily small{opacity:.55}
+.hero__btns .btn[data-act="newgame"]{background:transparent;color:#fff;border:1px solid #333}
+.hero__btns .btn[data-act="newgame"]:hover{border-color:#666}
+.hero__help{margin-top:6px;font-size:13px;color:var(--tx3,#777)}
+.home .foot{margin:0;font-size:12px;opacity:.6}
