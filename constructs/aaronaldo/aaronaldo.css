@@ -219,3 +219,16 @@ html[data-theme=dark] .foot a{border-color:var(--line)}
 html[data-theme=dark] .hero__cats a,html[data-theme=dark] .rate{color:rgba(255,255,255,.85)}
 html[data-theme=dark] .hero{border-bottom:1px solid var(--line)}
 html[data-theme=dark] .card__badge{color:#0a0b10}html[data-theme=dark] .sheet__stage .card__badge{color:#0a0b10}
+
+/* brands marquee */
+:root{--lg:#000}html[data-theme=dark]{--lg:#fff}
+.mq{padding:22px 0 6px;border-bottom:1px solid var(--line)}
+.mq__t{margin:0 0 14px;text-align:center;padding:0 var(--g);font-size:11px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.mq__v{overflow:hidden;padding-bottom:20px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mq__tr{display:flex;width:max-content;animation:mqs 38s linear infinite}
+.mq__v:hover .mq__tr{animation-play-state:paused}
+.mq__g{display:flex;align-items:center;gap:clamp(36px,6vw,64px);margin:0;padding:0 clamp(18px,3vw,32px);list-style:none}
+.bl{display:block;height:24px;width:calc(24px * var(--r));background:var(--lg);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;-webkit-mask-size:contain;mask-size:contain;opacity:.88}
+@media(min-width:760px){.bl{height:30px;width:calc(30px * var(--r))}}
+@keyframes mqs{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.mq__tr{animation:none}.mq__v{overflow-x:auto}}
