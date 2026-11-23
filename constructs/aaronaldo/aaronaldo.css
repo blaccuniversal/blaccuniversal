@@ -188,3 +188,4 @@ img{max-width:100%}
 .buy .btn{overflow:hidden;text-overflow:ellipsis}
 @media(max-width:480px){.buy .btn{font-size:11px;letter-spacing:.02em;padding:0 8px}}
 @media(max-width:480px){.buy .btn{font-size:12px;letter-spacing:.06em}.buy__t{display:none}}
+.brand{align-items:center}.brand__mk{width:auto;height:26px;align-self:center;margin-right:2px}.foot__logo{width:190px;height:auto;margin:6px auto 12px}
