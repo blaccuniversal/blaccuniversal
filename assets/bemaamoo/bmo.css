@@ -927,3 +927,13 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dlb li.is-me{background:rgba(255,255,255,.06)}
 .dlb li.is-me span{color:#fff;font-weight:700}
 .dlb__e{margin:0;font-size:13px;color:var(--tx3);padding:10px 2px;border-top:1px solid #1f1f1f}
+
+/* solo games: all five stat chips fit across the phone, same as the Daily */
+.pstrip--solo{display:grid;grid-template-columns:1.15fr repeat(4,1fr);gap:5px;overflow:visible}
+.pstrip--solo .pchip{flex-direction:column;gap:1px;min-width:0;padding:6px 2px;justify-content:center;align-items:center;text-align:center}
+.pstrip--solo .pchip span{font-size:10.5px;letter-spacing:.02em;line-height:1.2;max-width:100%}
+.pstrip--solo .pchip b{font-size:16px;line-height:1.2}
+@media (min-width:1000px){.pstrip--solo{display:none}.dgame .pstrip--solo{display:grid}}
+
+/* desktop: line the board up with the word box under it */
+@media (min-width:1000px){.gmain>.board:not(.dboard2){padding-left:max(24px,calc((100% - 760px)/2));padding-right:max(24px,calc((100% - 760px)/2))}}
