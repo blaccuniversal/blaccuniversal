@@ -232,3 +232,4 @@ html[data-theme=dark] .card__badge{color:#0a0b10}html[data-theme=dark] .sheet__s
 @media(min-width:760px){.bl{height:30px;width:calc(30px * var(--r))}}
 @keyframes mqs{to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.mq__tr{animation:none}.mq__v{overflow-x:auto}}
+.mq{border-top:1px solid var(--line);border-bottom:0;padding-top:26px}.mq__v{padding-bottom:26px}
