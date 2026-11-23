@@ -1444,12 +1444,10 @@ body.menu-open .bgm,body.build-open .bgm{opacity:0;pointer-events:none}
 .others li b{font-weight:500;font-size:16px;color:#fff}
 .others li span{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9a9a9a}
 
-/* Worked with: client logos, all white */
-.clients{list-style:none;margin:28px auto 0;padding:0;max-width:1120px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:28px clamp(36px,6vw,80px)}
-.clients li{display:flex;align-items:center;justify-content:center}
-.clients img{display:block;height:clamp(44px,6vw,64px);width:auto;opacity:.92}
-.clients img.clients__wide{height:auto;width:clamp(230px,32vw,360px)}
+/* Worked with: client logos, all white, one line */
+.clients{list-style:none;margin:24px auto 0;padding:0;max-width:1120px;display:flex;flex-wrap:nowrap;align-items:center;justify-content:center;gap:clamp(14px,4vw,56px)}
+.clients li{display:flex;align-items:center;justify-content:center;flex:none}
+.clients img{display:block;height:min(36px,5.4vw);width:auto;opacity:.92}
 .clients__link{display:block;transition:opacity .2s}
 .clients__link:hover img,.clients__link:focus-visible img{opacity:1}
 .clients__link:focus-visible{outline:1px solid #fff;outline-offset:6px}
-@media (max-width:640px){.clients{flex-direction:column;align-items:center;gap:32px}.clients img{height:56px}.clients img.clients__wide{width:min(300px,78vw);height:auto}}
