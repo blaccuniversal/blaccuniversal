@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/css/style.css?v=202611131546">
+<link rel="stylesheet" href="/assets/css/style.css?v=202611230600">
 </head>
 <body>
 <div class="page page--screen">
@@ -40,9 +40,9 @@
     <div class="loading__inner">
       <svg viewBox="0 0 563 418" class="loading__mark" role="img" aria-label="BLACC Universal mark assembling"><g fill="#ffffff"><rect class="blk" x="0" y="290" width="128" height="128" rx="3" style="animation-delay:0s"/><rect class="blk" x="145" y="290" width="128" height="128" rx="3" style="animation-delay:.12s"/><rect class="blk" x="290" y="290" width="128" height="128" rx="3" style="animation-delay:.24s"/><rect class="blk" x="435" y="290" width="128" height="128" rx="3" style="animation-delay:.36s"/><rect class="blk" x="0" y="145" width="128" height="128" rx="3" style="animation-delay:.52s"/><rect class="blk" x="145" y="145" width="128" height="128" rx="3" style="animation-delay:.64s"/><rect class="blk" x="435" y="145" width="128" height="128" rx="3" style="animation-delay:.76s"/><rect class="blk" x="0" y="0" width="128" height="128" rx="3" style="animation-delay:.94s"/></g></svg>
       <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
-        <p class="eyebrow">Projects</p>
+        <p class="eyebrow">Featured projects</p>
         <h1>From the house</h1>
-        <p class="lead">Products, games, music, film and experiences, built by BLACC Universal.</p>
+        <p class="lead">A selection of what BLACC Universal has built. More is in the works below.</p>
       </div>
       <div class="pview" role="group" aria-label="Choose how projects are shown">
         <button type="button" data-pview="list" aria-pressed="true" aria-label="List"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>List</span></button>
@@ -53,6 +53,11 @@
         <a class="proj" href="/pqt/">
           <span class="proj__art"><img src="/assets/pqt/pqt-logo.png" alt="PQT · People, Quests &amp; Triumphs" width="1400" height="298" loading="lazy"></span>
           <span class="proj__body"><span class="proj__tag">Game Module</span><b>PQT · People, Quests &amp; Triumphs</b><span>Trivia, team bonding and party games. Host and play on all devices.</span></span>
+          <span class="proj__go" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+        <a class="proj proj--bmo" href="/bemaamoo/">
+          <span class="proj__art proj__art--bmo"><span class="bm-art"><img src="/bemaamoo/icon.svg" alt="" width="64" height="64" loading="lazy"><b>Bemaamoo</b></span></span>
+          <span class="proj__body"><span class="proj__tag">Word game</span><b>Bemaamoo</b><span>Every row hides more words. Play solo, pass the phone, or go online, and take on the daily challenge.</span></span>
           <span class="proj__go" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
         </a>
         <a class="proj proj--as" href="/alphasum/">
@@ -76,6 +81,10 @@
         <div class="pslide__dots" data-pslide-dots></div>
         <button type="button" class="pslide__btn" data-pslide-next aria-label="Next project"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
+      <details class="others">
+        <summary><span>Other projects we’re building</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <ul><li><b>GXMECITY</b><span>Gaming</span></li><li><b>HUSTLBRK</b><span>Social &amp; Lifestyle</span></li><li><b>BOSS</b><span>Gaming</span></li><li><b>The Angry Prymate</b><span>Music</span></li><li><b>Name Origins</b><span>Lifestyle</span></li><li><b>The Key Daily</b><span>Media</span></li><li><b>The Barstool Experience</b><span>Music</span></li></ul>
+      </details>
       <div class="notify">
         <p class="notify__hint">More is being assembled. Get notified when it lands.</p>
         <form name="notify" method="POST" data-notify action="https://api.web3forms.com/submit">
