@@ -83,7 +83,8 @@
       '<div class="sheet__info"><p class="eyebrow">' + esc(cur.cat) + '</p><h2 id="sheet-t" class="sheet__name">' + esc(cur.name) + '</h2>' +
       '<p class="sheet__price" data-total>' + N(total()) + '</p><p class="sheet__desc">' + esc(cur.d || '') + '</p>' + opts +
       '<div class="buy"><div class="qty" role="group" aria-label="Quantity"><button type="button" data-q="-1" aria-label="Fewer">−</button><output data-qv>1</output><button type="button" data-q="1" aria-label="More">+</button></div>' +
-      '<button type="button" class="btn btn--red" data-order>' + (WA ? 'Order on WhatsApp' : 'Order now') + '<span class="buy__t"> · <span data-total2>' + N(total()) + '</span></span></button></div>' +
+      '<button type="button" class="btn btn--red" data-add>Add to cart<span class="buy__t"> · <span data-total2>' + N(total()) + '</span></span></button></div>' +
+      '<button type="button" class="btn btn--line buy__now" data-order>' + (WA ? 'Order this on WhatsApp' : 'Order now') + '</button>' +
       (facts ? '<ul class="facts">' + facts + '</ul>' : '') +
       '<p class="note">Pick up in Ibadan or ask about delivery. We confirm availability and payment details with you before anything is charged.</p>' +
       '<form class="enq" data-enq hidden><p class="enq__t">Where should we reach you?</p><label>Your name<input name="name" required autocomplete="name"></label><label>Phone number<input name="phone" type="tel" required inputmode="tel" autocomplete="tel"></label>' +
@@ -128,6 +129,72 @@
   $$('[data-wa-text]').forEach(function (a) { if (WA) { a.href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(a.getAttribute('data-wa-text')); a.hidden = false; } });
   $$('[data-rating]').forEach(function (a) { if (INFO.rating) { a.innerHTML = '<b>★ ' + INFO.rating + '</b> · ' + INFO.reviews + ' Google reviews'; a.href = 'https://www.google.com/maps/search/?api=1&query=' + MQ; a.hidden = false; } });
   $$('[data-year]').forEach(function (y) { y.textContent = new Date().getFullYear(); });
+
+  /* ---------- cart ---------- */
+  var cart = [];
+  try { cart = JSON.parse(localStorage.getItem('aar_cart') || '[]') || []; } catch (e) { cart = []; }
+  var cartEl = document.createElement('div');
+  cartEl.className = 'sheet'; cartEl.hidden = true; cartEl.setAttribute('role', 'dialog'); cartEl.setAttribute('aria-modal', 'true'); cartEl.setAttribute('aria-label', 'Your cart');
+  cartEl.innerHTML = '<div class="sheet__card cartc"><button class="sheet__x" type="button" data-cclose aria-label="Close"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="cartc__in" data-cbody></div></div>';
+  document.body.appendChild(cartEl);
+  var toast = document.createElement('div'); toast.className = 'aar-toast'; toast.hidden = true; document.body.appendChild(toast);
+  var toastT;
+  function say(t) { toast.textContent = t; toast.hidden = false; toast.classList.add('is-in'); clearTimeout(toastT); toastT = setTimeout(function () { toast.classList.remove('is-in'); setTimeout(function () { toast.hidden = true; }, 250); }, 1800); }
+  function save() { try { localStorage.setItem('aar_cart', JSON.stringify(cart)); } catch (e) {} }
+  function cnt() { return cart.reduce(function (a, l) { return a + l.q; }, 0); }
+  function sum() { return cart.reduce(function (a, l) { return a + l.u * l.q; }, 0); }
+  function badge() { var n = cnt(); $$('[data-cart-n]').forEach(function (b) { b.textContent = n; b.hidden = !n; }); $$('[data-cart-btn]').forEach(function (b) { b.setAttribute('aria-label', 'Open cart, ' + n + (n === 1 ? ' item' : ' items')); }); }
+  function line(l, i) {
+    var p = P.filter(function (x) { return x.id === l.id; })[0] || {};
+    return '<li class="cl"><span class="cl__img">' + (p.img ? '<img src="' + esc(p.img) + '" alt="">' : '') + '</span><div class="cl__t"><b>' + esc(l.name) + '</b>' + (l.opt ? '<span>' + esc(l.opt) + '</span>' : '') + '<span class="cl__p">' + N(l.u) + '</span></div>' +
+      '<div class="cl__q"><button type="button" data-cq="' + i + '" data-d="-1" aria-label="Fewer">−</button><output>' + l.q + '</output><button type="button" data-cq="' + i + '" data-d="1" aria-label="More">+</button></div>' +
+      '<button type="button" class="cl__x" data-crm="' + i + '" aria-label="Remove ' + esc(l.name) + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>';
+  }
+  function cmsg() {
+    var t = 'Hello Aaronaldo Tech Enterprises, I would like to order:\n';
+    cart.forEach(function (l, i) { t += (i + 1) + '. ' + l.q + ' × ' + l.name + (l.opt ? ' (' + l.opt + ')' : '') + ' — ' + N(l.u * l.q) + '\n'; });
+    return t + 'Total: ' + N(sum()) + '\nPlease confirm availability and delivery or pick-up.';
+  }
+  function drawCart() {
+    var b = $('[data-cbody]', cartEl);
+    if (!cart.length) { b.innerHTML = '<h2 class="cartc__h">Your cart</h2><p class="cartc__empty">Your cart is empty. Add something from the shop and send your order on WhatsApp.</p><button type="button" class="btn btn--red" data-cshop>Browse the shop</button>'; return; }
+    b.innerHTML = '<h2 class="cartc__h">Your cart <small>' + cnt() + (cnt() === 1 ? ' item' : ' items') + '</small></h2><ul class="cl__list">' + cart.map(line).join('') + '</ul>' +
+      '<div class="cartc__sum"><span>Total</span><b>' + N(sum()) + '</b></div><p class="note">We confirm availability and payment details with you on WhatsApp before anything is charged.</p>' +
+      (WA ? '<a class="btn btn--red cartc__go" data-cgo target="_blank" rel="noopener" href="https://wa.me/' + WA + '?text=' + encodeURIComponent(cmsg()) + '">Checkout on WhatsApp</a>' : '') +
+      '<button type="button" class="cartc__clear" data-cclear>Clear cart</button>';
+  }
+  function openCart() { drawCart(); cartEl.hidden = false; document.documentElement.classList.add('is-sheet'); requestAnimationFrame(function () { cartEl.classList.add('is-in'); }); }
+  function closeCart() { cartEl.classList.remove('is-in'); if (sheet.hidden) document.documentElement.classList.remove('is-sheet'); setTimeout(function () { cartEl.hidden = true; }, 200); }
+  function add() {
+    var opt = (cur.o || []).map(function (o) { return o.k + ': ' + sel[o.k]; }).join(', ');
+    var unit = total() / qty, hit = cart.filter(function (l) { return l.id === cur.id && l.opt === opt; })[0];
+    if (hit) hit.q = Math.min(20, hit.q + qty); else cart.push({ id: cur.id, name: cur.name, opt: opt, u: unit, q: qty });
+    save(); badge(); closeSheet(); say('Added to cart');
+    $$('[data-cart-btn]').forEach(function (b) { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); });
+  }
+  sheet.addEventListener('click', function (e) { if (e.target.closest('[data-add]')) add(); });
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('[data-cart-btn]')) { closeMenu(); return openCart(); }
+    if (cartEl.hidden) return;
+    if (e.target.closest('[data-cclose]') || e.target === cartEl) return closeCart();
+    var q = e.target.closest('[data-cq]'); if (q) { var l = cart[+q.getAttribute('data-cq')]; l.q = Math.max(1, Math.min(20, l.q + +q.getAttribute('data-d'))); save(); badge(); drawCart(); return; }
+    var r = e.target.closest('[data-crm]'); if (r) { cart.splice(+r.getAttribute('data-crm'), 1); save(); badge(); drawCart(); return; }
+    if (e.target.closest('[data-cclear]')) { cart = []; save(); badge(); drawCart(); return; }
+    if (e.target.closest('[data-cshop]')) { closeCart(); var sh = document.getElementById('shop'); if (sh) sh.scrollIntoView({ behavior: 'smooth' }); }
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { if (!cartEl.hidden) closeCart(); closeMenu(); } });
+  badge();
+
+  /* ---------- menu ---------- */
+  var menu = $('[data-menu]'), mbtn = $('[data-menu-btn]');
+  function closeMenu() { if (!menu || menu.hidden) return; menu.hidden = true; mbtn.setAttribute('aria-expanded', 'false'); }
+  if (menu && mbtn) {
+    mbtn.addEventListener('click', function (e) { e.stopPropagation(); var open = menu.hidden; menu.hidden = !open; mbtn.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    menu.addEventListener('click', function (e) { if (e.target.closest('a')) closeMenu(); });
+    document.addEventListener('click', function (e) { if (!menu.hidden && !e.target.closest('[data-menu]') && !e.target.closest('[data-menu-btn]')) closeMenu(); });
+    window.addEventListener('resize', function () { if (window.innerWidth >= 900) closeMenu(); });
+  }
+
   /* ---------- dark mode ---------- */
   (function () {
     var root = document.documentElement, btn = $('[data-theme-btn]'), meta = document.querySelector('meta[name="theme-color"]');
