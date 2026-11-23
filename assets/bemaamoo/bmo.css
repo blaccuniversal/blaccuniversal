@@ -913,3 +913,17 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dres.ov__card{align-items:stretch}
 .dres [data-d-sum],.dres .ov__btns{width:100%;box-sizing:border-box}
 .dstart__f[hidden]{display:none}
+
+/* daily leaderboard */
+.dlb-wrap{width:100%;text-align:left;margin-bottom:6px}
+.dlb-wrap .sum__d{margin:6px 0 6px}
+.dlb{list-style:none;margin:0;padding:0;max-height:260px;overflow:auto;border-top:1px solid #1f1f1f}
+.dlb li{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:8px;padding:10px 2px;border-bottom:1px solid #1f1f1f;font-size:15px;color:#d0d0d0}
+.dlb li i{font-style:normal;color:var(--tx3);font-variant-numeric:tabular-nums}
+.dlb li:nth-child(-n+3) i{color:#ffd23f;font-weight:700}
+.dlb li span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dlb li em{font-style:normal;font-size:10px;font-weight:800;background:#6ee7b7;color:#04210f;padding:1px 4px;border-radius:2px;margin-left:4px}
+.dlb li b{font-weight:800;color:#fff;font-variant-numeric:tabular-nums}
+.dlb li.is-me{background:rgba(255,255,255,.06)}
+.dlb li.is-me span{color:#fff;font-weight:700}
+.dlb__e{margin:0;font-size:13px;color:var(--tx3);padding:10px 2px;border-top:1px solid #1f1f1f}

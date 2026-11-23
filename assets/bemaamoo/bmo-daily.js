@@ -199,6 +199,40 @@
     var E = entries(st), T = B.tally(st.g)[0], rg = E.filter(function (e) { return e.acc; }).length;
     return { E: E, T: T, rg: rg, perks: T.mavs + T.cons + rg + T.keys, perkPts: T.mav + T.con + T.acc + T.key, found: E.some(function (e) { return e.x; }) };
   }
+  /* ---------- shared leaderboard (Supabase REST; hidden until bmo-config.js has a URL + key) ---------- */
+  function lbOn() { var c = window.BMO_CFG || {}; return !!(c.url && c.key); }
+  function lbHead() { var c = window.BMO_CFG; return { apikey: c.key, Authorization: 'Bearer ' + c.key, 'Content-Type': 'application/json' }; }
+  function lbUrl(q) { return String(window.BMO_CFG.url).replace(/\/+$/, '') + '/rest/v1/daily_scores' + (q || ''); }
+  function devId() {
+    var d = ''; try { d = localStorage.getItem('bmo_daily_dev') || ''; } catch (e) {}
+    if (!d) { d = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); try { localStorage.setItem('bmo_daily_dev', d); } catch (e) {} }
+    return d;
+  }
+  function lbPost(S) {
+    if (!lbOn() || st.posted) return Promise.resolve();
+    var body = { day: num(), device: devId(), name: String(st.name || 'Player').slice(0, 18), score: S.T.total, words: S.E.length, perks: S.perks, found: !!S.found };
+    var h = lbHead(); h.Prefer = 'return=minimal';
+    return fetch(lbUrl(), { method: 'POST', headers: h, body: JSON.stringify(body) }).then(function (r) {
+      if (r.ok || r.status === 409) { st.posted = true; put(st); }
+    }).catch(function () {});
+  }
+  function lbPaint(rows) {
+    var box = $('[data-d-lb]'); if (!box) return;
+    var T = B.tally(st.g)[0];
+    if (!rows || !rows.length) { box.innerHTML = '<p class="sum__d">Today’s leaderboard</p><p class="dlb__e">No scores yet. You’re first.</p>'; box.hidden = false; return; }
+    box.innerHTML = '<p class="sum__d">Today’s leaderboard</p><ol class="dlb">' + rows.map(function (r, i) {
+      return '<li class="' + (r.name === (st.name || 'Player') && r.score === T.total ? 'is-me' : '') + '"><i>' + (i + 1) + '</i><span>' + esc(r.name) + (r.found ? ' <em title="Found the word">3×</em>' : '') + '</span><b>' + r.score + '</b></li>';
+    }).join('') + '</ol>';
+    box.hidden = false;
+  }
+  function lbLoad(S) {
+    var box = $('[data-d-lb]'); if (!box) return;
+    if (!lbOn()) { box.hidden = true; return; }
+    lbPost(S).then(function () {
+      return fetch(lbUrl('?day=eq.' + num() + '&select=name,score,found&order=score.desc,created_at.asc&limit=50'), { headers: lbHead() });
+    }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) { if (rows) lbPaint(rows); else box.hidden = true; }, function () { box.hidden = true; });
+  }
+
   function paintResult() {
     var a = load(); st = mine();
     var S = stats(), T = S.T, n = S.E.length, sk = streak();
@@ -213,6 +247,7 @@
       $('[data-d-sum]').innerHTML = row + '<p class="sum__d">Today’s challenge</p><div class="sum sum--rounds">' + r.map(function (x, i) { return '<div class="sum__rr' + (i === 4 && S.found ? ' is-x' : '') + '"><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>';
     }
     rows(st.all, st.max);
+    lbLoad(S);
     dictP().then(function (D) {
       var c = counts(base), all = 0, maxp = 3 * B.tri(base.length);
       D.full.forEach(function (w) { if (w.length >= MIN && w.length < base.length && canMake(w, c)) { all++; maxp += B.tri(w.length); } });
