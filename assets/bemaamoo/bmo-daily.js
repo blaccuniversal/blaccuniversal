@@ -199,14 +199,11 @@
     $('[data-d-who]').textContent = 'Daily #' + num() + ' · Result';
     $('[data-d-meta]').textContent = sk > 1 ? sk + '-day streak' : '';
     function rows(all, maxp) {
-      var list = [{ base: T.base, mav: T.mav, con: T.con, acc: T.acc, key: T.key, total: T.total }];
-      var dg = function (f) { return String(f(list[0])).length; }, cw = function (d, big) { return Math.max(big ? 40 : 24, Math.ceil(d * (big ? 10.5 : 8.6) + 6)); };
-      var cols = '24px minmax(0,1fr) ' + ['base', 'mav', 'con', 'acc', 'key'].map(function (k) { return cw(String(T[k]).length) + 'px'; }).join(' ') + ' ' + cw(String(T.total).length, 1) + 'px';
-      var head = '<div class="sum__h"><span></span><span>Player</span><span>W</span><span class="c-mav">M</span><span class="c-con">C</span><span class="c-acc">R</span><span class="c-key">K</span><span>Total</span></div>';
-      var row = '<div class="sum__r"><span class="sum__p">1</span><span class="sum__n"><b><i style="background:#fff"></i><u style="color:#fff">' + esc(st.name || 'Player') + '</u></b></span><span class="sum__parts"><span data-l="W">' + T.base + '</span><span class="c-mav" data-l="M">' + T.mav + '</span><span class="c-con" data-l="C">' + T.con + '</span><span class="c-acc" data-l="R">' + T.acc + '</span><span class="c-key" data-l="K">' + T.key + '</span></span><span class="sum__t">' + T.total + '</span></div>';
+      var parts = [['W', T.base, ''], ['M', T.mav, 'c-mav'], ['C', T.con, 'c-con'], ['R', T.acc, 'c-acc'], ['K', T.key, 'c-key']];
+      var row = '<div class="dpl"><div class="dpl__top"><b><i></i>' + esc(st.name || 'Player') + '</b><span>' + T.total + '</span></div><div class="dpl__parts">' + parts.map(function (x) { return '<span class="' + x[2] + '"><small>' + x[0] + '</small>' + x[1] + '</span>'; }).join('') + '</div></div>';
       var r = [['Words found', all ? n + ' of ' + all : String(n)], ['Possible words', all ? String(all) : '…'], ['Possible points, excluding perks', maxp ? maxp.toLocaleString('en') : '…'],
         ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'], ['Today’s word', S.found ? 'Found · 3×' : 'Not found']];
-      $('[data-d-sum]').innerHTML = '<div class="sum" style="--cols:' + cols + '">' + head + row + '</div><p class="sum__lg">W words · M Maverick · C Concord · R Regen · K Keystone</p><p class="sum__d">Today’s challenge</p><div class="sum sum--rounds">' + r.map(function (x, i) { return '<div class="sum__rr' + (i === 4 && S.found ? ' is-x' : '') + '"><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>';
+      $('[data-d-sum]').innerHTML = row + '<p class="sum__d">Today’s challenge</p><div class="sum sum--rounds">' + r.map(function (x, i) { return '<div class="sum__rr' + (i === 4 && S.found ? ' is-x' : '') + '"><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>';
     }
     rows(st.all, st.max);
     dictP().then(function (D) {
@@ -246,14 +243,15 @@
     y += 70; c.strokeStyle = '#1f1f1f'; c.lineWidth = 2; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
     // player row
     var ry = y + 74; c.textAlign = 'left';
-    c.fillStyle = '#fff'; c.font = '700 40px ' + FONT; c.fillText('1', L + 6, ry);
-    c.beginPath(); c.arc(L + 86, ry - 14, 11, 0, 7); c.fill();
-    c.font = '700 48px ' + FONT; c.fillText(st.name || 'Player', L + 118, ry);
+    c.fillStyle = '#fff'; c.beginPath(); c.arc(L + 12, ry - 14, 11, 0, 7); c.fill();
+    c.font = '700 48px ' + FONT; c.fillText(st.name || 'Player', L + 38, ry);
     c.textAlign = 'right'; c.font = '800 58px ' + FONT; c.fillText(String(T.total), R, ry + 4);
-    var parts = [['W', T.base, '#fff'], ['M', T.mav, gold], ['C', T.con, blue], ['R', T.acc, purple], ['K', T.key, key]], x = L + 118; c.textAlign = 'left';
-    parts.forEach(function (t) {
-      c.fillStyle = '#7a7a7a'; c.font = '700 28px ' + FONT; c.fillText(t[0], x, ry + 62); x += c.measureText(t[0]).width + 12;
-      c.fillStyle = t[2]; c.font = '700 40px ' + FONT; c.fillText(String(t[1]), x, ry + 62); x += c.measureText(String(t[1])).width + 38;
+    var parts = [['W', T.base, '#fff'], ['M', T.mav, gold], ['C', T.con, blue], ['R', T.acc, purple], ['K', T.key, key]]; c.textAlign = 'left';
+    var ws = parts.map(function (t) { c.font = '700 28px ' + FONT; var a1 = c.measureText(t[0]).width + 12; c.font = '700 40px ' + FONT; return a1 + c.measureText(String(t[1])).width; });
+    var gap = (pw - ws.reduce(function (a2, b2) { return a2 + b2; }, 0)) / (parts.length - 1), x = L;
+    parts.forEach(function (t, i) {
+      c.fillStyle = '#7a7a7a'; c.font = '700 28px ' + FONT; c.fillText(t[0], x, ry + 62); var lw = c.measureText(t[0]).width + 12;
+      c.fillStyle = t[2]; c.font = '700 40px ' + FONT; c.fillText(String(t[1]), x + lw, ry + 62); x += ws[i] + gap;
     });
     y = ry + 62 + 40; c.strokeStyle = '#1f1f1f'; c.beginPath(); c.moveTo(L, y); c.lineTo(R, y); c.stroke();
     y += 62; c.textAlign = 'left'; c.fillStyle = '#6f6f6f'; c.font = '500 28px ' + FONT; c.fillText('Today’s challenge', L, y);

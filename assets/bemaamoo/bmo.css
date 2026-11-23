@@ -872,3 +872,15 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dres .ov__btns{flex-direction:row;gap:10px}
 .dres .ov__btns .btn{flex:1 1 0;min-width:0;padding:0 14px}
 .dgame .dock,.dgame .gmain>.pstrip{max-width:560px;margin-left:auto;margin-right:auto;width:100%}
+
+/* daily player block */
+.dpl{border-top:1px solid #1f1f1f;border-bottom:1px solid #1f1f1f;padding:14px 0 13px;margin-top:16px;text-align:left}
+.dpl__top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dpl__top b{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dpl__top i{width:9px;height:9px;border-radius:50%;background:#fff;flex:none}
+.dpl__top span{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.dpl__parts{display:flex;justify-content:space-between;margin-top:8px;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;color:#fff}
+.dpl__parts small{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--tx3);margin-right:5px}
+.dpl__parts .c-mav{color:var(--mav)}.dpl__parts .c-con{color:var(--con)}.dpl__parts .c-acc{color:var(--acc)}.dpl__parts .c-key{color:var(--key)}
+.dres .sum__d{margin:14px 0 6px}
+.dres .sum--rounds{margin-top:0;border-top:0}
