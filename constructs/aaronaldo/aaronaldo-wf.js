@@ -1,6 +1,6 @@
 /* Aaronaldo Tech Enterprises · Wayfinder · construct by BLACC Universal */
 (()=>{
-const LODGE = { lat: 7.427472, lng: 3.8985 };      // Shop 6, BAEYOLT Plaza, Sango Poly Road, Ibadan
+const LODGE = { lat: 7.427472, lng: 3.8985 };      // Shop 6, Baeyolt Plaza, Sango Poly Road, Ibadan
 const IBADAN = { lat: 7.3775, lng: 3.9470 };
 const IBADAN_RADIUS_M = 35000;
 const DEMO_START = { lat: 7.4050, lng: 3.9200 };    // simulated start, towards the city centre
