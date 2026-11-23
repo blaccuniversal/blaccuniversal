@@ -13,7 +13,8 @@
     { name: 'Malimbe Lodge', tag: 'Lodge · Ibadan', path: '/constructs/malimbe/', img: '/constructs/malimbe/img/cover.webp', logo: '/constructs/malimbe/img/mark.png', ar: '207/164', lw: '34%' },
     { name: 'Bujatos Kitchen', tag: 'Restaurant · Ibadan', path: '/constructs/bujatos/', img: '/constructs/bujatos/img/cover.webp', logo: '/constructs/bujatos/img/lockup.png', ar: '823/208', lw: '62%' },
     { name: 'PastaXpress by Chef Kabs', tag: 'Restaurant · Ibadan', path: '/constructs/pastaxpress/', img: '/constructs/pastaxpress/img/pasta.webp', logo: '/constructs/pastaxpress/img/logo.png', ar: '488/175', lw: '62%' },
-    { name: 'KleanSound', tag: 'Pro audio', path: '/constructs/kleansound/', img: '/constructs/kleansound/img/cover.webp', logo: '/constructs/kleansound/img/logo.png', ar: '4/3', lw: '56%' }
+    { name: 'KleanSound', tag: 'Pro audio', path: '/constructs/kleansound/', img: '/constructs/kleansound/img/cover.webp', logo: '/constructs/kleansound/img/logo.png', ar: '4/3', lw: '56%' },
+    { name: 'AARONALDO TECH', tag: 'Tech store · Ibadan', path: '/constructs/aaronaldo/', img: '/constructs/aaronaldo/img/cover.webp', logo: '/constructs/aaronaldo/img/logo.png', ar: '900/220', lw: '62%' }
   ];
 
   // tool rotation
