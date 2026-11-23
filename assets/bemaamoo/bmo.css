@@ -912,3 +912,4 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dres .ov__btns .btn:last-child{flex:1 1 0}
 .dres.ov__card{align-items:stretch}
 .dres [data-d-sum],.dres .ov__btns{width:100%;box-sizing:border-box}
+.dstart__f[hidden]{display:none}

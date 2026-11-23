@@ -27,6 +27,17 @@
     B.round(s.g).entries.forEach(function (e) { if (e.x && e.base === B.tri(e.w.length) * 2) { e.base = B.tri(e.w.length) * 3; e.total = e.base + e.mav + e.con + e.acc + e.key; } });   // older saves used x2
     return s;
   }
+  // second copy of "already started today", kept outside the main save (cookie + separate key),
+  // so wiping or losing the save alone doesn't hand out a fresh try
+  function mark(d) {
+    try { document.cookie = 'bmo_dp=' + d + '; max-age=172800; path=/; SameSite=Lax'; } catch (e) {}
+    try { localStorage.setItem('bmo_daily_mark', String(d)); } catch (e) {}
+  }
+  function marked(d) {
+    var c = ''; try { c = (document.cookie.match(/(?:^|; )bmo_dp=(\d+)/) || [])[1] || ''; } catch (e) {}
+    var l = ''; try { l = localStorage.getItem('bmo_daily_mark') || ''; } catch (e) {}
+    return c === String(d) || l === String(d);
+  }
   function put(s) { var a = load(); a[num()] = s; save(a); }
   function entries(s) { return B.round(s.g).entries; }
   function words(s) { return entries(s).map(function (e) { return e.w; }); }
@@ -125,6 +136,12 @@
     el.start.hidden = !!(st.done || st.t0); el.res.hidden = !st.done;
     if (playing && env.fit) env.fit();
     if (st.done) return paintResult();
+    var used = !st.t0 && marked(today);
+    var f = $('[data-d-startform]'), h = $('.dstart__t'), pp = $('.dstart__p');
+    if (f) f.hidden = used;
+    if (h) h.textContent = used ? 'Today’s try is used' : 'Today’s word is waiting';
+    if (pp) pp.innerHTML = used ? 'You already played today’s word on this device. Come back at midnight for a new one.<br><span data-d-next2></span>' : 'One try. You get <b>10 minutes</b> once you start, and the clock doesn’t stop if you leave. Play fair: no cheating, no looking words up.';
+    if (used) { tick2(); return; }
     if (!st.t0) {
       try { el.name.value = localStorage.getItem(KEYN) || ''; } catch (e) {}
       dictP().catch(function () {});   // warm the dictionary while they read
@@ -150,7 +167,7 @@
   function begin() {
     var n = (el.name.value || '').trim().replace(/\s+/g, ' ').slice(0, 18);
     try { localStorage.setItem(KEYN, n); } catch (e) {}
-    st.name = n || 'Player'; st.t0 = Date.now(); put(st); paint();
+    st.name = n || 'Player'; st.t0 = Date.now(); mark(today); put(st); paint();
   }
 
   /* ---------- play ---------- */
@@ -212,6 +229,18 @@
       st.max = maxp; st.all = all; rows(all, maxp);
     }, function () {});
     tick();
+  }
+  var tmr2 = 0;
+  function tick2() {
+    clearInterval(tmr2);
+    function f() {
+      var n = $('[data-d-next2]'); if (!n) return clearInterval(tmr2);
+      var ms = (START + num()) * 86400000 - 3600000 - Date.now();
+      if (ms <= 0) { clearInterval(tmr2); if (env.cur() === 'daily') paint(); return; }
+      var h = Math.floor(ms / 3600000), m = Math.floor(ms % 3600000 / 60000), s = Math.floor(ms % 60000 / 1000);
+      n.textContent = 'Next word in ' + h + ':' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    }
+    f(); tmr2 = setInterval(f, 1000);
   }
   var tmr = 0;
   function tick() {
