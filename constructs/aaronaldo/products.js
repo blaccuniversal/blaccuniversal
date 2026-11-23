@@ -1,69 +1,430 @@
-/* AARONALDO TECH products. SAMPLE items and prices: replace with the real catalogue.
-   t = art type, c = colour, img = optional real photo (png/webp) that replaces the drawing.
+/* Aaronaldo Gadget Store products. Prices are ESTIMATES: replace with the shop's real prices.
    o = options [{k:'Storage', v:[['128GB',0],['256GB',60000]]}] (extra price in naira). */
 window.AAR_PRODUCTS = [
-  { id: 'iphone-15-pro-max', cat: 'Phones', name: 'iPhone 15 Pro Max', meta: '256GB · 6.7" display', price: 1650000, t: 'phone', c: 'graphite', badge: 'Popular', img: '/constructs/aaronaldo/img/iphone-15-pro-max.webp',
-    d: 'Titanium design, 6.7" Super Retina display and a pro camera system.',
-    o: [{ k: 'Storage', v: [['256GB', 0], ['512GB', 200000], ['1TB', 400000]] }, { k: 'Colour', v: [['Natural Titanium', 0], ['Blue Titanium', 0], ['Black Titanium', 0], ['White Titanium', 0]] }],
-    f: [['Display', '6.7" Super Retina XDR'], ['Chip', 'A17 Pro'], ['Camera', '48MP triple']] },
-  { id: 'iphone-burgundy', cat: 'Phones', name: 'iPhone Pro · Burgundy', meta: '256GB · 6.3" display', price: 1450000, t: 'phone', c: 'graphite', badge: 'New', img: '/constructs/aaronaldo/img/iphone-burgundy.webp',
-    d: 'Pro-grade iPhone in a deep burgundy finish with a triple camera system.',
-    o: [{ k: 'Storage', v: [['256GB', 0], ['512GB', 200000], ['1TB', 400000]] }],
-    f: [['Display', 'Super Retina XDR'], ['Camera', '48MP triple'], ['Finish', 'Burgundy']] },
-  { id: 'phone-pro', cat: 'Phones', name: 'Phone Pro', meta: '256GB · 6.7" display', price: 1250000, t: 'phone', c: 'graphite', badge: 'New',
-    d: 'Flagship phone with a bright 6.7" display, all-day battery and a pro-grade camera.',
-    o: [{ k: 'Storage', v: [['256GB', 0], ['512GB', 180000]] }, { k: 'Colour', v: [['Graphite', 0], ['Silver', 0], ['Sapphire', 0]] }],
-    f: [['Display', '6.7" OLED'], ['Battery', '5,000mAh'], ['Camera', '50MP triple']] },
-  { id: 'phone-plus', cat: 'Phones', name: 'Phone Plus', meta: '128GB · 6.5" display', price: 385000, t: 'phone', c: 'sapphire',
-    d: 'A balanced everyday phone: smooth screen, strong battery and a dependable camera.',
-    o: [{ k: 'Storage', v: [['128GB', 0], ['256GB', 55000]] }, { k: 'Colour', v: [['Sapphire', 0], ['Black', 0], ['White', 0]] }],
-    f: [['Display', '6.5" AMOLED'], ['Battery', '5,000mAh'], ['Camera', '50MP dual']] },
-  { id: 'phone-lite', cat: 'Phones', name: 'Phone Lite', meta: '64GB · 6.1" display', price: 125000, t: 'phone', c: 'silver',
-    d: 'Simple, light and affordable. Everything you need for calls, apps and photos.',
-    o: [{ k: 'Colour', v: [['Silver', 0], ['Black', 0]] }],
-    f: [['Display', '6.1" LCD'], ['Battery', '4,500mAh'], ['Camera', '13MP']] },
-  { id: 'console-home', cat: 'Consoles', name: 'Home Console', meta: '1TB · 4K gaming', price: 780000, t: 'console', c: 'white', badge: 'Popular',
-    d: 'Living-room console for 4K gaming, fast load times and a huge game library.',
-    o: [{ k: 'Edition', v: [['Disc', 0], ['Digital', -90000]] }],
-    f: [['Storage', '1TB SSD'], ['Output', '4K · 120Hz'], ['In the box', 'Console, controller, HDMI']] },
-  { id: 'console-handheld', cat: 'Consoles', name: 'Handheld Console', meta: 'Play anywhere', price: 420000, t: 'handheld', c: 'graphite',
-    d: 'A handheld you can play at home or on the move, with a crisp built-in screen.',
-    f: [['Screen', '7" touch'], ['Battery', 'Up to 6 hrs'], ['Storage', '256GB']] },
-  { id: 'controller', cat: 'Consoles', name: 'Wireless Controller', meta: 'Bluetooth · rechargeable', price: 65000, t: 'controller', c: 'white',
-    d: 'Comfortable wireless controller that pairs with consoles, phones and PCs.',
-    o: [{ k: 'Colour', v: [['White', 0], ['Black', 0], ['Sapphire', 0]] }],
-    f: [['Connection', 'Bluetooth / USB-C'], ['Battery', 'Up to 40 hrs']] },
-  { id: 'jbl-go-4', cat: 'Audio', name: 'JBL Go 4', meta: 'Portable Bluetooth speaker', price: 65000, t: 'speaker', c: 'graphite', badge: 'Popular', img: '/constructs/aaronaldo/img/jbl-go-4.webp',
-    d: 'Pocket-sized, waterproof Bluetooth speaker with punchy JBL sound and a carry loop.',
-    o: [],
-    f: [['Type', 'Portable Bluetooth'], ['Build', 'Waterproof, dustproof']] },
-  { id: 'onyx-studio-7', cat: 'Audio', name: 'Harman Kardon Onyx Studio 7', meta: 'Portable Bluetooth speaker', price: 290000, t: 'speaker', c: 'graphite', img: '/constructs/aaronaldo/img/onyx-studio-7.webp',
-    d: 'Premium portable speaker with a signature carry handle and rich 360° sound.',
-    o: [],
-    f: [['Brand', 'Harman Kardon'], ['Type', 'Portable Bluetooth']] },
-  { id: 'aura-studio-4', cat: 'Audio', name: 'Harman Kardon Aura Studio 4', meta: 'Ambient Bluetooth speaker', price: 330000, t: 'speaker', c: 'graphite', img: '/constructs/aaronaldo/img/aura-studio-4.webp',
-    d: 'Glass-dome speaker with ambient lighting and room-filling sound.',
-    o: [],
-    f: [['Brand', 'Harman Kardon'], ['Type', 'Bluetooth home speaker'], ['Lighting', 'Ambient glow']] },
-  { id: 'headphones', cat: 'Audio', name: 'Over-ear Headphones', meta: 'Noise cancelling', price: 185000, t: 'headphones', c: 'graphite', badge: 'New',
-    d: 'Wireless over-ear headphones with active noise cancelling and long battery life.',
-    o: [{ k: 'Colour', v: [['Graphite', 0], ['Silver', 0]] }],
-    f: [['Battery', '40 hrs'], ['Connection', 'Bluetooth 5.3'], ['Noise cancelling', 'Active']] },
-  { id: 'earbuds', cat: 'Audio', name: 'True Wireless Earbuds', meta: 'Charging case', price: 78000, t: 'earbuds', c: 'white',
-    d: 'Compact earbuds with a pocket charging case, clear calls and punchy sound.',
-    o: [{ k: 'Colour', v: [['White', 0], ['Black', 0]] }],
-    f: [['Battery', '8 hrs + 24 hrs case'], ['Connection', 'Bluetooth 5.3']] },
-  { id: 'soundbar', cat: 'Audio', name: 'Soundbar', meta: '2.1 channel · wireless sub', price: 240000, t: 'soundbar', c: 'graphite',
-    d: 'Fills the room with clear dialogue and strong bass, and connects to your TV in one cable.',
-    f: [['Channels', '2.1'], ['Inputs', 'HDMI ARC · Bluetooth · AUX']] },
-  { id: 'powerbank', cat: 'Accessories', name: 'Power Bank', meta: '20,000mAh · fast charge', price: 28000, t: 'powerbank', c: 'white',
-    d: 'Big-capacity power bank that fast-charges phones and tablets on the go.',
-    f: [['Capacity', '20,000mAh'], ['Output', '22.5W'], ['Ports', 'USB-C · 2× USB-A']] },
-  { id: 'watch', cat: 'Accessories', name: 'Smartwatch', meta: 'Health & fitness', price: 110000, t: 'watch', c: 'graphite',
-    d: 'Track steps, sleep and heart rate, and get your phone alerts on your wrist.',
-    o: [{ k: 'Colour', v: [['Graphite', 0], ['Silver', 0]] }],
-    f: [['Battery', 'Up to 7 days'], ['Display', '1.4" AMOLED']] },
-  { id: 'charger', cat: 'Accessories', name: 'Fast Charger 65W', meta: 'Laptops · phones', price: 22000, t: 'charger', c: 'white',
-    d: 'Compact 65W fast charger that powers laptops, phones and tablets from one plug.',
-    f: [['Output', '65W'], ['Ports', 'USB-C · USB-A']] }
+ {
+  "id": "iphone-15-pro-max",
+  "cat": "Phones",
+  "name": "iPhone 15 Pro Max",
+  "meta": "256GB · 6.7\" display",
+  "price": 1650000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/iphone-15-pro-max.webp",
+  "d": "Titanium design, 6.7\" Super Retina display and a pro camera system.",
+  "o": [
+   {
+    "k": "Storage",
+    "v": [
+     [
+      "256GB",
+      0
+     ],
+     [
+      "512GB",
+      200000
+     ],
+     [
+      "1TB",
+      400000
+     ]
+    ]
+   },
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Natural Titanium",
+      0
+     ],
+     [
+      "Blue Titanium",
+      0
+     ],
+     [
+      "Black Titanium",
+      0
+     ],
+     [
+      "White Titanium",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Display",
+    "6.7\" Super Retina XDR"
+   ],
+   [
+    "Chip",
+    "A17 Pro"
+   ],
+   [
+    "Camera",
+    "48MP triple"
+   ]
+  ],
+  "badge": "Popular"
+ },
+ {
+  "id": "iphone-burgundy",
+  "cat": "Phones",
+  "name": "iPhone Pro · Burgundy",
+  "meta": "256GB · 6.3\" display",
+  "price": 1450000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/iphone-burgundy.webp",
+  "d": "Pro-grade iPhone in a deep burgundy finish with a triple camera system.",
+  "o": [
+   {
+    "k": "Storage",
+    "v": [
+     [
+      "256GB",
+      0
+     ],
+     [
+      "512GB",
+      200000
+     ],
+     [
+      "1TB",
+      400000
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Display",
+    "Super Retina XDR"
+   ],
+   [
+    "Camera",
+    "48MP triple"
+   ],
+   [
+    "Finish",
+    "Burgundy"
+   ]
+  ],
+  "badge": "New"
+ },
+ {
+  "id": "galaxy-ultra",
+  "cat": "Phones",
+  "name": "Samsung Galaxy Ultra",
+  "meta": "256GB · S Pen included",
+  "price": 1500000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/galaxy-ultra.webp",
+  "d": "Samsung flagship with a quad camera, big AMOLED display and a built-in S Pen.",
+  "o": [
+   {
+    "k": "Storage",
+    "v": [
+     [
+      "256GB",
+      0
+     ],
+     [
+      "512GB",
+      180000
+     ],
+     [
+      "1TB",
+      380000
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Display",
+    "AMOLED, 6.8\""
+   ],
+   [
+    "Camera",
+    "Quad camera"
+   ],
+   [
+    "Extra",
+    "S Pen included"
+   ]
+  ]
+ },
+ {
+  "id": "pixel-9-pro",
+  "cat": "Phones",
+  "name": "Google Pixel 9 Pro",
+  "meta": "256GB · Obsidian",
+  "price": 1100000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/pixel-9-pro.webp",
+  "d": "Google Pixel with the signature camera bar, clean Android and strong AI features.",
+  "o": [
+   {
+    "k": "Storage",
+    "v": [
+     [
+      "256GB",
+      0
+     ],
+     [
+      "512GB",
+      150000
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Camera",
+    "Triple, camera bar"
+   ],
+   [
+    "Finish",
+    "Obsidian"
+   ]
+  ]
+ },
+ {
+  "id": "ps5-slim",
+  "cat": "Consoles",
+  "name": "PlayStation 5 Slim",
+  "meta": "Disc edition · 1 controller",
+  "price": 780000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/ps5-slim.webp",
+  "d": "Sony PlayStation 5 Slim with a DualSense controller. Fast loading and 4K gaming.",
+  "o": [],
+  "f": [
+   [
+    "Type",
+    "Disc edition"
+   ],
+   [
+    "In the box",
+    "DualSense controller"
+   ]
+  ],
+  "badge": "Popular"
+ },
+ {
+  "id": "xbox-series-x",
+  "cat": "Consoles",
+  "name": "Xbox Series X",
+  "meta": "1TB · 1 controller",
+  "price": 750000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/xbox-series-x.webp",
+  "d": "Microsoft Xbox Series X with a wireless controller. 4K gaming and Game Pass ready.",
+  "o": [],
+  "f": [
+   [
+    "Storage",
+    "1TB SSD"
+   ],
+   [
+    "In the box",
+    "Wireless controller"
+   ]
+  ]
+ },
+ {
+  "id": "airpods-max",
+  "cat": "Audio",
+  "name": "AirPods Max",
+  "meta": "Over-ear · Silver",
+  "price": 650000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/airpods-max.webp",
+  "d": "Apple over-ear headphones with active noise cancellation and spatial audio.",
+  "o": [],
+  "f": [
+   [
+    "Type",
+    "Over-ear wireless"
+   ],
+   [
+    "Finish",
+    "Silver"
+   ]
+  ]
+ },
+ {
+  "id": "airpods-pro",
+  "cat": "Audio",
+  "name": "AirPods Pro",
+  "meta": "Earbuds · noise cancelling",
+  "price": 230000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/airpods-pro.webp",
+  "d": "Apple earbuds with active noise cancellation and a wireless charging case.",
+  "o": [],
+  "f": [
+   [
+    "Type",
+    "In-ear wireless"
+   ],
+   [
+    "Case",
+    "Wireless charging"
+   ]
+  ]
+ },
+ {
+  "id": "airpods-4",
+  "cat": "Audio",
+  "name": "AirPods 4",
+  "meta": "Earbuds",
+  "price": 150000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/airpods-4.webp",
+  "d": "Apple open-fit earbuds with a compact charging case.",
+  "o": [],
+  "f": [
+   [
+    "Type",
+    "Open-fit wireless"
+   ]
+  ]
+ },
+ {
+  "id": "jbl-go-4",
+  "cat": "Audio",
+  "name": "JBL Go 4",
+  "meta": "Portable Bluetooth speaker",
+  "price": 65000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/jbl-go-4.webp",
+  "d": "Pocket-sized, waterproof Bluetooth speaker with punchy JBL sound and a carry loop.",
+  "o": [],
+  "f": [
+   [
+    "Type",
+    "Portable Bluetooth"
+   ],
+   [
+    "Build",
+    "Waterproof, dustproof"
+   ]
+  ]
+ },
+ {
+  "id": "onyx-studio-7",
+  "cat": "Audio",
+  "name": "Harman Kardon Onyx Studio 7",
+  "meta": "Portable Bluetooth speaker",
+  "price": 290000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/onyx-studio-7.webp",
+  "d": "Premium portable speaker with a signature carry handle and rich 360° sound.",
+  "o": [],
+  "f": [
+   [
+    "Brand",
+    "Harman Kardon"
+   ],
+   [
+    "Type",
+    "Portable Bluetooth"
+   ]
+  ]
+ },
+ {
+  "id": "aura-studio-4",
+  "cat": "Audio",
+  "name": "Harman Kardon Aura Studio 4",
+  "meta": "Ambient Bluetooth speaker",
+  "price": 330000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/aura-studio-4.webp",
+  "d": "Glass-dome speaker with ambient lighting and room-filling sound.",
+  "o": [],
+  "f": [
+   [
+    "Brand",
+    "Harman Kardon"
+   ],
+   [
+    "Type",
+    "Bluetooth home speaker"
+   ],
+   [
+    "Lighting",
+    "Ambient glow"
+   ]
+  ]
+ },
+ {
+  "id": "gaming-soundbar",
+  "cat": "Audio",
+  "name": "RGB Gaming Soundbar",
+  "meta": "Desktop soundbar · RGB light",
+  "price": 45000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/gaming-soundbar.webp",
+  "d": "Compact desktop soundbar with a glowing RGB light strip, made for gaming setups.",
+  "o": [],
+  "f": [
+   [
+    "Type",
+    "Desktop soundbar"
+   ],
+   [
+    "Lighting",
+    "RGB"
+   ]
+  ]
+ },
+ {
+  "id": "apple-watch",
+  "cat": "Accessories",
+  "name": "Apple Watch",
+  "meta": "GPS · sport band",
+  "price": 420000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/apple-watch.webp",
+  "d": "Apple Watch with fitness and health tracking, always-on display and a sport band.",
+  "o": [
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Blue",
+      0
+     ],
+     [
+      "Red",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Features",
+    "Health and fitness tracking"
+   ],
+   [
+    "Band",
+    "Sport band"
+   ]
+  ]
+ }
 ];
