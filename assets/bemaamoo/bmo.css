@@ -884,3 +884,8 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 .dpl__parts .c-mav{color:var(--mav)}.dpl__parts .c-con{color:var(--con)}.dpl__parts .c-acc{color:var(--acc)}.dpl__parts .c-key{color:var(--key)}
 .dres .sum__d{margin:14px 0 6px}
 .dres .sum--rounds{margin-top:0;border-top:0}
+
+/* daily start/result centred on screen; square buttons on home */
+[data-d-pre]:not([hidden]){flex:1;display:flex;flex-direction:column}
+[data-d-pre] .dly{flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:10vh}
+.hero__btns .btn{border-radius:2px}
