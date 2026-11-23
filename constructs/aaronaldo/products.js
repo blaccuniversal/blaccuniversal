@@ -2,6 +2,10 @@
    t = art type, c = colour, img = optional real photo (png/webp) that replaces the drawing.
    o = options [{k:'Storage', v:[['128GB',0],['256GB',60000]]}] (extra price in naira). */
 window.AAR_PRODUCTS = [
+  { id: 'iphone-15-pro-max', cat: 'Phones', name: 'iPhone 15 Pro Max', meta: '256GB · 6.7" display', price: 1650000, t: 'phone', c: 'graphite', badge: 'Popular', img: '/constructs/aaronaldo/img/iphone-15-pro-max.webp',
+    d: 'Titanium design, 6.7" Super Retina display and a pro camera system.',
+    o: [{ k: 'Storage', v: [['256GB', 0], ['512GB', 200000], ['1TB', 400000]] }, { k: 'Colour', v: [['Natural Titanium', 0], ['Blue Titanium', 0], ['Black Titanium', 0], ['White Titanium', 0]] }],
+    f: [['Display', '6.7" Super Retina XDR'], ['Chip', 'A17 Pro'], ['Camera', '48MP triple']] },
   { id: 'phone-pro', cat: 'Phones', name: 'Phone Pro', meta: '256GB · 6.7" display', price: 1250000, t: 'phone', c: 'graphite', badge: 'New',
     d: 'Flagship phone with a bright 6.7" display, all-day battery and a pro-grade camera.',
     o: [{ k: 'Storage', v: [['256GB', 0], ['512GB', 180000]] }, { k: 'Colour', v: [['Graphite', 0], ['Silver', 0], ['Sapphire', 0]] }],
