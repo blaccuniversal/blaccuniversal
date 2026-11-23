@@ -283,6 +283,5 @@ html[data-theme=dark] .nav .cartb{background:none;color:var(--ink)}
 .hero .eyebrow{margin-bottom:clamp(100px,30vw,170px)}
 .hero h1{white-space:nowrap;font-size:clamp(19px,5.6vw,64px)}
 .wf__copy>.wf__h{white-space:nowrap;max-width:none;font-size:clamp(20px,6.6vw,54px)}
-/* shop glide: track runs edge to edge so cards slide off the screen, not off the content column */
-body{overflow-x:clip}
-.cards[data-view=swipe]{--pd:max(var(--g),calc((100vw - 1240px)/2 + var(--g)));margin-inline:calc(50% - 50vw);padding-inline:var(--pd);scroll-padding-inline:var(--pd)}
+/* shop glide: cards fade out softly at the edges */
+.cards[data-view=swipe]{-webkit-mask-image:linear-gradient(to right,transparent 0,#000 var(--g),#000 calc(100% - var(--g)),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 var(--g),#000 calc(100% - var(--g)),transparent 100%)}
