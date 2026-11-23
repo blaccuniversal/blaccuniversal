@@ -293,7 +293,7 @@
     function keep() { try { el.inp.focus({ preventScroll: true }); } catch (e) {} }
     // tapping Add / delete / tiles must not pull focus off the box, or the keyboard closes
     $('[data-d-form]').addEventListener('pointerdown', function (ev) { if (ev.target.closest('button')) ev.preventDefault(); });
-    el.tiles.addEventListener('pointerdown', function (ev) { if (ev.target.closest('button')) ev.preventDefault(); });
+    el.game.addEventListener('pointerdown', function (ev) { var b = ev.target.closest('button'); if (b && b.closest('.dock, .entry, [data-d-tiles]')) ev.preventDefault(); });
     el.inp.addEventListener('input', paintTiles);
     function toEnd() { if (el.board && !el.game.hidden) el.board.scrollTop = el.board.scrollHeight; }
     if (window.visualViewport) visualViewport.addEventListener('resize', function () { setTimeout(toEnd, 60); });
