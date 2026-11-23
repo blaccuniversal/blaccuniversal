@@ -819,5 +819,8 @@ body.in-game .scr--game{position:fixed;left:0;right:0;top:var(--appTop,0px);heig
 
 .dboard--res .row.is-x .cell{background:#6ee7b7;border-color:#6ee7b7;color:#04210f}
 .dgame .board{display:flex;flex-direction:column}
-.dgame .board .rows{margin-top:auto}
-.dgame .board .board__empty{margin:auto 0}
+.dgame .board .rows{margin-top:0}
+
+.dgame .board .cell,.dboard .cell{font-size:var(--dfs,12px)}
+.dgame .board .row__n,.dboard .row__n{font-size:12px}
+.dgame .board .row__pts,.dboard .row__pts{font-size:14px}

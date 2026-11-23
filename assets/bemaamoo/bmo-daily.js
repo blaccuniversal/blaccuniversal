@@ -67,8 +67,8 @@
     var r = B.round(st.g), longest = 20, tags = 0;
     r.entries.forEach(function (e) { if (e.w.length > longest) longest = e.w.length; var t = (e.x ? 1 : 0) + (e.mavs.length ? 1 : 0) + (e.con ? 1 : 0) + (e.acc ? 1 : 0) + (e.key ? 1 : 0); if (t > tags) tags = t; });
     var cs0 = getComputedStyle(box), padx = (parseFloat(cs0.paddingLeft) || 0) + (parseFloat(cs0.paddingRight) || 0);
-    var gap = 3, avail = box.clientWidth - padx - 30 - (46 + tags * 24) - 6, c = Math.max(14, Math.min(40, Math.floor((avail - gap * longest) / longest)));
-    box.style.setProperty('--c', c + 'px'); box.style.setProperty('--gap', gap + 'px');
+    var gap = 3, avail = box.clientWidth - padx - 30 - (46 + tags * 24) - 6, c = Math.max(box === el.board || box.classList.contains('dboard--res') ? 20 : 20, Math.min(40, Math.floor((avail - gap * longest) / longest)));
+    box.style.setProperty('--c', c + 'px'); box.style.setProperty('--gap', gap + 'px'); box.style.setProperty('--dfs', Math.round(c * .54) + 'px');
     if (!r.entries.length && box === el.board) { box.innerHTML = '<div class="board__empty"><b>Daily ' + '#' + num() + '</b><span>Add your first word.<br>Long words score more.</span></div>'; return; }
     var mav = {};
     r.entries.forEach(function (e) { e.mavs.forEach(function (m) { for (var k = m.from; k <= m.to; k++) mav[k + ':' + m.col] = 1; }); });
