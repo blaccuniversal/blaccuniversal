@@ -611,7 +611,7 @@ body{overscroll-behavior-y:none}
   .glist li{padding:12px 0}
 }
 @media (min-width:761px){.h2{white-space:normal}}
-@media (max-width:760px){.hero__p{font-size:16px}.wf .h2{white-space:normal}}
+@media (max-width:760px){.hero__p{font-size:16px}.wf .h2{white-space:normal}.scroll{display:none}}
 .hero__t{white-space:nowrap;font-size:clamp(40px,9.4vw,108px)}
 @media (max-width:760px){.hero__t{font-size:clamp(38px,11.6vw,54px)}}
 
