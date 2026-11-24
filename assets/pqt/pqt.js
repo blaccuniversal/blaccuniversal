@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611240420, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611240500, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -1480,6 +1480,7 @@ function pqtMain() {
     else if (d.suPh != null) { e.preventDefault(); SU.ph = SU.ph || []; SU.ph[+d.suPh] = !SU.ph[+d.suPh]; paintSetup(); }
     else if (d.svGo) { resumeGame(d.svGo); }
     else if (d.svReuse) { reuseGame(d.svReuse); }
+    else if (d.svCopy) { var cg = saves().filter(function (x) { return x.id === d.svCopy; })[0]; if (cg) { var tx = svText(cg); (navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(tx) : Promise.reject()).then(function () { toast('Results copied'); }, function () { window.prompt('Copy the results', tx); }); } }
     else if (d.svDel) { if (!confirmTwice(b)) return; store('pqt_saves', saves().filter(function (g) { return g.id !== d.svDel; })); var dl = store('pqt_savedel') || {}; dl[d.svDel] = Date.now(); store('pqt_savedel', dl); renderSaves(); toast('Deleted'); vaultSoon(); }
     else if (d.planPh != null) { var pi = +d.planPh; if (pi >= H.round - 1) { snap(); H.planPh = H.planPh || []; H.planPh[pi] = !H.planPh[pi]; push(); renderAll(); } }
     else if (b.hasAttribute('data-phsw')) { snap(); H.planPh = H.planPh || []; H.planPh[H.round - 1] = !H.planPh[H.round - 1]; push(); renderAll(); toast(phOn() ? 'Phones on for this round' : 'This round is on paper'); }
@@ -1612,6 +1613,20 @@ function pqtMain() {
     var stEl = $('[data-su-title]'); if (stEl) stEl.value = SU.title; paintSetup();
   }
   function ago(t) { var m = Math.round((Date.now() - t) / 60000); if (m < 1) return 'just now'; if (m < 60) return m + ' min ago'; var h = Math.round(m / 60); if (h < 24) return h + ' hr' + (h > 1 ? 's' : '') + ' ago'; return new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }); }
+  function svWins(g) {
+    var w = (g.game && g.game.bxWins) || []; if (!w.length) return '';
+    return '<div class="hc-sv__bx"><p>📦 Black box winners</p>' + w.map(function (x, i) { var t = g.teams[x.t] || { name: '', color: '#fff' }; return '<label><i style="background:' + t.color + '"></i><b>' + esc(t.name) + '</b><em>' + esc(x.prize) + '</em><input type="text" maxlength="40" data-svbx="' + g.id + '|' + i + '" value="' + esc(x.p || '') + '" placeholder="Player name" autocomplete="off"></label>'; }).join('') + '</div>';
+  }
+  function svText(g) {
+    var t = g.name + ' · ' + new Date(g.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + '\n\nScores\n';
+    t += g.teams.slice().sort(function (a, b) { return b.score - a.score; }).map(function (x, i) { return (i + 1) + '. ' + x.name + ' — ' + x.score; }).join('\n');
+    var w = (g.game && g.game.bxWins) || [];
+    if (w.length) t += '\n\nBlack box winners\n' + w.map(function (x) { var tm = g.teams[x.t]; return (tm ? tm.name : '') + (x.p ? ' · ' + x.p : '') + ' — ' + x.prize; }).join('\n');
+    return t;
+  }
+  function svEdit(v) {
+    var a = v.split('|'), all = saves(), g = all.filter(function (x) { return x.id === a[0]; })[0]; return g && g.game && g.game.bxWins && g.game.bxWins[+a[1]] ? { all: all, g: g, w: g.game.bxWins[+a[1]] } : null;
+  }
   function renderSaves() {
     var list = saves(), box = $('[data-saves-list]'); if (!box) return;
     box.innerHTML = list.length ? list.map(function (g) {
@@ -1619,8 +1634,9 @@ function pqtMain() {
       var st = g.ended ? 'Finished' : g.round ? 'Round ' + g.round + ' of ' + g.rounds : 'Not started';
       return '<li class="hc-sv"><div class="hc-sv__t"><b>' + esc(g.name) + '</b><span>' + (g.auto ? 'Autosaved · ' : '') + st + ' · ' + g.teams.length + ' teams · ' + ago(g.at) + '</span>' +
         (lead && lead.score ? '<em><i style="background:' + lead.color + '"></i>' + esc(lead.name) + ' leads with ' + lead.score + '</em>' : '') + '</div>' +
+        svWins(g) +
         '<div class="hc-sv__a">' + (g.ended ? '' : '<button class="pbtn pbtn--white pbtn--sm" type="button" data-sv-go="' + g.id + '">Resume</button>') +
-        '<button class="pbtn pbtn--sm" type="button" data-sv-reuse="' + g.id + '">Reuse setup</button><button class="pbtn pbtn--sm pbtn--ghost hc-sv__x" type="button" data-sv-del="' + g.id + '" aria-label="Delete">Delete</button></div></li>';
+        '<button class="pbtn pbtn--sm" type="button" data-sv-copy="' + g.id + '">Copy results</button><button class="pbtn pbtn--sm" type="button" data-sv-reuse="' + g.id + '">Reuse setup</button><button class="pbtn pbtn--sm pbtn--ghost hc-sv__x" type="button" data-sv-del="' + g.id + '" aria-label="Delete">Delete</button></div></li>';
     }).join('') : '<li class="hc-sv__empty">No saved games yet. Use “Save game” in the menu to keep one for later.</li>';
   }
   function openSaves() { closeSheets(); renderSaves(); $('[data-saves]').hidden = false; paintVault(); vaultSync(); }
@@ -1740,6 +1756,7 @@ function pqtMain() {
     var el0 = e.target; if (SU && el0.hasAttribute('data-su-title')) SU.title = el0.value; if (SU && el0.dataset.suName != null) SU.teams[+el0.dataset.suName].name = el0.value;
     var el = e.target;
     if (el.dataset.tname != null) { H.teams[+el.dataset.tname].name = el.value.slice(0, 28) || 'Team'; push(); }
+    if (el.dataset.svbx != null) { var se = svEdit(el.dataset.svbx); if (se) { se.w.p = el.value.slice(0, 40); store('pqt_saves', se.all); vaultSoon(); if (se.g.id === H.gameId && H.bxWins) { var ix2 = +el.dataset.svbx.split('|')[1]; if (H.bxWins[ix2]) { H.bxWins[ix2].p = se.w.p; save(); } } } }
     if (el.dataset.bxp != null && H.bxWins && H.bxWins[+el.dataset.bxp]) { H.bxWins[+el.dataset.bxp].p = el.value.slice(0, 40); save(); }
     if (el.hasAttribute('data-codein')) el.value = cleanCode(el.value);
     if (el.hasAttribute('data-title')) { H.title = el.value.slice(0, 60); push(); }
