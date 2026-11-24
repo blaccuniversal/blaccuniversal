@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611240245">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611240330">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
@@ -67,7 +67,8 @@
     <details class="hc-cset"><summary><b>Hi, My Name Is…</b><span data-cc="names"></span></summary><p class="hc-note">The answer on the first line, then one clue per line. Several clues? They show one at a time and earn fewer points as more are shown. Empty line between people.</p><textarea class="hc-input" data-qtxt="names" spellcheck="false"></textarea></details>
     <details class="hc-cset"><summary><b>Password</b><span data-cc="pw"></span></summary><p class="hc-note">One word per line, up to 10 per question. Empty line between questions. The letters are taken from the first letter of each word and sorted A to Z for you.</p><textarea class="hc-input" data-qtxt="pw" spellcheck="false" rows="10"></textarea></details>
     <details class="hc-cset"><summary><b>Quests Feud</b><span data-cc="boards"></span></summary><p class="hc-note">The question on one line, then each answer with its points (<b>Answer, 30</b>). Leave an empty line between questions. The samples are made up: replace them with your own survey results.</p><textarea class="hc-input" data-btxt spellcheck="false"></textarea></details>
-    <details class="hc-cset"><summary><b>Rapid Fire</b><span data-cc="rapid"></span></summary><p class="hc-note">The question, then the answer. Add <b>image: /path.png</b> on a third line to show a picture. Empty line between questions.</p><textarea class="hc-input" data-qtxt="rapid" spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>Rapid Fire</b><span data-cc="rapid"></span></summary><p class="hc-note">The question, then the answer. Add <b>image: /path.png</b> on a line to show a picture. Add a line that says <b>blackbox</b> to hide a black box in that question. Empty line between questions.</p><textarea class="hc-input" data-qtxt="rapid" spellcheck="false"></textarea></details>
+    <details class="hc-cset"><summary><b>Black box wheel</b></summary><p class="hc-note">One prize per line, up to 12. A prize that starts with <b>+3</b> (like <b>+3 points</b>) is added to the winning team for you. A prize that lands is taken off the wheel until a new game.</p><textarea class="hc-input" data-qtxt="wheel" spellcheck="false"></textarea></details>
     <details class="hc-cset"><summary><b>Spelling Bee</b><span data-cc="spell"></span></summary><p class="hc-note">One per line: <b>WORD | meaning | example sentence</b></p><textarea class="hc-input" data-qtxt="spell" spellcheck="false"></textarea></details>
     <details class="hc-cset"><summary><b>Written Round</b><span data-cc="written"></span></summary><p class="hc-note">The question, then the answer on the next line. Empty line between questions. For options, write them in the question as <b>[A] … [B] …</b>; for true or false, end the question with <b>True or false?</b> They show on their own lines.</p><textarea class="hc-input" data-qtxt="written" spellcheck="false"></textarea></details>
     <div class="hc-row" style="margin-top:16px"><button class="pbtn pbtn--white" data-savecards type="button">Save cards</button><button class="pbtn pbtn--ghost pbtn--sm" data-samples type="button" hidden>Restore my bank</button><button class="pbtn pbtn--ghost pbtn--sm" data-bank-export type="button">Export bank</button><button class="pbtn pbtn--ghost pbtn--sm" data-bank-import type="button">Import bank</button><input type="file" accept=".pqtbank,application/json" data-bank-file hidden></div>
@@ -184,7 +185,7 @@
 <script src="/assets/pqt/wordrace/wr-engine.js?v=10"></script>
 <script src="/assets/pqt/pqt-import.js?v=1"></script>
 <script src="/assets/pqt/pqt-vault.js?v=2"></script>
-<script src="/assets/pqt/pqt.js?v=2611211930"></script>
+<script src="/assets/pqt/pqt.js?v=2611240330"></script>
 <script src="/assets/pqt/pqt-offline.js?v=261112171"></script>
 </body>
 </html>

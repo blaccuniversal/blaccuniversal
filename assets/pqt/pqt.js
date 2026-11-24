@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611211930, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611240330, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -89,7 +89,7 @@ function pqtMain() {
   function blocks(txt) { return String(txt || '').split(/\n\s*\n/).map(function (b) { return b.split('\n').map(function (l) { return l.trim(); }).filter(Boolean); }).filter(function (b) { return b.length; }); }
   function parseNames(txt) { return blocks(txt).map(function (b) { return { a: b[0], clues: b.slice(1) }; }).filter(function (x) { return x.clues.length; }); }
   function parseSpell(txt) { return String(txt || '').split('\n').map(function (l) { var p = l.split('|').map(function (s) { return s.trim(); }); return p[0] ? { w: p[0].toUpperCase(), d: p[1] || '', e: p[2] || '' } : null; }).filter(Boolean); }
-  function parseQA(txt) { return blocks(txt).map(function (b) { var img = ''; b = b.filter(function (l) { var m = l.match(/^image:\s*(\S+)/i); if (m) { img = m[1]; return false; } return true; }); var qs = [b[0]], r = 1; while (r < b.length - 1 && (/^\[[A-H]\]/.test(b[r]) || /^true or false\??$/i.test(b[r]))) qs.push(b[r++]); return b.length ? { q: qs.join(' '), a: b[r] || '', img: img } : null; }).filter(Boolean); }
+  function parseQA(txt) { return blocks(txt).map(function (b) { var img = '', bb = false; b = b.filter(function (l) { if (/^(black\s*box|box)$/i.test(l.trim())) { bb = true; return false; } var m = l.match(/^image:\s*(\S+)/i); if (m) { img = m[1]; return false; } return true; }); var qs = [b[0]], r = 1; while (r < b.length - 1 && (/^\[[A-H]\]/.test(b[r]) || /^true or false\??$/i.test(b[r]))) qs.push(b[r++]); return b.length ? { q: qs.join(' '), a: b[r] || '', img: img, bb: bb } : null; }).filter(Boolean); }
   function alphaVals(a) { var w = String(a || '').toUpperCase().replace(/[^A-Z]/g, ''); if (!w) return null; var t = 0; for (var i = 0; i < w.length; i++) t += w.charCodeAt(i) - 64; return { f: w.charCodeAt(0) - 64, l: w.charCodeAt(w.length - 1) - 64, t: t, n: w.length }; }
   function parseAlpha(txt) { return String(txt || '').split('\n').map(function (l) { var p = l.split('|').map(function (x) { return x.trim(); }); if (!p[0] || !p[1]) return null; var v = alphaVals(p[0]); if (!v) return null; return { a: p[0].toUpperCase(), q: p[1], hard: /^hard$/i.test(p[2] || ''), f: v.f, t: v.t, n: v.n, l: v.l }; }).filter(Boolean); }
   var STAR_BEATS = [['late-night', 'Late Night', 80], ['rainy-window', 'Rainy Window', 72], ['dusty-tape', 'Dusty Tape', 86], ['sunday', 'Sunday', 92], ['slow-burn', 'Slow Burn', 66], ['cypher', 'Cypher', 94], ['metronome', 'Metronome', 90]];
@@ -224,7 +224,7 @@ function pqtMain() {
     function sig(o) { return JSON.stringify(o); }
     function apply(s) {
       S = s;
-      paintPause();
+      paintPause(); paintBox();
       var t = s.timer || {};
       timerTotal = t.total || 0; timerRun = !!t.running; timerLeft = t.remaining || 0;
       timerEnd = Date.now() + timerLeft;
@@ -443,6 +443,59 @@ function pqtMain() {
       d.innerHTML = '<div><p class="sc-splash__t">' + esc(text) + '</p>' + (sub ? '<p class="sc-splash__s">' + esc(sub) + '</p>' : '') + '</div>';
       document.body.appendChild(d); setTimeout(function () { d.classList.add('is-out'); }, 2000); setTimeout(function () { d.remove(); }, 2600);
     }
+    /* Rapid Fire black box + prize wheel (drawn over the screen, outside the main repaint so animations keep going) */
+    var bxEl = null, bxKey = '', bxTick = null;
+    var WH_COL = ['#ff8a12', '#ffc21a', '#18a8ff', '#f10a5b', '#5a12f5', '#00a67e', '#8e8e8e', '#ff3b14'];
+    function wheelHtml(items, hi) {
+      var N = items.length, R = 232, cx = 250, cy = 250, segs = '', lab = '', a = 360 / N;
+      function pt(deg, r) { var t = deg * Math.PI / 180; return [cx + r * Math.sin(t), cy - r * Math.cos(t)]; }
+      items.forEach(function (it, i) {
+        var col = WH_COL[i % WH_COL.length]; if (N > 1 && i === N - 1 && i % WH_COL.length === 0) col = WH_COL[3];
+        var p0 = pt(i * a, R), p1 = pt((i + 1) * a, R);
+        segs += N === 1 ? '<circle cx="250" cy="250" r="' + R + '" fill="' + col + '"/>' : '<path d="M250 250 L' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) + ' A' + R + ' ' + R + ' 0 ' + (a > 180 ? 1 : 0) + ' 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) + ' Z" fill="' + col + '" stroke="rgba(0,0,0,.18)" stroke-width="2"' + (hi === i ? ' class="is-hit"' : '') + '/>';
+        var mid = (i + .5) * a, ty = cy - R * .56, fs = Math.max(13, Math.min(30, 150 / (Math.max(3, String(it).length) * .56)));
+        lab += '<text transform="rotate(' + mid.toFixed(2) + ' 250 250) rotate(-90 250 ' + ty.toFixed(1) + ')" x="250" y="' + (ty + fs * .35).toFixed(1) + '" text-anchor="middle" font-size="' + fs.toFixed(1) + '" font-weight="800" fill="#fff" style="paint-order:stroke;stroke:rgba(0,0,0,.35);stroke-width:2.5px">' + esc(it) + '</text>';
+      });
+      return '<div class="sc-wh"><svg class="sc-wh__rim" viewBox="0 0 500 500"><defs><linearGradient id="whg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2bd6"/><stop offset=".35" stop-color="#ffd83a"/><stop offset=".7" stop-color="#22d3ee"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><circle cx="250" cy="250" r="249" fill="url(#whg)"/><circle cx="250" cy="250" r="244" fill="#121212"/></svg>' +
+        '<svg class="sc-wh__disc" viewBox="0 0 500 500">' + segs + lab + '</svg>' +
+        '<svg class="sc-wh__top" viewBox="0 0 500 500"><circle cx="250" cy="250" r="30" fill="#2a2a2a" stroke="url(#whg)" stroke-width="5"/><path d="M233 6 H267 V40 L250 58 L233 40 Z" fill="#ffd83a" stroke="#fff" stroke-width="2"/></svg></div>';
+    }
+    function bxStop() { if (bxTick) { clearInterval(bxTick); bxTick = null; } }
+    function paintBox() {
+      var b = S && S.qa && S.qa.bx;
+      if (!b) { if (bxEl) { bxEl.remove(); bxEl = null; } bxKey = ''; bxStop(); return; }
+      var key = (b.st === 'box' ? 'box' : 'wheel') + '|' + (b.items || []).join('~') + '|' + (b.at || 0);
+      if (bxEl && bxKey === key) { paintBoxRes(b); return; }
+      var fresh = !bxEl || bxKey.slice(0, 3) === 'box' !== (b.st === 'box'); if (bxEl) bxEl.remove(); bxStop();
+      bxEl = document.createElement('div'); bxEl.className = 'sc-bx' + (fresh ? '' : ' is-still'); bxKey = key;
+      if (b.st === 'box') {
+        bxEl.innerHTML = '<div class="sc-bx__in"><div class="sc-bx__swing"><img class="sc-bx__img" src="/assets/pqt/blackbox.webp" alt="Black box"></div><p class="sc-bx__by"><i style="background:' + b.color + '"></i>' + esc(b.team) + ' won a black box</p><div class="sc-bx__btn">Spin the wheel</div></div>';
+      } else {
+        bxEl.innerHTML = '<div class="sc-bx__in sc-bx__in--wh"><p class="sc-bx__by"><i style="background:' + b.color + '"></i>' + esc(b.team) + '</p>' + (b.items && b.items.length ? wheelHtml(b.items, b.st === 'won' ? b.i : -1) : '<p class="sc-bx__empty">The wheel is empty</p>') + '<div class="sc-bx__res" data-bxres></div></div>';
+        var disc = bxEl.querySelector('.sc-wh__disc');
+        if (disc && b.at) {
+          var N = b.items.length, seg = 360 / N, fin = b.k * 360 - (b.i + .5 + b.j) * seg, el = Date.now() - b.at;
+          if (el >= b.dur) disc.style.transform = 'rotate(' + fin + 'deg)';
+          else {
+            disc.style.transform = 'rotate(0deg)';
+            requestAnimationFrame(function () { requestAnimationFrame(function () { disc.style.transition = 'transform ' + b.dur + 'ms cubic-bezier(.1,.6,.08,1) ' + (-Math.max(0, el)) + 'ms'; disc.style.transform = 'rotate(' + fin + 'deg)'; }); });
+            var lastI = -1; bxTick = setInterval(function () {
+              var m = /matrix\(([^,]+),([^,]+)/.exec(getComputedStyle(disc).transform || ''); if (!m) return;
+              var ang = Math.atan2(+m[2], +m[1]) * 180 / Math.PI, at = (((-ang) % 360) + 360) % 360, ix = Math.floor(at / seg);
+              if (lastI !== -1 && ix !== lastI) beep(700 + (ix % 5) * 60, 0.04, 'square', 0.08); lastI = ix;
+              if (Date.now() - b.at > b.dur + 300) bxStop();
+            }, 40);
+          }
+        }
+      }
+      document.body.appendChild(bxEl); paintBoxRes(b);
+    }
+    function paintBoxRes(b) {
+      var r = bxEl && bxEl.querySelector('[data-bxres]'); if (!r) return;
+      var t = b.st === 'won' ? '<span>wins</span><b>' + esc(b.prize) + '</b>' : '';
+      if (r.getAttribute('data-k') !== t) { r.setAttribute('data-k', t); r.innerHTML = t; r.classList.toggle('is-on', !!t); }
+      bxEl.classList.toggle('is-won', b.st === 'won');
+    }
     var pauseEl = null;
     function paintPause() {
       var on = S && S.paused;
@@ -488,7 +541,7 @@ function pqtMain() {
     namesTxt: window.PQT_SAMPLE_NAMES || '', spellTxt: window.PQT_SAMPLE_SPELL || '', writtenTxt: window.PQT_SAMPLE_WRITTEN || '', rapidTxt: window.PQT_SAMPLE_RAPID || '', talkTxt: window.PQT_SAMPLE_TALK || '', alphaTxt: window.PQT_SAMPLE_ALPHA || '',
     star: { team: 0, preset: 'late-night', bpm: 80, level: 'beginner', bars: 16, seed: 0, phase: 'idle', done: [], score: null, startedAt: 0 },
     qa: { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }, qaUsed: {}, qaPos: {},
-    pwTxt: window.PQT_SAMPLE_PW || '', pw: { qi: 0, team: 0, phase: 'idle', cur: 0, res: [], done: [], used: [] }
+    wheelTxt: null, wheelLeft: null, pwTxt: window.PQT_SAMPLE_PW || '', pw: { qi: 0, team: 0, phase: 'idle', cur: 0, res: [], done: [], used: [] }
   };
   var H = store('pqt_host') || JSON.parse(JSON.stringify(DEF));
   Object.keys(DEF).forEach(function (k) { if (H[k] == null) H[k] = JSON.parse(JSON.stringify(DEF[k])); });
@@ -501,6 +554,7 @@ function pqtMain() {
   function loadQA() { PW = parsePw(H.pwTxt); QA = { names: parseNames(H.namesTxt), spell: parseSpell(H.spellTxt), written: parseQA(H.writtenTxt), rapid: parseQA(H.rapidTxt), talk: parseTalk(H.talkTxt), alpha: parseAlpha(H.alphaTxt) }; }
   loadQA();
   if (H.pw && H.pw.phase === 'count') setTimeout(function () { pwBegin(); }, 600);
+  if (H.qa && H.qa.bx && H.qa.bx.stage === 'spin') setTimeout(function () { bxLand(); }, Math.max(150, H.qa.bx.at + H.qa.bx.dur + 250 - Date.now()));
   if (!H.words.deck.length || H.words.deck.length !== WORDS.length) { H.words.deck = shuffle(WORDS.map(function (_, i) { return i; })); H.words.pos = 0; }
   if (H.timer.running && H.timer.endsAt) { H.timer.remaining = Math.max(0, H.timer.endsAt - Date.now()); if (!H.timer.remaining) H.timer.running = false; }
   var hist = [];
@@ -538,7 +592,7 @@ function pqtMain() {
       else if (q.type === 'spell') { o.d = it.d; o.e = q.revealed ? it.e : it.e.replace(new RegExp(it.w.replace(/[^A-Za-z]/g, ''), 'gi'), '______'); if (q.revealed) o.w = it.w; }
       else if (q.type === 'talk') { o.q = it; }
       else if (q.type === 'alpha') { o.q = it.q; o.f = it.f; o.t = it.t; o.len = it.n; o.l = it.l; o.hard = it.hard; if (q.revealed) o.a = it.a; }
-      else { o.q = it.q; o.img = it.img; if (q.revealed) o.a = it.a; }
+      else { o.q = it.q; o.img = it.img; if (q.revealed) o.a = it.a; o.bx = bxPub(q, it); }
     }
     return o;
   }
@@ -820,7 +874,7 @@ function pqtMain() {
     snap(); H.teams.forEach(function (t) { t.score = 0; t.strikes = 0; }); H.byRound = {}; H.round = 0; H.roundType = ''; H.ledger = []; H.paused = false;
     resetTally(); H.words.team = 0; H.timer.running = false; H.timer.remaining = H.timer.total;
     H.feud = { qi: 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
-    H.qa = { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; H.qaUsed = {}; H.qaPos = {}; H.bq = null; H.picks = {};
+    H.qa = { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; H.qaUsed = {}; H.qaPos = {}; H.bq = null; H.picks = {}; H.wheelLeft = null;
     H.view = 'lobby'; push(); renderAll(); splash('New game', H.title); toast('New game started');
   }
   /* ---------- Word Race round: the tournament runs inside the console, using this game's teams ---------- */
@@ -989,6 +1043,54 @@ function pqtMain() {
       : '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-pw="ready" type="button">Show “' + esc(t.name) + ' up next”</button><p class="hc-note">' + set.length + ' letters · ' + (PW_TIME / 1000) + ' seconds each · 1 point per word guessed.</p>';
     return out;
   }
+
+  /* ---- Rapid Fire black box + prize wheel ---- */
+  var WHEEL_DEF = '+1 point\n+2 points\n+3 points\n+4 points\n+5 points\n+6 points\n+8 points\n+10 points', bxT = null;
+  function wheelList() { return String(H.wheelTxt == null ? WHEEL_DEF : H.wheelTxt).split('\n').map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 12); }
+  function wheelNow() { if (!H.wheelLeft) H.wheelLeft = wheelList(); return H.wheelLeft; }
+  function bxLive(q, it) { return !!(q && q.type === 'rapid' && it && it.bb && q.bd && q.bd.res != null && q.bd.res >= 0 && q.mode === 'q'); }
+  function bxPub(q, it) {
+    if (!bxLive(q, it) || !q.revealed) return null;
+    var b = q.bx || { stage: 'box' }; if (b.stage === 'done') return null;
+    var o = { st: b.stage, team: tn(q.bd.res), color: (H.teams[q.bd.res] || {}).color || '#fff' };
+    if (b.stage === 'wheel') o.items = wheelNow().slice();
+    else if (b.items) { o.items = b.items; o.i = b.i; o.at = b.at; o.dur = b.dur; o.j = b.j; o.k = b.k; if (b.prize != null) o.prize = b.prize; }
+    return o;
+  }
+  function bxLand() {
+    var q = H.qa, b = q.bx; if (!b || b.stage !== 'spin') return;
+    var prize = b.items[b.i]; b.stage = 'won'; b.prize = prize;
+    var ix = (H.wheelLeft || []).indexOf(prize); if (ix > -1) H.wheelLeft.splice(ix, 1);
+    var m = /^\+\s*(\d+)/.exec(prize); if (m && q.bd && q.bd.res >= 0) { pts(q.bd.res, +m[1]); toast('+' + m[1] + ' to ' + tn(q.bd.res)); }
+    fx('win'); push(); renderAll();
+  }
+  function bxAct(a) {
+    var q = H.qa, it = qaItem(); if (!bxLive(q, it)) return; snap();
+    if (a === 'open') { wheelNow(); q.bx = { stage: 'wheel' }; fx('ding'); }
+    else if (a === 'spin') {
+      var L = wheelNow().slice(); if (!L.length) return;
+      var i = Math.floor(Math.random() * L.length);
+      q.bx = { stage: 'spin', items: L, i: i, at: Date.now(), dur: 6500, j: (Math.random() - .5) * .7, k: 5 + Math.floor(Math.random() * 3) };
+      clearTimeout(bxT); bxT = setTimeout(bxLand, 6750);
+    }
+    else if (a === 'close') { if (q.bx) q.bx.stage = 'done'; }
+    else if (a === 'refill') { H.wheelLeft = wheelList(); toast('Wheel refilled'); }
+    push(); renderAll();
+  }
+  function bxHost(q, it) {
+    if (!it || !it.bb) return '';
+    var b = q.bx || { stage: 'box' }, bd = q.bd, out = '<div class="hc-bx">';
+    if (!bd || bd.res == null) return out + '<p class="hc-bx__n">📦 Black box on this question · it shows once someone gets it right.</p></div>';
+    if (bd.res < 0) return out + '<p class="hc-bx__n">📦 Nobody got it · the black box stays shut.</p></div>';
+    if (!q.revealed) return out + '<p class="hc-bx__n">📦 Reveal the answer to bring up the black box.</p></div>';
+    var left = wheelNow().length;
+    if (b.stage === 'box') out += '<p class="hc-bx__t">📦 Black box won by <b>' + esc(tn(bd.res)) + '</b></p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-bx="open" type="button">Spin the wheel</button>';
+    else if (b.stage === 'wheel') out += '<p class="hc-bx__t">Wheel on screen · <b>' + left + '</b> prize' + (left === 1 ? '' : 's') + ' left</p>' + (left ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-bx="spin" type="button">Spin</button>' : '<p class="hc-bx__n">The wheel is empty.</p><button class="pbtn pbtn--lg pbtn--block" data-bx="refill" type="button">Refill the wheel</button>');
+    else if (b.stage === 'spin') out += '<p class="hc-bx__t">Spinning…</p>';
+    else if (b.stage === 'won') out += '<p class="hc-bx__t"><b>' + esc(tn(bd.res)) + '</b> wins <b>' + esc(b.prize) + '</b></p><button class="pbtn pbtn--lg pbtn--block pbtn--white" data-bx="close" type="button">Close the wheel</button>';
+    else out += '<p class="hc-bx__n">📦 Black box opened · ' + esc(tn(bd.res)) + ' won ' + esc(b.prize || '') + '.</p>';
+    return out + '</div>';
+  }
   function qaTimer() { var t = QA_TIME[H.qa.type]; if (!t) return; H.timer.total = t; H.timer.running = false; H.timer.remaining = t; }
   /* turns + bonus for number-board rounds */
   function tn(i) { return H.teams[i] ? H.teams[i].name : ''; }
@@ -1006,7 +1108,7 @@ function pqtMain() {
     qaTimer(); push(); if (QA_TIME[q.type] && q.type !== 'spell') timerStart(); renderAll(); toast('Bonus to ' + tn(nx));
   }
   function qaShow(i, autoStart) {
-    snap(); var q = H.qa; q.idx = i; q.mode = 'q'; q.clue = 1; q.revealed = false; q.mark = '';
+    snap(); var q = H.qa; q.idx = i; q.mode = 'q'; q.clue = 1; q.revealed = false; q.mark = ''; q.bx = null; clearTimeout(bxT);
     if (QA_BOARD[q.type]) { var u = H.qaUsed[q.type] = H.qaUsed[q.type] || [], ow = turnTeam(); if (u.indexOf(i) < 0) { u.push(i); H.picks = H.picks || {}; H.picks[ow] = (H.picks[ow] || 0) + 1; } q.bd = { owner: ow, cur: ow, tried: [ow], res: null, adv: false }; }
     H.qaPos[q.type] = i; H.view = 'qa'; qaTimer(); push(); if (autoStart && QA_TIME[q.type] && q.type !== 'spell') timerStart(); renderAll();
   }
@@ -1262,7 +1364,7 @@ function pqtMain() {
     if (H.view === 'intro') out += '<div class="hc-flowbox"><button class="pbtn pbtn--o pbtn--lg pbtn--block" ' + (QA_BOARD[type] ? 'data-qboard' : 'data-qgo="' + q.idx + '"') + '>' + (QA_BOARD[type] ? 'Show the number board' : 'Show ' + (type === 'talk' ? 'the topic' : (type === 'alpha' ? 'puzzle ' : 'question ') + (rel + 1))) + '</button></div>';
     if (QA_BOARD[type] && !(q.mode === 'q' && H.view === 'qa')) {
       var used = H.qaUsed[type] || [];
-      out += '<p class="hc-sub">Number board · <b class="hc-pick" style="color:' + (H.teams[turnTeam()] || {}).color + '">' + esc(tn(turnTeam())) + '</b> picks · <label class="hc-pickch">change <select data-qturn>' + teamOpts(turnTeam()) + '</select></label></p><div class="hc-board">' + list.map(function (_, i) { return '<button class="hc-num' + (used.indexOf(i) > -1 ? ' is-used' : '') + (q.mode === 'q' && q.idx === i ? ' is-cur' : '') + '" data-qgo="' + i + '">' + (i + 1) + '</button>'; }).join('') + '</div>';
+      out += '<p class="hc-sub">Number board · <b class="hc-pick" style="color:' + (H.teams[turnTeam()] || {}).color + '">' + esc(tn(turnTeam())) + '</b> picks · <label class="hc-pickch">change <select data-qturn>' + teamOpts(turnTeam()) + '</select></label></p><div class="hc-board">' + list.map(function (qi, i) { return '<button class="hc-num' + (qi && qi.bb ? ' has-box' : '') + (used.indexOf(i) > -1 ? ' is-used' : '') + (q.mode === 'q' && q.idx === i ? ' is-cur' : '') + '" data-qgo="' + i + '">' + (i + 1) + '</button>'; }).join('') + '</div>';
       if (H.view === 'qa' && (q.mode === 'board' || used.length >= list.length)) out += (used.length >= list.length ? '<p class="hc-note" style="margin:0 0 8px">Every number has been played.</p>' : '') + fin;
     }
     if (q.mode === 'q' && it && H.view === 'qa') {
@@ -1288,6 +1390,7 @@ function pqtMain() {
           var bd = q.bd;
           out += bd.res == null ? '<div class="hc-turn' + (bd.cur !== bd.owner ? ' is-bonus' : '') + '"><span>' + (bd.cur !== bd.owner ? 'Bonus · ' + esc(tn(bd.owner)) + ' missed' : 'Answering') + '</span><b><i style="background:' + (H.teams[bd.cur] || {}).color + '"></i>' + esc(tn(bd.cur)) + '</b></div><div class="w-actions" style="grid-template-columns:1fr 1fr"><button class="pbtn pbtn--good pbtn--lg" data-bd="1" type="button">✓ Correct</button><button class="pbtn pbtn--bad pbtn--lg" data-bd="0" type="button">✕ ' + (type === 'spell' ? 'Misspelt' : 'Wrong') + '</button></div>'
             : '<div class="hc-turn is-done"><span>' + (bd.res < 0 ? 'Nobody got it' : (bd.res !== bd.owner ? 'Bonus point' : 'Point')) + '</span><b>' + (bd.res < 0 ? 'No points' : '+' + (bd.pv || 1) + ' · ' + esc(tn(bd.res))) + '</b></div>';
+          out += bxHost(q, it);
           out += '<div class="w-actions" style="grid-template-columns:1fr;margin-top:12px"><button class="pbtn pbtn--lg pbtn--white" data-qboard>Back to the board · ' + esc(tn(bd.adv ? H.qa.turn : (bd.owner + 1) % H.teams.length)) + ' picks next</button></div>';
         } else out += '<p class="hc-sub">Correct? Tap the team</p>' + teamAward(type === 'spell' ? 'Misspelt' : 'Wrong');
         if (!QA_BOARD[type]) out += '<div class="w-actions" style="grid-template-columns:1fr 1fr;margin-top:12px">' + '<button class="pbtn pbtn--lg" data-qnext="-1">← Back</button><button class="pbtn pbtn--lg pbtn--white" data-qnext="1">' + (last ? finLbl : 'Next →') + '</button>' + '</div>';
@@ -1335,7 +1438,7 @@ function pqtMain() {
       var wa = $('[data-wtxt]'), ba = $('[data-btxt]');
       if (document.activeElement !== wa) wa.value = H.wordsTxt;
       if (document.activeElement !== ba) ba.value = H.boardsTxt;
-      ['names', 'spell', 'written', 'rapid', 'talk', 'alpha', 'pw'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el && document.activeElement !== el) el.value = H[k + 'Txt'] || ''; });
+      ['names', 'spell', 'written', 'rapid', 'talk', 'alpha', 'pw'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el && document.activeElement !== el) el.value = H[k + 'Txt'] || ''; }); var wl = $('[data-qtxt="wheel"]'); if (wl && document.activeElement !== wl) wl.value = H.wheelTxt == null ? WHEEL_DEF : H.wheelTxt;
       var CC = { words: pl(WORDS.length, 'word'), boards: pl(BOARDS.length, 'question'), names: pl(QA.names.length, 'person', 'people'), spell: pl(QA.spell.length, 'word'), written: pl(QA.written.length, 'question'), rapid: pl(QA.rapid.length, 'question'), talk: pl(QA.talk.length, 'topic'), alpha: pl(QA.alpha.length, 'puzzle'), pw: pl(PW.length, 'question') }; $$('[data-cc]').forEach(function (el) { el.textContent = CC[el.getAttribute('data-cc')] || ''; });
     }
   }
@@ -1344,6 +1447,7 @@ function pqtMain() {
   root.addEventListener('click', function (e) {
     var b = e.target.closest('button,[data-tab],[data-menu-close],[data-pick-close]'); if (!b) return;
     var d = b.dataset;
+    if (d.bx) { bxAct(d.bx); return; }
     if (d.tab) { H.tab = d.tab; save(); renderTabs(); renderTab(); }
     else if (d.lyr != null || d.lyrTeam != null) lyrAct(d);
     else if (d.view === 'game') { var gv = H.roundType === 'words' ? 'words' : H.roundType === 'answers' ? 'fm' : H.roundType === 'star' ? 'star' : H.roundType === 'race' ? 'race' : H.roundType === 'pw' ? 'pw' : H.roundType === 'lyrics' ? 'intro' : QA_TYPES[H.roundType] ? 'qa' : ''; if (!gv) toast('No round yet. Start one from the Game tab.'); else { setView(gv); H.tab = 'quiz'; save(); renderTabs(); renderTab(); } }
@@ -1418,7 +1522,7 @@ function pqtMain() {
     else if (b.hasAttribute('data-change')) { closeSheets(); var cs = $('[data-connect-sec]'); if (!cs.hidden && (linked() || H.round > 0)) { delete cs.dataset.force; cs.hidden = true; } else { cs.dataset.force = '1'; cs.hidden = false; window.scrollTo(0, 0); $('[data-codein]').focus(); } }
     else if (b.hasAttribute('data-setup-edit')) openSetup(H.ended || H.round === 0);
     else if (b.hasAttribute('data-opensc')) { var w = window.open('/pqt/screen/', 'pqtscreen'); if (!w) location.href = '/pqt/screen/'; }
-    else if (b.hasAttribute('data-savecards')) { H.wordsTxt = $('[data-wtxt]').value; H.boardsTxt = $('[data-btxt]').value; ['names', 'spell', 'written', 'rapid', 'talk', 'alpha', 'pw'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el) H[k + 'Txt'] = el.value; }); loadQA(); reloadBanks(); b.textContent = 'Saved'; setTimeout(function () { b.textContent = 'Save cards'; }, 1500); }
+    else if (b.hasAttribute('data-savecards')) { H.wordsTxt = $('[data-wtxt]').value; H.boardsTxt = $('[data-btxt]').value; ['names', 'spell', 'written', 'rapid', 'talk', 'alpha', 'pw'].forEach(function (k) { var el = $('[data-qtxt="' + k + '"]'); if (el) H[k + 'Txt'] = el.value; }); var wl2 = $('[data-qtxt="wheel"]'); if (wl2 && wl2.value !== (H.wheelTxt == null ? WHEEL_DEF : H.wheelTxt)) { H.wheelTxt = wl2.value; H.wheelLeft = null; } loadQA(); reloadBanks(); b.textContent = 'Saved'; setTimeout(function () { b.textContent = 'Save cards'; }, 1500); }
     else if (b.hasAttribute('data-samples')) { if (confirmTwice(b)) { setBank(window.PQT_BANK || {}); toast('Your saved bank is back.'); } }
     else if (b.hasAttribute('data-bank-export')) exportBank();
     else if (b.hasAttribute('data-doc-import')) { var df = $('[data-doc-file]'); if (df) { df.value = ''; df.click(); } }
@@ -1460,7 +1564,7 @@ function pqtMain() {
   /* ---- setup + end sheets ---- */
   var SU = null;
   /* ---------- saved games: every visit starts fresh; games can be saved, resumed or reused ---------- */
-  var KEEP = { code: 1, tab: 1, qaPos: 1, wordsTxt: 1, boardsTxt: 1, namesTxt: 1, spellTxt: 1, writtenTxt: 1, rapidTxt: 1, talkTxt: 1, alphaTxt: 1, pwTxt: 1 };
+  var KEEP = { code: 1, tab: 1, qaPos: 1, wordsTxt: 1, boardsTxt: 1, namesTxt: 1, spellTxt: 1, writtenTxt: 1, rapidTxt: 1, talkTxt: 1, alphaTxt: 1, pwTxt: 1, wheelTxt: 1 };
   function gameSnap() { var o = {}; Object.keys(H).forEach(function (k) { if (!KEEP[k]) o[k] = H[k]; }); return JSON.parse(JSON.stringify(o)); }
   function hasGame(h) { h = h || H; return !!(h.round > 0 || (h.teams || []).some(function (t) { return t.score; })); }
   function saves() { return store('pqt_saves') || []; }
