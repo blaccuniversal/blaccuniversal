@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611240500, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611240550, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -445,20 +445,22 @@ function pqtMain() {
     }
     /* Rapid Fire black box + prize wheel (drawn over the screen, outside the main repaint so animations keep going) */
     var bxEl = null, bxKey = '', bxTick = null;
-    var WH_COL = ['#ff8a12', '#ffc21a', '#18a8ff', '#f10a5b', '#5a12f5', '#00a67e', '#8e8e8e', '#ff3b14'];
+    var WH_TONE = [['wha', '#f1d27c', '#a97b22', '#15110a'], ['whb', '#2a2a2a', '#0b0b0b', '#f1d27c'], ['whc', '#9a7424', '#5a3f0c', '#fff3cf']], WH_NO = ['whn', '#7a1616', '#350707', '#ffe3d6'];
     function wheelHtml(items, hi) {
-      var N = items.length, R = 232, cx = 250, cy = 250, segs = '', lab = '', a = 360 / N;
+      var N = items.length, R = 232, cx = 250, cy = 250, segs = '', lab = '', a = 360 / N, defs = '', k, studs = '';
       function pt(deg, r) { var t = deg * Math.PI / 180; return [cx + r * Math.sin(t), cy - r * Math.cos(t)]; }
+      WH_TONE.concat([WH_NO]).forEach(function (t) { defs += '<radialGradient id="' + t[0] + '" cx="250" cy="250" r="232" gradientUnits="userSpaceOnUse"><stop offset=".12" stop-color="' + t[2] + '"/><stop offset="1" stop-color="' + t[1] + '"/></radialGradient>'; });
       items.forEach(function (it, i) {
-        var col = WH_COL[i % WH_COL.length]; if (N > 1 && i === N - 1 && i % WH_COL.length === 0) col = WH_COL[3];
+        var no = /try\s*again/i.test(it), tn2 = no ? WH_NO : WH_TONE[i % 2]; if (!no && N % 2 && N > 1 && i === N - 1) tn2 = WH_TONE[2];
         var p0 = pt(i * a, R), p1 = pt((i + 1) * a, R);
-        segs += N === 1 ? '<circle cx="250" cy="250" r="' + R + '" fill="' + col + '"/>' : '<path d="M250 250 L' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) + ' A' + R + ' ' + R + ' 0 ' + (a > 180 ? 1 : 0) + ' 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) + ' Z" fill="' + col + '" stroke="rgba(0,0,0,.18)" stroke-width="2"' + (hi === i ? ' class="is-hit"' : '') + '/>';
-        var mid = (i + .5) * a, ty = cy - R * .56, fs = Math.max(13, Math.min(30, 150 / (Math.max(3, String(it).length) * .56)));
-        lab += '<text transform="rotate(' + mid.toFixed(2) + ' 250 250) rotate(-90 250 ' + ty.toFixed(1) + ')" x="250" y="' + (ty + fs * .35).toFixed(1) + '" text-anchor="middle" font-size="' + fs.toFixed(1) + '" font-weight="800" fill="#fff" style="paint-order:stroke;stroke:rgba(0,0,0,.35);stroke-width:2.5px">' + esc(it) + '</text>';
+        segs += N === 1 ? '<circle cx="250" cy="250" r="' + R + '" fill="url(#' + tn2[0] + ')"/>' : '<path d="M250 250 L' + p0[0].toFixed(2) + ' ' + p0[1].toFixed(2) + ' A' + R + ' ' + R + ' 0 ' + (a > 180 ? 1 : 0) + ' 1 ' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) + ' Z" fill="url(#' + tn2[0] + ')" stroke="#d9b45a" stroke-width="2.2"' + (hi === i ? ' class="is-hit"' : '') + '/>';
+        var mid = (i + .5) * a, ty = cy - R * .55, fs = Math.max(13, Math.min(27, 150 / (Math.max(3, String(it).length) * .58)));
+        lab += '<text transform="rotate(' + mid.toFixed(2) + ' 250 250) rotate(-90 250 ' + ty.toFixed(1) + ')" x="250" y="' + (ty + fs * .35).toFixed(1) + '" text-anchor="middle" font-size="' + fs.toFixed(1) + '" font-weight="800" letter-spacing=".6" fill="' + tn2[3] + '">' + esc(String(it).toUpperCase()) + '</text>';
       });
-      return '<div class="sc-wh"><svg class="sc-wh__rim" viewBox="0 0 500 500"><defs><linearGradient id="whg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2bd6"/><stop offset=".35" stop-color="#ffd83a"/><stop offset=".7" stop-color="#22d3ee"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs><circle cx="250" cy="250" r="249" fill="url(#whg)"/><circle cx="250" cy="250" r="244" fill="#121212"/></svg>' +
-        '<svg class="sc-wh__disc" viewBox="0 0 500 500">' + segs + lab + '</svg>' +
-        '<svg class="sc-wh__top" viewBox="0 0 500 500"><circle cx="250" cy="250" r="30" fill="#2a2a2a" stroke="url(#whg)" stroke-width="5"/><path d="M233 6 H267 V40 L250 58 L233 40 Z" fill="#ffd83a" stroke="#fff" stroke-width="2"/></svg></div>';
+      for (k = 0; k < 24; k++) { var sp = pt(k * 15, 238.5); studs += '<circle cx="' + sp[0].toFixed(1) + '" cy="' + sp[1].toFixed(1) + '" r="2.6" fill="#f6dc8d"/>'; }
+      return '<div class="sc-wh"><svg class="sc-wh__rim" viewBox="0 0 500 500"><defs><linearGradient id="whr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8e29a"/><stop offset=".3" stop-color="#b8892a"/><stop offset=".55" stop-color="#f3d27a"/><stop offset="1" stop-color="#7d5a12"/></linearGradient></defs><circle cx="250" cy="250" r="249" fill="url(#whr)"/><circle cx="250" cy="250" r="245" fill="#0b0b0b"/>' + studs + '<circle cx="250" cy="250" r="233.5" fill="none" stroke="url(#whr)" stroke-width="3"/></svg>' +
+        '<svg class="sc-wh__disc" viewBox="0 0 500 500"><defs>' + defs + '</defs>' + segs + lab + '</svg>' +
+        '<svg class="sc-wh__top" viewBox="0 0 500 500"><defs><radialGradient id="whh" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#c9a040"/><stop offset="1" stop-color="#5e430b"/></radialGradient><linearGradient id="whp" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9a7424"/><stop offset=".5" stop-color="#fbe9a8"/><stop offset="1" stop-color="#9a7424"/></linearGradient></defs><circle cx="250" cy="250" r="38" fill="#0b0b0b" stroke="#d9b45a" stroke-width="3"/><circle cx="250" cy="250" r="30" fill="url(#whh)"/><circle cx="250" cy="250" r="9" fill="#1a1308" stroke="#fbe9a8" stroke-width="2"/><path d="M231 4 H269 V34 L250 50 L231 34 Z" fill="url(#whp)" stroke="#2a1d05" stroke-width="3" stroke-linejoin="round"/></svg></div>';
     }
     function bxStop() { if (bxTick) { clearInterval(bxTick); bxTick = null; } }
     function paintBox() {
@@ -492,7 +494,7 @@ function pqtMain() {
     }
     function paintBoxRes(b) {
       var r = bxEl && bxEl.querySelector('[data-bxres]'); if (!r) return;
-      var t = b.st === 'won' ? '<span>wins</span><b>' + esc(b.prize) + '</b>' : '';
+      var t = b.st === 'won' ? (/try\s*again/i.test(b.prize) ? '<b>Try again</b>' : '<span>wins</span><b>' + esc(b.prize) + '</b>') : '';
       if (r.getAttribute('data-k') !== t) { r.setAttribute('data-k', t); r.innerHTML = t; r.classList.toggle('is-on', !!t); }
       bxEl.classList.toggle('is-won', b.st === 'won');
     }
@@ -1045,7 +1047,7 @@ function pqtMain() {
   }
 
   /* ---- Rapid Fire black box + prize wheel ---- */
-  var WHEEL_DEF = '+1 point\n+2 points\n+3 points\n+4 points\n+5 points\n+6 points\n+8 points\n+10 points', bxT = null;
+  var WHEEL_DEF = '+1 point\nTry again\n+3 points\n+5 points\nTry again\n+2 points\n+10 points\nTry again', bxT = null;
   function wheelList() { return String(H.wheelTxt == null ? WHEEL_DEF : H.wheelTxt).split('\n').map(function (x) { return x.trim(); }).filter(Boolean).slice(0, 12); }
   function wheelNow() { if (!H.wheelLeft) H.wheelLeft = wheelList(); return H.wheelLeft; }
   function bxLive(q, it) { return !!(q && q.type === 'rapid' && it && it.bb && q.bd && q.bd.res != null && q.bd.res >= 0 && q.mode === 'q'); }
@@ -1060,7 +1062,7 @@ function pqtMain() {
   function bxLand() {
     var q = H.qa, b = q.bx; if (!b || b.stage !== 'spin') return;
     var prize = b.items[b.i]; b.stage = 'won'; b.prize = prize;
-    var ix = (H.wheelLeft || []).indexOf(prize); if (ix > -1) H.wheelLeft.splice(ix, 1);
+    var ix = /try\s*again/i.test(prize) ? -1 : (H.wheelLeft || []).indexOf(prize); if (ix > -1) H.wheelLeft.splice(ix, 1);
     var m = /^\+\s*(\d+)/.exec(prize); if (m && q.bd && q.bd.res >= 0) { pts(q.bd.res, +m[1]); toast('+' + m[1] + ' to ' + tn(q.bd.res)); }
     if (!/try\s*again/i.test(prize)) { H.bxWins = H.bxWins || []; H.bxWins.push({ t: q.bd.res, prize: prize, p: '' }); b.w = H.bxWins.length - 1; }
     fx('win'); push(); renderAll();
@@ -1088,7 +1090,7 @@ function pqtMain() {
     if (b.stage === 'box') out += '<p class="hc-bx__t">📦 Black box won by <b>' + esc(tn(bd.res)) + '</b></p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-bx="open" type="button">Spin the wheel</button>';
     else if (b.stage === 'wheel') out += '<p class="hc-bx__t">Wheel on screen · <b>' + left + '</b> prize' + (left === 1 ? '' : 's') + ' left</p>' + (left ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-bx="spin" type="button">Spin</button>' : '<p class="hc-bx__n">The wheel is empty.</p><button class="pbtn pbtn--lg pbtn--block" data-bx="refill" type="button">Refill the wheel</button>');
     else if (b.stage === 'spin') out += '<p class="hc-bx__t">Spinning…</p>';
-    else if (b.stage === 'won') out += '<p class="hc-bx__t"><b>' + esc(tn(bd.res)) + '</b> wins <b>' + esc(b.prize) + '</b></p>' + (b.w != null && H.bxWins[b.w] ? '<input class="hc-in hc-bx__in" data-bxp="' + b.w + '" type="text" maxlength="40" placeholder="Player who won the black box" value="' + esc(H.bxWins[b.w].p || '') + '" autocomplete="off">' : '<p class="hc-bx__n">Try again · nothing to note down.</p>') + '<button class="pbtn pbtn--lg pbtn--block pbtn--white" data-bx="close" type="button">Close the wheel</button>';
+    else if (b.stage === 'won') out += '<p class="hc-bx__t"><b>' + esc(tn(bd.res)) + '</b>' + (/try\s*again/i.test(b.prize) ? ' got <b>Try again</b>' : ' wins <b>' + esc(b.prize) + '</b>') + '</p>' + (b.w != null && H.bxWins[b.w] ? '<input class="hc-in hc-bx__in" data-bxp="' + b.w + '" type="text" maxlength="40" placeholder="Player who won the black box" value="' + esc(H.bxWins[b.w].p || '') + '" autocomplete="off">' : '<p class="hc-bx__n">Try again · nothing to note down.</p>') + '<button class="pbtn pbtn--lg pbtn--block pbtn--white" data-bx="close" type="button">Close the wheel</button>';
     else out += '<p class="hc-bx__n">📦 Black box opened · ' + esc(tn(bd.res)) + ' won ' + esc(b.prize || '') + '.</p>';
     return out + bxLog() + '</div>';
   }
