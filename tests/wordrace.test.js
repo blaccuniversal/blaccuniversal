@@ -21,11 +21,12 @@ const teamsOf = (T, m) => names(T, m.teams).join('');
 /* Play a matchup. script: list of team names winning each battle (regular + any deciders). */
 function play(T, m, script) { script.forEach(w => { E.startBattle(T, m.id, dict, L); E.award(T, m.id, id(T, w), '', dict, { ms: 5000 }); }); }
 
-test('2 teams: one 3-battle final', () => {
+test('2 teams: a 1v1 final ends as soon as someone has two wins', () => {
   const T = make(2); eq(st(T).label, 'Grand Final', 'final'); const m = ms(T)[0];
-  play(T, m, ['A', 'A']); ok(!m.done, 'not finished after 2–0: every matchup is 3 battles');
-  play(T, m, ['B']); ok(m.done, 'done after 3'); eq([m.pts[id(T, 'A')], m.pts[id(T, 'B')]], [6, 3], '3 points per battle');
+  play(T, m, ['A']); ok(!m.done, 'not finished after 1–0');
+  play(T, m, ['A']); ok(m.done, 'done at 2–0, the third battle could not change it'); eq([m.pts[id(T, 'A')], m.pts[id(T, 'B')]], [6, 0], '3 points per battle');
   eq(nm(T, T.champion), 'A', 'A champion'); eq(T.status, 'done', 'done');
+  const T2 = make(2), m2 = ms(T2)[0]; play(T2, m2, ['A', 'B']); ok(!m2.done, '1–1 is not decided'); play(T2, m2, ['B']); ok(m2.done, 'done at 2–1'); eq(nm(T2, T2.champion), 'B', 'B champion after 1–2');
 });
 test('3 teams: one Bangarang, top 2 to the final', () => {
   const T = make(3); const m = ms(T)[0]; eq(m.kind, 'bang', 'bangarang'); eq(teamsOf(T, m), 'ABC', 'all three');
@@ -46,7 +47,7 @@ test('Bangarang 3–0–0 in a top-2 group: 2nd v 3rd decider', () => {
 });
 test('4 teams: semis then final', () => {
   const T = make(4); eq(st(T).label, 'Semi-finals', 'semis'); eq(ms(T).map(m => teamsOf(T, m)), ['AB', 'CD'], 'pairs');
-  play(T, ms(T)[0], ['A', 'B', 'A']); play(T, ms(T)[1], ['D', 'D', 'D']); eq(teamsOf(T, ms(T)[0]), 'AD', 'final A v D');
+  play(T, ms(T)[0], ['A', 'B', 'A']); play(T, ms(T)[1], ['D', 'D']); eq(teamsOf(T, ms(T)[0]), 'AD', 'final A v D');
 });
 test('5 teams: league of 5 Bangarangs, each team plays 3, top 2 final', () => {
   const T = make(5); eq(ms(T).map(m => teamsOf(T, m)), ['ABC', 'BCD', 'CDE', 'DEA', 'EAB'], 'rotation');
@@ -75,7 +76,7 @@ test('9 teams: 3 groups, winners Bangarang (top 2), final', () => {
   play(T, ms(T)[0], ['E', 'I', 'E']); eq(teamsOf(T, ms(T)[0]), 'EI', 'final E v I');
 });
 test('10 teams: 5 duels then a league of the winners', () => {
-  const T = make(10); eq(ms(T).length, 5, '5 duels'); ms(T).forEach(m => play(T, m, [nm(T, m.teams[0]), nm(T, m.teams[0]), nm(T, m.teams[1])]));
+  const T = make(10); eq(ms(T).length, 5, '5 duels'); ms(T).forEach(m => play(T, m, [nm(T, m.teams[0]), nm(T, m.teams[1]), nm(T, m.teams[0])]));
   eq(st(T).label, 'League', 'league'); eq(ms(T).map(m => teamsOf(T, m)), ['ACE', 'CEG', 'EGI', 'GIA', 'IAC'], 'rotation of winners');
 });
 test('11 teams: league of 11, each plays 3; 12 teams: 4 groups → semis', () => {
@@ -114,10 +115,10 @@ test('Spin: no answers until the letters stop', () => {
 });
 test('Override flips a result and rebuilds what follows', () => {
   const T = make(4); const [m1, m2] = ms(T);
-  E.startBattle(T, m1.id, dict, L); E.submit(T, m1.id, m1.teams[0], 'street', dict, { ms: 1 });
-  E.startBattle(T, m1.id, dict, L); E.submit(T, m1.id, m1.teams[1], 'stxt', dict, { ms: 1 }); E.submit(T, m1.id, m1.teams[0], 'sweet', dict, { ms: 2 });
   E.startBattle(T, m1.id, dict, L); E.submit(T, m1.id, m1.teams[1], 'stout', dict, { ms: 1 });
-  eq(names(T, m1.rank), ['A', 'B'], 'A wins 2–1'); play(T, m2, ['C', 'C', 'C']); eq(st(T).label, 'Grand Final', 'final built');
+  E.startBattle(T, m1.id, dict, L); E.submit(T, m1.id, m1.teams[1], 'stxt', dict, { ms: 1 }); E.submit(T, m1.id, m1.teams[0], 'sweet', dict, { ms: 2 });
+  E.startBattle(T, m1.id, dict, L); E.submit(T, m1.id, m1.teams[0], 'street', dict, { ms: 1 });
+  eq(names(T, m1.rank), ['A', 'B'], 'A wins 2–1'); play(T, m2, ['C', 'C']); eq(st(T).label, 'Grand Final', 'final built');
   E.override(T, m1.id, 2, 0, true, 'accepted spelling'); eq(names(T, m1.rank), ['B', 'A'], 'now B wins 2–1'); eq(teamsOf(T, ms(T)[0]), 'BC', 'final rebuilt B v C');
   ok(T.audit.some(e => e.act === 'override' && e.note === 'accepted spelling'), 'logged');
   play(T, ms(T)[0], ['B']); let t = null; try { E.override(T, m1.id, 1, 0, false); } catch (e) { t = e.code; } eq(t, 'locked', 'locked after the final starts');
@@ -132,7 +133,7 @@ test('Refresh: JSON round trip keeps going', () => {
   let T = make(6); play(T, ms(T)[0], ['A', 'B']); T = JSON.parse(JSON.stringify(T)); play(T, ms(T)[0], ['A']); ok(ms(T)[0].done, 'finished after reload');
 });
 test('Game points: 3 for a 1v1 win or a Bangarang 1st', () => {
-  const T = make(3); play(T, ms(T)[0], ['A', 'B', 'A']); play(T, ms(T)[0], ['A', 'A', 'B']); const s = E.summary(T);
+  const T = make(3); play(T, ms(T)[0], ['A', 'B', 'A']); play(T, ms(T)[0], ['A', 'B', 'A']); const s = E.summary(T);
   eq([s[id(T, 'A')].game, s[id(T, 'B')].game, s[id(T, 'C')].game], [6, 0, 0], 'A 3 + 3, B and C 0');
 });
 test('Every team count 2–12 reaches a champion (random results)', () => {
@@ -146,7 +147,7 @@ test('Every team count 2–12 reaches a champion (random results)', () => {
     }
     if (T.status !== 'done') { ok(false, 'no champion n=' + n + ' seed=' + seed); continue; }
     const all = Object.values(T.matchups);
-    ok(all.filter(m => m.kind !== 'tb').every(m => m.done && E.regular(m).length === 3), 'every matchup 3 battles n=' + n);
+    ok(all.filter(m => m.kind !== 'tb').every(m => m.done && (m.kind === 'duel' ? [2, 3].indexOf(E.regular(m).length) > -1 : E.regular(m).length === 3)), 'every Bangarang 3 battles, every 1v1 2 or 3 n=' + n);
     const main = all.filter(m => m.kind !== 'tb').length; eq(main, E.matchCount(n), 'matches n=' + n);
     eq(T.stages[T.stages.length - 1].label, 'Grand Final', 'ends with the final n=' + n);
   }

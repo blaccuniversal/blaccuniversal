@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611240700, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611240730, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -316,7 +316,7 @@ function pqtMain() {
           talk: ['A topic goes up on the screen.', 'Share your thoughts. Hear each other out.', 'No points, just good conversation.'],
           alpha: ['Every team answers every puzzle: first letter, total, length and last letter, plus a clue. A = 1 … Z = 26.', 'Each puzzle gets 20 seconds. Write it down, or answer on your phone.', 'Answers are revealed at the end of the round.'],
           star: ['One rapper per team, one turn each.', 'Follow the ball. Land the rhyme on the fourth beat of every bar.', 'The judges score every turn.'],
-          race: ['Two letters spin, then stop: one to start the word, one to end it.', 'First team to call a real word that fits wins the battle.', 'Three battles, 3 points for each one won. Most points wins. Champion 3 game points, runner-up 2, every other team 1.'],
+          race: ['Two letters spin, then stop: one to start the word, one to end it.', 'First team to call a real word that fits wins the battle.', 'Bangarang: three battles. 1v1: first to win two. 3 points per battle won. Champion 3 game points, runner-up 2, every other team 1.'],
           pw: ['Ten letters light up, one at a time. Each one starts a hidden word.', 'The describer gives a one-word clue. The guesser names the word.', 'Each letter lasts 10 seconds. Every word guessed is a point.']
         };
         if (S.roundType === 'lyrics') return '<div class="sc-intro sc-intro--hold"><p class="sc-intro__r">Round ' + (S.round || 1) + (S.rounds ? ' of ' + S.rounds : '') + ' · Finish The Lyrics</p><h1 class="sc-intro__t">Use Presentation</h1><p class="sc-intro__sub">Interface is getting curated.</p>' + (S.lyr ? '<div class="sc-chips" style="margin-top:5vh"><span class="sc-chip"><i style="background:' + S.lyr.color + '"></i>' + (S.lyr.res != null ? (S.lyr.res ? (S.lyr.pv === 1 ? 'Bonus point · ' : 'Point · ') + esc(S.lyr.res) : 'Nobody got it') : (S.lyr.bonus ? 'Bonus · ' : '') + esc(S.lyr.team) + ' · you’re up') + '</span></div>' : '') + '</div>';

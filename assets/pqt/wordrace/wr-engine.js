@@ -2,7 +2,7 @@
    Pure logic, no DOM. The whole tournament is one JSON-safe object (T): saved after every action, restored after a refresh.
    Every change goes through a function here and is written to T.audit.
 
-   Matchups are either a 1v1 ("duel") or a 3-team Bangarang ("bang"). Both are exactly 3 battles.
+   Matchups are either a 1v1 ("duel") or a 3-team Bangarang ("bang"). Both are 3 battles, except that a 1v1 ends as soon as one team has won two (the third could not change the result).
    A battle is won by the first correct word and is worth 3 points, so 9 is the most a team can score in a matchup.
    Where teams are level on points and the order matters, sudden-death battles (worth nothing) settle it.
 
@@ -283,7 +283,8 @@
   }
   function settle(T, m) {
     var wasDone = m.done; recalc(T, m);
-    var finished = m.kind === 'tb' ? m.tbOrder.length >= m.slots : regular(m).length >= 3 && !curBattle(m) && !unresolved(m);
+    var clinched = m.kind === 'duel' && !curBattle(m) && m.teams.some(function (x) { return m.wins[x] >= 2; });   // 2–0 or 2–1: nothing left to play for
+    var finished = m.kind === 'tb' ? m.tbOrder.length >= m.slots : clinched || (regular(m).length >= 3 && !curBattle(m) && !unresolved(m));
     if (m.kind === 'tb' && finished) m.rank = m.tbOrder.slice().concat(m.teams.filter(function (x) { return m.tbOrder.indexOf(x) < 0; }));
     else if (finished) m.rank = m.teams.slice().sort(cmp(m));
     m.done = finished;

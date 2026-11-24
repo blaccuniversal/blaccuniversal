@@ -170,7 +170,7 @@
     function seg(k, opts) { return '<div class="wr-seg wr-seg--' + opts.length + '" data-cfgseg="' + k + '">' + opts.map(function (o) { return '<button class="pbtn' + (String(c[k]) === String(o[0]) ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div>'; }
     return '<div class="wr-cfg">' +
       num('battleSecs', 'Battle countdown', 5, 300, 'sec') + num('spinSecs', 'Letter spin', 0, 30, 'sec') + num('minLength', 'Minimum word length', 2, 10, 'letters') +
-      '</div><p class="hc-note">Every matchup is 3 battles. Each battle won is 3 points. Wrong words cost nothing.</p>' +
+      '</div><p class="hc-note">A Bangarang is 3 battles. A 1v1 is first to win two. Each battle won is 3 points. Wrong words cost nothing.</p>' +
       '<p class="wr-k">Letter difficulty</p>' + seg('difficulty', [['mixed', 'Mixed'], ['easy', 'Easy'], ['medium', 'Medium'], ['hard', 'Hard']]) +
       '<p class="wr-k">Answers</p>' + seg('answerMode', [['voice', 'Out loud'], ['phones', 'Team phones']]) +
       '<p class="wr-k">Checking words</p>' + seg('autoValidate', [['true', 'Dictionary + host'], ['false', 'Host only']]) +
@@ -222,7 +222,7 @@
     var tbNext = m.kind === 'tb' || reg >= 3;
     var h = '<section class="card hc-sec wr-play">' +
       (open.length > 1 ? '<div class="wr-pick">' + open.map(function (x) { return '<button class="pbtn pbtn--sm' + (x.id === m.id ? ' is-on' : '') + '" data-pickm="' + x.id + '" type="button"' + (b && x.id !== m.id ? ' disabled' : '') + '>' + esc(mName(x)) + '</button>'; }).join('') + '</div>' : '') +
-      '<p class="eyebrow">' + esc(m.label && m.label !== stl ? stl + ' · ' + m.label : stl) + ' · ' + (tbNext ? (m.kind === 'tb' ? 'Tie-break battle' : 'Decider battle') : 'Battle ' + (b ? b.n : reg + 1) + ' of 3') + '</p>' +
+      '<p class="eyebrow">' + esc(m.label && m.label !== stl ? stl + ' · ' + m.label : stl) + ' · ' + (tbNext ? (m.kind === 'tb' ? 'Tie-break battle' : 'Decider battle') : 'Battle ' + (b ? b.n : reg + 1) + (m.kind === 'duel' ? ' · first to 2' : ' of 3')) + '</p>' +
       '<div class="wr-vs wr-vs--' + m.teams.length + '">' + m.teams.map(function (x) { return vsSide(m, x, part.indexOf(x) > -1); }).join('') + '</div>' +
       (tbNext && !b ? '<p class="hc-note" style="text-align:center">' + esc(part.map(function (x) { return E.tname(T, x); }).join(', ')) + (m.kind === 'tb' ? ' are level in the table. First correct word goes through.' : ' are level on points. First correct word settles it. Deciders score nothing.') + '</p>' : '');
     if (!b) {
