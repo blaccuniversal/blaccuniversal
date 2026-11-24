@@ -205,4 +205,31 @@
     if (btn) btn.addEventListener('click', function () { var n = cur() === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', n); try { localStorage.setItem('aar_theme', n); } catch (e) {} paint(); });
     paint();
   })();
+
+  /* hero loop: image -> clip -> clip -> image ... (still image only for reduced motion / data saver / hidden tab) */
+  (function () {
+    var st = document.querySelector('[data-stage]'); if (!st) return;
+    var L = [].slice.call(st.children), i = 0, timer = null;
+    var calm = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || (navigator.connection && navigator.connection.saveData);
+    if (calm || L.length < 2) return;
+    function show(n) {
+      L.forEach(function (e, k) { var on = k === n; e.classList.toggle('is-on', on); if (e.tagName === 'VIDEO') { if (on) { try { e.currentTime = 0; var p = e.play(); if (p && p.catch) p.catch(function () {}); } catch (x) {} } else setTimeout(function () { if (!e.classList.contains('is-on')) e.pause(); }, 1300); } });
+    }
+    function next() {
+      clearTimeout(timer);
+      if (document.hidden) { timer = setTimeout(next, 1000); return; }
+      i = (i + 1) % L.length;
+      var e = L[i];
+      if (e.tagName === 'VIDEO' && !e.getAttribute('src')) e.src = e.getAttribute('data-src');
+      if (e.tagName === 'VIDEO' && e.readyState < 3) {   // not buffered yet: skip this one, try again next lap
+        e.load(); i = (i + 1) % L.length; e = L[i];
+        if (e.tagName === 'VIDEO' && e.readyState < 3) { i = 0; e = L[0]; }
+      }
+      show(i); timer = setTimeout(next, +e.getAttribute('data-hold') || 6000);
+    }
+    // start loading the clips after the page has settled
+    function warm() { L.forEach(function (e) { if (e.tagName === 'VIDEO') { e.src = e.getAttribute('data-src'); e.load(); } }); }
+    if (document.readyState === 'complete') setTimeout(warm, 800); else window.addEventListener('load', function () { setTimeout(warm, 800); });
+    timer = setTimeout(next, +L[0].getAttribute('data-hold') || 5000);
+  })();
 })();

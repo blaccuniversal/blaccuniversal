@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wdth,wght@75..100,300..800&amp;display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="/constructs/aaronaldo/img/favicon.png">
-<link rel="stylesheet" href="/constructs/aaronaldo/aaronaldo.css?v=32">
+<link rel="stylesheet" href="/constructs/aaronaldo/aaronaldo.css?v=33">
 </head>
 <body id="top">
 
@@ -38,7 +38,11 @@
 </header>
 
 <section class="hero">
-  <img class="hero__art" src="/constructs/aaronaldo/img/lineup.webp" alt="" aria-hidden="true">
+  <div class="hero__stage" data-stage aria-hidden="true">
+    <img class="hero__art is-on" src="/constructs/aaronaldo/img/lineup.webp" alt="" data-hold="5000">
+    <video class="hero__art" data-src="/constructs/aaronaldo/img/hero-pro.mp4" muted playsinline preload="none" data-hold="7000"></video>
+    <video class="hero__art" data-src="/constructs/aaronaldo/img/hero-duo.mp4" muted playsinline preload="none" data-hold="6000"></video>
+  </div>
   <div class="hero__in">
     <p class="eyebrow eyebrow--lt">Your tech. Your world. Your way.</p>
     <h1>Everything Tech. All in One Place.</h1>
@@ -131,7 +135,7 @@
 
 <script src="/constructs/aaronaldo/contact-info.js?v=6"></script>
 <script src="/constructs/aaronaldo/products.js?v=9"></script>
-<script src="/constructs/aaronaldo/aaronaldo.js?v=12"></script>
+<script src="/constructs/aaronaldo/aaronaldo.js?v=13"></script>
 <script src="/constructs/aaronaldo/aaronaldo-wf.js?v=3"></script>
 </body>
 </html>
