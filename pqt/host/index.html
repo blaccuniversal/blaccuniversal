@@ -15,13 +15,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Doto:wght@700;900&amp;family=Open+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611240820">
+<link rel="stylesheet" href="/assets/pqt/pqt.css?v=2611240855">
 </head>
 <body data-mode="host">
 <div class="hc" data-host>
   <div class="hc-bar"><span class="hc-bar__title"><img class="pq-mark" src="/assets/pqt/pqt-mark.png" alt="PQT" width="371" height="400"></span><a class="hc-homebtn" href="/pqt/" aria-label="Back to PQT home"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>Home</a><button class="hc-status" data-status data-change type="button" aria-label="Screen connection"><i></i><span>No screen</span></button><button class="pbtn pbtn--sm" data-undo type="button" aria-label="Undo last action">Undo</button><button class="pbtn pbtn--sm pbtn--white" data-menu-open type="button" aria-haspopup="dialog">Menu</button></div>
   <div class="hc-now card" data-now><span class="hc-now__dot"></span><span class="hc-now__txt"><b data-now-view>Lobby</b><span data-now-round>No round yet</span></span><button class="pbtn pbtn--sm hc-nowscr" data-change type="button" hidden>Connect a screen</button><button class="pbtn pbtn--sm" data-pause type="button">Pause screen</button><div class="hc-mscores" data-mscores hidden></div></div>
 
+  <aside class="hc-side">
   <section class="card hc-sec" data-connect-sec>
     <h2>Connect to a screen</h2>
     <div class="hc-row"><input class="hc-input hc-code hc-grow" data-codein inputmode="text" autocomplete="off" autocapitalize="characters" maxlength="4" placeholder="CODE" aria-label="Screen code" style="flex:1 1 140px"><button class="pbtn pbtn--white pbtn--lg" data-connect type="button">Connect</button></div>
@@ -40,14 +41,16 @@
   </section>
 
 
-  <div class="hc-tabs" role="tablist"><button class="hc-tab" data-tab="teams" type="button">Teams</button><button class="hc-tab" data-tab="quiz" type="button">Game</button><button class="hc-tab" data-tab="cards" type="button">Cards</button></div>
-
   <section class="card hc-sec hc-plansec">
     <h2>This game</h2>
     <p class="hc-gsum" data-gsum></p>
     <div class="hc-gbtns"><button class="pbtn pbtn--lg" data-setup-open type="button">Set up</button><button class="pbtn pbtn--white pbtn--lg" data-m="next" type="button" data-gstart>Start round 1 →</button></div>
     <button class="hc-svlink" type="button" data-m="saves" data-saves-link hidden>Continue a saved game →</button>
   </section>
+  </aside>
+  <div class="hc-main">
+  <div class="hc-tabs" role="tablist"><button class="hc-tab" data-tab="teams" type="button">Teams</button><button class="hc-tab" data-tab="quiz" type="button">Game</button><button class="hc-tab" data-tab="cards" type="button">Cards</button></div>
+
   <section class="card hc-sec" data-pane="teams">
     <h2>Scores</h2>
     <div data-teams></div>
@@ -75,6 +78,7 @@
     <p class="hc-note">Your questions are private to your host code. Export a copy to back them up or move them to another device; only your code can open it.</p>
     <span data-ccount hidden></span>
   </section>
+  </div>
 
   <div class="hc-sheet" data-menu hidden role="dialog" aria-modal="true" aria-label="Game menu">
     <div class="hc-sheet__bg" data-menu-close></div>
@@ -185,7 +189,7 @@
 <script src="/assets/pqt/wordrace/wr-engine.js?v=11"></script>
 <script src="/assets/pqt/pqt-import.js?v=1"></script>
 <script src="/assets/pqt/pqt-vault.js?v=2"></script>
-<script src="/assets/pqt/pqt.js?v=2611240820"></script>
+<script src="/assets/pqt/pqt.js?v=2611240855"></script>
 <script src="/assets/pqt/pqt-offline.js?v=261112171"></script>
 </body>
 </html>

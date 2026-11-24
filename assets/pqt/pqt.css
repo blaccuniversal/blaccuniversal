@@ -348,7 +348,7 @@ body[data-locked] .hc,body[data-locked] .sc,body[data-locked] .sc-tap{display:no
 .sc-splash__s{margin:2vh 0 0;font-size:3vh;letter-spacing:.3em;text-transform:uppercase;color:var(--o2)}
 /* host: game controls first, screen + timer after */
 .hc{display:flex;flex-direction:column}
-.hc>.hc-bar{order:0}.hc>.hc-now{order:1}.hc>[data-connect-sec]{order:2}.hc>.hc-tabs{order:3}.hc>[data-pane]{order:4}.hc>.hc-sec:not([data-pane]):not([data-connect-sec]){order:5}
+.hc>.hc-bar{order:0}.hc>.hc-now{order:1}.hc>[data-connect-sec]{order:2}.hc .hc-tabs{order:3}.hc [data-pane]{order:4}.hc .hc-sec:not([data-pane]):not([data-connect-sec]){order:5}
 .hc>.hc-sheet,.hc>.hc-toast{order:9}
 .hc-flow b{font-family:var(--dot);font-weight:900;font-size:18px}
 .sc-splash,.sc-pause{background:radial-gradient(ellipse 70% 60% at 50% 60%,rgba(226,70,28,.35),transparent 70%),#080808}
@@ -506,10 +506,10 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .sc-bigx span{font-weight:200}
 .sc-tap{background:rgba(0,0,0,.92)}
 .sc-tap button{border-radius:2px}
-.hc>.hc-plansec{order:3}
+.hc .hc-plansec{order:3}
 .hc-plansec .hc-plan__count{padding-top:0}
-.hc>.hc-tabs{order:4}.hc>[data-pane]{order:5}.hc>.hc-sec:not([data-pane]):not([data-connect-sec]){order:6}
-.hc>.hc-sec.hc-plansec:not([data-pane]):not([data-connect-sec]){order:3}
+.hc .hc-tabs{order:4}.hc [data-pane]{order:5}.hc .hc-sec:not([data-pane]):not([data-connect-sec]){order:6}
+.hc .hc-sec.hc-plansec:not([data-pane]):not([data-connect-sec]){order:3}
 
 /* ===== QUIZ ROUNDS + CONNECT ===== */
 .hc-tabs{grid-template-columns:repeat(3,1fr)}
@@ -1631,4 +1631,17 @@ button,a,.pbtn,.hc-tab,select,input{touch-action:manipulation;-webkit-tap-highli
 .pp-chip em{font-size:10.5px;letter-spacing:.06em}
 /* polish: even button rows, toast clear of the header on wide screens */
 .hc-sec .hc-row:not(.hc-flow .hc-row)>.pbtn{flex:1 1 130px}
-@media (min-width:700px){.hc-toast{margin:0;top:auto;bottom:max(24px,env(safe-area-inset-bottom,0px));left:50%;right:auto;transform:translateX(-50%);font-size:14px}}
+@media (min-width:700px){.hc-toast{top:auto;bottom:max(24px,env(safe-area-inset-bottom,0px));font-size:14px}}
+
+/* host on tablets (landscape) and computers: the game on the left, screen + setup on the right */
+.hc-main,.hc-side{display:contents}
+@media (min-width:900px){
+  .hc{max-width:1280px;display:grid;grid-template-columns:minmax(0,1fr) 340px;column-gap:18px;align-items:start;padding-left:20px;padding-right:20px}
+  .hc>.hc-bar,.hc>.hc-now{grid-column:1/-1}
+  .hc-main{display:flex;flex-direction:column;grid-column:1;grid-row:3;min-width:0}
+  .hc-side{display:flex;flex-direction:column;grid-column:2;grid-row:3;min-width:0;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+  .hc-side>.hc-sec,.hc-main>.hc-sec{order:0}
+  .hc-side>[data-connect-sec]{order:1}.hc-side>.hc-plansec{order:0}.hc-side>.hc-sec:not([data-connect-sec]):not(.hc-plansec){order:2}
+  .hc-main>.hc-tabs{order:0}.hc-main>[data-pane]{order:1}
+}
+@media (min-width:1500px){.hc{max-width:1500px;grid-template-columns:minmax(0,1fr) 400px}}
