@@ -113,6 +113,56 @@ window.AAR_PRODUCTS = [
   "badge": "New"
  },
  {
+  "id": "iphone-duo",
+  "cat": "Phones",
+  "name": "iPhone Duo",
+  "meta": "Foldable · 256GB",
+  "price": 3500000,
+  "t": "phone",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/iphone-duo.webp?v=5",
+  "d": "Apple's foldable iPhone: a pocket-size phone that opens into a wide display.",
+  "o": [
+   {
+    "k": "Storage",
+    "v": [
+     [
+      "256GB",
+      0
+     ],
+     [
+      "512GB",
+      300000
+     ],
+     [
+      "1TB",
+      600000
+     ]
+    ]
+   },
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Silver",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Type",
+    "Foldable"
+   ],
+   [
+    "Storage",
+    "256GB"
+   ]
+  ],
+  "badge": "New"
+ },
+ {
   "id": "galaxy-ultra",
   "cat": "Phones",
   "name": "Samsung Galaxy Ultra",
@@ -424,6 +474,310 @@ window.AAR_PRODUCTS = [
    [
     "Band",
     "Sport band"
+   ]
+  ]
+ },
+ {
+  "id": "ipad-10",
+  "cat": "Computers",
+  "name": "iPad (10th gen)",
+  "meta": "64GB · 10.9\" display",
+  "price": 520000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/ipad.webp?v=5",
+  "d": "10.9\" Liquid Retina display, A14 chip and all-day battery in a slim aluminium body.",
+  "o": [
+   {
+    "k": "Storage",
+    "v": [
+     [
+      "64GB",
+      0
+     ],
+     [
+      "256GB",
+      170000
+     ]
+    ]
+   },
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Blue",
+      0
+     ],
+     [
+      "Silver",
+      0
+     ],
+     [
+      "Pink",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Display",
+    "10.9\" Liquid Retina"
+   ],
+   [
+    "Chip",
+    "A14 Bionic"
+   ]
+  ]
+ },
+ {
+  "id": "macbook-pro-14",
+  "cat": "Computers",
+  "name": "MacBook Pro 14\"",
+  "meta": "Space Black · M3",
+  "price": 2600000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/macbook-pro.webp?v=5",
+  "d": "Liquid Retina XDR display, long battery life and the power for editing, design and code.",
+  "o": [
+   {
+    "k": "Memory",
+    "v": [
+     [
+      "16GB / 512GB",
+      0
+     ],
+     [
+      "18GB / 1TB",
+      450000
+     ]
+    ]
+   },
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Space Black",
+      0
+     ],
+     [
+      "Silver",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Display",
+    "14\" Liquid Retina XDR"
+   ],
+   [
+    "Finish",
+    "Space Black"
+   ]
+  ],
+  "badge": "Popular"
+ },
+ {
+  "id": "sony-wh-1000xm5",
+  "cat": "Audio",
+  "name": "Sony WH-1000XM5",
+  "meta": "Noise-cancelling headphones",
+  "price": 420000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/sony-xm5.webp?v=5",
+  "d": "Industry-leading noise cancelling, crisp calls and up to 30 hours of battery.",
+  "o": [
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Black",
+      0
+     ],
+     [
+      "Silver",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Type",
+    "Over-ear wireless"
+   ],
+   [
+    "Battery",
+    "Up to 30 hours"
+   ]
+  ]
+ },
+ {
+  "id": "galaxy-buds-pro",
+  "cat": "Audio",
+  "name": "Samsung Galaxy Buds Pro",
+  "meta": "Wireless earbuds",
+  "price": 190000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/galaxy-buds.webp?v=5",
+  "d": "Active noise cancelling earbuds with a slim charging case.",
+  "o": [
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Silver",
+      0
+     ],
+     [
+      "White",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Type",
+    "True wireless"
+   ],
+   [
+    "ANC",
+    "Yes"
+   ]
+  ]
+ },
+ {
+  "id": "onyx-studio-8",
+  "cat": "Audio",
+  "name": "Harman Kardon Onyx Studio 8",
+  "meta": "Portable Bluetooth speaker",
+  "price": 310000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/onyx-studio-8.webp?v=5",
+  "d": "Rich 360° sound with a signature carry ring and hours of wireless playback.",
+  "o": [
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Black",
+      0
+     ],
+     [
+      "Blue",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Type",
+    "Portable Bluetooth"
+   ],
+   [
+    "Design",
+    "Carry ring"
+   ]
+  ]
+ },
+ {
+  "id": "jbl-charge-5",
+  "cat": "Audio",
+  "name": "JBL Charge 5",
+  "meta": "Waterproof Bluetooth speaker",
+  "price": 185000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/jbl-charge-5.webp?v=5",
+  "d": "Bold JBL Pro Sound, IP67 waterproofing and a built-in power bank.",
+  "o": [
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Red",
+      0
+     ],
+     [
+      "Black",
+      0
+     ],
+     [
+      "Blue",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Rating",
+    "IP67 waterproof"
+   ],
+   [
+    "Extra",
+    "Power bank"
+   ]
+  ]
+ },
+ {
+  "id": "anker-nano-pro",
+  "cat": "Accessories",
+  "name": "Anker Nano Pro Charger",
+  "meta": "20W USB-C fast charger",
+  "price": 18000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/anker-nano.webp?v=5",
+  "d": "Compact USB-C fast charger for phones and small devices.",
+  "f": [
+   [
+    "Output",
+    "20W USB-C"
+   ],
+   [
+    "Size",
+    "Ultra compact"
+   ]
+  ]
+ },
+ {
+  "id": "anker-maggo",
+  "cat": "Accessories",
+  "name": "Anker MagGo Power Bank",
+  "meta": "10,000mAh · magnetic wireless",
+  "price": 65000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/anker-maggo.webp?v=5",
+  "d": "Magnetic wireless power bank that snaps to your phone, with a USB-C port.",
+  "o": [
+   {
+    "k": "Colour",
+    "v": [
+     [
+      "Black",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Capacity",
+    "10,000mAh"
+   ],
+   [
+    "Charging",
+    "Magnetic wireless + USB-C"
    ]
   ]
  }
