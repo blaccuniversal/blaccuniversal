@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611240550, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611240640, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -398,7 +398,7 @@ function pqtMain() {
         var mark = q.mark === 'ok' ? '<span class="sc-mark-ok">✓</span>' : q.mark === 'no' ? '<span class="sc-mark-no">✕</span>' : '';
         if (q.type === 'names') return '<div class="sc-qa">' + head + '<div class="sc-qa__clues">' + (q.clues || []).map(function (c) { return '<p>' + esc(c) + '</p>'; }).join('') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Hi, my name is…</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
         if (q.type === 'spell') return '<div class="sc-qa">' + head + '<div class="sc-qa__word' + (q.w ? ' is-on' : '') + '">' + (q.w ? esc(q.w) : '<i>???</i>') + mark + '</div><p class="sc-qa__def">' + esc(q.d || '') + '</p>' + (q.e ? '<p class="sc-qa__ex">' + (/^[“"]/.test(q.e) ? esc(q.e) : '“' + esc(q.e) + '”') + '</p>' : '') + '</div>';
-        if (q.type === 'alpha') return '<div class="sc-qa">' + head + '<div class="sc-asf"><span class="sc-asf__c sc-asf__c--f">' + q.f + '</span><span class="sc-asf__b">[</span><span class="sc-asf__t">' + q.t + '</span>' + (q.hard ? '' : '<span class="sc-asf__d">·</span><span class="sc-asf__n">' + q.len + '</span>') + '<span class="sc-asf__b">]</span><span class="sc-asf__c sc-asf__c--l">' + q.l + '</span></div><p class="sc-qa__q sc-asf__clue">' + esc(q.q || '') + '</p><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
+        if (q.type === 'alpha') return '<div class="sc-qa">' + head + '<div class="sc-asf"><span class="sc-asf__c sc-asf__c--f">' + esc(q.f || '') + '</span><span class="sc-asf__b">[</span><span class="sc-asf__t">' + esc(q.t || '') + '</span>' + (q.hard ? '' : '<span class="sc-asf__d">·</span><span class="sc-asf__n">' + esc(q.len || '') + '</span>') + '<span class="sc-asf__b">]</span><span class="sc-asf__c sc-asf__c--l">' + esc(q.l || '') + '</span></div><p class="sc-qa__q sc-asf__clue">' + esc(q.q || '') + '</p><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
         if (q.type === 'talk') return '<div class="sc-qa sc-qa--talk">' + head + '<p class="sc-qa__q sc-qa__q--big">' + esc(q.q || '') + '</p></div>';
         return '<div class="sc-qa sc-qa--' + q.type + '">' + head + '<div class="sc-qa__body' + (q.img ? ' has-img' : '') + '"><div class="sc-qa__qw">' + qHtml(q.q, 'sc-qa__q', q.a) + '</div>' + (q.img ? '<img class="sc-qa__img" src="' + esc(q.img) + '" alt="">' : '') + '</div><div class="sc-qa__ans' + (q.a ? ' is-on' : '') + '"><span>Answer</span><b>' + esc(q.a || '') + '</b>' + mark + '</div></div>';
       },
