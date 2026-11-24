@@ -1613,3 +1613,4 @@ button,a,.pbtn,.hc-tab,select,input{touch-action:manipulation;-webkit-tap-highli
 }
 .sc-bot span{white-space:nowrap}
 @media (max-width:600px){.sc-bot{font-size:max(10px,1.4vh)}.sc-bot span:last-child{display:none}.sc-bot{justify-content:center}}
+.pw-up.is-calm span{color:#f3e3b8;text-shadow:0 0 6vh rgba(255,206,110,.35);font-size:min(12vh,11vw)}

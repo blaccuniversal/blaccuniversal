@@ -47,7 +47,7 @@
       else if (a.act === 'matchup-done') { k = 'matchup'; var dm = T.matchups[a.matchup]; d = { kind: a.kind, rank: a.rank.map(function (x) { return E.tname(T, x); }), pts: a.rank.map(function (x) { return a.pts[x]; }), label: dm ? dm.label : '' }; }
       else if (a.act === 'tiebreak-open') { k = 'tiebreak'; d = { teams: a.teams.map(function (x) { return E.tname(T, x); }), slots: a.slots }; }
       else if (a.act === 'stage-open') { k = 'round'; d = { label: a.label }; }
-      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); toParent({ t: 'done', id: T.id, champion: d.team, teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon, game: sm[x.id].game }; }) }); }
+      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); var ru = T.teams.filter(function (x) { return sm[x.id].final && x.id !== a.team; })[0]; toParent({ t: 'done', id: T.id, champion: d.team, runner: ru ? ru.name : '', teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon, game: sm[x.id].game }; }) }); }
       if (k) push(k, d);
     }
   }
