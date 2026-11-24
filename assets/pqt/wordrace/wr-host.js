@@ -41,13 +41,13 @@
     if (!T) return;
     for (; auditSeen < T.audit.length; auditSeen++) {
       var a = T.audit[auditSeen], k = null, d = {};
-      if (a.act === 'battle-start') { k = 'letters'; d = { s: a.s, e: a.e, n: a.battle }; timeUp = false; }
+      if (a.act === 'battle-start') { k = 'letters'; d = { s: a.s, e: a.e, n: a.battle }; timeUp = false; if (scene !== 'battle') { scene = 'battle'; toParent({ t: 'scene', v: 'battle' }); } }
       else if (a.act === 'timeout') { k = 'reroll'; d = { next: a.next }; timeUp = false; }
       else if (a.act === 'answer') { k = a.ok ? 'correct' : 'wrong'; d = { team: E.tname(T, a.team), word: a.word, reason: a.reason, pts: a.ok && !a.tb ? T.config.battlePoints : 0, tb: !!a.tb }; fb[a.team] = { n: lastAns[a.team] || 0, ok: a.ok, reason: a.reason, word: a.word }; }
       else if (a.act === 'matchup-done') { k = 'matchup'; var dm = T.matchups[a.matchup]; d = { kind: a.kind, rank: a.rank.map(function (x) { return E.tname(T, x); }), pts: a.rank.map(function (x) { return a.pts[x]; }), label: dm ? dm.label : '' }; }
       else if (a.act === 'tiebreak-open') { k = 'tiebreak'; d = { teams: a.teams.map(function (x) { return E.tname(T, x); }), slots: a.slots }; }
       else if (a.act === 'stage-open') { k = 'round'; d = { label: a.label }; }
-      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; scene = 'battle'; var sm = E.summary(T); var ru = T.teams.filter(function (x) { return sm[x.id].final && x.id !== a.team; })[0]; toParent({ t: 'done', id: T.id, champion: d.team, runner: ru ? ru.name : '', teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon, game: sm[x.id].game }; }) }); }
+      else if (a.act === 'champion') { k = 'champion'; d = { team: E.tname(T, a.team) }; if (scene !== 'battle') { scene = 'battle'; toParent({ t: 'scene', v: 'battle' }); } var sm = E.summary(T); var ru = T.teams.filter(function (x) { return sm[x.id].final && x.id !== a.team; })[0]; toParent({ t: 'done', id: T.id, champion: d.team, runner: ru ? ru.name : '', teams: T.teams.map(function (x) { return { name: x.name, pts: sm[x.id].pts, won: sm[x.id].won, mWon: sm[x.id].mWon, game: sm[x.id].game }; }) }); }
       if (k) push(k, d);
     }
   }

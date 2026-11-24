@@ -924,6 +924,7 @@ function pqtMain() {
     var d = e.data, f = document.querySelector('.hc-raceframe');
     if (d.t === 'h' && f) f.style.height = Math.max(400, d.h) + 'px';
     if (d.t === 'done' && H.race && d.id === H.race.id) { H.race.result = { champion: d.champion, runner: d.runner || '', teams: d.teams }; save(); renderAll(); toast(d.champion + ' win Word Race'); }
+    if (d.t === 'scene' && H.race && H.roundType === 'race') { H.race.scene = d.v; H.view = 'race'; push(); renderAll(); }
   });
   function starPub() {
     var s = H.star; if (!s || H.roundType !== 'star') return null;
