@@ -28,13 +28,10 @@
       k: 'x.x....x..x.....', s: '....x.......x...', h: 'x.x.x.x.x.x.x.x.',
       chords: null, bass: null, vinyl: 1 },
     { id: 'metronome', name: 'Metronome', vibe: 'Just a click', bpm: 90, swing: 0, click: 1,
-      k: '', s: '', h: '', chords: null, bass: null, vinyl: 0 },
-    { id: 'legend-has-it', name: 'Legend Has It', vibe: 'Full instrumental · fixed tempo', bpm: 81,
-      file: '/assets/audio/superstar/legend-has-it.mp3', chords: null, bass: null, vinyl: 0 }
+      k: '', s: '', h: '', chords: null, bass: null, vinyl: 0 }
   ];
 
   var ctx = null, master, bus, lp, comp, recDest = null, noiseBuf, crackleBuf, rainBuf;
-  var fileBufs = {}, fileSrc = null, fileGain = null;
   var lfo, lfoGain, tremLfo;
   var timer = null, playing = false, cfg = null, startTime = 0, nextStep = 0, nextTime = 0, stepDur = 0;
   var beds = [], onStop = null, stopAt = Infinity, countSteps = 0;
@@ -165,27 +162,6 @@
     [drumGain, keysGain, bassGain, vinylGain].forEach(function (g) { g.connect(bus); });
     setMix({});
   }
-  function loadFile(url) {
-    if (fileBufs[url]) return fileBufs[url];
-    var p = fetch(url).then(function (r) { return r.arrayBuffer(); }).then(function (ab) { return ctx.decodeAudioData(ab); });
-    fileBufs[url] = p;
-    return p;
-  }
-  function playFile(cfg, at) {
-    var myPreset = opts_preset;
-    loadFile(cfg.file).then(function (buf) {
-      if (!playing || opts_preset !== myPreset) return; // superseded by a later start()/stop()
-      stopFile();
-      fileGain = ctx.createGain(); fileGain.gain.value = 0.95; fileGain.connect(bus);
-      fileSrc = ctx.createBufferSource(); fileSrc.buffer = buf; fileSrc.loop = true;
-      var when = Math.max(at, ctx.currentTime);
-      fileSrc.start(when);
-    });
-  }
-  function stopFile() {
-    if (fileSrc) { try { fileSrc.stop(); } catch (e) {} try { fileSrc.disconnect(); } catch (e) {} fileSrc = null; }
-    if (fileGain) { try { fileGain.disconnect(); } catch (e) {} fileGain = null; }
-  }
   function hitAt(str, i) { return str && str[i] && str[i] !== '.' ? str[i] : null; }
   function vel(c) { return c === 'X' ? 1 : c === 'o' ? 0.35 : 0.8; }
   function scheduleStep(step, t) {
@@ -238,13 +214,11 @@
     } catch (e) {}
   }
 
-  var opts_preset = null;
   function start(opts) {
     ensure(); unlock(); stop(true);
     var p = PRESETS.filter(function (x) { return x.id === opts.preset; })[0] || PRESETS[0];
-    opts_preset = opts.preset;
     cfg = Object.assign({}, p);
-    var bpm = p.file ? p.bpm : (opts.bpm || p.bpm);
+    var bpm = opts.bpm || p.bpm;
     // half-time presets: a "beat" for the rapper is still a quarter note at the chosen tempo
     stepDur = 60 / bpm / 4;
     buildBuses();
@@ -256,18 +230,17 @@
     countSteps = (opts.countIn || 0) * 16;
     onStop = opts.onStop || null;
     startBeds(startTime + countSteps * stepDur);
-    if (cfg.file) playFile(cfg, startTime + countSteps * stepDur);
     timer = setInterval(tick, 25); tick();
     return startTime;
   }
   function stop(silent) {
     if (timer) clearInterval(timer); timer = null;
-    stopBeds(); stopFile();
+    stopBeds();
     if (ctx && drumGain) {
       var t = ctx.currentTime;
       [drumGain, keysGain, bassGain].forEach(function (g) { g.gain.setTargetAtTime(0, t, 0.05); });
     }
-    playing = false; onStop = null; stopAt = Infinity; opts_preset = null;
+    playing = false; onStop = null; stopAt = Infinity;
   }
   function endAfter(steps) { stopAt = steps; }
   function now() { return ctx ? ctx.currentTime - (ctx.outputLatency || ctx.baseLatency || 0) : 0; }

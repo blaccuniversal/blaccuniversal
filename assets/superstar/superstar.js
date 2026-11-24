@@ -138,8 +138,7 @@
     var bpm = bpmFor(S.preset); $('[data-bpm]').value = bpm; $('[data-bpm-out]').textContent = bpm + ' BPM';
     $$('[data-mixk]').forEach(function (b) { b.classList.toggle('is-on', !!S.mix[b.getAttribute('data-mixk')]); });
     var p = presetById(S.preset);
-    $('[data-mix]').hidden = !!p.click || !!p.file;
-    $('[data-tempo]').hidden = !!p.file;
+    $('[data-mix]').hidden = !!p.click;
     $$('[data-opt]').forEach(function (i) { i.checked = !!S[i.getAttribute('data-opt')]; });
   }
   var playIc = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg>';
