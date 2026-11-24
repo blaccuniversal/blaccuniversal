@@ -293,3 +293,6 @@ html[data-theme=dark] .nav .cartb{background:none;color:var(--ink)}
 .hero__stage .hero__art.is-on{opacity:.6}
 @media(max-width:700px){.hero__stage{width:100%;-webkit-mask-image:linear-gradient(to right,transparent 5%,#000 70%);mask-image:linear-gradient(to right,transparent 5%,#000 70%)}}
 @media(prefers-reduced-motion:reduce){.hero__stage .hero__art{transition:none}}
+
+/* game covers: portrait box art sits on the panel with a soft shadow */
+.card__img img.cv,.sheet__stage img.cv{padding:8%;filter:drop-shadow(0 8px 14px rgba(0,0,0,.28))}

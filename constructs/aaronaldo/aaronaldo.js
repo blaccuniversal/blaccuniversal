@@ -35,7 +35,7 @@
     return '<svg viewBox="0 0 400 400" role="img" aria-hidden="true" focusable="false">' + defs + glow + b + '</svg>';
   }
   function dots(x, y, cols, rows, step) { var o = ''; for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) o += '<circle cx="' + (x + c * step) + '" cy="' + (y + r * step) + '" r="3"/>'; return o; }
-  function pic(p, big) { return p.img ? '<img src="' + esc(p.img) + '" alt="' + esc(p.name) + '" loading="lazy">' : art(p.t, p.c); }
+  function pic(p, big) { return p.img ? '<img' + (p.cover ? ' class="cv"' : '') + ' src="' + esc(p.img) + '" alt="' + esc(p.name) + '" loading="lazy">' : art(p.t, p.c); }
 
   /* ---------- shop ---------- */
   var cats = ['All'].concat(P.map(function (p) { return p.cat; }).filter(function (c, i, a) { return a.indexOf(c) === i; }));

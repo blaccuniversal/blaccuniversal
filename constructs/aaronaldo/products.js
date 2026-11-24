@@ -780,5 +780,431 @@ window.AAR_PRODUCTS = [
     "Magnetic wireless + USB-C"
    ]
   ]
+ },
+ {
+  "id": "nba-2k26",
+  "cat": "Games",
+  "name": "NBA 2K26 · Superstar Edition",
+  "meta": "Sports · Xbox Series X|S",
+  "price": 85000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-nba-2k26.webp?v=1",
+  "cover": true,
+  "d": "Basketball sim with the Superstar Edition cover and extras.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "Xbox Series X|S",
+      0
+     ],
+     [
+      "PS5",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Sports"
+   ],
+   [
+    "Platform",
+    "Xbox Series X|S"
+   ]
+  ],
+  "badge": "Popular"
+ },
+ {
+  "id": "madden-26",
+  "cat": "Games",
+  "name": "Madden NFL 26",
+  "meta": "Sports · PS5 · Xbox · PC",
+  "price": 80000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-madden-26.webp?v=1",
+  "cover": true,
+  "d": "The latest NFL season of EA Sports Madden.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS5",
+      0
+     ],
+     [
+      "Xbox Series X|S",
+      0
+     ],
+     [
+      "PC",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Sports"
+   ],
+   [
+    "Platform",
+    "PS5 · Xbox · PC"
+   ]
+  ]
+ },
+ {
+  "id": "wolverine",
+  "cat": "Games",
+  "name": "Marvel's Wolverine",
+  "meta": "Action · PS5",
+  "price": 85000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-wolverine.webp?v=1",
+  "cover": true,
+  "d": "Marvel's Wolverine, a single-player action adventure.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS5",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Action"
+   ],
+   [
+    "Platform",
+    "PS5"
+   ]
+  ],
+  "badge": "New"
+ },
+ {
+  "id": "spiderman-2",
+  "cat": "Games",
+  "name": "Marvel's Spider-Man 2",
+  "meta": "Action · PS5",
+  "price": 75000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-spiderman-2.webp?v=1",
+  "cover": true,
+  "d": "Play as Peter Parker and Miles Morales in an open-world New York.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS5",
+      0
+     ],
+     [
+      "PC",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Action"
+   ],
+   [
+    "Platform",
+    "PS5"
+   ]
+  ]
+ },
+ {
+  "id": "god-of-war-ragnarok",
+  "cat": "Games",
+  "name": "God of War Ragnarök",
+  "meta": "Action · PS5",
+  "price": 70000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-god-of-war-ragnarok.webp?v=1",
+  "cover": true,
+  "d": "Kratos and Atreus face Ragnarök in this Norse adventure.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS5",
+      0
+     ],
+     [
+      "PC",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Action"
+   ],
+   [
+    "Platform",
+    "PS5"
+   ]
+  ]
+ },
+ {
+  "id": "injustice",
+  "cat": "Games",
+  "name": "Injustice: Gods Among Us",
+  "meta": "Fighting · PS4 · Xbox · PC",
+  "price": 30000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-injustice.webp?v=1",
+  "cover": true,
+  "d": "DC heroes and villains battle it out in this fighting game.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS4",
+      0
+     ],
+     [
+      "Xbox One",
+      0
+     ],
+     [
+      "PC",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Fighting"
+   ],
+   [
+    "Platform",
+    "PS4 · Xbox · PC"
+   ]
+  ]
+ },
+ {
+  "id": "ghost-of-tsushima",
+  "cat": "Games",
+  "name": "Ghost of Tsushima",
+  "meta": "Action · PS5",
+  "price": 65000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-ghost-of-tsushima.webp?v=1",
+  "cover": true,
+  "d": "An open-world samurai adventure across feudal Japan.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS5",
+      0
+     ],
+     [
+      "PC",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Action"
+   ],
+   [
+    "Platform",
+    "PS5"
+   ]
+  ]
+ },
+ {
+  "id": "rdr2",
+  "cat": "Games",
+  "name": "Red Dead Redemption 2",
+  "meta": "Action · PS4 · Xbox · PC",
+  "price": 40000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-rdr2.webp?v=1",
+  "cover": true,
+  "d": "Arthur Morgan and the Van der Linde gang in the Wild West.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS4",
+      0
+     ],
+     [
+      "Xbox One",
+      0
+     ],
+     [
+      "PC",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Action"
+   ],
+   [
+    "Platform",
+    "PS4 · Xbox · PC"
+   ]
+  ]
+ },
+ {
+  "id": "mortal-kombat-1",
+  "cat": "Games",
+  "name": "Mortal Kombat 1",
+  "meta": "Fighting · PS5 · Xbox · PC",
+  "price": 70000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-mortal-kombat-1.webp?v=1",
+  "cover": true,
+  "d": "The rebooted Mortal Kombat universe with brutal new fighters.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS5",
+      0
+     ],
+     [
+      "Xbox Series X|S",
+      0
+     ],
+     [
+      "PC",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Fighting"
+   ],
+   [
+    "Platform",
+    "PS5 · Xbox · PC"
+   ]
+  ]
+ },
+ {
+  "id": "ea-fc-27",
+  "cat": "Games",
+  "name": "EA Sports FC 27 · Ultimate Edition",
+  "meta": "Sports · PS5 · Xbox · PC",
+  "price": 85000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-ea-fc-27.webp?v=1",
+  "cover": true,
+  "d": "The latest football game from EA Sports, Ultimate Edition.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS5",
+      0
+     ],
+     [
+      "Xbox Series X|S",
+      0
+     ],
+     [
+      "PC",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Sports"
+   ],
+   [
+    "Platform",
+    "PS5 · Xbox · PC"
+   ]
+  ],
+  "badge": "New"
+ },
+ {
+  "id": "gta-vi",
+  "cat": "Games",
+  "name": "Grand Theft Auto VI",
+  "meta": "Action · PS5 · Xbox Series X|S",
+  "price": 90000,
+  "t": "box",
+  "c": "graphite",
+  "img": "/constructs/aaronaldo/img/game-gta-vi.webp?v=1",
+  "cover": true,
+  "d": "Rockstar's next Grand Theft Auto.",
+  "o": [
+   {
+    "k": "Platform",
+    "v": [
+     [
+      "PS5",
+      0
+     ],
+     [
+      "Xbox Series X|S",
+      0
+     ]
+    ]
+   }
+  ],
+  "f": [
+   [
+    "Genre",
+    "Action"
+   ],
+   [
+    "Platform",
+    "PS5 · Xbox Series X|S"
+   ]
+  ]
  }
 ];
