@@ -293,8 +293,3 @@ html[data-theme=dark] .nav .cartb{background:none;color:var(--ink)}
 .hero__stage .hero__art.is-on{opacity:.6}
 @media(max-width:700px){.hero__stage{width:100%;-webkit-mask-image:linear-gradient(to right,transparent 5%,#000 70%);mask-image:linear-gradient(to right,transparent 5%,#000 70%)}}
 @media(prefers-reduced-motion:reduce){.hero__stage .hero__art{transition:none}}
-/* hero proportions: 16:9 on PC / large screens, 4:5 on phones */
-.hero{aspect-ratio:16/9;display:flex;flex-direction:column;justify-content:center}
-.hero__in{width:100%}
-.hero .eyebrow{margin-bottom:clamp(40px,5vw,90px)}
-@media(max-width:700px){.hero{aspect-ratio:4/5;justify-content:flex-start;padding-top:clamp(26px,5vw,56px)}.hero .eyebrow{margin-bottom:clamp(100px,30vw,170px)}}
