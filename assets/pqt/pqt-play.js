@@ -3,7 +3,7 @@
   'use strict';
   var BROKERS = ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt'];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 10;   // must match PLAY_BUILD in pqt.js
+  var BUILD = 11;   // must match PLAY_BUILD in pqt.js
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -26,13 +26,15 @@
     root.innerHTML = '<form class="pp-card pp-join" novalidate>' + MARK +
       '<p class="eyebrow">Play on your phone</p><h1 class="pp-h">Join the game.</h1>' +
       '<label class="pp-lab">Code on the screen<input class="hc-input hc-code pp-code" name="code" inputmode="text" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD" value="' + esc(me.code) + '" required></label>' +
-      '<label class="pp-lab">Team name<input class="hc-input" name="name" maxlength="24" autocomplete="off" placeholder="Your team’s name" value="' + esc(me.name) + '" required></label>' +
+      '<div class="pp-pick" data-pick hidden></div>' +
+      '<label class="pp-lab" data-namelab>Team name<input class="hc-input" name="name" maxlength="24" autocomplete="off" placeholder="Your team’s name" value="' + esc(me.name) + '" required></label>' +
       '<p class="pp-err" role="alert"' + (err ? '' : ' hidden') + '>' + esc(err || '') + '</p>' +
       '<button class="pbtn pbtn--o pbtn--lg pbtn--block" type="submit">Join</button>' +
       '<p class="hc-note">Use your team’s exact name if the host already added it. One phone per team is enough.</p></form>';
     var f = root.querySelector('form');
-    f.code.addEventListener('input', function () { var c = f.code.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); if (c.length === 4) link(c); });
+    f.code.addEventListener('input', function () { var c = f.code.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4); if (c.length === 4) link(c); paintPick(); });
     if (me.code.length === 4) link(me.code);
+    paintPick();
     f.addEventListener('submit', function (e) {
       e.preventDefault();
       var c = f.code.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4), n = f.name.value.replace(/\s+/g, ' ').trim().slice(0, 24);
@@ -41,6 +43,22 @@
       me.code = c; me.name = n; ls('pqt_play_code', c); ls('pqt_play_name', n);
       start();
     });
+  }
+  /* The teams the host already added: tap yours instead of typing it. */
+  function paintPick() {
+    var box = root.querySelector('[data-pick]'), f = root.querySelector('.pp-join'); if (!box || !f) return;
+    var code = f.code ? f.code.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4) : '';
+    var teams = S && S.teams && code.length === 4 && code === linkCode ? S.teams : [];
+    var lab = f.querySelector('[data-namelab]');
+    if (!teams.length) { box.hidden = true; box.innerHTML = ''; if (lab) lab.firstChild.nodeValue = 'Team name'; return; }
+    var taken = {}; Object.keys(S.devs || {}).forEach(function (d) { if (d !== dev) taken[S.devs[d]] = 1; });
+    var key = teams.map(function (t, i) { return t.name + '|' + t.color + '|' + (taken[i] ? 1 : 0); }).join('~') + '#' + norm(me.name);
+    if (box.getAttribute('data-k') === key) return; box.setAttribute('data-k', key);
+    box.hidden = false;
+    box.innerHTML = '<p class="eyebrow pp-k">Tap your team</p><div class="pp-chips">' + teams.map(function (t, i) {
+      return '<button class="pp-chip' + (norm(t.name) === norm(me.name) ? ' is-me' : '') + '" type="button" data-team="' + i + '" style="--c:' + esc(t.color) + '"><i></i><span><b>' + esc(t.name) + '</b>' + (taken[i] ? '<em>already on a phone</em>' : '') + '</span></button>';
+    }).join('') + '</div>';
+    if (lab) lab.firstChild.nodeValue = 'Not listed? Type your team name';
   }
   function viewWait(msg, sub) {
     root.innerHTML = '<div class="pp-card pp-wait">' + MARK + '<p class="eyebrow">' + esc(me.code) + '</p><h1 class="pp-h">' + esc(msg) + '</h1>' + (sub ? '<p class="pp-sub">' + esc(sub) + '</p>' : '') +
@@ -172,7 +190,7 @@
       follow(m.b, BUILD);
       if (S && m.seq && S.seq && m.seq < S.seq) return;   // an older state arrived late
       S = m; if (S.timer) S._end = Date.now() + S.timer.left;
-      if (!wantJoin) return;   // connected early; nothing to show until the team joins
+      if (!wantJoin) { paintPick(); return; }   // connected early; nothing to show until the team joins
       if (!S.devs || S.devs[dev] == null) { if (!joined) send({ t: 'join', dev: dev, name: me.name }); }
       else if (!joined) joined = true;
       // the host missed something: send our answers again
@@ -214,6 +232,12 @@
     paintBlanks(inp);
   });
   root.addEventListener('click', function (e) {
+    var ch = e.target.closest('[data-team]');
+    if (ch && S && S.teams && S.teams[+ch.getAttribute('data-team')]) {
+      var f = root.querySelector('.pp-join'), c = f ? f.code.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4) : me.code;
+      if (c.length !== 4) return;
+      me.code = c; me.name = S.teams[+ch.getAttribute('data-team')].name; ls('pqt_play_code', c); ls('pqt_play_name', me.name); start(); return;
+    }
     if (e.target.closest('[data-leave]')) { wantJoin = false; joined = false; lastHash = ''; viewJoin(); }
   });
   tick = setInterval(paintTimer, 250);

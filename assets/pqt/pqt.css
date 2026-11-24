@@ -1614,3 +1614,21 @@ button,a,.pbtn,.hc-tab,select,input{touch-action:manipulation;-webkit-tap-highli
 .sc-bot span{white-space:nowrap}
 @media (max-width:600px){.sc-bot{font-size:max(10px,1.4vh)}.sc-bot span:last-child{display:none}.sc-bot{justify-content:center}}
 .pw-up.is-calm span{color:#f3e3b8;text-shadow:0 0 6vh rgba(255,206,110,.35);font-size:min(12vh,11vw)}
+
+/* play: tap-your-team chips */
+.pp-pick{margin-top:22px}.pp-pick[hidden]{display:none}
+.pp-pick .pp-k{margin:0 0 10px}
+.pp-chips{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:8px}
+.pp-chip{position:relative;display:flex;align-items:center;gap:10px;min-height:56px;padding:10px 14px;border:1px solid #2a2a2a;border-radius:2px;background:#0d0d0d;color:#fff;font:inherit;font-size:17px;font-weight:600;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s,transform .1s}
+.pp-chip i{flex:none;width:12px;height:12px;border-radius:50%;background:var(--c,#fff)}
+.pp-chip span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.pp-chip em{flex:none;font-style:normal;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8a8a8a}
+.pp-chip:hover{border-color:#555}.pp-chip:active{transform:scale(.98);background:#161616}
+.pp-chip.is-me{border-color:var(--c,#fff);box-shadow:inset 0 0 0 1px var(--c,#fff)}
+.pp-chip:focus-visible{outline:2px solid #ff8a4a;outline-offset:2px}
+.pp-chip span{display:flex;flex-direction:column;gap:2px;white-space:normal;overflow:visible}
+.pp-chip span b{font-weight:600;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere;line-height:1.2}
+.pp-chip em{font-size:10.5px;letter-spacing:.06em}
+/* polish: even button rows, toast clear of the header on wide screens */
+.hc-sec .hc-row:not(.hc-flow .hc-row)>.pbtn{flex:1 1 130px}
+@media (min-width:700px){.hc-toast{margin:0;top:auto;bottom:max(24px,env(safe-area-inset-bottom,0px));left:50%;right:auto;transform:translateX(-50%);font-size:14px}}
