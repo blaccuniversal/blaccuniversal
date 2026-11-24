@@ -35,7 +35,7 @@ function pqtMain() {
   var qbk = new URLSearchParams(location.search).get('broker');
   if (qbk && /^wss?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(qbk)) BROKERS = [qbk];
   var TOPIC = 'blaccuniversal/pqt/v1/';
-  var BUILD = 2611240330, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
+  var BUILD = 2611240420, PLAY_BUILD = 10;   // bump on every deploy (PLAY_BUILD must match pqt-play.js)
   // When the host runs a newer build, screens and phones reload themselves to match it.
   function follow(b, mine) {
     if (!b || b <= mine) return;
@@ -541,7 +541,7 @@ function pqtMain() {
     namesTxt: window.PQT_SAMPLE_NAMES || '', spellTxt: window.PQT_SAMPLE_SPELL || '', writtenTxt: window.PQT_SAMPLE_WRITTEN || '', rapidTxt: window.PQT_SAMPLE_RAPID || '', talkTxt: window.PQT_SAMPLE_TALK || '', alphaTxt: window.PQT_SAMPLE_ALPHA || '',
     star: { team: 0, preset: 'late-night', bpm: 80, level: 'beginner', bars: 16, seed: 0, phase: 'idle', done: [], score: null, startedAt: 0 },
     qa: { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }, qaUsed: {}, qaPos: {},
-    wheelTxt: null, wheelLeft: null, pwTxt: window.PQT_SAMPLE_PW || '', pw: { qi: 0, team: 0, phase: 'idle', cur: 0, res: [], done: [], used: [] }
+    wheelTxt: null, wheelLeft: null, bxWins: [], pwTxt: window.PQT_SAMPLE_PW || '', pw: { qi: 0, team: 0, phase: 'idle', cur: 0, res: [], done: [], used: [] }
   };
   var H = store('pqt_host') || JSON.parse(JSON.stringify(DEF));
   Object.keys(DEF).forEach(function (k) { if (H[k] == null) H[k] = JSON.parse(JSON.stringify(DEF[k])); });
@@ -874,7 +874,7 @@ function pqtMain() {
     snap(); H.teams.forEach(function (t) { t.score = 0; t.strikes = 0; }); H.byRound = {}; H.round = 0; H.roundType = ''; H.ledger = []; H.paused = false;
     resetTally(); H.words.team = 0; H.timer.running = false; H.timer.remaining = H.timer.total;
     H.feud = { qi: 0, out: {}, strikes: 0, awardedTo: null, awardedPts: 0 };
-    H.qa = { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; H.qaUsed = {}; H.qaPos = {}; H.bq = null; H.picks = {}; H.wheelLeft = null;
+    H.qa = { type: '', mode: 'board', idx: 0, clue: 1, revealed: false, mark: '', phase: 'ask' }; H.qaUsed = {}; H.qaPos = {}; H.bq = null; H.picks = {}; H.wheelLeft = null; H.bxWins = [];
     H.view = 'lobby'; push(); renderAll(); splash('New game', H.title); toast('New game started');
   }
   /* ---------- Word Race round: the tournament runs inside the console, using this game's teams ---------- */
@@ -1062,6 +1062,7 @@ function pqtMain() {
     var prize = b.items[b.i]; b.stage = 'won'; b.prize = prize;
     var ix = (H.wheelLeft || []).indexOf(prize); if (ix > -1) H.wheelLeft.splice(ix, 1);
     var m = /^\+\s*(\d+)/.exec(prize); if (m && q.bd && q.bd.res >= 0) { pts(q.bd.res, +m[1]); toast('+' + m[1] + ' to ' + tn(q.bd.res)); }
+    if (!/try\s*again/i.test(prize)) { H.bxWins = H.bxWins || []; H.bxWins.push({ t: q.bd.res, prize: prize, p: '' }); b.w = H.bxWins.length - 1; }
     fx('win'); push(); renderAll();
   }
   function bxAct(a) {
@@ -1087,9 +1088,13 @@ function pqtMain() {
     if (b.stage === 'box') out += '<p class="hc-bx__t">📦 Black box won by <b>' + esc(tn(bd.res)) + '</b></p><button class="pbtn pbtn--o pbtn--lg pbtn--block" data-bx="open" type="button">Spin the wheel</button>';
     else if (b.stage === 'wheel') out += '<p class="hc-bx__t">Wheel on screen · <b>' + left + '</b> prize' + (left === 1 ? '' : 's') + ' left</p>' + (left ? '<button class="pbtn pbtn--o pbtn--lg pbtn--block" data-bx="spin" type="button">Spin</button>' : '<p class="hc-bx__n">The wheel is empty.</p><button class="pbtn pbtn--lg pbtn--block" data-bx="refill" type="button">Refill the wheel</button>');
     else if (b.stage === 'spin') out += '<p class="hc-bx__t">Spinning…</p>';
-    else if (b.stage === 'won') out += '<p class="hc-bx__t"><b>' + esc(tn(bd.res)) + '</b> wins <b>' + esc(b.prize) + '</b></p><button class="pbtn pbtn--lg pbtn--block pbtn--white" data-bx="close" type="button">Close the wheel</button>';
+    else if (b.stage === 'won') out += '<p class="hc-bx__t"><b>' + esc(tn(bd.res)) + '</b> wins <b>' + esc(b.prize) + '</b></p>' + (b.w != null && H.bxWins[b.w] ? '<input class="hc-in hc-bx__in" data-bxp="' + b.w + '" type="text" maxlength="40" placeholder="Player who won the black box" value="' + esc(H.bxWins[b.w].p || '') + '" autocomplete="off">' : '<p class="hc-bx__n">Try again · nothing to note down.</p>') + '<button class="pbtn pbtn--lg pbtn--block pbtn--white" data-bx="close" type="button">Close the wheel</button>';
     else out += '<p class="hc-bx__n">📦 Black box opened · ' + esc(tn(bd.res)) + ' won ' + esc(b.prize || '') + '.</p>';
-    return out + '</div>';
+    return out + bxLog() + '</div>';
+  }
+  function bxLog() {
+    var w = H.bxWins || []; if (!w.length) return '';
+    return '<div class="hc-bx__log"><p class="hc-bx__n">📦 Black box winners</p>' + w.map(function (x) { return '<p class="hc-bx__r"><b>' + esc(tn(x.t)) + '</b>' + (x.p ? ' · ' + esc(x.p) : '') + ' · ' + esc(x.prize) + '</p>'; }).join('') + '</div>';
   }
   function qaTimer() { var t = QA_TIME[H.qa.type]; if (!t) return; H.timer.total = t; H.timer.running = false; H.timer.remaining = t; }
   /* turns + bonus for number-board rounds */
@@ -1735,6 +1740,7 @@ function pqtMain() {
     var el0 = e.target; if (SU && el0.hasAttribute('data-su-title')) SU.title = el0.value; if (SU && el0.dataset.suName != null) SU.teams[+el0.dataset.suName].name = el0.value;
     var el = e.target;
     if (el.dataset.tname != null) { H.teams[+el.dataset.tname].name = el.value.slice(0, 28) || 'Team'; push(); }
+    if (el.dataset.bxp != null && H.bxWins && H.bxWins[+el.dataset.bxp]) { H.bxWins[+el.dataset.bxp].p = el.value.slice(0, 40); save(); }
     if (el.hasAttribute('data-codein')) el.value = cleanCode(el.value);
     if (el.hasAttribute('data-title')) { H.title = el.value.slice(0, 60); push(); }
   });
