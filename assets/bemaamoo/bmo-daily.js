@@ -220,7 +220,7 @@
   }
   function lbPost(S) {
     if (!lbOn() || st.posted) return Promise.resolve();
-    var body = { day: num(), device: devId(), name: String(st.name || 'Player').slice(0, 18), score: S.T.total, words: S.E.length, perks: S.perks, found: !!S.found };
+    var body = { day: num(), device: devId(), name: String(st.name || 'Player').slice(0, 18), score: S.T.total, words: S.E.length, perks: S.perks, found: !!S.found, found_bonus: !!S.foundBonus };
     var h = lbHead(); h.Prefer = 'return=minimal';
     return fetch(lbUrl(), { method: 'POST', headers: h, body: JSON.stringify(body) }).then(function (r) {
       if (r.ok || r.status === 409) { st.posted = true; put(st); }
@@ -231,7 +231,8 @@
     var T = B.tally(st.g)[0];
     if (!rows || !rows.length) { box.innerHTML = '<p class="sum__d">Today’s leaderboard</p><p class="dlb__e">No scores yet. You’re first.</p>'; box.hidden = false; return; }
     box.innerHTML = '<p class="sum__d">Today’s leaderboard</p><ol class="dlb">' + rows.map(function (r, i) {
-      return '<li class="' + (r.name === (st.name || 'Player') && r.score === T.total ? 'is-me' : '') + '"><i>' + (i + 1) + '</i><span>' + esc(r.name) + (r.found ? ' <em title="Found the word">Found</em>' : '') + '</span><b>' + r.score + '</b></li>';
+      var tag = r.found ? (r.found_bonus ? '<em title="Found the word in the first ' + WORD_WINDOW + ' entries">' + WORD_MULT + '×</em>' : '<em title="Found the word">Found</em>') : '';
+      return '<li class="' + (r.name === (st.name || 'Player') && r.score === T.total ? 'is-me' : '') + '"><i>' + (i + 1) + '</i><span>' + esc(r.name) + (tag ? ' ' + tag : '') + '</span><b>' + r.score + '</b></li>';
     }).join('') + '</ol>';
     box.hidden = false;
   }
@@ -239,7 +240,7 @@
     var box = $('[data-d-lb]'); if (!box) return;
     if (!lbOn()) { box.hidden = true; return; }
     lbPost(S).then(function () {
-      return fetch(lbUrl('?day=eq.' + num() + '&select=name,score,found&order=score.desc,created_at.asc&limit=50'), { headers: lbHead() });
+      return fetch(lbUrl('?day=eq.' + num() + '&select=name,score,found,found_bonus&order=score.desc,created_at.asc&limit=50'), { headers: lbHead() });
     }).then(function (r) { return r.ok ? r.json() : null; }).then(function (rows) { if (rows) lbPaint(rows); else box.hidden = true; }, function () { box.hidden = true; });
   }
 
