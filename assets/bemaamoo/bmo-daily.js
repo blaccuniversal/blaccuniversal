@@ -3,7 +3,7 @@
   'use strict';
   var W = window.BMO_DAILY_WORDS || [];
   var START = Date.UTC(2026, 10, 23) / 86400000;            // day #1 = 23 Nov 2026
-  var KEY = 'bmo_daily_v1', KEYN = 'bmo_daily_name', MIN = 4;
+  var KEY = 'bmo_daily_v1', KEYN = 'bmo_daily_name', MIN = 4, WORD_WINDOW = 5, WORD_MULT = 5;
   var B = window.BMO, env = null, el = {}, today = 0, base = '', st = null, dict = null, busy = false;
 
   function $(s, r) { return (r || document).querySelector(s); }
@@ -92,7 +92,7 @@
     r.entries.forEach(function (e, i) {
       h += '<div class="row' + (e.x ? ' is-x' : '') + (conAt[i] != null ? ' is-con' + conAt[i] : '') + (e.acc ? ' is-acc' : '') + '"><span class="row__n">' + (i + 1) + '</span>';
       for (var k = 0; k < e.w.length; k++) h += '<span class="cell' + (mav[i + ':' + (k + 1)] ? ' is-mav' : '') + '">' + (hide && e.x ? '' : e.w[k]) + '</span>';
-      h += '<span class="row__pts">+' + e.total + (e.x ? '<span class="tag tag--x" title="The full word: triple points">3×</span>' : '') + (e.mavs.length ? '<span class="tag tag--mav" title="Maverick">M</span>' : '') + (e.con ? '<span class="tag tag--con" title="Concord">C</span>' : '') + (e.acc ? '<span class="tag tag--acc" title="Regen">R</span>' : '') + (e.key ? '<span class="tag tag--key" title="Keystone">K</span>' : '') + '</span></div>';
+      h += '<span class="row__pts">+' + e.total + (e.x ? (e.xBonus ? '<span class="tag tag--x" title="The full word, found in the first ' + WORD_WINDOW + ': ' + WORD_MULT + '× points">' + WORD_MULT + '×</span>' : '<span class="tag tag--x" title="The full word — found after the first ' + WORD_WINDOW + ', so no bonus">Found</span>') : '') + (e.mavs.length ? '<span class="tag tag--mav" title="Maverick">M</span>' : '') + (e.con ? '<span class="tag tag--con" title="Concord">C</span>' : '') + (e.acc ? '<span class="tag tag--acc" title="Regen">R</span>' : '') + (e.key ? '<span class="tag tag--key" title="Keystone">K</span>' : '') + '</span></div>';
     });
     box.innerHTML = h + '</div>';
   }
@@ -112,7 +112,7 @@
   function perks() {
     var f = [];
     entries(st).forEach(function (e) {
-      if (e.x) f.push('<li><span class="tag tag--x">3×</span><span>The word · ' + e.w + '</span><em>+' + e.base + '</em></li>');
+      if (e.x) f.push('<li><span class="tag tag--x">' + (e.xBonus ? WORD_MULT + '×' : 'Found') + '</span><span>The word · ' + e.w + '</span><em>+' + e.base + '</em></li>');
       e.mavs.forEach(function (m) { f.push('<li><span class="tag tag--mav">M</span><span>' + m.w + '</span><em>+' + m.pts + '</em></li>'); });
       if (e.con) f.push('<li><span class="tag tag--con">C</span><span>' + e.streak + ' × ' + e.w.length + ' letters</span><em>+' + e.con + '</em></li>');
       if (e.acc) f.push('<li><span class="tag tag--acc">R</span><span>Regen · ' + e.w + '</span><em>+' + e.acc + '</em></li>');
@@ -177,11 +177,16 @@
     dictP().then(function (D) {
       busy = false;
       if (w !== base && !D.full.has(w)) return msg(w + ' isn’t in the dictionary.', true);
+      var inWindow = entries(st).length < WORD_WINDOW;
       var e = B.add(st.g, w, { mav: D.mav });
-      if (w === base) { e.x = 1; e.base *= 3; e.total = e.base + e.mav + e.con + e.acc + e.key; }
+      if (w === base) {
+        e.x = 1; e.xBonus = inWindow;
+        e.base = B.tri(w.length) * (inWindow ? WORD_MULT : 1);
+        e.total = e.base + e.mav + e.con + e.acc + e.key;
+      }
       put(st); el.inp.value = ''; paintTiles(); paintFound();
       var x = [e.mavs.length ? 'Maverick' : '', e.con ? 'Concord' : '', e.acc ? 'Regen' : '', e.key ? 'Keystone' : ''].filter(Boolean);
-      msg(w === base ? 'You found the word! Triple points, +' + e.total : '+' + e.total + ' for ' + w + (x.length ? ' · ' + x.join(' + ') : ''));
+      msg(w === base ? (e.xBonus ? 'You found the word! ' + WORD_MULT + '× points, +' + e.total : 'You found the word! +' + e.total) : '+' + e.total + ' for ' + w + (x.length ? ' · ' + x.join(' + ') : ''));
       
     }, function () { busy = false; msg('Couldn’t check that word. Try again.', true); });
   }
@@ -202,7 +207,7 @@
   function esc(t) { return String(t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" }[c]; }); }
   function stats() {
     var E = entries(st), T = B.tally(st.g)[0], rg = E.filter(function (e) { return e.acc; }).length;
-    return { E: E, T: T, rg: rg, perks: T.mavs + T.cons + rg + T.keys, perkPts: T.mav + T.con + T.acc + T.key, found: E.some(function (e) { return e.x; }) };
+    return { E: E, T: T, rg: rg, perks: T.mavs + T.cons + rg + T.keys, perkPts: T.mav + T.con + T.acc + T.key, found: E.some(function (e) { return e.x; }), foundBonus: E.some(function (e) { return e.x && e.xBonus; }) };
   }
   /* ---------- shared leaderboard (Supabase REST; hidden until bmo-config.js has a URL + key) ---------- */
   function lbOn() { var c = window.BMO_CFG || {}; return !!(c.url && c.key); }
@@ -226,7 +231,7 @@
     var T = B.tally(st.g)[0];
     if (!rows || !rows.length) { box.innerHTML = '<p class="sum__d">Today’s leaderboard</p><p class="dlb__e">No scores yet. You’re first.</p>'; box.hidden = false; return; }
     box.innerHTML = '<p class="sum__d">Today’s leaderboard</p><ol class="dlb">' + rows.map(function (r, i) {
-      return '<li class="' + (r.name === (st.name || 'Player') && r.score === T.total ? 'is-me' : '') + '"><i>' + (i + 1) + '</i><span>' + esc(r.name) + (r.found ? ' <em title="Found the word">3×</em>' : '') + '</span><b>' + r.score + '</b></li>';
+      return '<li class="' + (r.name === (st.name || 'Player') && r.score === T.total ? 'is-me' : '') + '"><i>' + (i + 1) + '</i><span>' + esc(r.name) + (r.found ? ' <em title="Found the word">Found</em>' : '') + '</span><b>' + r.score + '</b></li>';
     }).join('') + '</ol>';
     box.hidden = false;
   }
@@ -248,7 +253,7 @@
       var parts = [['W', T.base, ''], ['M', T.mav, 'c-mav'], ['C', T.con, 'c-con'], ['R', T.acc, 'c-acc'], ['K', T.key, 'c-key']];
       var row = '<div class="dpl"><div class="dpl__top"><b>' + esc(st.name || 'Player') + '</b><span>' + T.total + '</span></div><div class="dpl__parts">' + parts.map(function (x) { return '<span class="' + x[2] + '"><small>' + x[0] + '</small>' + x[1] + '</span>'; }).join('') + '</div></div>';
       var r = [['Words found', all ? n + ' of ' + all : String(n)], ['Possible words', all ? String(all) : '…'], ['Possible points, excluding perks', maxp ? maxp.toLocaleString('en') : '…'],
-        ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'], ['Today’s word', S.found ? 'Found · 3×' : 'Not found']];
+        ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'], ['Today’s word', S.found ? (S.foundBonus ? 'Found · ' + WORD_MULT + '×' : 'Found') : 'Not found']];
       $('[data-d-sum]').innerHTML = row + '<p class="sum__d">Today’s challenge</p><div class="sum sum--rounds">' + r.map(function (x, i) { return '<div class="sum__rr' + (i === 4 && S.found ? ' is-x' : '') + '"><span>' + x[0] + '</span><b>' + x[1] + '</b></div>'; }).join('') + '</div>';
     }
     rows(st.all, st.max);
@@ -290,7 +295,7 @@
     var S = stats(), T = S.T, W = 1284, FONT = '-apple-system,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif';
     var EM = '#6ee7b7', gold = css('--mav', '#ffd23f'), blue = css('--con', '#4aa8ff'), purple = css('--acc', '#b48cff'), key = css('--key', '#ff6a4d');
     var rows = [['Words found', st.all ? S.E.length + ' of ' + st.all : String(S.E.length)], ['Possible words', st.all ? String(st.all) : '-'], ['Possible points, excluding perks', st.max ? st.max.toLocaleString('en') : '-'],
-      ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'], ['Today’s word', S.found ? 'Found · 3×' : 'Not found']];
+      ['Perks earned', S.perks + ' · +' + S.perkPts + ' pts'], ['Today’s word', S.found ? (S.foundBonus ? 'Found · ' + WORD_MULT + '×' : 'Found') : 'Not found']];
     var cx = 65, cw = 1153, L = 119, R = 1166, top = 62, pitch = 129;
     var firstDiv = 763, lastDiv = firstDiv + rows.length * pitch, capY = lastDiv + 82, urlY = capY + 66, cardB = urlY + 70, H = cardB + 62;
     var cv = document.createElement('canvas'); cv.width = W; cv.height = H; var c = cv.getContext('2d');
