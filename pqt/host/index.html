@@ -38,6 +38,7 @@
     <div class="hc-views" style="grid-template-columns:repeat(3,1fr)"><button class="pbtn" data-view="lobby" type="button">Lobby</button><button class="pbtn" data-view="scores" type="button">Scores</button><button class="pbtn" data-view="ranking" type="button">Ranking</button></div>
     <div class="hc-views" data-game-row style="margin-top:6px;grid-template-columns:1fr"><button class="pbtn" data-view="game" data-view-game type="button">Game</button></div>
     <div class="hc-views" data-race-views hidden style="margin-top:6px;grid-template-columns:repeat(4,1fr)"><button class="pbtn" data-race="scene-rules" type="button">Rules</button><button class="pbtn" data-race="scene-battle" type="button">Battle</button><button class="pbtn" data-race="scene-bracket" type="button">Bracket</button><button class="pbtn" data-race="scene-standings" type="button">Standings</button></div>
+    <div class="hc-views" data-nrace-views hidden style="margin-top:6px;grid-template-columns:repeat(4,1fr)"><button class="pbtn" data-nrace="scene-rules" type="button">Rules</button><button class="pbtn" data-nrace="scene-battle" type="button">Battle</button><button class="pbtn" data-nrace="scene-bracket" type="button">Bracket</button><button class="pbtn" data-nrace="scene-standings" type="button">Standings</button></div>
   </section>
 
 
@@ -58,7 +59,7 @@
   </section>
   <section class="card hc-sec" data-pane="words" hidden><h2>All Except These Ones</h2><div data-wpane></div></section>
   <section class="card hc-sec" data-pane="answers" hidden><h2>Quests Feud</h2><div data-fpane></div></section>
-  <section class="card hc-sec" data-pane="quiz" hidden><h2>Games</h2><div data-qpane></div><div data-racebox hidden></div></section>
+  <section class="card hc-sec" data-pane="quiz" hidden><h2>Games</h2><div data-qpane></div><div data-racebox hidden></div><div data-nracebox hidden></div></section>
   <section class="card hc-sec" data-pane="cards" hidden>
     <h2>Cards &amp; questions</h2>
     <p class="hc-note hc-lead">Tap a game to edit its cards. They’re saved on this device, in your own space: other host codes can’t see them.</p>
@@ -187,6 +188,7 @@
 <script src="/assets/pqt/mqtt.min.js?v=5104"></script>
 <script src="/assets/pqt/peerjs.min.js?v=261112171"></script>
 <script src="/assets/pqt/wordrace/wr-engine.js?v=11"></script>
+<script src="/assets/pqt/numberrace/nr-engine.js?v=1"></script>
 <script src="/assets/pqt/pqt-import.js?v=1"></script>
 <script src="/assets/pqt/pqt-vault.js?v=2"></script>
 <script src="/assets/pqt/pqt.js?v=2611241740"></script>
