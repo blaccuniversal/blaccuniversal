@@ -11,6 +11,7 @@
   var T = null, link = null, tab = 'play', scene = 'battle', evs = [], evId = Date.now(), auditSeen = 0;
   var seenN = {}, lastAns = {}, fb = {}, joined = {}, armed = null, timeUp = false;
   var curMid = null, draft = '', revealed = '';
+  function rn() { return Math.floor(Math.random() * 10); }
   var QS = new URLSearchParams(location.search), EMBED = QS.get('embed') === '1', EMBED_T = QS.get('t') || '';
   if (EMBED) document.body.classList.add('wr-embed');
   else { location.replace('/pqt/host/'); return; } // Number Race is a PQT round, not a standalone game
@@ -72,8 +73,8 @@
     curMid = m ? m.id : null; return m;
   }
   function lastFinished() { var best = null; Object.keys(T.matchups).forEach(function (id) { var m = T.matchups[id]; if (m.done) { var t = m.battles.length ? m.battles[m.battles.length - 1].endedAt || 0 : 0; if (!best || t > best.t) best = { m: m, t: t }; } }); return best && best.m; }
-  function revealLeft(b) { if (!b) return 0; if (T.paused && T.pausedReveal != null) return T.pausedReveal; return Math.max(0, (b.revealAt || 0) - Date.now()); }
-  function left(b) { if (!b) return 0; if (T.paused && T.pausedLeft != null) return T.pausedLeft; if (revealLeft(b) > 0) return b.secs * 1000; return Math.max(0, b.secs * 1000 - (Date.now() - (b.revealAt || b.startedAt))); }
+  function spinLeft(b) { if (!b) return 0; if (T.paused && T.pausedSpin != null) return T.pausedSpin; return Math.max(0, (b.rollAt || 0) - Date.now()); }
+  function left(b) { if (!b) return 0; if (T.paused && T.pausedLeft != null) return T.pausedLeft; if (spinLeft(b) > 0) return b.secs * 1000; return Math.max(0, b.secs * 1000 - (Date.now() - (b.rollAt || b.startedAt))); }
   function teamView(m, x) { var t = E.team(T, x), i = T.teams.indexOf(t); return { id: t.id, name: t.name, c: V.color(i), wins: m.wins[x], pts: m.pts[x] }; }
   function mName(x) { return (x.label ? x.label + ': ' : '') + x.teams.map(function (y) { return E.tname(T, y); }).join(x.kind === 'duel' ? ' v ' : ' · '); }
   function broadcast() {
@@ -85,7 +86,7 @@
       at: Date.now(), code: T.room, name: T.name, status: T.status, paused: !!T.paused, scene: scene, mode: T.config.answerMode, op: T.config.operation,
       round: r ? r.label : '', evs: evs,
       m: m ? { id: m.id, label: m.label, kind: m.kind, teams: m.teams.map(function (x) { return teamView(m, x); }), n: E.regular(m).length, total: m.battles.length } : null,
-      battle: lastB ? { tb: !!lastB.tb, part: lastB.part, n: lastB.n, reveal: b ? revealLeft(b) : 0, x: b && revealLeft(b) > 0 ? null : lastB.x, y: b && revealLeft(b) > 0 ? null : lastB.y, op: lastB.op, tier: lastB.tier, running: !!b, left: left(b), secs: lastB.secs, winner: lastB.winner ? E.tname(T, lastB.winner) : null,
+      battle: lastB ? { tb: !!lastB.tb, part: lastB.part, n: lastB.n, spin: b ? spinLeft(b) : 0, x: b && spinLeft(b) > 0 ? null : lastB.x, y: b && spinLeft(b) > 0 ? null : lastB.y, op: lastB.op, tier: lastB.tier, running: !!b, left: left(b), secs: lastB.secs, winner: lastB.winner ? E.tname(T, lastB.winner) : null,
         last: lastA ? { team: E.tname(T, lastA.team), value: lastA.value, ok: lastA.ok, reason: lastA.reason } : null } : null,
       prev: done ? { kind: done.kind, rank: done.rank.map(function (x) { return E.tname(T, x); }), label: done.label } : null,
       next: E.openMatchups(T).filter(function (x) { return !m || x.id !== m.id; }).slice(0, 3).map(mName),
@@ -111,10 +112,10 @@
     if (msg.t !== 'ans' || T.config.answerMode !== 'phones') return;
     if (!pins[msg.team] || String(msg.pin) !== pins[msg.team]) return;
     var m = curMatchup(); if (!m || m.teams.indexOf(msg.team) < 0) return;
-    var b = E.curBattle(m); if (!b || b.part.indexOf(msg.team) < 0 || T.paused || T.status !== 'live' || revealLeft(b) > 0) return;
+    var b = E.curBattle(m); if (!b || b.part.indexOf(msg.team) < 0 || T.paused || T.status !== 'live' || spinLeft(b) > 0) return;
     var nowT = Date.now(); if (lastAns['t_' + msg.team] && nowT - lastAns['t_' + msg.team] < 1200) return; // one answer per 1.2s per team
     lastAns['t_' + msg.team] = nowT; lastAns[msg.team] = msg.n;
-    var answer = String(msg.value == null ? '' : msg.value).slice(0, 20), ms = nowT - (b.revealAt || b.startedAt);
+    var answer = String(msg.value == null ? '' : msg.value).slice(0, 20), ms = nowT - (b.rollAt || b.startedAt);
     act(function () { E.submit(T, m.id, msg.team, answer, { ms: ms }); });
   }
 
@@ -147,7 +148,7 @@
     var c = T.config;
     function num(k, label, min, max, suf) { return '<label class="wr-f"><span>' + label + '</span><span class="wr-f__in"><input class="hc-input" type="number" inputmode="numeric" data-cfg="' + k + '" min="' + min + '" max="' + max + '" value="' + c[k] + '">' + (suf ? '<em>' + suf + '</em>' : '') + '</span></label>'; }
     function seg(k, opts) { return '<div class="wr-seg wr-seg--' + opts.length + '" data-cfgseg="' + k + '">' + opts.map(function (o) { return '<button class="pbtn' + (String(c[k]) === String(o[0]) ? ' is-on' : '') + '" data-v="' + o[0] + '" type="button">' + o[1] + '</button>'; }).join('') + '</div>'; }
-    return '<div class="wr-cfg">' + num('battleSecs', 'Battle countdown', 5, 300, 'sec') + num('revealSecs', 'Reveal countdown', 1, 10, 'sec') + '</div>' +
+    return '<div class="wr-cfg">' + num('battleSecs', 'Battle countdown', 5, 300, 'sec') + num('spinSecs', 'Number spin', 0, 30, 'sec') + '</div>' +
       '<p class="hc-note">A Bangarang is 3 battles. A 1v1 is first to win two. Each battle won is 3 points. Wrong answers cost nothing.</p>' +
       '<p class="wr-k">Operation</p>' + seg('operation', E.OPS.map(function (o) { return [o, OP_NAME[o]]; })) +
       '<p class="wr-k">Number difficulty</p>' + seg('tier', [['mixed', 'Mixed'], ['easy', 'Easy'], ['medium', 'Medium'], ['hard', 'Hard']]) +
@@ -205,9 +206,9 @@
       h += '<button class="pbtn pbtn--white pbtn--lg pbtn--block wr-mt" data-battle type="button"' + (T.paused ? ' disabled' : '') + '>' + (tbNext ? 'Start decider' : 'Start battle ' + (reg + 1)) + '</button>' +
         '<details class="wr-det wr-mt"><summary class="hc-note">Choose the numbers yourself</summary><form class="hc-row wr-mt" data-numbers><input class="hc-input wr-l" inputmode="numeric" data-nx placeholder="7" aria-label="First number"><span>' + esc(SYM[T.config.operation]) + '</span><input class="hc-input wr-l" inputmode="numeric" data-ny placeholder="4" aria-label="Second number"><button class="pbtn" type="submit">Start with these</button></form></details>';
     } else {
-      var lt = left(b), rv = revealLeft(b);
+      var lt = left(b), rv = spinLeft(b);
       if (rv > 0) {
-        h += '<div class="wr-letters is-spin" data-reveal><span class="wr-letter">?</span><span class="wr-arrow wr-countdown">' + Math.ceil(rv / 1000) + '</span><span class="wr-letter">?</span></div><p class="wr-tier">Numbers in <b data-revealleft>' + fmt(rv) + '</b></p>' +
+        h += '<div class="wr-letters is-spin" data-spin><span class="wr-letter">' + rn() + '</span><span class="wr-arrow">' + esc(SYM[b.op]) + '</span><span class="wr-letter">' + rn() + '</span></div><p class="wr-tier">Numbers stop in <b data-spinleft>' + fmt(rv) + '</b></p>' +
           '<div class="wr-award wr-award--' + b.part.length + ' wr-mt">' + b.part.map(function (x) { return '<button class="pbtn pbtn--good pbtn--lg" disabled type="button">' + esc(E.tname(T, x)) + ' got it</button>'; }).join('') + '</div><p class="hc-note" style="text-align:center">The clock starts when the numbers appear.</p>' + battleLog(m) + '</section>';
         return h + (T.config.answerMode === 'phones' ? pinsCard() : '');
       }
@@ -237,7 +238,7 @@
   function battleLog(m) {
     if (!m.battles.length) return '';
     return '<div class="wr-log">' + m.battles.slice().reverse().map(function (b) {
-      return '<div class="wr-logb"><p class="wr-k">' + (b.tb ? 'Decider' : 'Battle ' + b.n) + ' · ' + (!b.winner && revealLeft(b) > 0 ? '? ' + esc(SYM[b.op]) + ' ?' : b.x + ' ' + esc(SYM[b.op]) + ' ' + b.y) + (b.winner ? ' · won by ' + esc(E.tname(T, b.winner)) : '') + '</p>' +
+      return '<div class="wr-logb"><p class="wr-k">' + (b.tb ? 'Decider' : 'Battle ' + b.n) + ' · ' + (!b.winner && spinLeft(b) > 0 ? '? ' + esc(SYM[b.op]) + ' ?' : b.x + ' ' + esc(SYM[b.op]) + ' ' + b.y) + (b.winner ? ' · won by ' + esc(E.tname(T, b.winner)) : '') + '</p>' +
         (b.attempts.length ? b.attempts.map(function (a, i) {
           var won = a.ok && b.winner === a.team && i === b.attempts.findIndex(function (z) { return z.ok; });
           return '<div class="wr-att' + (a.ok ? ' is-ok' : ' is-no') + (a.ok && !won ? ' is-void' : '') + '"><b>' + esc(a.value != null ? a.value : (a.raw || '(called out)')) + '</b><span>' + esc(E.tname(T, a.team)) + ' · ' + (a.ok ? '✓' : '✗ ' + (E.REASONS[a.reason] || '')) + (a.by === 'host' ? ' · host' : '') + ' · ' + (a.ms / 1000).toFixed(1) + 's</span><em>' + (won ? (b.tb ? 'wins' : '+' + T.config.battlePoints) : '') + '</em>' +
@@ -310,7 +311,7 @@
     if (d.v && x.parentNode.hasAttribute('data-scene')) { scene = d.v; broadcast(); render(); return; }
     if ('opensc' in d) { window.open('/pqt/numberrace/screen/?c=' + encodeURIComponent(T.room), 'nrscreen', 'width=1280,height=720'); return; }
     if ('newroom' in d) { T.room = NRLink.code(); save(); joined = {}; startLink(); render(); return; }
-    if ('pause' in d) return act(function () { var m = curMatchup(), b = m && E.curBattle(m); if (!T.paused) { T.pausedReveal = b ? revealLeft(b) : null; T.pausedLeft = b ? left(b) : null; E.pause(T, true); } else { if (b && T.pausedReveal) b.revealAt = Date.now() + T.pausedReveal; else if (b && T.pausedLeft != null) b.revealAt = Date.now() - (b.secs * 1000 - T.pausedLeft); T.pausedLeft = null; T.pausedReveal = null; E.pause(T, false); } });
+    if ('pause' in d) return act(function () { var m = curMatchup(), b = m && E.curBattle(m); if (!T.paused) { T.pausedSpin = b ? spinLeft(b) : null; T.pausedLeft = b ? left(b) : null; E.pause(T, true); } else { if (b && T.pausedSpin) b.rollAt = Date.now() + T.pausedSpin; else if (b && T.pausedLeft != null) b.rollAt = Date.now() - (b.secs * 1000 - T.pausedLeft); T.pausedLeft = null; T.pausedSpin = null; E.pause(T, false); } });
     if (d.pickm) { curMid = d.pickm; render(); broadcast(); return; }
     if ('battle' in d) { var m = curMatchup(); draft = ''; return act(function () { E.startBattle(T, m.id); }); }
     if (d.award) {
@@ -351,8 +352,8 @@
   setInterval(function () {
     if (!T || T.status !== 'live') return;
     var m = curMatchup(), b = m && E.curBattle(m); if (!b) return;
-    var rvEl = app.querySelector('[data-reveal]'), rk = m.id + ':' + b.n + ':' + b.revealAt;
-    if (revealLeft(b) > 0) { if (rvEl) { var cd = rvEl.querySelector('.wr-countdown'); if (cd) cd.textContent = Math.ceil(revealLeft(b) / 1000); var rl = app.querySelector('[data-revealleft]'); if (rl) rl.textContent = fmt(revealLeft(b)); } return; }
+    var rvEl = app.querySelector('[data-spin]'), rk = m.id + ':' + b.n + ':' + b.rollAt;
+    if (spinLeft(b) > 0) { if (rvEl) { var ls2 = rvEl.querySelectorAll('.wr-letter'); ls2[0].textContent = rn(); ls2[1].textContent = rn(); var sl = app.querySelector('[data-spinleft]'); if (sl) sl.textContent = fmt(spinLeft(b)); } return; }
     if (revealed !== rk && !T.paused) { revealed = rk; broadcast(); if (rvEl) { render(); return; } }
     var el = app.querySelector('[data-clock]'); if (!el) return;
     var lt = left(b); el.textContent = lt <= 0 ? 'Time' : fmt(lt); el.classList.toggle('is-low', lt > 0 && lt < 6000); el.classList.toggle('is-up', lt <= 0);

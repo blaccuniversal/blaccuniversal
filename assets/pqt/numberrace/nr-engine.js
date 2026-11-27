@@ -2,16 +2,16 @@
    Same tournament engine as Word Race: a battle is won by the first correct answer, worth 3 points;
    a matchup (1v1 or 3-team Bangarang) is 3 battles (a 1v1 ends once a team has won 2); formats, scoring,
    corrections and the audit log all work exactly as in Word Race. The only thing that differs is what a
-   battle is: instead of two letters and a word, two NUMBERS are revealed after a countdown (5,4,3,2,1) and
-   the first team to call the right answer — the chosen operation applied to the two numbers — wins the battle.
+   battle is: instead of two letters and a word, two numbers spin like a randomiser and settle, and the
+   first team to call the right answer — the chosen operation applied to the two numbers — wins the battle.
    Pure logic, no DOM. Works in the browser (window.NREngine) and in Node (module.exports) for the tests. */
 (function (root) {
   'use strict';
 
   /* ---------- central configuration ---------- */
   var DEFAULTS = {
-    battleSecs: 30,      // countdown per number pair, once revealed
-    revealSecs: 5,       // the 5, 4, 3, 2, 1 countdown before the numbers are shown
+    battleSecs: 30,      // countdown per number pair, once settled
+    spinSecs: 10,        // numbers spin like a randomiser before they stop and the clock starts
     battlePoints: 3,     // points for winning a battle
     battles: 3,          // battles in every matchup
     operation: 'add',    // add | sub | mul | div — chosen by the host at the start of the round
@@ -31,8 +31,8 @@
   function mergeConfig(c) {
     var out = clone(DEFAULTS);
     if (c) Object.keys(c).forEach(function (k) { if (k in DEFAULTS) out[k] = c[k]; });
-    ['battleSecs', 'revealSecs'].forEach(function (k) { out[k] = Math.max(0, +out[k] || 0); });
-    out.revealSecs = Math.max(1, Math.min(10, out.revealSecs)); out.battleSecs = Math.max(5, out.battleSecs);
+    ['battleSecs', 'spinSecs'].forEach(function (k) { out[k] = Math.max(0, +out[k] || 0); });
+    out.spinSecs = Math.min(30, out.spinSecs); out.battleSecs = Math.max(5, out.battleSecs);
     if (OPS.indexOf(out.operation) < 0) out.operation = 'add';
     if (['easy', 'medium', 'hard', 'mixed'].indexOf(out.tier) < 0) out.tier = 'mixed';
     out.battlePoints = 3; out.battles = 3; // fixed by the rules
@@ -215,7 +215,7 @@
     var part = nextParticipants(m); if (part.length < 2) err('done', 'This matchup is finished.');
     var p = numbers ? computeTarget(T, numbers) : drawNumbers(T, rnd);
     var t0 = now(), tb = m.kind === 'tb' || regular(m).length >= 3;
-    var b = { n: m.battles.length + 1, x: p.x, y: p.y, op: p.op, target: p.target, tier: p.tier, startedAt: t0, revealAt: t0 + T.config.revealSecs * 1000, secs: T.config.battleSecs, rolls: [], attempts: [], part: part, tb: tb, winner: null };
+    var b = { n: m.battles.length + 1, x: p.x, y: p.y, op: p.op, target: p.target, tier: p.tier, startedAt: t0, rollAt: t0 + T.config.spinSecs * 1000, secs: T.config.battleSecs, rolls: [], attempts: [], part: part, tb: tb, winner: null };
     m.battles.push(b);
     log(T, 'battle-start', { matchup: mid, battle: b.n, x: p.x, y: p.y, op: p.op, target: p.target, tier: p.tier, tb: tb, part: part });
     return b;
@@ -245,8 +245,8 @@
     var m = getM(T, mid); if (m.teams.indexOf(teamId) < 0) err('team', 'That team is not in this matchup.');
     var b = curBattle(m); if (!b) err('nobattle', 'Start a battle first.');
     if (b.part.indexOf(teamId) < 0) err('team', 'That team is not in this battle.');
-    if (opts.ms == null && now() < (b.revealAt || 0)) err('counting', 'The numbers have not been revealed yet.');
-    var ms = opts.ms != null ? Math.max(0, +opts.ms) : now() - (b.revealAt || b.startedAt);
+    if (opts.ms == null && now() < (b.rollAt || 0)) err('spinning', 'The numbers are still spinning.');
+    var ms = opts.ms != null ? Math.max(0, +opts.ms) : now() - (b.rollAt || b.startedAt);
     var c = check(T, b, answer), ok = c.ok, by = 'auto';
     if (opts.verdict === true || opts.verdict === false) { ok = opts.verdict; by = 'host'; }
     var a = { team: teamId, value: c.v, raw: String(answer == null ? '' : answer).slice(0, 20), ok: ok, reason: c.reason, by: by, ms: ms, at: now(), roll: b.rolls.length };
@@ -262,7 +262,7 @@
     var m = getM(T, mid), b = curBattle(m); if (!b) err('nobattle', 'No battle is running.');
     b.rolls.push({ x: b.x, y: b.y, op: b.op, target: b.target, tier: b.tier, endedAt: now() });
     var p = numbers ? computeTarget(T, numbers) : drawNumbers(T, rnd);
-    b.x = p.x; b.y = p.y; b.op = p.op; b.target = p.target; b.tier = p.tier; b.revealAt = now() + T.config.revealSecs * 1000;
+    b.x = p.x; b.y = p.y; b.op = p.op; b.target = p.target; b.tier = p.tier; b.rollAt = now() + T.config.spinSecs * 1000;
     log(T, 'timeout', { matchup: mid, battle: b.n, next: p.x + ' ' + SYM[p.op] + ' ' + p.y });
     return b;
   }

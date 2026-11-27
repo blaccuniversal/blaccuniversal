@@ -1,10 +1,12 @@
 /* PQT · NUMBER RACE big screen. Shows whatever the host console sends. Read-only.
-   Same scenes and overlay queue as Word Race's screen; the battle moment is a 5,4,3,2,1 countdown
-   then two numbers and an operation symbol, instead of two letters. */
+   Same scenes, overlay queue and spin-then-settle randomiser as Word Race's screen; the only difference
+   is what's spinning — two numbers and an operation symbol, instead of two letters. */
 (function () {
   'use strict';
   var V = window.NRView, esc = V.esc, root = document.querySelector('[data-screen]'), SYM = window.NREngine.SYM;
-  var revealEnd = 0, S = null, link = null, endAt = 0, seenEv = 0, lastNums = '', ovT = null, ovEl = null, lastScene = '';
+  var spinEnd = 0, spinTot = 0, lastSpin = 0;
+  function rn() { return Math.floor(Math.random() * 10); }
+  var S = null, link = null, endAt = 0, seenEv = 0, lastNums = '', ovT = null, ovEl = null, lastScene = '';
   function q(k) { return new URLSearchParams(location.search).get(k); }
 
   function enter() {
@@ -27,8 +29,8 @@
     if (!S) return;
     var main, top = '<div class="sc-top"><span class="wrs-brand">Number Race</span><span class="wrs-round">' + esc(S.round || S.name || '') + '</span><span class="sc-tag">PQT · ' + esc(S.code) + '</span></div>';
     var b = S.battle, m = S.m;
-    if (b && b.running && !b.reveal) endAt = S.rx + b.left; else endAt = 0;
-    revealEnd = b && b.running && b.reveal ? S.rx + b.reveal : 0;
+    if (b && b.running && !b.spin) endAt = S.rx + b.left; else endAt = 0;
+    spinEnd = b && b.running && b.spin ? S.rx + b.spin : 0; if (spinEnd && !spinTot) spinTot = b.spin; if (!spinEnd) spinTot = 0;
     if (S.status === 'done' && S.champion && S.scene === 'battle') { champion(); return; }
     if (S.status === 'setup' || !S.bracket || !S.bracket.stages.length) main = lobby();
     else if (S.scene === 'bracket') main = '<div class="wrs-board"><p class="wrs-label">' + esc(S.name) + ' · Bracket</p>' + V.bracket(S.bracket) + '</div>';
@@ -54,9 +56,9 @@
     function cls(t) { if (b && b.part && b.part.indexOf(t.id) < 0) return 'is-off'; return b && !running && b.winner ? (b.winner === t.name ? 'is-win' : 'is-lose') : ''; }
     var lab = esc(m.label || S.round) + ' · ' + (b && b.tb ? 'Decider' : 'Battle ' + (b ? b.n : m.n + 1));
     var mid;
-    if (b && running && b.reveal) {
+    if (b && running && b.spin) {
       mid = '<p class="wrs-label">' + lab + '</p>' +
-        '<div class="wrs-letters is-spin"><div class="wrs-tile"><span class="wrs-letter" style="opacity:.2">?</span></div><span class="wrs-arrow wrs-countdown">' + Math.ceil(b.reveal / 1000) + '</span><div class="wrs-tile"><span class="wrs-letter" style="opacity:.2">?</span></div></div><p class="wrs-idle">Get ready…</p>';
+        '<div class="wrs-letters is-spin"><div class="wrs-tile"><span class="wrs-letter" data-spinl>' + rn() + '</span></div><span class="wrs-arrow">' + op + '</span><div class="wrs-tile"><span class="wrs-letter" data-spinl>' + rn() + '</span></div></div><p class="wrs-idle">Get ready…</p>';
     } else if (b && (running || b.winner)) {
       mid = '<p class="wrs-label">' + lab + '</p>' +
         '<div class="wrs-letters"><div class="wrs-tile"><span class="wrs-letter">' + b.x + '</span></div><span class="wrs-arrow">' + op + '</span><div class="wrs-tile"><span class="wrs-letter">' + b.y + '</span></div></div>' +
@@ -106,12 +108,15 @@
   }
   function reason(r) { return { empty: 'No answer', wrong: 'Not correct', correct: '' }[r] || 'Wrong'; }
 
-  /* countdown without repainting everything: the 5,4,3,2,1 reveal, then the battle clock */
+  /* the randomiser: numbers flick fast, then slow down until they stop */
   setInterval(function () {
-    if (!revealEnd) return; var el = root.querySelector('.wrs-countdown'); if (!el) return;
-    var rem = Math.max(0, revealEnd - Date.now());
-    el.textContent = Math.ceil(rem / 1000) || '';
-  }, 100);
+    if (!spinEnd) return; var els = root.querySelectorAll('[data-spinl]'); if (!els.length) return;
+    var rem = Math.max(0, spinEnd - Date.now()), f = spinTot ? 1 - rem / spinTot : 1, gap = 45 + 520 * f * f * f;
+    if (Date.now() - lastSpin < gap) return; lastSpin = Date.now();
+    els.forEach(function (x) { x.textContent = rn(); x.classList.remove('is-tick'); void x.offsetWidth; x.classList.add('is-tick'); });
+  }, 30);
+
+  /* countdown without repainting everything */
   setInterval(function () {
     if (!S || !endAt) return; var r = root.querySelector('[data-ring]'); if (!r) return;
     var ms = Math.max(0, endAt - Date.now()), C = 2 * Math.PI * 46, f = S.battle ? Math.min(1, ms / (S.battle.secs * 1000)) : 0;
