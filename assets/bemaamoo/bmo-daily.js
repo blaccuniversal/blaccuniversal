@@ -3,7 +3,7 @@
   'use strict';
   var W = window.BMO_DAILY_WORDS || [];
   var START = Date.UTC(2026, 10, 23) / 86400000;            // day #1 = 23 Nov 2026
-  var KEY = 'bmo_daily_v1', KEYN = 'bmo_daily_name', MIN = 3;
+  var KEY = 'bmo_daily_v1', KEYN = 'bmo_daily_name', MIN = 4;
   var B = window.BMO, env = null, el = {}, today = 0, base = '', st = null, dict = null, busy = false;
 
   function $(s, r) { return (r || document).querySelector(s); }
