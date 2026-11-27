@@ -57,17 +57,12 @@
   function pl(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
 
   function dictP() {
-    // Day 1 keeps the original list (it was already played). From day 2: real dictionary words (Scrabble-grade) plus common English names.
-    if (!dict) {
-      if (num() >= 2) {
-        var get = function (f) { return fetch('/assets/bemaamoo/words/' + f).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(function (t) { return new Set(t.split('\n')); }); };
-        dict = Promise.all([get('daily_strict.txt?v=3'), get('words_en.mav.txt')]).then(function (a) { return { full: a[0], mav: a[1] }; });
-      }
-      else dict = Promise.all([env.getList('words_en'), env.getList('names_english')]).then(function (a) {
-        var full = new Set(a[0].full); a[1].full.forEach(function (w) { full.add(w); });
-        return { full: full, mav: a[0].mav };
-      });
-    }
+    // Same dictionary as the main game's Words (English) category, plus common English names —
+    // kept identical to main Bemaamoo so a word good enough there is good enough here too.
+    if (!dict) dict = Promise.all([env.getList('words_en'), env.getList('names_english')]).then(function (a) {
+      var full = new Set(a[0].full); a[1].full.forEach(function (w) { full.add(w); });
+      return { full: full, mav: a[0].mav };
+    });
     dict.catch(function () { dict = null; });
     return dict;
   }
