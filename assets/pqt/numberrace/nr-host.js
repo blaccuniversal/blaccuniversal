@@ -213,7 +213,7 @@
         return h + (T.config.answerMode === 'phones' ? pinsCard() : '');
       }
       h += '<div class="wr-letters"><span class="wr-letter">' + b.x + '</span><span class="wr-arrow">' + esc(SYM[b.op]) + '</span><span class="wr-letter">' + b.y + '</span></div>' +
-        '<p class="wr-tier">' + V.tierLabel(b.tier) + (b.rolls.length ? ' · new numbers ×' + b.rolls.length : '') + '</p>' +
+        '<p class="wr-tier">' + V.tierLabel(b.tier) + (b.rolls.length ? ' · new numbers ×' + b.rolls.length : '') + ' · Answer: <b>' + b.target + '</b></p>' +
         '<div class="wr-clock' + (lt <= 0 ? ' is-up' : lt < 6000 ? ' is-low' : '') + '" data-clock>' + (lt <= 0 ? 'Time' : fmt(lt)) + '</div>' +
         '<input class="hc-input wr-word" data-ans inputmode="numeric" maxlength="12" autocomplete="off" placeholder="Answer (optional)">' +
         '<p class="wr-check" data-check></p>' +
