@@ -6,7 +6,7 @@ a{color:inherit}
 svg{display:block}
 img{max-width:100%;display:block}
 .wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 clamp(18px,5vw,40px)}
-.disp{font-family:"Archivo Black",system-ui,sans-serif}
+.disp{font-family:"League Gothic",system-ui,sans-serif}
 .eyebrow{margin:0 0 18px;font-size:11.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--red)}
 
 /* hero */
