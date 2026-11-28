@@ -186,9 +186,6 @@
     var st = $('[data-stars]'), h = '';
     for (var i = 0; i < 70; i++) h += '<i style="left:' + (Math.random() * 100).toFixed(2) + '%;top:' + (Math.random() * 100).toFixed(2) + '%;animation-delay:-' + (Math.random() * 4).toFixed(2) + 's;opacity:' + (0.2 + Math.random() * 0.6).toFixed(2) + '"></i>';
     st.innerHTML = h;
-    var fl = $('[data-flies]'); h = '';
-    for (var j = 0; j < 22; j++) h += '<i style="left:' + (Math.random() * 100).toFixed(1) + '%;top:' + (30 + Math.random() * 60).toFixed(1) + '%;--t:' + (7 + Math.random() * 7).toFixed(1) + 's;--dl:-' + (Math.random() * 10).toFixed(1) + 's;--x:' + (Math.random() * 80 - 40).toFixed(0) + 'px;--y:' + (-20 - Math.random() * 60).toFixed(0) + 'px"></i>';
-    fl.innerHTML = h;
   })();
   var heroImg = $('[data-heroimg]'), mx = 0, hero = $('[data-hero]');
   function parallax(y) {

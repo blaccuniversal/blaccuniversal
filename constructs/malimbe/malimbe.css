@@ -84,9 +84,6 @@ svg{display:block}
 @keyframes win{0%,80%,100%{opacity:1}88%{opacity:.4}}
 .glow{animation:breathe2 6s ease-in-out infinite}
 @keyframes breathe2{50%{opacity:.6}}
-.flies{position:absolute;inset:55% 0 0 0;pointer-events:none}
-.flies i{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--amb);box-shadow:0 0 10px 2px rgba(255,199,122,.7);opacity:0;animation:fly var(--t,9s) ease-in-out infinite;animation-delay:var(--dl,0s)}
-@keyframes fly{0%{opacity:0;transform:translate(0,0)}20%{opacity:.9}50%{transform:translate(var(--x,30px),var(--y,-40px))}80%{opacity:.6}100%{opacity:0;transform:translate(calc(var(--x,30px)*1.6),calc(var(--y,-40px)*.4))}}
 .haze{position:absolute;inset:auto 0 0 0;height:38%;background:linear-gradient(180deg,transparent,rgba(5,5,5,.6) 60%,var(--bg))}
 .hero__in{position:relative;z-index:2;max-width:880px;padding:120px 20px 140px;text-align:center}
 .chip{display:inline-flex;align-items:center;gap:9px;margin:0 0 26px;padding:7px 14px;border:1px solid var(--ln);border-radius:999px;background:rgba(21,16,12,.32);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);font-size:12.5px;font-weight:600;color:#fffffb}
@@ -267,7 +264,6 @@ svg{display:block}
 @keyframes heroIn{from{opacity:0;transform:scale(1.12)}}
 .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(21,16,12,.28) 0%,rgba(21,16,12,.12) 30%,rgba(21,16,12,.26) 62%,var(--bg) 100%),radial-gradient(70% 55% at 50% 45%,rgba(0,0,0,.16),transparent 70%)}
 .stars{inset:0 0 62% 0;z-index:1}
-.flies{z-index:1}
 .art--photo{background:var(--bg2)}
 .art--photo img{transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
 .room:hover .art--photo img{transform:scale(1.05)}
@@ -601,7 +597,7 @@ body:has(.drawer:not([hidden])) .cxg-dock,body:has(.mdl:not([hidden])) .cxg-dock
 /* ---------- tighter rhythm, smoother scroll ---------- */
 html{scroll-padding-top:88px;-webkit-text-size-adjust:100%}
 body{overscroll-behavior-y:none}
-.hero.is-off .stars i,.hero.is-off .flies i{animation-play-state:paused}
+.hero.is-off .stars i{animation-play-state:paused}
 .hero__p{max-width:none}
 .intro{padding:clamp(56px,8vw,100px) clamp(18px,5vw,40px) clamp(36px,5vw,64px)}
 .intro .lead{margin-top:14px;max-width:none}
