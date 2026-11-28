@@ -1,0 +1,64 @@
+name: Deploy Malimbe to malimbelodge.com
+
+# Builds a clean, self-contained copy of constructs/malimbe/ (no construct
+# access-gate, no "Make an offer"/"Build yours" buttons, asset paths
+# rewritten from /constructs/malimbe/... to root-relative) and FTPs it to
+# the malimbelodge.com DirectAdmin host whenever that folder changes on main.
+#
+# Requires these repo secrets (Settings -> Secrets and variables -> Actions):
+#   MALIMBE_FTP_SERVER     e.g. ftp.malimbelodge.com or the host-ww.net hostname
+#   MALIMBE_FTP_USERNAME
+#   MALIMBE_FTP_PASSWORD
+#   MALIMBE_FTP_SERVER_DIR optional - remote target folder, defaults to ./
+#                          (the account's own public_html root over FTP).
+#                          Set this if malimbelodge.com is an addon/subdomain
+#                          and needs e.g. /domains/malimbelodge.com/public_html/
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'constructs/malimbe/**'
+      - '.github/workflows/deploy-malimbelodge.yml'
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build self-contained malimbelodge site
+        run: |
+          set -e
+          SRC=constructs/malimbe
+          OUT=dist-malimbelodge
+          rm -rf "$OUT"
+          mkdir -p "$OUT"
+          cp -r "$SRC"/. "$OUT"/
+
+          # Strip the construct access-gate (code wall + preview timer) and
+          # the floating "Make an offer" / "Build yours" sale buttons it
+          # injects - this is the real production site, not a pitched concept.
+          sed -i '/cx-codes\.js/d; /cx-gate\.js/d' "$OUT/index.html"
+
+          # Rewrite root-relative construct paths to the flat deploy root
+          # (index.html, the stylesheet, and every script reference bedroom
+          # photos / the investor deck / the footer mark by absolute path).
+          for f in "$OUT/index.html" "$OUT/malimbe.css" "$OUT/malimbe.js" "$OUT/malimbe-wf.js" "$OUT/malimbe-inv.js"; do
+            if [ -f "$f" ]; then
+              sed -i 's#/constructs/malimbe/#/#g' "$f"
+            fi
+          done
+
+          echo "Build contents:"
+          find "$OUT" -maxdepth 2 | sort
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.5
+        with:
+          server: ${{ secrets.MALIMBE_FTP_SERVER }}
+          username: ${{ secrets.MALIMBE_FTP_USERNAME }}
+          password: ${{ secrets.MALIMBE_FTP_PASSWORD }}
+          local-dir: ./dist-malimbelodge/
+          server-dir: ${{ secrets.MALIMBE_FTP_SERVER_DIR || './' }}
