@@ -81,6 +81,12 @@ body.menu-open{overflow:hidden}
 .socs svg{width:24px;height:24px}
 .socs img{height:24px;width:auto;display:block}
 
+/* video page */
+.vidpage{padding-top:clamp(120px,16vw,160px);border-top:0}
+.vidwrap{position:relative;height:0;padding-top:56.25%;overflow:hidden;border:1px solid var(--ln2);border-radius:var(--r);background:#000}
+.vidwrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vid__cap{margin:16px 0 0;font-size:14px;color:var(--tx2)}
+
 /* footer */
 .foot{padding:30px clamp(18px,5vw,40px) calc(30px + env(safe-area-inset-bottom));border-top:1px solid var(--ln);text-align:center}
 .foot small{display:block;font-size:12.5px;color:var(--tx3)}
