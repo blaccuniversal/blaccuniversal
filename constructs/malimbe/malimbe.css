@@ -1,6 +1,6 @@
 /* Malimbe Lodge · a BLACC Universal construct — palette & design from the original (cream/espresso/rust), fonts unchanged */
 :root{
-  --cream:#fffffb; --cream-2:#eadfcc; --espresso:#1f1611; --espresso-2:#2a1e17; --black:#15100c;
+  --cream:#fffffb; --cream-2:#fffffb; --espresso:#1f1611; --espresso-2:#2a1e17; --black:#15100c;
   --rust:#a4471f; --clay:#c26a3c; --sand:#c9a46a; --olive:#5b7444;
   --bg:var(--cream); --bg2:var(--cream-2); --bg3:var(--cream-2);
   --ln:rgba(36,24,15,.14); --ln2:rgba(36,24,15,.3);
