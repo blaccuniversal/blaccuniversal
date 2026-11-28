@@ -8,14 +8,12 @@
   var menuClose = document.getElementById('menuClose');
 
   function openMenu() {
-    menu.classList.add('is-open');
-    menu.setAttribute('aria-hidden', 'false');
+    menu.hidden = false;
     menuBtn.setAttribute('aria-expanded', 'true');
     document.body.classList.add('menu-open');
   }
   function closeMenu() {
-    menu.classList.remove('is-open');
-    menu.setAttribute('aria-hidden', 'true');
+    menu.hidden = true;
     menuBtn.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('menu-open');
   }
@@ -26,7 +24,7 @@
       a.addEventListener('click', closeMenu);
     });
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') closeMenu();
+      if (e.key === 'Escape' && !menu.hidden) closeMenu();
     });
   }
 
