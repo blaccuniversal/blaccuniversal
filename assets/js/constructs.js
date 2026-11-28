@@ -15,7 +15,7 @@
     { name: 'PastaXpress by Chef Kabs', tag: 'Restaurant · Ibadan', path: '/constructs/pastaxpress/', img: '/constructs/pastaxpress/img/pasta.webp', logo: '/constructs/pastaxpress/img/logo.png?v=2', ar: '488/175', lw: '62%' },
     { name: 'KleanSound', tag: 'Pro audio', path: '/constructs/kleansound/', img: '/constructs/kleansound/img/cover.webp', logo: '/constructs/kleansound/img/logo.png?v=2', ar: '4/3', lw: '56%' },
     { name: 'Aaronaldo Tech Enterprises', tag: 'Tech store · Ibadan', path: '/constructs/aaronaldo/', img: '/constructs/aaronaldo/img/cover.webp', logo: '/constructs/aaronaldo/img/logo-full-white.png', ar: '951/500', lw: '52%' },
-    { name: 'Drey Star', tag: 'Artist · Afrosoul', path: '/constructs/dreystar/', img: '/constructs/dreystar/img/cover.webp' }
+    { name: 'Drey Star', tag: 'Artist · Afrosoul', path: 'https://dreystarmusic.com/', img: '/constructs/dreystar/img/cover.webp' }
   ];
 
   // tool rotation

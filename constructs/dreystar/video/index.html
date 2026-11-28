@@ -1,70 +1,7 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Video · Drey Star</title>
-<meta name="description" content="Drey Star — videos.">
-<meta name="theme-color" content="#050505">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex&amp;family=Open+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/constructs/dreystar/dreystar.css?v=21">
-</head>
-<body>
-
-<header class="topbar gutter">
-  <a class="brand" href="/constructs/dreystar/"><span class="brand__name disp">Drey Star</span></a>
-  <div class="topbar__actions">
-    <a class="book-btn" id="bookBtn" href="#" target="_blank" rel="noopener">Book</a>
-    <button class="icon-btn menu-btn" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M3 6.5h18M3 12h18M3 17.5h18"/></svg>
-    </button>
-  </div>
-</header>
-
-<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
-  <div class="menu__bar gutter">
-    <a class="brand" href="/constructs/dreystar/"><span class="brand__name disp">Drey Star</span></a>
-    <button class="icon-btn menu-btn" type="button" id="menuClose" aria-label="Close menu">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
-    </button>
-  </div>
-  <nav class="menu__nav gutter" aria-label="Main">
-    <div class="menu__list">
-      <a class="menu__item" href="/constructs/dreystar/" data-menu-link><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5L12 3.5l8.5 7V20h-5.5v-6h-6v6H3.5z"/></svg><span class="menu__label">Home</span><span class="menu__num">01</span><svg class="menu__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="menu__item" href="/constructs/dreystar/#music" data-menu-link><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.6"/><circle cx="17.5" cy="16" r="2.6"/></svg><span class="menu__label">Music</span><span class="menu__num">02</span><svg class="menu__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="menu__item" href="/constructs/dreystar/video/" data-menu-link><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="7" width="12" height="10" rx="1"/><path d="M15.5 10.2l5-2.7v9l-5-2.7z"/></svg><span class="menu__label">Video</span><span class="menu__num">03</span><svg class="menu__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <span class="menu__item menu__item--soon" aria-disabled="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5a2.8 2.8 0 0 1 2.8 2.8v5.4a2.8 2.8 0 1 1-5.6 0V6.3A2.8 2.8 0 0 1 12 3.5z"/><path d="M6.5 11v.8a5.5 5.5 0 0 0 11 0V11"/><path d="M12 17.3v3.2M9.3 20.5h5.4"/></svg><span class="menu__label">Shows</span><span class="menu__num">Soon</span></span>
-      <span class="menu__item menu__item--soon" aria-disabled="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.75" y="4.75" width="18.5" height="14.5" rx="2.5"/><path d="M3.5 6.5l8.5 6.25 8.5-6.25"/></svg><span class="menu__label">Join</span><span class="menu__num">Soon</span></span>
-      <span class="menu__item menu__item--soon" aria-disabled="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 8h15l-1.2 12.5H5.7z"/><path d="M8.8 10.5V7a3.2 3.2 0 0 1 6.4 0v3.5"/></svg><span class="menu__label">Store</span><span class="menu__num">Soon</span></span>
-      <div class="menu__social">
-        <a class="icon-btn" href="https://www.instagram.com/dreyystar/" target="_blank" rel="noopener" aria-label="Instagram"><img src="/constructs/dreystar/img/icons/instagram.webp" alt="" width="20" height="20"></a>
-        <a class="icon-btn" href="https://www.tiktok.com/@drey_star" target="_blank" rel="noopener" aria-label="TikTok"><img src="/constructs/dreystar/img/icons/tiktok.webp" alt="" width="18" height="20"></a>
-        <a class="icon-btn" href="https://x.com/dreytoyoursoul" target="_blank" rel="noopener" aria-label="X"><img src="/constructs/dreystar/img/icons/x.webp" alt="" width="20" height="20"></a>
-        <a class="icon-btn" href="https://web.facebook.com/only1mideofficial/" target="_blank" rel="noopener" aria-label="Facebook"><img src="/constructs/dreystar/img/icons/facebook.webp" alt="" width="10" height="20"></a>
-        <a class="icon-btn" href="https://www.youtube.com/@drey_star" target="_blank" rel="noopener" aria-label="YouTube"><img src="/constructs/dreystar/img/icons/youtube.webp" alt="" width="28" height="20"></a>
-      </div>
-    </div>
-  </nav>
-</div>
-
-<main>
-  <section class="dsect vidpage">
-    <div class="wrap">
-      <p class="eyebrow">Video</p>
-      <div class="vidwrap">
-        <iframe src="https://www.youtube.com/embed/22ZFO4XsbRk" title="Drey Star - &quot;Kira&quot; (Official Visualizer)" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-      </div>
-      <p class="vid__cap">Kira — Official Visualizer</p>
-    </div>
-  </section>
-
-  <footer class="foot">
-    <small>© <span data-year>2026</span> Drey Star <a href="https://blaccuniversal.com" target="_blank" rel="noopener">Designed by BLACC Universal</a></small>
-  </footer>
-</main>
-
-<script src="/constructs/dreystar/dreystar.js?v=5"></script>
-</body>
-</html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Drey Star has moved</title>
+<link rel="canonical" href="https://dreystarmusic.com/video/">
+<meta http-equiv="refresh" content="0; url=https://dreystarmusic.com/video/">
+<script>location.replace("https://dreystarmusic.com/video/"+location.hash)</script>
+</head><body><p>Drey Star has moved to <a href="https://dreystarmusic.com/video/">dreystarmusic.com</a>.</p></body></html>
