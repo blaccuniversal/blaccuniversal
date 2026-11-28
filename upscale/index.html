@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Upscale · BLACC Universal</title>
+<meta name="description" content="Enlarge an image right in your browser, up to 30,000px on the long edge. Nothing is uploaded.">
+<meta name="theme-color" content="#000000">
+<link rel="canonical" href="https://blaccuniversal.com/upscale/">
+<meta property="og:site_name" content="BLACC Universal">
+<meta property="og:title" content="Upscale">
+<meta property="og:description" content="Enlarge an image right in your browser, up to 30,000px on the long edge. Nothing is uploaded.">
+<meta property="og:url" content="https://blaccuniversal.com/upscale/">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/img/favicon.png">
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/css/style.css?v=202611131546">
+<link rel="stylesheet" href="/assets/css/market.css?v=19">
+<link rel="stylesheet" href="/upscale/upscale.css?v=1">
+</head>
+<body>
+<div class="page page--dark page--screen usp">
+  <nav class="topbar gutter " aria-label="Site">
+    <a class="brand" href="/"><svg viewBox="0 0 563 418" width="34" height="25" aria-hidden="true"><g fill="#ffffff"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg><span>BLACC Universal<sup>™</sup></span></a>
+    <div class="topbar__actions">
+    <button class="icon-btn menu-btn" type="button" data-menu-open aria-label="Open menu" aria-expanded="false" aria-controls="menu"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M3 6.5h18M3 12h18M3 17.5h18"/></svg></button></div>
+  </nav>
+  <section class="mk-hero gutter">
+    <div class="wrap mk-hero__in">
+      <p class="eyebrow mk-crumbs"><a class="crumb" href="/">Home</a> <span class="mk-sep">/</span> <span>Upscale</span></p>
+      <div class="mk-hero__id"><div class="mk-hero__txt"><h1 class="mk-hero__name">Upscale</h1><p class="mk-hero__tag">Enlarge an image, right in your browser.</p></div></div>
+    </div>
+  </section>
+
+  <main class="us gutter" data-root>
+    <div class="wrap us__in">
+
+      <!-- DROP ZONE -->
+      <div class="drop" data-drop tabindex="0" role="button" aria-label="Choose an image">
+        <input type="file" accept="image/png,image/jpeg,image/webp,image/bmp,image/gif" data-file hidden>
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15.5V4M7 8.5 12 4l5 4.5"/><path d="M4.5 15.5V18a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-2.5"/></svg>
+        <p class="drop__t" data-drop-text>Drop an image here, or click to choose one</p>
+        <p class="drop__s">PNG, JPEG, WebP, BMP or GIF &middot; stays on your device</p>
+      </div>
+
+      <!-- WORKSPACE (hidden until an image is loaded) -->
+      <div class="work" data-work hidden>
+        <div class="work__grid">
+          <div class="prev">
+            <img class="prev__img" data-preview alt="">
+            <p class="prev__meta"><span data-src-name>image.png</span> &middot; <span data-src-dim>0 × 0</span></p>
+            <button class="text-link" type="button" data-change>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5M20 12a8 8 0 0 1-14 5M16 4v4h-4M8 20v-4h4"/></svg>
+              Choose a different image
+            </button>
+          </div>
+
+          <div class="ctl">
+            <div class="field">
+              <label>Scale</label>
+              <div class="chips" data-scale-chips>
+                <button type="button" class="chip" data-scale="2">2×</button>
+                <button type="button" class="chip" data-scale="4">4×</button>
+                <button type="button" class="chip" data-scale="8">8×</button>
+                <button type="button" class="chip" data-scale="16">16×</button>
+                <button type="button" class="chip" data-scale="max">Max</button>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="us-w">Target width <span class="opt">height follows automatically</span></label>
+              <div class="field-row field-row--w">
+                <input id="us-w" type="number" min="1" step="1" data-width inputmode="numeric">
+                <span class="unit">px</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="us-sharp">Sharpen <span class="opt" data-sharp-val>35%</span></label>
+              <input id="us-sharp" type="range" min="0" max="100" value="35" data-sharp>
+            </div>
+
+            <p class="out" data-out>Output: &mdash;</p>
+            <p class="warn" data-warn hidden></p>
+
+            <button class="btn" type="button" data-go>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+              Upscale &amp; download
+            </button>
+
+            <div class="prog" data-prog hidden>
+              <div class="prog__bar"><i data-prog-fill></i></div>
+              <p class="prog__t" data-prog-text>Working&hellip;</p>
+              <button class="text-link" type="button" data-cancel>Cancel</button>
+            </div>
+
+            <p class="note">Sharpens and enlarges what&#8217;s already there &mdash; it doesn&#8217;t invent new detail the way an AI upscaler does. Everything runs on your device; nothing is uploaded anywhere.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer gutter section--alt">
+    <div class="wrap footer__inner">
+      <span>© 2026 BLACC Universal. All rights reserved. <a class="footer__privacy" href="/privacy/">Privacy</a></span>
+      <div class="footer__icons"><a class="icon-btn" href="https://www.instagram.com/blaccuniversal" target="_blank" rel="noopener" aria-label="Instagram, @blaccuniversal" title="@blaccuniversal"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25"/><circle cx="12" cy="12" r="4.25"/><circle cx="17.4" cy="6.6" r=".6" fill="currentColor" stroke="none"/></svg></a><a class="icon-btn" href="https://x.com/blvccuniversal" target="_blank" rel="noopener" aria-label="X, @blvccuniversal" title="@blvccuniversal"><svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a class="icon-btn" href="https://www.facebook.com/blaccuniversal" target="_blank" rel="noopener" aria-label="Facebook, BLACC Universal" title="BLACC Universal"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 21v-7.5h2.7l.4-3.2h-3.1V8.4c0-.9.3-1.6 1.6-1.6h1.7V4a21 21 0 0 0-2.5-.1c-2.5 0-4.1 1.5-4.1 4.2v2.3H8.4v3.2h2.8V21"/></svg></a></div>
+    </div>
+  </footer>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+    <div class="menu__bar gutter">
+      <a class="brand" href="/"><svg viewBox="0 0 563 418" width="34" height="25" aria-hidden="true"><g fill="#ffffff"><rect x="0" y="0" width="128" height="128" rx="3"/><rect x="0" y="145" width="128" height="128" rx="3"/><rect x="145" y="145" width="128" height="128" rx="3"/><rect x="435" y="145" width="128" height="128" rx="3"/><rect x="0" y="290" width="128" height="128" rx="3"/><rect x="145" y="290" width="128" height="128" rx="3"/><rect x="290" y="290" width="128" height="128" rx="3"/><rect x="435" y="290" width="128" height="128" rx="3"/></g></svg><span>BLACC Universal<sup>™</sup></span></a>
+      <button class="icon-btn menu-btn" type="button" data-menu-close aria-label="Close menu"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    </div>
+    <nav class="menu__nav gutter" aria-label="Main">
+      <div class="menu__list">
+        <a class="menu__item" href="/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5L12 3.5l8.5 7V20h-5.5v-6h-6v6H3.5z"/></svg><span class="menu__label">Home</span><span class="menu__num">01</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="menu__item" href="/about/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20.2c1.2-3.7 4-5.4 7.2-5.4s6 1.7 7.2 5.4"/></svg><span class="menu__label">About</span><span class="menu__num">02</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="menu__item" href="/projects/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx=".6"/><rect x="13.5" y="3.5" width="7" height="7" rx=".6"/><rect x="3.5" y="13.5" width="7" height="7" rx=".6"/><rect x="13.5" y="13.5" width="7" height="7" rx=".6"/></svg><span class="menu__label">Projects</span><span class="menu__num">03</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="menu__item" href="/shop/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 8h15l-1.2 12.5H5.7z"/><path d="M8.8 10.5V7a3.2 3.2 0 0 1 6.4 0v3.5"/></svg><span class="menu__label">Shop</span><span class="menu__num">04</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="menu__item" href="#contact"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.75" y="4.75" width="18.5" height="14.5" rx="2.5"/><path d="M3.5 6.5l8.5 6.25 8.5-6.25"/></svg><span class="menu__label">Contact</span><span class="menu__num">05</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <div class="menu__social"><a class="icon-btn" href="https://www.instagram.com/blaccuniversal" target="_blank" rel="noopener" aria-label="Instagram, @blaccuniversal" title="@blaccuniversal"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.75" y="2.75" width="18.5" height="18.5" rx="5.25"/><circle cx="12" cy="12" r="4.25"/><circle cx="17.4" cy="6.6" r=".6" fill="currentColor" stroke="none"/></svg></a><a class="icon-btn" href="https://x.com/blvccuniversal" target="_blank" rel="noopener" aria-label="X, @blvccuniversal" title="@blvccuniversal"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a><a class="icon-btn" href="https://www.facebook.com/blaccuniversal" target="_blank" rel="noopener" aria-label="Facebook, BLACC Universal" title="BLACC Universal"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 21v-7.5h2.7l.4-3.2h-3.1V8.4c0-.9.3-1.6 1.6-1.6h1.7V4a21 21 0 0 0-2.5-.1c-2.5 0-4.1 1.5-4.1 4.2v2.3H8.4v3.2h2.8V21"/></svg></a><a class="icon-btn" href="#hello" data-hello-open aria-label="Email BLACC Universal"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.75" y="4.75" width="18.5" height="14.5" rx="2.5"/><path d="M3.5 6.5l8.5 6.25 8.5-6.25"/></svg></a></div>
+      </div>
+    </nav>
+  </div>
+</div>
+<script src="/upscale/upscale.js?v=1"></script>
+<script src="/assets/js/main.js?v=202611211530" defer></script>
+</body>
+</html>
