@@ -131,6 +131,9 @@ svg{display:block}
 
 /* rooms */
 .rooms{padding:clamp(40px,6vw,80px) 0 clamp(80px,10vw,130px)}
+.rgroup{margin-bottom:clamp(32px,5vw,52px)}
+.rgroup:last-child{margin-bottom:0}
+.rgroup__t{margin:0 0 16px;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--tx2)}
 .rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 @media (max-width:980px){.rgrid{grid-template-columns:1fr 1fr}}
 @media (max-width:640px){.rgrid{grid-template-columns:1fr}}

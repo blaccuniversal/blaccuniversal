@@ -4,28 +4,42 @@
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
 
-  /* The six rooms shown so far. Malimbe has 11 culture-themed rooms; images are design renders. */
-  var NAMES = ['Terracotta', 'Woven', 'Carved', 'Canopy', 'Clay', 'Weaver'];
-  var ROOMS = [1, 2, 3, 4, 5, 6].map(function (n) {
-    return { id: 'room-' + n, kind: 'Culture-themed suite', name: 'Room ' + (n < 10 ? '0' + n : n), photo: '/constructs/malimbe/img/bedroom-' + n + '.webp',
+  /* 13 culture-themed rooms across two layouts; images are design renders. */
+  var ONE_BED_NAMES = ['Red Crown', null, 'Rachel', 'Gola', 'Red Vent', 'Blue Bill', 'Crest', 'Red Belly', 'Red Head', 'Crest'];
+  var THREE_BED_NAMES = ['Cassin', null, 'Ibadan'];
+  var photoN = 0;
+  function nextPhoto() { photoN = (photoN % 6) + 1; return '/constructs/malimbe/img/bedroom-' + photoN + '.webp'; }
+  function mkRoom(group, num, name, bedsLabel) {
+    var title = name || ('Room ' + (num < 10 ? '0' + num : num));
+    return { id: group + '-' + num, kind: group === 'one-bed' ? 'One-bed unit' : 'Three-bedroom apartment', name: title, photo: nextPhoto(),
       desc: 'Hand-finished walls and warm light.',
-      feats: [['i-bed', 'Culture-themed'], ['i-bell', 'Opens Dec 2026']] };
-  });
+      feats: [['i-bed', bedsLabel], ['i-bell', 'Opens Dec 2026']] };
+  }
+  var ONE_BED = ONE_BED_NAMES.map(function (nm, i) { return mkRoom('one-bed', i + 1, nm, '1 bedroom'); });
+  var THREE_BED = THREE_BED_NAMES.map(function (nm, i) { return mkRoom('three-bed', i + 1, nm, '3 bedrooms'); });
+  var ROOMS = ONE_BED.concat(THREE_BED);
   function byId(id) { for (var i = 0; i < ROOMS.length; i++) if (ROOMS[i].id === id) return ROOMS[i]; return ROOMS[0]; }
   function ic(id) { return '<svg><use href="#' + id + '"/></svg>'; }
   function art(r) { return '<div class="art art--photo"><img src="' + r.photo + '" alt="' + r.name + ' at Malimbe Lodge (design render)" loading="lazy"></div>'; }
 
   /* ---------- rooms ---------- */
-  $('[data-rooms]').innerHTML = ROOMS.map(function (r, i) {
-    return '<button class="room reveal" type="button" data-open="' + r.id + '" style="transition-delay:' + ((i % 3) * 0.08) + 's">' +
-      '<div class="room__art">' + art(r) + '</div>' +
-      '<div class="room__b"><span class="room__k">' + r.kind + '</span><h3 class="room__t">' + r.name + '</h3><p class="room__d">' + r.desc + '</p>' +
-      '<ul class="room__f">' + r.feats.map(function (f) { return '<li>' + ic(f[0]) + f[1] + '</li>'; }).join('') + '</ul>' +
-      '<div class="room__foot"><span class="room__p"><small>Rates at opening</small></span><span class="room__go">Details' + ic('i-arrow') + '</span></div></div></button>';
-  }).join('');
+  function renderGroup(list, sel) {
+    var tr = $('[data-rooms="' + sel + '"]'); if (!tr) return;
+    tr.innerHTML = list.map(function (r, i) {
+      return '<button class="room reveal" type="button" data-open="' + r.id + '" style="transition-delay:' + ((i % 3) * 0.08) + 's">' +
+        '<div class="room__art">' + art(r) + '</div>' +
+        '<div class="room__b"><span class="room__k">' + r.kind + '</span><h3 class="room__t">' + r.name + '</h3><p class="room__d">' + r.desc + '</p>' +
+        '<ul class="room__f">' + r.feats.map(function (f) { return '<li>' + ic(f[0]) + f[1] + '</li>'; }).join('') + '</ul>' +
+        '<div class="room__foot"><span class="room__p"><small>Rates at opening</small></span><span class="room__go">Details' + ic('i-arrow') + '</span></div></div></button>';
+    }).join('');
+  }
+  renderGroup(ONE_BED, 'one-bed');
+  renderGroup(THREE_BED, 'three-bed');
 
-  (function () {
-    var tr = $('[data-rooms]'), dots = $('[data-rdots]'), cards = $$('.room', tr), n = cards.length, dir = 1, hold = 0, vis = false;
+  function initCarousel(sel) {
+    var tr = $('[data-rooms="' + sel + '"]'), dots = $('[data-rdots="' + sel + '"]');
+    if (!tr || !dots) return;
+    var cards = $$('.room', tr), n = cards.length, dir = 1, hold = 0, vis = false;
     dots.innerHTML = cards.map(function (c, i) { return '<button type="button" aria-label="Room ' + (i + 1) + '"></button>'; }).join('');
     var ds = $$('button', dots);
     function step() { return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : tr.clientWidth; }
@@ -44,7 +58,9 @@
       if (dir > 0 && s >= m - 4) dir = -1; else if (dir < 0 && s <= 4) dir = 1;
       go(Math.round(s / step()) + dir);
     }, 4500);
-  })();
+  }
+  initCarousel('one-bed');
+  initCarousel('three-bed');
 
   var sheet = $('[data-sheet]'), sheetRoom = null, lastFocus = null;
   function openRoom(id) {
