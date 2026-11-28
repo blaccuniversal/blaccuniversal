@@ -24,14 +24,14 @@ img{max-width:100%;display:block}
 .dsp:hover{background:var(--tx);border-color:var(--tx);color:#050505}
 .dsp svg{width:19px;height:19px;color:var(--tx);flex:none;transition:color .2s}
 .dsp:hover svg{color:#050505}
-.dsp img{width:19px;height:19px;border-radius:5px;flex:none}
+.dsp img{height:19px;width:auto;flex:none}
 @media (min-width:560px){.dsps{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (min-width:860px){.dsps{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .socs{display:flex;flex-wrap:wrap;align-items:center;gap:26px}
 .socs a{color:var(--tx2);opacity:.9;transition:color .2s,opacity .2s,transform .2s}
 .socs a:hover{color:var(--tx);opacity:1;transform:translateY(-2px)}
 .socs svg{width:24px;height:24px}
-.socs img{width:24px;height:24px;border-radius:6px;display:block}
+.socs img{height:24px;width:auto;display:block}
 
 /* footer */
 .foot{padding:30px clamp(18px,5vw,40px) calc(30px + env(safe-area-inset-bottom));border-top:1px solid var(--ln);text-align:center}
