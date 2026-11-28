@@ -25,6 +25,9 @@ img{max-width:100%;display:block}
 .dsp svg{width:19px;height:19px;color:var(--tx);flex:none;transition:color .2s}
 .dsp:hover svg{color:#050505}
 .dsp img{height:19px;width:auto;flex:none}
+.dsp--logo{justify-content:center}
+.dsp--logo img{height:20px;width:auto}
+.dsp--logo:hover{background:rgba(255,255,255,.08);border-color:var(--ln2);color:var(--tx)}
 @media (min-width:560px){.dsps{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (min-width:860px){.dsps{grid-template-columns:repeat(4,minmax(0,1fr))}}
 .socs{display:flex;flex-wrap:wrap;align-items:center;gap:26px}
