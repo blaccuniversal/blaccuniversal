@@ -114,8 +114,13 @@ svg{display:block}
 .step b{min-width:16px;text-align:center;font-size:15px}
 .bk__go{min-height:56px;border-radius:22px;padding:0 22px}
 .bk__go svg{width:18px;height:18px}
-.bk__sum{max-width:1080px;min-height:24px;margin:12px auto 0;padding:0 14px;text-align:center;font-size:14px;color:var(--tx2)}
+.bk__sum{max-width:1080px;min-height:24px;margin:10px auto 0;padding:0 14px;text-align:center;font-size:14px;color:var(--tx2)}
 .bk__sum b{color:var(--tx)}
+.cdown{display:flex;justify-content:center;gap:0;max-width:360px;margin:28px auto 0}
+.cdown__u{flex:1;text-align:center;padding:0 12px}
+.cdown__u+.cdown__u{border-left:1px solid var(--ln)}
+.cdown__u b{display:block;font-size:clamp(22px,4vw,30px);font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--tx)}
+.cdown__u span{display:block;margin-top:4px;font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--tx3)}
 @media (max-width:900px){.bk__bar{grid-template-columns:1fr 1fr;border-radius:20px}.bk__f{border-right:0;border-bottom:1px solid var(--ln);padding:12px 14px}.bk__f:nth-child(odd){border-right:1px solid var(--ln)}.bk__f--r{border-bottom:1px solid var(--ln)}.bk__go{grid-column:1/-1;margin-top:8px;border-radius:14px}}
 
 /* intro */

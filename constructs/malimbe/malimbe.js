@@ -13,7 +13,7 @@
     var title = name || ('Room ' + (num < 10 ? '0' + num : num));
     return { id: group + '-' + num, kind: group === 'one-bed' ? 'One-bed unit' : 'Three-bedroom apartment', name: title, photo: nextPhoto(),
       desc: 'Hand-finished walls and warm light.',
-      feats: [['i-bed', bedsLabel], ['i-bell', 'Opens Dec 2026']] };
+      feats: [['i-bed', bedsLabel], ['i-bell', 'Opens June 2027']] };
   }
   var ONE_BED = ONE_BED_NAMES.map(function (nm, i) { return mkRoom('one-bed', i + 1, nm, '1 bedroom'); });
   var THREE_BED = THREE_BED_NAMES.map(function (nm, i) { return mkRoom('three-bed', i + 1, nm, '3 bedrooms'); });
@@ -78,9 +78,24 @@
 
   /* ---------- request bar + join form ---------- */
   var fIn = $('[data-in]'), fInt = $('[data-room]'), guests = 2;
-  var today = new Date(), open = new Date(2026, 11, 1), start = today > open ? today : open;
+  var today = new Date(), open = new Date(2027, 5, 1), start = today > open ? today : open;
   function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
   fIn.min = iso(start); fIn.value = iso(start);
+
+  /* ---------- countdown to opening ---------- */
+  (function () {
+    var ud = $('[data-cd="d"]'), uh = $('[data-cd="h"]'), um = $('[data-cd="m"]'), us = $('[data-cd="s"]');
+    if (!ud) return;
+    function pad(n) { return (n < 10 ? '0' : '') + n; }
+    function tick() {
+      var diff = Math.max(0, open.getTime() - Date.now());
+      ud.textContent = Math.floor(diff / 86400000);
+      uh.textContent = pad(Math.floor(diff % 86400000 / 3600000));
+      um.textContent = pad(Math.floor(diff % 3600000 / 60000));
+      us.textContent = pad(Math.floor(diff % 60000 / 1000));
+    }
+    tick(); setInterval(function () { if (!document.hidden) tick(); }, 1000);
+  })();
   function nice(v) { var p = v.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }); }
   var mdl = $('[data-mdl]'), WA = '233599718830';
   function openMdl(interest, note) {
