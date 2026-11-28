@@ -39,7 +39,7 @@
   function initCarousel(sel) {
     var tr = $('[data-rooms="' + sel + '"]'), dots = $('[data-rdots="' + sel + '"]');
     if (!tr || !dots) return;
-    var cards = $$('.room', tr), n = cards.length, dir = 1, hold = 0, vis = false;
+    var cards = $$('.room', tr), n = cards.length, hold = 0, vis = false;
     dots.innerHTML = cards.map(function (c, i) { return '<button type="button" aria-label="Room ' + (i + 1) + '"></button>'; }).join('');
     var ds = $$('button', dots);
     function step() { return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : tr.clientWidth; }
@@ -55,8 +55,7 @@
     if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) setInterval(function () {
       if (!vis || document.hidden || Date.now() < hold) return;
       var m = max(), s = tr.scrollLeft;
-      if (dir > 0 && s >= m - 4) dir = -1; else if (dir < 0 && s <= 4) dir = 1;
-      go(Math.round(s / step()) + dir);
+      if (s >= m - 4) go(0); else go(Math.round(s / step()) + 1);
     }, 4500);
   }
   initCarousel('one-bed');
