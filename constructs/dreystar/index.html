@@ -9,13 +9,39 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Gothic&amp;family=Open+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/constructs/dreystar/dreystar.css?v=16">
+<link rel="stylesheet" href="/constructs/dreystar/dreystar.css?v=17">
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-boomplay" viewBox="0 0 24 24"><rect x="4" y="9.5" width="16" height="8.5" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="8.5" cy="13.75" r="1.9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="15.5" cy="13.75" r="1.9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 9.5V6.5M16 9.5V6.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
 </svg>
+
+<header class="nav">
+  <div class="wrap nav__in">
+    <a href="#top" class="nav__logo disp">Drey Star</a>
+    <div class="nav__r">
+      <a class="nav__book" id="bookBtn" href="#" target="_blank" rel="noopener">Book</a>
+      <button class="nav__burger" type="button" id="menuBtn" aria-expanded="false" aria-controls="menu" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="menu" id="menu" aria-hidden="true">
+  <button class="menu__x" type="button" id="menuClose" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+  </button>
+  <ul class="menu__list">
+    <li><a href="#top" class="menu__link" data-menu-link>Home</a></li>
+    <li><a href="#music" class="menu__link" data-menu-link>Music</a></li>
+    <li><a href="#video" class="menu__link" data-menu-link>Video</a></li>
+    <li><a href="#shows" class="menu__link" data-menu-link>Shows</a></li>
+    <li><a href="#join" class="menu__link" data-menu-link>Join</a></li>
+    <li><a href="#store" class="menu__link" data-menu-link>Store</a></li>
+  </ul>
+</nav>
 
 <main id="top">
 
@@ -26,7 +52,7 @@
     </div>
   </section>
 
-  <section class="dsect">
+  <section class="dsect" id="music">
     <div class="wrap">
       <p class="eyebrow">Listen</p>
       <div class="dsps">
@@ -55,12 +81,48 @@
     </div>
   </section>
 
+  <section class="dsect" id="video">
+    <div class="wrap">
+      <p class="eyebrow">Video</p>
+      <a class="vid" href="https://www.youtube.com/@drey_star" target="_blank" rel="noopener">
+        <span class="vid__play" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+        <span class="vid__t">Watch on YouTube</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="dsect" id="shows">
+    <div class="wrap">
+      <p class="eyebrow">Shows</p>
+      <p class="ph">No shows announced yet. Check back soon.</p>
+    </div>
+  </section>
+
+  <section class="dsect" id="join">
+    <div class="wrap">
+      <p class="eyebrow">Join</p>
+      <p class="ph">Get new music and updates first.</p>
+      <form class="joinf" id="joinForm">
+        <input class="joinf__in" type="email" name="email" placeholder="Email address" aria-label="Email address" required>
+        <button class="joinf__btn" type="submit">Join</button>
+      </form>
+      <p class="joinf__msg" id="joinMsg" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <section class="dsect" id="store">
+    <div class="wrap">
+      <p class="eyebrow">Store</p>
+      <p class="ph">Store coming soon.</p>
+    </div>
+  </section>
+
   <footer class="foot">
     <small>© <span data-year>2026</span> Drey Star <br><a href="https://blaccuniversal.com" target="_blank" rel="noopener">Designed by BLACC Universal</a></small>
   </footer>
 
 </main>
 
-<script src="/constructs/dreystar/dreystar.js?v=2"></script>
+<script src="/constructs/dreystar/dreystar.js?v=3"></script>
 </body>
 </html>
